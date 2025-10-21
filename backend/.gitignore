@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.log
+.env
+.env.local
+data/labels/*
+data/cache/*
+data/exports/*
+!data/labels/.gitkeep
+!data/cache/.gitkeep
+!data/exports/.gitkeep
+.DS_Store
+coverage/
+*.tsbuildinfo
+
+/src/generated/prisma

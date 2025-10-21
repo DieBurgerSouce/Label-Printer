@@ -1,0 +1,61 @@
+{
+  "id": "60579d69-61b8-450c-94ac-7ce27c117a8e",
+  "name": "Standard Label",
+  "description": "Standard product label template",
+  "version": "1.0.0",
+  "dimensions": {
+    "width": 400,
+    "height": 200,
+    "unit": "px"
+  },
+  "layers": [
+    {
+      "id": "article-number",
+      "type": "text",
+      "field": "articleNumber",
+      "position": {
+        "x": 20,
+        "y": 40
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "color": "#000000"
+      }
+    },
+    {
+      "id": "price",
+      "type": "text",
+      "field": "price",
+      "position": {
+        "x": 20,
+        "y": 80
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": "bold",
+        "color": "#000000"
+      }
+    },
+    {
+      "id": "product-name",
+      "type": "text",
+      "field": "productName",
+      "position": {
+        "x": 20,
+        "y": 120
+      },
+      "style": {
+        "fontSize": 16,
+        "color": "#333333"
+      }
+    }
+  ],
+  "fieldStyles": [],
+  "formattingOptions": {},
+  "globalStyles": {},
+  "variables": [],
+  "settings": {},
+  "createdAt": "2025-10-17T23:55:50.388Z",
+  "updatedAt": "2025-10-17T23:55:50.388Z"
+}

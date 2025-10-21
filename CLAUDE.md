@@ -1,0 +1,1 @@
+- whilst implenting steps and features from c:\Users\benfi\Screenshot_Algo\IMPLEMENTATION_PLAN.md, always mark down the step once implemented

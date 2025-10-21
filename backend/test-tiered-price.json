@@ -1,0 +1,9 @@
+{
+  "productName": "Produkt mit Staffelpreisen",
+  "price": null,
+  "tieredPrices": [
+    {"quantity": 10, "price": 5.50},
+    {"quantity": 50, "price": 4.50},
+    {"quantity": 100, "price": 3.90}
+  ]
+}

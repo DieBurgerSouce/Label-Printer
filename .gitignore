@@ -1,0 +1,76 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Screenshots & Output
+screenshots/
+screenshots-backup/
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Metadata & Cache
+metadata.db
+metadata.sqlite
+*.sqlite
+redis-dump.rdb
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Test files
+test-*.html
+test-*.csv
+test-*.png
+test-*.jpg
+nul
+
+# Docker
+docker-compose.override.yml
+
+# Misc
+.cache/

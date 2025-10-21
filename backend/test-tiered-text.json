@@ -1,0 +1,10 @@
+{
+  "productName": "Maurerschnur test",
+  "price": null,
+  "tieredPricesText": "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR\nab 100 Stück: 165,00 EUR",
+  "tieredPrices": [
+    {"quantity": 7, "price": 190.92},
+    {"quantity": 24, "price": 180.60},
+    {"quantity": 100, "price": 165.00}
+  ]
+}

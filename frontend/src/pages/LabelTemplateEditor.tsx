@@ -1,0 +1,1204 @@
+/**
+ * Label Template Editor
+ * Visual editor for creating custom label templates
+ */
+
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Save,
+  Undo,
+  Redo,
+  Eye,
+  Plus,
+  Trash2,
+  Move,
+  Type,
+  Image as ImageIcon,
+  DollarSign,
+  Hash,
+  QrCode,
+  Search
+} from 'lucide-react';
+import { articlesApi, getImageUrl, type Product } from '../services/api';
+import {
+  PRINT_LAYOUTS,
+  calculateLabelSize,
+  mmToPx,
+  pxToMm,
+  getLayoutById,
+  type PrintLayout
+} from '../data/printLayouts';
+
+interface TableConfig {
+  headerBg: string;
+  headerColor: string;
+  headerFontSize: number;
+  headerFontWeight: 'normal' | 'bold';
+  headerAlign: 'left' | 'center' | 'right';
+  rowBg: string;
+  rowAlternateBg: string;
+  rowColor: string;
+  rowFontSize: number;
+  rowAlign: 'left' | 'center' | 'right';
+  borderColor: string;
+  borderWidth: number;
+  cellPadding: number;
+}
+
+interface LabelElement {
+  id: string;
+  type: 'text' | 'image' | 'price' | 'priceTable' | 'articleNumber' | 'qrCode' | 'description';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  content: string;
+  fontSize?: number;
+  fontWeight?: 'normal' | 'bold';
+  color?: string;
+  align?: 'left' | 'center' | 'right';
+  tableConfig?: TableConfig;
+  originalWidth?: number;  // For scaling elements proportionally
+  originalHeight?: number;
+}
+
+interface LabelTemplate {
+  id: string;
+  name: string;
+  width: number;  // in pixels (for canvas display)
+  height: number; // in pixels (for canvas display)
+  widthMm?: number;  // in millimeters (for print)
+  heightMm?: number; // in millimeters (for print)
+  printLayoutId?: string;  // selected print layout
+  elements: LabelElement[];
+}
+
+export default function LabelTemplateEditor() {
+  const navigate = useNavigate();
+
+  const [template, setTemplate] = useState<LabelTemplate>({
+    id: crypto.randomUUID(),
+    name: 'Neues Label Template',
+    width: 400,
+    height: 300,
+    elements: []
+  });
+
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
+
+  // Drag & Drop state
+  const [dragging, setDragging] = useState<string | null>(null);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+
+  // Resize state
+  type ResizeHandle = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w';
+  const [resizing, setResizing] = useState<{ id: string; handle: ResizeHandle } | null>(null);
+  const [resizeStart, setResizeStart] = useState<{ x: number; y: number; width: number; height: number; elementX: number; elementY: number } | null>(null);
+
+  // Preview with real data
+  const [previewArticle, setPreviewArticle] = useState<Product | null>(null);
+  const [articleSearch, setArticleSearch] = useState('');
+  const [searching, setSearching] = useState(false);
+
+  // Print layout
+  const [selectedPrintLayoutId, setSelectedPrintLayoutId] = useState<string>('');
+
+  const addElement = (type: LabelElement['type']) => {
+    const defaultWidth = type === 'priceTable' ? 300 : 200;
+    const defaultHeight = type === 'image' ? 100 : type === 'priceTable' ? 150 : 30;
+
+    const newElement: LabelElement = {
+      id: crypto.randomUUID(),
+      type,
+      x: 50,
+      y: 50 + (template.elements.length * 30),
+      width: defaultWidth,
+      height: defaultHeight,
+      originalWidth: defaultWidth,
+      originalHeight: defaultHeight,
+      content: getDefaultContent(type),
+      fontSize: 14,
+      fontWeight: 'normal',
+      color: '#000000',
+      align: 'left',
+      tableConfig: type === 'priceTable' ? {
+        headerBg: '#e5e7eb',
+        headerColor: '#000000',
+        headerFontSize: 14,
+        headerFontWeight: 'bold',
+        headerAlign: 'left',
+        rowBg: '#ffffff',
+        rowAlternateBg: '#f9fafb',
+        rowColor: '#000000',
+        rowFontSize: 12,
+        rowAlign: 'left',
+        borderColor: '#d1d5db',
+        borderWidth: 1,
+        cellPadding: 8
+      } : undefined
+    };
+
+    setTemplate(prev => ({
+      ...prev,
+      elements: [...prev.elements, newElement]
+    }));
+    setSelectedElement(newElement.id);
+  };
+
+  const getDefaultContent = (type: LabelElement['type']): string => {
+    switch (type) {
+      case 'text': return 'Text eingeben...';
+      case 'price': return '{{price}}';
+      case 'priceTable': return '{{priceTable}}';
+      case 'articleNumber': return '{{articleNumber}}';
+      case 'description': return '{{description}}';
+      case 'qrCode': return '{{qrCode}}';
+      case 'image': return '{{productImage}}';
+      default: return '';
+    }
+  };
+
+  const updateElement = (id: string, updates: Partial<LabelElement>) => {
+    setTemplate(prev => ({
+      ...prev,
+      elements: prev.elements.map(el =>
+        el.id === id ? { ...el, ...updates } : el
+      )
+    }));
+  };
+
+  const deleteElement = (id: string) => {
+    setTemplate(prev => ({
+      ...prev,
+      elements: prev.elements.filter(el => el.id !== id)
+    }));
+    if (selectedElement === id) {
+      setSelectedElement(null);
+    }
+  };
+
+  // Drag & Drop handlers
+  const handleMouseDown = (e: React.MouseEvent, elementId: string) => {
+    if (previewMode) return;
+    e.stopPropagation();
+    setDragging(elementId);
+    setDragStart({ x: e.clientX, y: e.clientY });
+    setSelectedElement(elementId);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    // Handle resizing
+    if (resizing) {
+      handleResizeMouseMove(e);
+      return;
+    }
+
+    // Handle dragging
+    if (!dragging || !dragStart) return;
+
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+
+    const element = template.elements.find(el => el.id === dragging);
+    if (!element) return;
+
+    updateElement(dragging, {
+      x: Math.max(0, Math.min(template.width - element.width, element.x + dx)),
+      y: Math.max(0, Math.min(template.height - element.height, element.y + dy))
+    });
+
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseUp = () => {
+    setDragging(null);
+    setDragStart(null);
+    setResizing(null);
+    setResizeStart(null);
+  };
+
+  // Resize handlers
+  const handleResizeMouseDown = (e: React.MouseEvent, elementId: string, handle: ResizeHandle) => {
+    if (previewMode) return;
+    e.stopPropagation();
+
+    const element = template.elements.find(el => el.id === elementId);
+    if (!element) return;
+
+    setResizing({ id: elementId, handle });
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: element.width,
+      height: element.height,
+      elementX: element.x,
+      elementY: element.y
+    });
+    setSelectedElement(elementId);
+  };
+
+  const handleResizeMouseMove = (e: React.MouseEvent) => {
+    if (!resizing || !resizeStart) return;
+
+    const dx = e.clientX - resizeStart.x;
+    const dy = e.clientY - resizeStart.y;
+
+    const element = template.elements.find(el => el.id === resizing.id);
+    if (!element) return;
+
+    let newWidth = resizeStart.width;
+    let newHeight = resizeStart.height;
+    let newX = resizeStart.elementX;
+    let newY = resizeStart.elementY;
+
+    // Handle different resize directions
+    const handle = resizing.handle;
+
+    // Horizontal resizing
+    if (handle.includes('e')) {
+      newWidth = Math.max(20, resizeStart.width + dx);
+    } else if (handle.includes('w')) {
+      const widthChange = -dx;
+      newWidth = Math.max(20, resizeStart.width + widthChange);
+      newX = resizeStart.elementX - widthChange;
+    }
+
+    // Vertical resizing
+    if (handle.includes('s')) {
+      newHeight = Math.max(20, resizeStart.height + dy);
+    } else if (handle.includes('n')) {
+      const heightChange = -dy;
+      newHeight = Math.max(20, resizeStart.height + heightChange);
+      newY = resizeStart.elementY - heightChange;
+    }
+
+    // Constrain to canvas bounds
+    newX = Math.max(0, Math.min(template.width - newWidth, newX));
+    newY = Math.max(0, Math.min(template.height - newHeight, newY));
+    newWidth = Math.min(template.width - newX, newWidth);
+    newHeight = Math.min(template.height - newY, newHeight);
+
+    updateElement(resizing.id, {
+      x: newX,
+      y: newY,
+      width: newWidth,
+      height: newHeight
+    });
+  };
+
+  // Apply print layout
+  const applyPrintLayout = (layoutId: string) => {
+    if (!layoutId) {
+      // "Custom" selected - clear layout
+      setSelectedPrintLayoutId('');
+      setTemplate(prev => ({
+        ...prev,
+        printLayoutId: undefined,
+        widthMm: undefined,
+        heightMm: undefined
+      }));
+      return;
+    }
+
+    const layout = getLayoutById(layoutId);
+    if (!layout) return;
+
+    const { widthMm, heightMm } = calculateLabelSize(layout);
+    const widthPx = mmToPx(widthMm);
+    const heightPx = mmToPx(heightMm);
+
+    setSelectedPrintLayoutId(layoutId);
+    setTemplate(prev => ({
+      ...prev,
+      width: widthPx,
+      height: heightPx,
+      widthMm,
+      heightMm,
+      printLayoutId: layoutId
+    }));
+  };
+
+  const saveTemplate = async () => {
+    // TODO: Save template to backend
+    console.log('Saving template:', template);
+    alert('Template gespeichert! (noch nicht implementiert)');
+    navigate('/labels');
+  };
+
+  // Search for article by article number
+  const searchArticle = async () => {
+    if (!articleSearch.trim()) return;
+
+    setSearching(true);
+    try {
+      const response = await articlesApi.getAll({ search: articleSearch, limit: 1 });
+      if (response.data && response.data.length > 0) {
+        setPreviewArticle(response.data[0]);
+      } else {
+        alert('Artikel nicht gefunden!');
+        setPreviewArticle(null);
+      }
+    } catch (error) {
+      console.error('Error searching article:', error);
+      alert('Fehler beim Suchen des Artikels');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  // Parse tiered prices text into table data
+  const parseTieredPrices = (tieredPricesText: string): { quantity: string; price: string }[] => {
+    const lines = tieredPricesText.split('\n').filter(line => line.trim());
+    const rows: { quantity: string; price: string }[] = [];
+
+    lines.forEach(line => {
+      // Match patterns like "ab 7 Stück: 190,92 EUR"
+      const match = line.match(/^(ab|bis)\s+(\d+)\s+(?:Stück)?.*?([0-9,]+)\s*(?:€|EUR)/i);
+      if (match) {
+        const prefix = match[1].toLowerCase() === 'ab' ? 'Ab' : 'Bis';
+        const quantity = `${prefix} ${match[2]}`;
+        const price = `${match[3]} €`;
+        rows.push({ quantity, price });
+      }
+    });
+
+    return rows;
+  };
+
+  // Replace placeholder with real data
+  const getDisplayContent = (element: LabelElement): string => {
+    if (!previewArticle) return element.content;
+
+    switch (element.type) {
+      case 'articleNumber':
+        return previewArticle.articleNumber || element.content;
+      case 'price':
+        // Only show single price (not tiered prices)
+        if (previewArticle.price) {
+          return `${previewArticle.price.toFixed(2)} ${previewArticle.currency || 'EUR'}`;
+        }
+        return element.content;
+      case 'description':
+        return previewArticle.description || element.content;
+      case 'text':
+        return element.content;
+      default:
+        return element.content;
+    }
+  };
+
+  const selectedElementData = template.elements.find(el => el.id === selectedElement);
+
+  return (
+    <div className="h-screen flex flex-col bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <input
+            type="text"
+            value={template.name}
+            onChange={e => setTemplate(prev => ({ ...prev, name: e.target.value }))}
+            className="text-xl font-bold border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPreviewMode(!previewMode)}
+            className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+              previewMode
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            {previewMode ? 'Bearbeiten' : 'Vorschau'}
+          </button>
+
+          <button
+            onClick={saveTemplate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Save className="w-4 h-4" />
+            Speichern
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar - Element Toolbox */}
+        {!previewMode && (
+          <div className="w-64 bg-white border-r p-4 overflow-y-auto">
+            <h3 className="font-semibold text-gray-900 mb-3">Elemente hinzufügen</h3>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => addElement('text')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <Type className="w-4 h-4" />
+                Text
+              </button>
+
+              <button
+                onClick={() => addElement('articleNumber')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <Hash className="w-4 h-4" />
+                Artikelnummer
+              </button>
+
+              <button
+                onClick={() => addElement('price')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <DollarSign className="w-4 h-4" />
+                Preis
+              </button>
+
+              <button
+                onClick={() => addElement('priceTable')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <DollarSign className="w-4 h-4" />
+                Staffelpreise-Tabelle
+              </button>
+
+              <button
+                onClick={() => addElement('description')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <Type className="w-4 h-4" />
+                Beschreibung
+              </button>
+
+              <button
+                onClick={() => addElement('image')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <ImageIcon className="w-4 h-4" />
+                Produktbild
+              </button>
+
+              <button
+                onClick={() => addElement('qrCode')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <QrCode className="w-4 h-4" />
+                QR-Code
+              </button>
+            </div>
+
+            {/* Preview with Real Data */}
+            <div className="mt-6 pt-6 border-t">
+              <h3 className="font-semibold text-gray-900 mb-3">Live-Vorschau</h3>
+              <p className="text-xs text-gray-500 mb-3">
+                Teste dein Label mit echten Produktdaten
+              </p>
+
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Artikelnummer</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={articleSearch}
+                    onChange={e => setArticleSearch(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && searchArticle()}
+                    placeholder="z.B. 3806"
+                    className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                    disabled={searching}
+                  />
+                  <button
+                    onClick={searchArticle}
+                    disabled={searching || !articleSearch.trim()}
+                    className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {previewArticle && (
+                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-xs">
+                    <p className="font-semibold text-green-900">
+                      ✓ {previewArticle.productName}
+                    </p>
+                    <p className="text-green-700">
+                      Artikel: {previewArticle.articleNumber}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Template Settings */}
+            <div className="mt-6 pt-6 border-t">
+              <h3 className="font-semibold text-gray-900 mb-3">Label-Größe</h3>
+
+              <div className="space-y-3">
+                {/* Print Layout Selector */}
+                <div>
+                  <label className="text-sm text-gray-600">Drucklayout</label>
+                  <select
+                    value={selectedPrintLayoutId}
+                    onChange={e => applyPrintLayout(e.target.value)}
+                    className="w-full px-3 py-2 border rounded text-sm"
+                  >
+                    <option value="">Benutzerdefiniert</option>
+                    <optgroup label="Standard-Etiketten">
+                      {PRINT_LAYOUTS.filter(l => l.category === 'standard').map(layout => (
+                        <option key={layout.id} value={layout.id}>
+                          {layout.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="A4 Raster">
+                      {PRINT_LAYOUTS.filter(l => l.category === 'grid-a4').map(layout => (
+                        <option key={layout.id} value={layout.id}>
+                          {layout.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="A3 Raster">
+                      {PRINT_LAYOUTS.filter(l => l.category === 'grid-a3').map(layout => (
+                        <option key={layout.id} value={layout.id}>
+                          {layout.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
+                  {selectedPrintLayoutId && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {template.widthMm && template.heightMm ? (
+                        <>
+                          📐 {template.widthMm.toFixed(1)} × {template.heightMm.toFixed(1)} mm
+                          {' '}({template.width} × {template.height} px)
+                        </>
+                      ) : null}
+                    </p>
+                  )}
+                </div>
+
+                {/* Manual Size Inputs */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-sm text-gray-600">
+                      Breite {template.widthMm ? `(${template.widthMm.toFixed(1)}mm)` : '(px)'}
+                    </label>
+                    <input
+                      type="number"
+                      value={template.width}
+                      onChange={e => {
+                        const newWidth = parseInt(e.target.value);
+                        setTemplate(prev => ({
+                          ...prev,
+                          width: newWidth,
+                          widthMm: selectedPrintLayoutId ? pxToMm(newWidth) : undefined
+                        }));
+                      }}
+                      className="w-full px-3 py-1 border rounded text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600">
+                      Höhe {template.heightMm ? `(${template.heightMm.toFixed(1)}mm)` : '(px)'}
+                    </label>
+                    <input
+                      type="number"
+                      value={template.height}
+                      onChange={e => {
+                        const newHeight = parseInt(e.target.value);
+                        setTemplate(prev => ({
+                          ...prev,
+                          height: newHeight,
+                          heightMm: selectedPrintLayoutId ? pxToMm(newHeight) : undefined
+                        }));
+                      }}
+                      className="w-full px-3 py-1 border rounded text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Canvas Area */}
+        <div className="flex-1 p-8 bg-gray-100 flex items-center justify-center overflow-auto">
+          {/* Label Canvas */}
+          <div
+            className="bg-white shadow-2xl relative select-none"
+            style={{
+              width: template.width,
+              height: template.height,
+              border: '1px solid #e5e7eb'
+            }}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+              {template.elements.map(element => (
+                <div
+                  key={element.id}
+                  onMouseDown={(e) => handleMouseDown(e, element.id)}
+                  className={`absolute ${
+                    previewMode ? 'cursor-default' : 'cursor-move'
+                  } ${
+                    selectedElement === element.id && !previewMode
+                      ? 'ring-2 ring-blue-500'
+                      : ''
+                  } ${
+                    dragging === element.id ? 'opacity-80' : ''
+                  }`}
+                  style={{
+                    left: element.x,
+                    top: element.y,
+                    width: element.width,
+                    height: element.height,
+                    fontSize: element.fontSize,
+                    fontWeight: element.fontWeight,
+                    color: element.color,
+                    textAlign: element.align,
+                    padding: '4px'
+                  }}
+                >
+                  {element.type === 'image' ? (
+                    previewArticle && previewArticle.imageUrl ? (
+                      <img
+                        src={getImageUrl(previewArticle.imageUrl)}
+                        alt={previewArticle.productName}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-400 text-xs">
+                        <ImageIcon className="w-6 h-6" />
+                      </div>
+                    )
+                  ) : element.type === 'qrCode' ? (
+                    previewArticle && previewArticle.sourceUrl ? (
+                      <div className="w-full h-full bg-white flex items-center justify-center p-1">
+                        <img
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(previewArticle.sourceUrl)}`}
+                          alt="QR Code"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-400 text-xs">
+                        <QrCode className="w-8 h-8" />
+                      </div>
+                    )
+                  ) : element.type === 'priceTable' ? (
+                    previewArticle && previewArticle.tieredPricesText ? (
+                      <div
+                        className="w-full h-full"
+                        style={{
+                          transformOrigin: 'top left',
+                          transform: `scale(${element.width / (element.originalWidth || element.width)}, ${element.height / (element.originalHeight || element.height)})`
+                        }}
+                      >
+                        <table
+                          style={{
+                            width: element.originalWidth || element.width,
+                            height: element.originalHeight || element.height,
+                            borderCollapse: 'collapse',
+                            borderColor: element.tableConfig?.borderColor,
+                            borderWidth: element.tableConfig?.borderWidth
+                          }}
+                        >
+                          <thead>
+                            <tr>
+                              <th
+                                style={{
+                                  backgroundColor: element.tableConfig?.headerBg,
+                                  color: element.tableConfig?.headerColor,
+                                  fontSize: element.tableConfig?.headerFontSize,
+                                  fontWeight: element.tableConfig?.headerFontWeight,
+                                  padding: element.tableConfig?.cellPadding,
+                                  border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
+                                  textAlign: element.tableConfig?.headerAlign
+                                }}
+                              >
+                                Anzahl
+                              </th>
+                              <th
+                                style={{
+                                  backgroundColor: element.tableConfig?.headerBg,
+                                  color: element.tableConfig?.headerColor,
+                                  fontSize: element.tableConfig?.headerFontSize,
+                                  fontWeight: element.tableConfig?.headerFontWeight,
+                                  padding: element.tableConfig?.cellPadding,
+                                  border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
+                                  textAlign: element.tableConfig?.headerAlign
+                                }}
+                              >
+                                Stückpreis
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {parseTieredPrices(previewArticle.tieredPricesText).map((row, idx) => (
+                              <tr key={idx}>
+                                <td
+                                  style={{
+                                    backgroundColor: idx % 2 === 0 ? element.tableConfig?.rowBg : element.tableConfig?.rowAlternateBg,
+                                    color: element.tableConfig?.rowColor,
+                                    fontSize: element.tableConfig?.rowFontSize,
+                                    padding: element.tableConfig?.cellPadding,
+                                    border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
+                                    textAlign: element.tableConfig?.rowAlign
+                                  }}
+                                >
+                                  {row.quantity}
+                                </td>
+                                <td
+                                  style={{
+                                    backgroundColor: idx % 2 === 0 ? element.tableConfig?.rowBg : element.tableConfig?.rowAlternateBg,
+                                    color: element.tableConfig?.rowColor,
+                                    fontSize: element.tableConfig?.rowFontSize,
+                                    padding: element.tableConfig?.cellPadding,
+                                    border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
+                                    textAlign: element.tableConfig?.rowAlign
+                                  }}
+                                >
+                                  {row.price}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-400 text-xs">
+                        <div className="text-center">
+                          <DollarSign className="w-6 h-6 mx-auto mb-1" />
+                          <div className="text-xs">Staffelpreise-Tabelle</div>
+                        </div>
+                      </div>
+                    )
+                  ) : (
+                    <div
+                      className="w-full h-full overflow-hidden"
+                      style={{
+                        transformOrigin: 'top left',
+                        transform: element.originalWidth && element.originalHeight
+                          ? `scale(${element.width / element.originalWidth}, ${element.height / element.originalHeight})`
+                          : 'none',
+                        width: element.originalWidth || element.width,
+                        height: element.originalHeight || element.height
+                      }}
+                    >
+                      {getDisplayContent(element)}
+                    </div>
+                  )}
+
+                  {/* Resize Handles */}
+                  {selectedElement === element.id && !previewMode && (
+                    <>
+                      {/* Corner handles */}
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ top: -8, left: -8, cursor: 'nwse-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'nw');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ top: -8, left: '50%', transform: 'translateX(-50%)', cursor: 'ns-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'n');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ top: -8, right: -8, cursor: 'nesw-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'ne');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ top: '50%', right: -8, transform: 'translateY(-50%)', cursor: 'ew-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'e');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ bottom: -8, right: -8, cursor: 'nwse-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'se');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ bottom: -8, left: '50%', transform: 'translateX(-50%)', cursor: 'ns-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 's');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ bottom: -8, left: -8, cursor: 'nesw-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'sw');
+                        }}
+                      />
+                      <div
+                        className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
+                        style={{ top: '50%', left: -8, transform: 'translateY(-50%)', cursor: 'ew-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleResizeMouseDown(e, element.id, 'w');
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+              ))}
+
+              {template.elements.length === 0 && (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                  <div className="text-center">
+                    <Plus className="w-12 h-12 mx-auto mb-2" />
+                    <p>Füge Elemente aus der linken Sidebar hinzu</p>
+                  </div>
+                </div>
+              )}
+          </div>
+        </div>
+
+        {/* Properties Panel */}
+        {!previewMode && selectedElementData && (
+          <div className="w-80 bg-white border-l p-4 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900">Eigenschaften</h3>
+              <button
+                onClick={() => deleteElement(selectedElementData.id)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Content */}
+              {selectedElementData.type === 'text' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Text
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedElementData.content}
+                    onChange={e => updateElement(selectedElementData.id, { content: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              )}
+
+              {/* Position */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">X</label>
+                  <input
+                    type="number"
+                    value={selectedElementData.x}
+                    onChange={e => updateElement(selectedElementData.id, { x: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Y</label>
+                  <input
+                    type="number"
+                    value={selectedElementData.y}
+                    onChange={e => updateElement(selectedElementData.id, { y: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Size */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Breite</label>
+                  <input
+                    type="number"
+                    value={selectedElementData.width}
+                    onChange={e => updateElement(selectedElementData.id, { width: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Höhe</label>
+                  <input
+                    type="number"
+                    value={selectedElementData.height}
+                    onChange={e => updateElement(selectedElementData.id, { height: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Font Settings (for text elements) */}
+              {selectedElementData.type !== 'image' && selectedElementData.type !== 'qrCode' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Schriftgröße
+                    </label>
+                    <input
+                      type="number"
+                      value={selectedElementData.fontSize}
+                      onChange={e => updateElement(selectedElementData.id, { fontSize: parseInt(e.target.value) })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Schriftstärke
+                    </label>
+                    <select
+                      value={selectedElementData.fontWeight}
+                      onChange={e => updateElement(selectedElementData.id, { fontWeight: e.target.value as 'normal' | 'bold' })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    >
+                      <option value="normal">Normal</option>
+                      <option value="bold">Fett</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Farbe
+                    </label>
+                    <input
+                      type="color"
+                      value={selectedElementData.color}
+                      onChange={e => updateElement(selectedElementData.id, { color: e.target.value })}
+                      className="w-full h-10 border rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Ausrichtung
+                    </label>
+                    <select
+                      value={selectedElementData.align}
+                      onChange={e => updateElement(selectedElementData.id, { align: e.target.value as 'left' | 'center' | 'right' })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    >
+                      <option value="left">Links</option>
+                      <option value="center">Zentriert</option>
+                      <option value="right">Rechts</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* Table Configuration (for priceTable) */}
+              {selectedElementData.type === 'priceTable' && selectedElementData.tableConfig && (
+                <>
+                  <div className="pt-4 border-t">
+                    <h4 className="font-semibold text-gray-900 mb-3">Tabellen-Design</h4>
+
+                    {/* Header Styling */}
+                    <div className="mb-4">
+                      <p className="text-sm font-medium text-gray-700 mb-2">Header-Zeile</p>
+                      <div className="space-y-2">
+                        <div>
+                          <label className="text-xs text-gray-600">Hintergrundfarbe</label>
+                          <input
+                            type="color"
+                            value={selectedElementData.tableConfig.headerBg}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, headerBg: e.target.value }
+                            })}
+                            className="w-full h-8 border rounded"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Textfarbe</label>
+                          <input
+                            type="color"
+                            value={selectedElementData.tableConfig.headerColor}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, headerColor: e.target.value }
+                            })}
+                            className="w-full h-8 border rounded"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-xs text-gray-600">Schriftgröße</label>
+                            <input
+                              type="number"
+                              value={selectedElementData.tableConfig.headerFontSize}
+                              onChange={e => updateElement(selectedElementData.id, {
+                                tableConfig: { ...selectedElementData.tableConfig!, headerFontSize: parseInt(e.target.value) }
+                              })}
+                              className="w-full px-2 py-1 border rounded text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-gray-600">Schriftstärke</label>
+                            <select
+                              value={selectedElementData.tableConfig.headerFontWeight}
+                              onChange={e => updateElement(selectedElementData.id, {
+                                tableConfig: { ...selectedElementData.tableConfig!, headerFontWeight: e.target.value as 'normal' | 'bold' }
+                              })}
+                              className="w-full px-2 py-1 border rounded text-sm"
+                            >
+                              <option value="normal">Normal</option>
+                              <option value="bold">Fett</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Textausrichtung</label>
+                          <select
+                            value={selectedElementData.tableConfig.headerAlign}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, headerAlign: e.target.value as 'left' | 'center' | 'right' }
+                            })}
+                            className="w-full px-2 py-1 border rounded text-sm"
+                          >
+                            <option value="left">Links</option>
+                            <option value="center">Zentriert</option>
+                            <option value="right">Rechts</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Row Styling */}
+                    <div className="mb-4">
+                      <p className="text-sm font-medium text-gray-700 mb-2">Daten-Zeilen</p>
+                      <div className="space-y-2">
+                        <div>
+                          <label className="text-xs text-gray-600">Hintergrund (gerade)</label>
+                          <input
+                            type="color"
+                            value={selectedElementData.tableConfig.rowBg}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, rowBg: e.target.value }
+                            })}
+                            className="w-full h-8 border rounded"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Hintergrund (ungerade)</label>
+                          <input
+                            type="color"
+                            value={selectedElementData.tableConfig.rowAlternateBg}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, rowAlternateBg: e.target.value }
+                            })}
+                            className="w-full h-8 border rounded"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Textfarbe</label>
+                          <input
+                            type="color"
+                            value={selectedElementData.tableConfig.rowColor}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, rowColor: e.target.value }
+                            })}
+                            className="w-full h-8 border rounded"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Schriftgröße</label>
+                          <input
+                            type="number"
+                            value={selectedElementData.tableConfig.rowFontSize}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, rowFontSize: parseInt(e.target.value) }
+                            })}
+                            className="w-full px-2 py-1 border rounded text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Textausrichtung</label>
+                          <select
+                            value={selectedElementData.tableConfig.rowAlign}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, rowAlign: e.target.value as 'left' | 'center' | 'right' }
+                            })}
+                            className="w-full px-2 py-1 border rounded text-sm"
+                          >
+                            <option value="left">Links</option>
+                            <option value="center">Zentriert</option>
+                            <option value="right">Rechts</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Border & Spacing */}
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 mb-2">Rahmen & Abstand</p>
+                      <div className="space-y-2">
+                        <div>
+                          <label className="text-xs text-gray-600">Rahmenfarbe</label>
+                          <input
+                            type="color"
+                            value={selectedElementData.tableConfig.borderColor}
+                            onChange={e => updateElement(selectedElementData.id, {
+                              tableConfig: { ...selectedElementData.tableConfig!, borderColor: e.target.value }
+                            })}
+                            className="w-full h-8 border rounded"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-xs text-gray-600">Rahmenbreite</label>
+                            <input
+                              type="number"
+                              value={selectedElementData.tableConfig.borderWidth}
+                              onChange={e => updateElement(selectedElementData.id, {
+                                tableConfig: { ...selectedElementData.tableConfig!, borderWidth: parseInt(e.target.value) }
+                              })}
+                              className="w-full px-2 py-1 border rounded text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-gray-600">Zellen-Padding</label>
+                            <input
+                              type="number"
+                              value={selectedElementData.tableConfig.cellPadding}
+                              onChange={e => updateElement(selectedElementData.id, {
+                                tableConfig: { ...selectedElementData.tableConfig!, cellPadding: parseInt(e.target.value) }
+                              })}
+                              className="w-full px-2 py-1 border rounded text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
