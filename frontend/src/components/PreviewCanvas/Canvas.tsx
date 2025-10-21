@@ -34,7 +34,7 @@ export const Canvas = ({
   const stageRef = useRef<any>(null);
   const { layout } = usePrintStore();
   const { labels, selectedLabels: selectedLabelIds } = useLabelStore();
-  const { zoom } = useUiStore();
+  const { zoom, setZoom } = useUiStore();
 
   // Get actual label objects from IDs
   const selectedLabels = labels.filter(label => selectedLabelIds.includes(label.id));
@@ -205,6 +205,22 @@ export const Canvas = ({
       });
   };
 
+  // Handle mouse wheel zoom
+  const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
+    e.evt.preventDefault();
+
+    const scaleBy = 1.1;
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const oldScale = zoom;
+    const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+    // Clamp zoom between 0.25 and 5
+    const clampedScale = Math.max(0.25, Math.min(5, newScale));
+    setZoom(clampedScale);
+  };
+
   // Render labels
   const renderLabels = () => {
     return labelPositions.map((pos) => {
@@ -315,6 +331,7 @@ export const Canvas = ({
         height={height}
         scaleX={zoom}
         scaleY={zoom}
+        onWheel={handleWheel}
       >
         {/* Grid layer */}
         <Layer>

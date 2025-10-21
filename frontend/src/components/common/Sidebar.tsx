@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Tags,
+  Package,
   FileSpreadsheet,
   Printer,
   Layout as LayoutIcon,
@@ -14,7 +15,8 @@ import { useUiStore } from '../../store/uiStore';
 const navigation = [
   { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
   { name: 'Labels', to: '/labels', icon: Tags },
-  { name: 'Excel Import', to: '/excel', icon: FileSpreadsheet },
+  { name: 'Articles', to: '/articles', icon: Package },
+  { name: 'Excel Import (Dynamisch)', to: '/excel-import', icon: FileSpreadsheet },
   { name: 'Print Setup', to: '/print', icon: Printer },
   { name: 'Live Preview', to: '/preview', icon: Eye },
   { name: 'Templates', to: '/templates', icon: LayoutIcon },

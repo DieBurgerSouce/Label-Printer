@@ -4,7 +4,9 @@ import Layout from './components/common/Layout';
 import Dashboard from './pages/Dashboard';
 import LabelLibrary from './pages/LabelLibrary';
 import ExcelImport from './pages/ExcelImport';
+import ExcelImportNew from './pages/ExcelImportNew';
 import PrintSetup from './pages/PrintSetup';
+import PrintPreview from './pages/PrintPreview';
 import Templates from './pages/Templates';
 import Settings from './pages/Settings';
 import { LivePreview } from './pages/LivePreview';
@@ -37,7 +39,9 @@ function App() {
             <Route path="labels" element={<LabelLibrary />} />
             <Route path="labeltemplate" element={<LabelTemplateEditor />} />
             <Route path="excel" element={<ExcelImport />} />
-            <Route path="print" element={<PrintSetup />} />
+            <Route path="excel-import" element={<ExcelImportNew />} />
+            <Route path="print-setup" element={<PrintSetup />} />
+            <Route path="print" element={<PrintPreview />} />
             <Route path="preview" element={<LivePreview />} />
             <Route path="templates" element={<Templates />} />
             <Route path="settings" element={<Settings />} />

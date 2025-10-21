@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
+import type { PrintLayout } from '../store/printStore';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -206,6 +207,31 @@ export const printApi = {
   export: (data: any) =>
     apiClient.post<Blob>('/api/print/export', data, { responseType: 'blob' }),
 
+  /**
+   * Export labels as PDF
+   * @param layout - Print layout configuration
+   * @param labelIds - Array of label IDs to export
+   * @returns PDF Blob
+   */
+  exportPDF: async (layout: PrintLayout, labelIds: string[]): Promise<Blob> => {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/print/export`,
+      {
+        layout,
+        labelIds,
+        format: 'pdf'
+      },
+      {
+        responseType: 'blob',
+        headers: {
+          'Accept': 'application/pdf',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  },
+
   getFormats: () =>
     apiClient.get<ApiResponse<any[]>>('/api/print/formats'),
 
@@ -292,4 +318,61 @@ export const articlesApi = {
     format === 'json'
       ? apiClient.post<ApiResponse<Product[]>>('/api/articles/export', { ids, format })
       : apiClient.post<Blob>('/api/articles/export', { ids, format }, { responseType: 'blob' }),
+
+  // Excel Import
+  excelPreview: (file: File) =>
+    apiClient.upload<ApiResponse<ExcelPreviewData>>('/api/articles/excel-preview', file),
+
+  excelImport: (file: File, config: ExcelImportConfig) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('config', JSON.stringify(config));
+
+    return axios.post<ApiResponse<ExcelImportResult>>('/api/articles/excel-import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+    }).then(res => res.data);
+  },
+
+  getValidExcelFields: () =>
+    apiClient.get<ApiResponse<Array<{ field: string; description: string; type: string }>>>('/api/articles/excel-valid-fields'),
 };
+
+// Excel Import Types
+export interface ExcelPreviewData {
+  headers: string[];
+  rows: any[][];
+  totalRows: number;
+  columnIndices: string[];
+}
+
+export interface MatchColumnConfig {
+  type: 'index' | 'header' | 'auto';
+  value: string;
+}
+
+export interface FieldMapping {
+  excelColumn: string;
+  dbField: string;
+  type?: 'index' | 'header';
+}
+
+export interface ExcelImportConfig {
+  matchColumn: MatchColumnConfig;
+  fieldMappings: FieldMapping[];
+  startRow?: number;
+}
+
+export interface ExcelImportResult {
+  totalRows: number;
+  matchedArticles: number;
+  updatedArticles: number;
+  skippedArticles: number;
+  errors: Array<{
+    row: number;
+    articleNumber: string;
+    message: string;
+  }>;
+}

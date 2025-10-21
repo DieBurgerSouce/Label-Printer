@@ -117,7 +117,7 @@ export default function JobMonitor() {
               <div>
                 <p className="font-medium text-green-900">Job Completed Successfully!</p>
                 <p className="text-sm text-green-700">
-                  {progress?.productsProcessed || results?.summary?.totalProducts || 0} products processed, {progress?.labelsGenerated || results?.summary?.labelsGenerated || 0} labels generated
+                  {results?.summary?.totalProducts || 0} products processed, {results?.summary?.labelsGenerated || 0} labels generated
                 </p>
               </div>
             </div>

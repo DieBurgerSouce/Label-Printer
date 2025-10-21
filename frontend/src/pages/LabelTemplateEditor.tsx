@@ -3,22 +3,24 @@
  * Visual editor for creating custom label templates
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Save,
-  Undo,
-  Redo,
   Eye,
   Plus,
   Trash2,
-  Move,
   Type,
   Image as ImageIcon,
   DollarSign,
   Hash,
   QrCode,
-  Search
+  Search,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  Printer,
+  Upload
 } from 'lucide-react';
 import { articlesApi, getImageUrl, type Product } from '../services/api';
 import {
@@ -26,9 +28,10 @@ import {
   calculateLabelSize,
   mmToPx,
   pxToMm,
-  getLayoutById,
-  type PrintLayout
+  getLayoutById
 } from '../data/printLayouts';
+import TemplateRuleBuilder from '../components/TemplateRuleBuilder/TemplateRuleBuilder';
+import type { TemplateRule } from '../types/template.types';
 
 interface TableConfig {
   headerBg: string;
@@ -63,6 +66,23 @@ interface LabelElement {
   originalHeight?: number;
 }
 
+interface TemplateSettings {
+  backgroundColor: string;
+  backgroundImage?: string; // base64 or URL
+  backgroundImageOpacity: number;
+  defaultFontFamily: string;
+  defaultFontColor: string;
+  defaultFontSize: number;
+  borderEnabled: boolean;
+  borderColor: string;
+  borderWidth: number;
+  borderRadius: number;
+  shadowEnabled: boolean;
+  shadowColor: string;
+  shadowBlur: number;
+  padding: number;
+}
+
 interface LabelTemplate {
   id: string;
   name: string;
@@ -70,8 +90,16 @@ interface LabelTemplate {
   height: number; // in pixels (for canvas display)
   widthMm?: number;  // in millimeters (for print)
   heightMm?: number; // in millimeters (for print)
-  printLayoutId?: string;  // selected print layout
+  printLayoutId?: string;  // selected print layout ID
+  printLayoutName?: string;  // display name of print layout (e.g. "A3 Grid - 2×4")
+  printLayoutColumns?: number;  // number of columns in print layout
+  printLayoutRows?: number;  // number of rows in print layout
   elements: LabelElement[];
+  settings: TemplateSettings;
+
+  // Template Rules for Auto-Matching
+  rules?: TemplateRule;
+  autoMatchEnabled: boolean;
 }
 
 export default function LabelTemplateEditor() {
@@ -82,7 +110,24 @@ export default function LabelTemplateEditor() {
     name: 'Neues Label Template',
     width: 400,
     height: 300,
-    elements: []
+    elements: [],
+    settings: {
+      backgroundColor: '#ffffff',
+      backgroundImageOpacity: 0.5,
+      defaultFontFamily: 'Arial',
+      defaultFontColor: '#000000',
+      defaultFontSize: 14,
+      borderEnabled: true,
+      borderColor: '#d1d5db',
+      borderWidth: 1,
+      borderRadius: 0,
+      shadowEnabled: false,
+      shadowColor: '#000000',
+      shadowBlur: 5,
+      padding: 0
+    },
+    autoMatchEnabled: false,
+    rules: undefined
   });
 
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
@@ -104,6 +149,14 @@ export default function LabelTemplateEditor() {
 
   // Print layout
   const [selectedPrintLayoutId, setSelectedPrintLayoutId] = useState<string>('');
+
+  // Zoom state
+  const [zoom, setZoom] = useState<number>(1.5);
+  const zoomLevels = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5];
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+
+  // File upload ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const addElement = (type: LabelElement['type']) => {
     const defaultWidth = type === 'priceTable' ? 300 : 200;
@@ -198,8 +251,8 @@ export default function LabelTemplateEditor() {
     // Handle dragging
     if (!dragging || !dragStart) return;
 
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
+    const dx = (e.clientX - dragStart.x) / zoom;
+    const dy = (e.clientY - dragStart.y) / zoom;
 
     const element = template.elements.find(el => el.id === dragging);
     if (!element) return;
@@ -242,8 +295,8 @@ export default function LabelTemplateEditor() {
   const handleResizeMouseMove = (e: React.MouseEvent) => {
     if (!resizing || !resizeStart) return;
 
-    const dx = e.clientX - resizeStart.x;
-    const dy = e.clientY - resizeStart.y;
+    const dx = (e.clientX - resizeStart.x) / zoom;
+    const dy = (e.clientY - resizeStart.y) / zoom;
 
     const element = template.elements.find(el => el.id === resizing.id);
     if (!element) return;
@@ -296,6 +349,9 @@ export default function LabelTemplateEditor() {
       setTemplate(prev => ({
         ...prev,
         printLayoutId: undefined,
+        printLayoutName: undefined,
+        printLayoutColumns: undefined,
+        printLayoutRows: undefined,
         widthMm: undefined,
         heightMm: undefined
       }));
@@ -316,15 +372,73 @@ export default function LabelTemplateEditor() {
       height: heightPx,
       widthMm,
       heightMm,
-      printLayoutId: layoutId
+      printLayoutId: layoutId,
+      printLayoutName: layout.name,
+      printLayoutColumns: layout.columns,
+      printLayoutRows: layout.rows
     }));
   };
 
   const saveTemplate = async () => {
     // TODO: Save template to backend
     console.log('Saving template:', template);
-    alert('Template gespeichert! (noch nicht implementiert)');
+
+    // Save to localStorage for now
+    const savedTemplates = JSON.parse(localStorage.getItem('labelTemplates') || '[]');
+    const existingIndex = savedTemplates.findIndex((t: LabelTemplate) => t.id === template.id);
+
+    if (existingIndex >= 0) {
+      savedTemplates[existingIndex] = template;
+    } else {
+      savedTemplates.push(template);
+    }
+
+    localStorage.setItem('labelTemplates', JSON.stringify(savedTemplates));
+
+    alert('Template gespeichert!');
     navigate('/labels');
+  };
+
+  const handlePrintTemplate = () => {
+    if (!template.printLayoutId) {
+      alert('Bitte wählen Sie zuerst ein Drucklayout aus!');
+      return;
+    }
+
+    // Navigate to print preview with template
+    navigate(`/print?templateId=${template.id}`);
+  };
+
+  // Handle background image upload
+  const handleBackgroundImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      setTemplate(prev => ({
+        ...prev,
+        settings: {
+          ...prev.settings,
+          backgroundImage: base64
+        }
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const updateTemplateSetting = <K extends keyof TemplateSettings>(
+    key: K,
+    value: TemplateSettings[K]
+  ) => {
+    setTemplate(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        [key]: value
+      }
+    }));
   };
 
   // Search for article by article number
@@ -389,6 +503,47 @@ export default function LabelTemplateEditor() {
     }
   };
 
+  // Zoom handlers
+  const handleZoomIn = () => {
+    const currentIndex = zoomLevels.findIndex(z => z === zoom);
+    const nextIndex = Math.min(currentIndex + 1, zoomLevels.length - 1);
+    setZoom(zoomLevels[nextIndex]);
+  };
+
+  const handleZoomOut = () => {
+    const currentIndex = zoomLevels.findIndex(z => z === zoom);
+    const prevIndex = Math.max(currentIndex - 1, 0);
+    setZoom(zoomLevels[prevIndex]);
+  };
+
+  const handleFitToScreen = () => {
+    setZoom(1);
+  };
+
+  // Mouse wheel zoom with native event listener
+  useEffect(() => {
+    const container = canvasContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // Prevent default scrolling behavior
+      e.preventDefault();
+      e.stopPropagation();
+
+      const scaleBy = 1.05;
+      setZoom(prevZoom => {
+        const newZoom = e.deltaY < 0 ? prevZoom * scaleBy : prevZoom / scaleBy;
+        return Math.max(0.25, Math.min(5, newZoom));
+      });
+    };
+
+    // Add event listener with passive: false to allow preventDefault
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   const selectedElementData = template.elements.find(el => el.id === selectedElement);
 
   return (
@@ -404,7 +559,44 @@ export default function LabelTemplateEditor() {
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Zoom Controls */}
+          <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-2 border border-gray-200">
+            <button
+              onClick={handleZoomOut}
+              disabled={zoom === zoomLevels[0]}
+              className="p-1 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Zoom Out"
+            >
+              <ZoomOut className="w-4 h-4 text-gray-700" />
+            </button>
+
+            <div className="px-3 py-1 bg-white rounded border border-gray-200 min-w-[70px] text-center">
+              <span className="text-sm font-medium text-gray-900">
+                {Math.round(zoom * 100)}%
+              </span>
+            </div>
+
+            <button
+              onClick={handleZoomIn}
+              disabled={zoom === zoomLevels[zoomLevels.length - 1]}
+              className="p-1 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Zoom In"
+            >
+              <ZoomIn className="w-4 h-4 text-gray-700" />
+            </button>
+
+            <div className="w-px h-5 bg-gray-300" />
+
+            <button
+              onClick={handleFitToScreen}
+              className="p-1 rounded hover:bg-gray-200"
+              title="Fit to Screen (100%)"
+            >
+              <Maximize2 className="w-4 h-4 text-gray-700" />
+            </button>
+          </div>
+
           <button
             onClick={() => setPreviewMode(!previewMode)}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
@@ -416,6 +608,16 @@ export default function LabelTemplateEditor() {
             <Eye className="w-4 h-4" />
             {previewMode ? 'Bearbeiten' : 'Vorschau'}
           </button>
+
+          {template.printLayoutId && (
+            <button
+              onClick={handlePrintTemplate}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+            >
+              <Printer className="w-4 h-4" />
+              Druckvorschau
+            </button>
+          )}
 
           <button
             onClick={saveTemplate}
@@ -569,14 +771,21 @@ export default function LabelTemplateEditor() {
                     </optgroup>
                   </select>
                   {selectedPrintLayoutId && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      {template.widthMm && template.heightMm ? (
-                        <>
-                          📐 {template.widthMm.toFixed(1)} × {template.heightMm.toFixed(1)} mm
-                          {' '}({template.width} × {template.height} px)
-                        </>
-                      ) : null}
-                    </p>
+                    <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-xs">
+                      <p className="font-semibold text-green-900">
+                        ✓ {template.printLayoutName}
+                      </p>
+                      {template.widthMm && template.heightMm && (
+                        <p className="text-green-700 mt-1">
+                          Label: {template.widthMm.toFixed(1)} × {template.heightMm.toFixed(1)} mm
+                        </p>
+                      )}
+                      {template.printLayoutColumns && template.printLayoutRows && (
+                        <p className="text-green-700">
+                          Raster: {template.printLayoutColumns} × {template.printLayoutRows}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
@@ -621,23 +830,276 @@ export default function LabelTemplateEditor() {
                 </div>
               </div>
             </div>
+
+            {/* Template Settings */}
+            <div className="mt-6 pt-6 border-t">
+              <h3 className="font-semibold text-gray-900 mb-3">Template-Einstellungen</h3>
+
+              <div className="space-y-3">
+                {/* Background Color */}
+                <div>
+                  <label className="text-sm text-gray-600">Hintergrundfarbe</label>
+                  <input
+                    type="color"
+                    value={template.settings.backgroundColor}
+                    onChange={e => updateTemplateSetting('backgroundColor', e.target.value)}
+                    className="w-full h-10 border rounded"
+                  />
+                </div>
+
+                {/* Background Image */}
+                <div>
+                  <label className="text-sm text-gray-600">Hintergrundbild</label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBackgroundImageUpload}
+                    className="hidden"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm flex items-center justify-center gap-2"
+                    >
+                      <Upload className="w-4 h-4" />
+                      Hochladen
+                    </button>
+                    {template.settings.backgroundImage && (
+                      <button
+                        onClick={() => updateTemplateSetting('backgroundImage', undefined)}
+                        className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm"
+                      >
+                        Entfernen
+                      </button>
+                    )}
+                  </div>
+                  {template.settings.backgroundImage && (
+                    <div className="mt-2">
+                      <label className="text-xs text-gray-600">Deckkraft</label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value={template.settings.backgroundImageOpacity}
+                        onChange={e => updateTemplateSetting('backgroundImageOpacity', parseFloat(e.target.value))}
+                        className="w-full"
+                      />
+                      <span className="text-xs text-gray-500">
+                        {Math.round(template.settings.backgroundImageOpacity * 100)}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Default Font */}
+                <div>
+                  <label className="text-sm text-gray-600">Standard-Schriftart</label>
+                  <select
+                    value={template.settings.defaultFontFamily}
+                    onChange={e => updateTemplateSetting('defaultFontFamily', e.target.value)}
+                    className="w-full px-3 py-2 border rounded text-sm"
+                  >
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Georgia">Georgia</option>
+                  </select>
+                </div>
+
+                {/* Default Font Color */}
+                <div>
+                  <label className="text-sm text-gray-600">Standard-Schriftfarbe</label>
+                  <input
+                    type="color"
+                    value={template.settings.defaultFontColor}
+                    onChange={e => updateTemplateSetting('defaultFontColor', e.target.value)}
+                    className="w-full h-10 border rounded"
+                  />
+                </div>
+
+                {/* Default Font Size */}
+                <div>
+                  <label className="text-sm text-gray-600">Standard-Schriftgröße</label>
+                  <input
+                    type="number"
+                    value={template.settings.defaultFontSize}
+                    onChange={e => updateTemplateSetting('defaultFontSize', parseInt(e.target.value))}
+                    className="w-full px-3 py-2 border rounded text-sm"
+                  />
+                </div>
+
+                {/* Border Settings */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                    <input
+                      type="checkbox"
+                      checked={template.settings.borderEnabled}
+                      onChange={e => updateTemplateSetting('borderEnabled', e.target.checked)}
+                      className="rounded"
+                    />
+                    Rahmen anzeigen
+                  </label>
+
+                  {template.settings.borderEnabled && (
+                    <div className="ml-6 space-y-2">
+                      <div>
+                        <label className="text-xs text-gray-600">Rahmenfarbe</label>
+                        <input
+                          type="color"
+                          value={template.settings.borderColor}
+                          onChange={e => updateTemplateSetting('borderColor', e.target.value)}
+                          className="w-full h-8 border rounded"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-xs text-gray-600">Breite (px)</label>
+                          <input
+                            type="number"
+                            value={template.settings.borderWidth}
+                            onChange={e => updateTemplateSetting('borderWidth', parseInt(e.target.value))}
+                            className="w-full px-2 py-1 border rounded text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-600">Rundung (px)</label>
+                          <input
+                            type="number"
+                            value={template.settings.borderRadius}
+                            onChange={e => updateTemplateSetting('borderRadius', parseInt(e.target.value))}
+                            className="w-full px-2 py-1 border rounded text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Shadow Settings */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                    <input
+                      type="checkbox"
+                      checked={template.settings.shadowEnabled}
+                      onChange={e => updateTemplateSetting('shadowEnabled', e.target.checked)}
+                      className="rounded"
+                    />
+                    Schatten anzeigen
+                  </label>
+
+                  {template.settings.shadowEnabled && (
+                    <div className="ml-6 space-y-2">
+                      <div>
+                        <label className="text-xs text-gray-600">Schattenfarbe</label>
+                        <input
+                          type="color"
+                          value={template.settings.shadowColor}
+                          onChange={e => updateTemplateSetting('shadowColor', e.target.value)}
+                          className="w-full h-8 border rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-600">Unschärfe (px)</label>
+                        <input
+                          type="number"
+                          value={template.settings.shadowBlur}
+                          onChange={e => updateTemplateSetting('shadowBlur', parseInt(e.target.value))}
+                          className="w-full px-2 py-1 border rounded text-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Padding */}
+                <div>
+                  <label className="text-sm text-gray-600">Innenabstand (px)</label>
+                  <input
+                    type="number"
+                    value={template.settings.padding}
+                    onChange={e => updateTemplateSetting('padding', parseInt(e.target.value))}
+                    className="w-full px-3 py-2 border rounded text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Template Rules Section */}
+            <div className="mt-6 pt-6 border-t">
+              <TemplateRuleBuilder
+                rule={template.rules}
+                onChange={(newRule) => setTemplate(prev => ({
+                  ...prev,
+                  rules: newRule,
+                  autoMatchEnabled: newRule.enabled
+                }))}
+              />
+            </div>
           </div>
         )}
 
         {/* Canvas Area */}
-        <div className="flex-1 p-8 bg-gray-100 flex items-center justify-center overflow-auto">
-          {/* Label Canvas */}
+        <div
+          className="flex-1 bg-gray-100 overflow-auto"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px',
+            position: 'relative'
+          }}
+        >
+          {/* Zoom Container - captures wheel events */}
           <div
-            className="bg-white shadow-2xl relative select-none"
+            ref={canvasContainerRef}
             style={{
-              width: template.width,
-              height: template.height,
-              border: '1px solid #e5e7eb'
+              transform: `scale(${zoom})`,
+              transformOrigin: 'center center',
+              transition: 'transform 0.1s ease-out',
+              cursor: 'default'
             }}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
           >
+            {/* Label Canvas */}
+            <div
+              className="shadow-2xl relative select-none"
+              style={{
+                width: template.width,
+                height: template.height,
+                backgroundColor: template.settings.backgroundColor,
+                border: template.settings.borderEnabled
+                  ? `${template.settings.borderWidth}px solid ${template.settings.borderColor}`
+                  : '1px solid #e5e7eb',
+                borderRadius: `${template.settings.borderRadius}px`,
+                boxShadow: template.settings.shadowEnabled
+                  ? `0 0 ${template.settings.shadowBlur}px ${template.settings.shadowColor}`
+                  : 'none',
+                padding: `${template.settings.padding}px`,
+                backgroundImage: template.settings.backgroundImage
+                  ? `url(${template.settings.backgroundImage})`
+                  : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              {/* Background image overlay for opacity */}
+              {template.settings.backgroundImage && (
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundColor: template.settings.backgroundColor,
+                    opacity: 1 - template.settings.backgroundImageOpacity,
+                    borderRadius: `${template.settings.borderRadius}px`,
+                  }}
+                />
+              )}
               {template.elements.map(element => (
                 <div
                   key={element.id}
@@ -877,6 +1339,7 @@ export default function LabelTemplateEditor() {
                   </div>
                 </div>
               )}
+            </div>
           </div>
         </div>
 

@@ -11,7 +11,8 @@ import { useUiStore } from '../store/uiStore';
 import { usePrintStore } from '../store/printStore';
 import { useLabelStore } from '../store/labelStore';
 import { batchExportService } from '../services/batchExportService';
-import { Download, Eye, Grid3x3, Ruler as RulerIcon, Keyboard, Settings } from 'lucide-react';
+import { bulkPrintService } from '../services/bulkPrintService';
+import { Download, Eye, Grid3x3, Ruler as RulerIcon, Keyboard, Settings, Printer } from 'lucide-react';
 import type { ExportConfig, ExportJob } from '../components/ExportSettings';
 
 export const LivePreview = () => {
@@ -23,6 +24,7 @@ export const LivePreview = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportJobs, setExportJobs] = useState<ExportJob[]>([]);
   const [showExportOptions, setShowExportOptions] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const selectedLabels = labels.filter(label => selectedLabelIds.includes(label.id));
 
@@ -71,6 +73,46 @@ export const LivePreview = () => {
     } catch (error) {
       console.error('Export error:', error);
       setIsExporting(false);
+    }
+  };
+
+  const handleBulkPrint = async (action: 'download' | 'print') => {
+    if (selectedLabels.length === 0) {
+      showToast({
+        type: 'warning',
+        message: 'Keine Labels ausgewählt'
+      });
+      return;
+    }
+
+    setIsPrinting(true);
+
+    try {
+      const result = await bulkPrintService.exportAsPDF({
+        labelIds: selectedLabels.map(l => l.id),
+        layout,
+        action
+      });
+
+      if (result.success) {
+        showToast({
+          type: 'success',
+          message: `✅ ${result.labelCount} Labels ${action === 'download' ? 'heruntergeladen' : 'zum Drucken vorbereitet'}!`
+        });
+      } else {
+        showToast({
+          type: 'error',
+          message: `❌ Fehler: ${result.error}`
+        });
+      }
+    } catch (error) {
+      console.error(`Bulk print ${action} error:`, error);
+      showToast({
+        type: 'error',
+        message: `❌ Fehler beim ${action === 'download' ? 'Download' : 'Drucken'}`
+      });
+    } finally {
+      setIsPrinting(false);
     }
   };
 
@@ -194,7 +236,7 @@ export const LivePreview = () => {
               )}
 
               {/* Canvas */}
-              <div className={showRulers ? 'ml-6 mt-6' : ''}>
+              <div className={`${showRulers ? 'ml-6 mt-6' : ''} overflow-auto max-h-[calc(100vh-400px)]`}>
                 <Canvas
                   width={canvasWidth}
                   height={canvasHeight}
@@ -207,7 +249,7 @@ export const LivePreview = () => {
             {/* Canvas Help */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                <strong>Tip:</strong> Drag labels to reposition, click to select, use keyboard shortcuts for quick actions
+                <strong>Tip:</strong> Drag labels to reposition, click to select, use mouse wheel to zoom, use keyboard shortcuts for quick actions
               </p>
             </div>
           </div>
@@ -236,19 +278,36 @@ export const LivePreview = () => {
               <div className="space-y-3">
                 <button
                   onClick={() => setShowExportOptions(true)}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isExporting || isPrinting}
                 >
                   <Download className="w-4 h-4" />
-                  Configure & Export
+                  Konfigurieren & Export
                 </button>
 
-                <button className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                  Print
+                {/* NEW: Bulk Print Button */}
+                <button
+                  onClick={() => handleBulkPrint('print')}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={selectedLabels.length === 0 || isPrinting || isExporting}
+                >
+                  <Printer className="w-4 h-4" />
+                  {isPrinting ? 'Druckt...' : `${selectedLabels.length} Labels drucken (PDF)`}
+                </button>
+
+                {/* NEW: Download PDF Button */}
+                <button
+                  onClick={() => handleBulkPrint('download')}
+                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={selectedLabels.length === 0 || isPrinting || isExporting}
+                >
+                  <Download className="w-4 h-4" />
+                  {isPrinting ? 'Lädt...' : 'PDF herunterladen'}
                 </button>
               </div>
 
               <p className="text-xs text-gray-500 mt-3">
-                {selectedLabels.length} label{selectedLabels.length !== 1 ? 's' : ''} selected
+                {selectedLabels.length} Label{selectedLabels.length !== 1 ? 's' : ''} ausgewählt
               </p>
             </div>
           )}
@@ -257,6 +316,7 @@ export const LivePreview = () => {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="text-sm font-semibold text-blue-900 mb-2">Quick Tips</h3>
             <ul className="text-sm text-blue-800 space-y-1">
+              <li>• Mouse wheel to zoom (up to 500%)</li>
               <li>• Ctrl + Plus/Minus to zoom</li>
               <li>• Ctrl + G to toggle grid</li>
               <li>• Escape to deselect</li>

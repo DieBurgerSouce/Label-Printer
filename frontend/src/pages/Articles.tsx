@@ -5,14 +5,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Package, Download, Tag, Search, Filter, Edit, Trash2, CheckSquare, Square, QrCode, ExternalLink, RefreshCw } from 'lucide-react';
+import { Package, Download, Tag, Search, Filter, Edit, Trash2, CheckSquare, Square, QrCode, ExternalLink, RefreshCw, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { articlesApi, type Product, getImageUrl } from '../services/api';
+import { articlesApi, labelApi, type Product, getImageUrl } from '../services/api';
+import { useUiStore } from '../store/uiStore';
 import ArticleEditModal from '../components/ArticleEditModal';
+import MatchPreviewModal from '../components/MatchPreviewModal';
+import { matchArticlesWithTemplates } from '../utils/templateMatcher';
+import type { MatchResult, LabelTemplate } from '../types/template.types';
 
 export default function Articles() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showToast } = useUiStore();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
@@ -20,6 +26,40 @@ export default function Articles() {
   const [showQrCodes, setShowQrCodes] = useState(true);
   const [editingArticle, setEditingArticle] = useState<Product | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Label Generation States
+  const [availableTemplates, setAvailableTemplates] = useState<LabelTemplate[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+
+  // Auto-Matching States
+  const [matchResult, setMatchResult] = useState<MatchResult>({ matched: [], skipped: [] });
+  const [showMatchPreview, setShowMatchPreview] = useState(false);
+
+  // Load available templates from localStorage
+  useEffect(() => {
+    const loadTemplates = () => {
+      try {
+        const saved = localStorage.getItem('labelTemplates');
+        if (saved) {
+          const templates: LabelTemplate[] = JSON.parse(saved);
+          setAvailableTemplates(templates);
+          // Auto-select first template with print layout
+          const defaultTemplate = templates.find(t => t.printLayoutId);
+          if (defaultTemplate && !selectedTemplateId) {
+            setSelectedTemplateId(defaultTemplate.id);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading templates:', error);
+      }
+    };
+
+    loadTemplates();
+    // Reload when window gets focus (in case templates were saved in another tab)
+    window.addEventListener('focus', loadTemplates);
+    return () => window.removeEventListener('focus', loadTemplates);
+  }, [selectedTemplateId]);
 
   // Auto-refresh products every 5 seconds if enabled
   useEffect(() => {
@@ -81,6 +121,87 @@ export default function Articles() {
     },
   });
 
+  // Label generation mutation (manual template selection)
+  const generateLabelsMutation = useMutation({
+    mutationFn: async ({ articleIds, templateId }: { articleIds: string[]; templateId: string }) => {
+      const results = await Promise.allSettled(
+        articleIds.map(articleId => labelApi.generateFromArticle(articleId, templateId))
+      );
+
+      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
+
+      return { successful, failed, total: articleIds.length };
+    },
+    onSuccess: (data) => {
+      showToast({
+        type: 'success',
+        message: `✅ ${data.successful} Label${data.successful !== 1 ? 's' : ''} erfolgreich generiert!${data.failed > 0 ? ` (${data.failed} fehlgeschlagen)` : ''}`,
+        duration: 5000,
+      });
+      setSelectedArticles(new Set());
+      setShowTemplateSelector(false);
+      queryClient.invalidateQueries({ queryKey: ['labels'] });
+    },
+    onError: (error: Error) => {
+      showToast({
+        type: 'error',
+        message: `❌ Fehler beim Generieren der Labels: ${error.message}`,
+        duration: 7000,
+      });
+    },
+  });
+
+  // Auto-matched label generation mutation
+  const generateMatchedLabelsMutation = useMutation({
+    mutationFn: async (result: MatchResult) => {
+      const results = await Promise.allSettled(
+        result.matched.map(match =>
+          labelApi.generateFromArticle(match.articleId, match.templateId)
+        )
+      );
+
+      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
+
+      return {
+        successful,
+        failed,
+        skipped: result.skipped.length,
+        total: result.matched.length + result.skipped.length
+      };
+    },
+    onSuccess: (data) => {
+      const messages = [];
+      if (data.successful > 0) {
+        messages.push(`✅ ${data.successful} Label${data.successful !== 1 ? 's' : ''} erfolgreich generiert!`);
+      }
+      if (data.skipped > 0) {
+        messages.push(`⚠️ ${data.skipped} Artikel übersprungen`);
+      }
+      if (data.failed > 0) {
+        messages.push(`❌ ${data.failed} fehlgeschlagen`);
+      }
+
+      showToast({
+        type: data.successful > 0 ? 'success' : 'warning',
+        message: messages.join(' '),
+        duration: 7000,
+      });
+
+      setSelectedArticles(new Set());
+      setShowMatchPreview(false);
+      queryClient.invalidateQueries({ queryKey: ['labels'] });
+    },
+    onError: (error: Error) => {
+      showToast({
+        type: 'error',
+        message: `❌ Fehler beim Generieren der Labels: ${error.message}`,
+        duration: 7000,
+      });
+    },
+  });
+
   const toggleSelectAll = () => {
     if (selectedArticles.size === articles.length) {
       setSelectedArticles(new Set());
@@ -117,18 +238,54 @@ export default function Articles() {
     }
   };
 
-  const generateLabels = () => {
+  const handleGenerateLabelsClick = () => {
     if (selectedArticles.size === 0) {
-      alert('Bitte wähle mindestens einen Artikel aus!');
+      showToast({
+        type: 'warning',
+        message: 'Bitte wähle mindestens einen Artikel aus!',
+      });
       return;
     }
 
-    const selected = articles.filter((a: Product) => selectedArticles.has(a.id));
-    navigate('/labels', {
-      state: {
-        selectedArticles: Array.from(selectedArticles),
-        articles: selected
-      }
+    // Check if templates are available
+    if (availableTemplates.length === 0) {
+      showToast({
+        type: 'warning',
+        message: 'Keine Templates gefunden! Bitte erstelle zuerst ein Label-Template.',
+      });
+      navigate('/labeltemplate');
+      return;
+    }
+
+    // Check if auto-match templates exist
+    const autoMatchTemplates = availableTemplates.filter(t => t.autoMatchEnabled && t.rules?.enabled);
+
+    if (autoMatchTemplates.length === 0) {
+      // Fallback: Show manual template selector
+      setShowTemplateSelector(true);
+      return;
+    }
+
+    // Auto-Matching: Match articles with templates
+    const selectedArticleObjects = articles.filter(a => selectedArticles.has(a.id));
+    const result = matchArticlesWithTemplates(selectedArticleObjects, availableTemplates);
+
+    setMatchResult(result);
+    setShowMatchPreview(true);
+  };
+
+  const handleGenerateLabels = () => {
+    if (!selectedTemplateId) {
+      showToast({
+        type: 'warning',
+        message: 'Bitte wähle ein Template aus!',
+      });
+      return;
+    }
+
+    generateLabelsMutation.mutate({
+      articleIds: Array.from(selectedArticles),
+      templateId: selectedTemplateId,
     });
   };
 
@@ -195,12 +352,21 @@ export default function Articles() {
             {selectedArticles.size > 0 ? `Export (${selectedArticles.size})` : 'Export Alle'}
           </button>
           <button
-            onClick={generateLabels}
-            disabled={selectedArticles.size === 0}
+            onClick={handleGenerateLabelsClick}
+            disabled={selectedArticles.size === 0 || generateLabelsMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Tag className="w-5 h-5" />
-            Labels Generieren ({selectedArticles.size})
+            {generateLabelsMutation.isPending ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Generiere...
+              </>
+            ) : (
+              <>
+                <Tag className="w-5 h-5" />
+                Labels Generieren ({selectedArticles.size})
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -384,9 +550,9 @@ export default function Articles() {
                         </div>
                       ) : article.tieredPrices && Array.isArray(article.tieredPrices) && article.tieredPrices.length > 0 ? (
                         <div className="text-sm text-gray-600">
-                          {article.tieredPrices.map((tier: any, i: number) => (
+                          {article.tieredPrices.map((tier: { quantity: number; price: number }, i: number) => (
                             <div key={i}>
-                              {tier.minQuantity || tier.quantity}+: {typeof tier.price === 'number' ? tier.price.toFixed(2) : '-'} {article.currency}
+                              {tier.quantity}+: {typeof tier.price === 'number' ? tier.price.toFixed(2) : '-'} {article.currency}
                             </div>
                           ))}
                         </div>
@@ -436,6 +602,17 @@ export default function Articles() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
+                            setSelectedArticles(new Set([article.id]));
+                            handleGenerateLabelsClick();
+                          }}
+                          className="p-2 hover:bg-blue-50 rounded"
+                          title="Label generieren"
+                          disabled={generateLabelsMutation.isPending}
+                        >
+                          <Tag className="w-4 h-4 text-blue-600" />
+                        </button>
+                        <button
+                          onClick={() => {
                             setEditingArticle(article);
                             setIsEditModalOpen(true);
                           }}
@@ -470,14 +647,14 @@ export default function Articles() {
           <div className="flex gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={!productsResponse.pagination.hasPrev}
+              disabled={productsResponse.pagination.page <= 1}
               className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
               Zurück
             </button>
             <button
               onClick={() => setPage(p => p + 1)}
-              disabled={!productsResponse.pagination.hasNext}
+              disabled={productsResponse.pagination.page >= productsResponse.pagination.totalPages}
               className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
               Weiter
@@ -514,14 +691,133 @@ export default function Articles() {
               Export
             </button>
             <button
-              onClick={generateLabels}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+              onClick={handleGenerateLabelsClick}
+              disabled={generateLabelsMutation.isPending}
+              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
             >
-              <Tag className="w-4 h-4" />
-              Labels Generieren
+              {generateLabelsMutation.isPending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Generiere...
+                </>
+              ) : (
+                <>
+                  <Tag className="w-4 h-4" />
+                  Labels Generieren
+                </>
+              )}
             </button>
           </div>
         </div>
+      )}
+
+      {/* Template Selector Modal */}
+      {showTemplateSelector && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 shadow-2xl">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <FileText className="w-6 h-6 text-blue-600" />
+              Template auswählen
+            </h2>
+
+            <p className="text-gray-600 mb-6">
+              Wähle ein Template für die {selectedArticles.size} ausgewählten Artikel.
+            </p>
+
+            {availableTemplates.length === 0 ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <p className="text-yellow-800 text-sm">
+                  ⚠️ Keine Templates gefunden. Bitte erstelle zuerst ein Label-Template.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 mb-6 max-h-96 overflow-y-auto">
+                {availableTemplates.map((template) => (
+                  <label
+                    key={template.id}
+                    className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-blue-50 ${
+                      selectedTemplateId === template.id
+                        ? 'border-blue-600 bg-blue-50'
+                        : 'border-gray-200 hover:border-blue-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="template"
+                      value={template.id}
+                      checked={selectedTemplateId === template.id}
+                      onChange={(e) => setSelectedTemplateId(e.target.value)}
+                      className="mt-1"
+                    />
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900">{template.name}</div>
+                      {template.printLayoutName && (
+                        <div className="text-sm text-gray-600 mt-1">
+                          📄 {template.printLayoutName}
+                        </div>
+                      )}
+                      {!template.printLayoutId && (
+                        <div className="text-sm text-orange-600 mt-1">
+                          ⚠️ Kein Drucklayout ausgewählt
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setShowTemplateSelector(false);
+                  setSelectedTemplateId('');
+                }}
+                disabled={generateLabelsMutation.isPending}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={() => navigate('/labeltemplate')}
+                className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                Neues Template erstellen
+              </button>
+              <button
+                onClick={handleGenerateLabels}
+                disabled={!selectedTemplateId || generateLabelsMutation.isPending || availableTemplates.length === 0}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {generateLabelsMutation.isPending ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Generiere {selectedArticles.size} Labels...
+                  </>
+                ) : (
+                  <>
+                    <Tag className="w-5 h-5" />
+                    {selectedArticles.size} Labels generieren
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Match Preview Modal */}
+      {showMatchPreview && (
+        <MatchPreviewModal
+          matchResult={matchResult}
+          isLoading={generateMatchedLabelsMutation.isPending}
+          onConfirm={() => generateMatchedLabelsMutation.mutate(matchResult)}
+          onCancel={() => {
+            setShowMatchPreview(false);
+            setMatchResult({ matched: [], skipped: [] });
+          }}
+        />
       )}
 
       {/* Edit Modal */}

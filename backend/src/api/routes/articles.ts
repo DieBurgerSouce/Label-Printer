@@ -3,10 +3,13 @@
  * CRUD operations for managing crawled products
  */
 import { Router, Request, Response } from 'express';
-import { prisma } from '../../lib/supabase';
+import multer from 'multer';
+import { prisma } from '../../lib/supabase.js';
 import { z } from 'zod';
+import { DynamicExcelImportService } from '../../services/dynamic-excel-import.service.js';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 // ========================================
 // VALIDATION SCHEMAS
@@ -456,6 +459,112 @@ router.post('/export', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to export products'
+    });
+  }
+});
+
+// ========================================
+// EXCEL IMPORT ROUTES
+// ========================================
+
+/**
+ * POST /api/articles/excel-preview
+ * Upload Excel file and get preview data
+ */
+router.post('/excel-preview', upload.single('file'), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: 'No file uploaded'
+      });
+    }
+
+    const previewData = DynamicExcelImportService.parseExcelPreview(req.file.buffer);
+
+    res.json({
+      success: true,
+      data: previewData
+    });
+  } catch (error) {
+    console.error('Error previewing Excel:', error);
+    res.status(400).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to preview Excel file'
+    });
+  }
+});
+
+/**
+ * POST /api/articles/excel-import
+ * Import Excel data with dynamic field mapping
+ */
+router.post('/excel-import', upload.single('file'), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: 'No file uploaded'
+      });
+    }
+
+    // Parse config from request body
+    let config;
+    try {
+      config = typeof req.body.config === 'string'
+        ? JSON.parse(req.body.config)
+        : req.body.config;
+    } catch {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid config format'
+      });
+    }
+
+    // Validate config
+    const validation = DynamicExcelImportService.validateConfig(config);
+    if (!validation.valid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid configuration',
+        details: validation.errors
+      });
+    }
+
+    // Perform import
+    const result = await DynamicExcelImportService.importExcel(req.file.buffer, config);
+
+    res.json({
+      success: true,
+      data: result,
+      message: `Import completed: ${result.updatedArticles} articles updated, ${result.skippedArticles} skipped`
+    });
+  } catch (error) {
+    console.error('Error importing Excel:', error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to import Excel file'
+    });
+  }
+});
+
+/**
+ * GET /api/articles/excel-valid-fields
+ * Get list of valid database fields for mapping
+ */
+router.get('/excel-valid-fields', (_req: Request, res: Response) => {
+  try {
+    const fields = DynamicExcelImportService.getValidDbFields();
+
+    res.json({
+      success: true,
+      data: fields
+    });
+  } catch (error) {
+    console.error('Error getting valid fields:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get valid fields'
     });
   }
 });

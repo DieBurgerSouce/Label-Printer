@@ -214,7 +214,7 @@ router.delete('/cache', (_req: Request, res: Response) => {
 /**
  * GET /api/excel/stats - Get cache statistics
  */
-router.get('/stats/summary', (_req: Request, res: Response) => {
+router.get('/stats', (_req: Request, res: Response) => {
   try {
     const stats = ExcelParserService.getStats();
 

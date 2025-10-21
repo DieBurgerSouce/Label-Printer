@@ -346,7 +346,7 @@ export default function LabelLibrary() {
           setArticlesToGenerate([]);
         }}
         onSuccess={() => {
-          showToast('Labels erfolgreich generiert!', 'success');
+          showToast({ message: 'Labels erfolgreich generiert!', type: 'success' });
           refetch(); // Refresh the labels list
         }}
       />
