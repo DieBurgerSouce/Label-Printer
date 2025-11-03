@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Save,
   Eye,
@@ -22,7 +23,7 @@ import {
   Printer,
   Upload
 } from 'lucide-react';
-import { articlesApi, getImageUrl, type Product } from '../services/api';
+import { articlesApi, templateApi, getImageUrl, type Product } from '../services/api';
 import {
   PRINT_LAYOUTS,
   calculateLabelSize,
@@ -51,7 +52,7 @@ interface TableConfig {
 
 interface LabelElement {
   id: string;
-  type: 'text' | 'image' | 'price' | 'priceTable' | 'articleNumber' | 'qrCode' | 'description';
+  type: 'text' | 'freeText' | 'image' | 'price' | 'priceTable' | 'articleNumber' | 'qrCode' | 'description';
   x: number;
   y: number;
   width: number;
@@ -64,6 +65,10 @@ interface LabelElement {
   tableConfig?: TableConfig;
   originalWidth?: number;  // For scaling elements proportionally
   originalHeight?: number;
+  // Separate styling for label/prefix (e.g., "Artikelnummer:")
+  labelFontSize?: number;
+  labelFontWeight?: 'normal' | 'bold';
+  labelColor?: string;
 }
 
 interface TemplateSettings {
@@ -100,35 +105,62 @@ interface LabelTemplate {
   // Template Rules for Auto-Matching
   rules?: TemplateRule;
   autoMatchEnabled: boolean;
+
+  // Article-specific overrides
+  // Allows customizing element properties per article without creating multiple templates
+  // Structure: { [articleNumber]: { [elementId]: Partial<LabelElement> } }
+  articleOverrides?: {
+    [articleNumber: string]: {
+      [elementId: string]: Partial<LabelElement>;
+    };
+  };
 }
 
 export default function LabelTemplateEditor() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [template, setTemplate] = useState<LabelTemplate>({
-    id: crypto.randomUUID(),
-    name: 'Neues Label Template',
-    width: 400,
-    height: 300,
-    elements: [],
-    settings: {
-      backgroundColor: '#ffffff',
-      backgroundImageOpacity: 0.5,
-      defaultFontFamily: 'Arial',
-      defaultFontColor: '#000000',
-      defaultFontSize: 14,
-      borderEnabled: true,
-      borderColor: '#d1d5db',
-      borderWidth: 1,
-      borderRadius: 0,
-      shadowEnabled: false,
-      shadowColor: '#000000',
-      shadowBlur: 5,
-      padding: 0
-    },
-    autoMatchEnabled: false,
-    rules: undefined
-  });
+  // Load template from sessionStorage if editing
+  const loadInitialTemplate = (): LabelTemplate => {
+    const editingTemplateStr = sessionStorage.getItem('editingTemplate');
+    if (editingTemplateStr) {
+      try {
+        const loadedTemplate = JSON.parse(editingTemplateStr);
+        sessionStorage.removeItem('editingTemplate'); // Clear after loading
+        return loadedTemplate;
+      } catch (error) {
+        console.error('Error loading template from sessionStorage:', error);
+      }
+    }
+
+    // Default new template
+    return {
+      id: crypto.randomUUID(),
+      name: 'Neues Label Template',
+      width: 400,
+      height: 300,
+      elements: [],
+      settings: {
+        backgroundColor: '#ffffff',
+        backgroundImageOpacity: 0.5,
+        defaultFontFamily: 'Arial',
+        defaultFontColor: '#000000',
+        defaultFontSize: 14,
+        borderEnabled: true,
+        borderColor: '#d1d5db',
+        borderWidth: 1,
+        borderRadius: 0,
+        shadowEnabled: false,
+        shadowColor: '#000000',
+        shadowBlur: 5,
+        padding: 0
+      },
+      autoMatchEnabled: false,
+      rules: undefined
+    };
+  };
+
+  const [template, setTemplate] = useState<LabelTemplate>(loadInitialTemplate);
 
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
@@ -159,7 +191,7 @@ export default function LabelTemplateEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const addElement = (type: LabelElement['type']) => {
-    const defaultWidth = type === 'priceTable' ? 300 : 200;
+    const defaultWidth = type === 'priceTable' ? 400 : 200;
     const defaultHeight = type === 'image' ? 100 : type === 'priceTable' ? 150 : 30;
 
     const newElement: LabelElement = {
@@ -202,24 +234,102 @@ export default function LabelTemplateEditor() {
 
   const getDefaultContent = (type: LabelElement['type']): string => {
     switch (type) {
-      case 'text': return 'Text eingeben...';
-      case 'price': return '{{price}}';
-      case 'priceTable': return '{{priceTable}}';
-      case 'articleNumber': return '{{articleNumber}}';
-      case 'description': return '{{description}}';
-      case 'qrCode': return '{{qrCode}}';
-      case 'image': return '{{productImage}}';
+      case 'text': return '{{Produktname}}';
+      case 'freeText': return 'Text eingeben...';
+      case 'price': return '{{Preis}}';
+      case 'priceTable': return '{{Staffelpreise}}';
+      case 'articleNumber': return '{{Artikelnummer}}';
+      case 'description': return '{{Beschreibung}}';
+      case 'qrCode': return '{{QR-Code}}';
+      case 'image': return '{{Produktbild}}';
       default: return '';
     }
   };
 
   const updateElement = (id: string, updates: Partial<LabelElement>) => {
-    setTemplate(prev => ({
-      ...prev,
-      elements: prev.elements.map(el =>
-        el.id === id ? { ...el, ...updates } : el
-      )
-    }));
+    // If an article is selected, save changes to articleOverrides
+    // Otherwise, update the template element directly
+    if (previewArticle?.articleNumber) {
+      setTemplate(prev => {
+        const articleOverrides = prev.articleOverrides || {};
+        const articleNumber = previewArticle.articleNumber;
+        const elementOverrides = articleOverrides[articleNumber] || {};
+
+        return {
+          ...prev,
+          articleOverrides: {
+            ...articleOverrides,
+            [articleNumber]: {
+              ...elementOverrides,
+              [id]: {
+                ...(elementOverrides[id] || {}),
+                ...updates
+              }
+            }
+          }
+        };
+      });
+    } else {
+      // No article selected: update template directly
+      setTemplate(prev => ({
+        ...prev,
+        elements: prev.elements.map(el =>
+          el.id === id ? { ...el, ...updates } : el
+        )
+      }));
+    }
+  };
+
+  // Get effective element data (template + article overrides)
+  const getEffectiveElement = (elementId: string): LabelElement | undefined => {
+    const templateElement = template.elements.find(el => el.id === elementId);
+    if (!templateElement) return undefined;
+
+    // If no article selected or no overrides, return template element
+    if (!previewArticle?.articleNumber || !template.articleOverrides) {
+      return templateElement;
+    }
+
+    const overrides = template.articleOverrides[previewArticle.articleNumber]?.[elementId];
+    if (!overrides) return templateElement;
+
+    // Merge template element with overrides
+    return { ...templateElement, ...overrides };
+  };
+
+  // Check if element has article-specific overrides
+  const hasOverride = (elementId: string): boolean => {
+    if (!previewArticle?.articleNumber || !template.articleOverrides) return false;
+    return !!template.articleOverrides[previewArticle.articleNumber]?.[elementId];
+  };
+
+  // Reset element to template default (remove overrides)
+  const resetOverride = (elementId: string) => {
+    if (!previewArticle?.articleNumber) return;
+
+    setTemplate(prev => {
+      if (!prev.articleOverrides) return prev;
+
+      const articleNumber = previewArticle.articleNumber;
+      const articleOverrides = { ...prev.articleOverrides };
+
+      if (articleOverrides[articleNumber]) {
+        const elementOverrides = { ...articleOverrides[articleNumber] };
+        delete elementOverrides[elementId];
+
+        // If no more overrides for this article, remove article entry
+        if (Object.keys(elementOverrides).length === 0) {
+          delete articleOverrides[articleNumber];
+        } else {
+          articleOverrides[articleNumber] = elementOverrides;
+        }
+      }
+
+      return {
+        ...prev,
+        articleOverrides: Object.keys(articleOverrides).length > 0 ? articleOverrides : undefined
+      };
+    });
   };
 
   const deleteElement = (id: string) => {
@@ -254,7 +364,8 @@ export default function LabelTemplateEditor() {
     const dx = (e.clientX - dragStart.x) / zoom;
     const dy = (e.clientY - dragStart.y) / zoom;
 
-    const element = template.elements.find(el => el.id === dragging);
+    // IMPORTANT: Use effective element (with overrides) instead of template element
+    const element = getEffectiveElement(dragging);
     if (!element) return;
 
     updateElement(dragging, {
@@ -380,23 +491,36 @@ export default function LabelTemplateEditor() {
   };
 
   const saveTemplate = async () => {
-    // TODO: Save template to backend
-    console.log('Saving template:', template);
+    try {
+      console.log('Saving template to backend:', template);
 
-    // Save to localStorage for now
-    const savedTemplates = JSON.parse(localStorage.getItem('labelTemplates') || '[]');
-    const existingIndex = savedTemplates.findIndex((t: LabelTemplate) => t.id === template.id);
+      // Check if template exists by trying to load it
+      let exists = false;
+      try {
+        await templateApi.getById(template.id);
+        exists = true;
+      } catch (error) {
+        // Template doesn't exist yet
+      }
 
-    if (existingIndex >= 0) {
-      savedTemplates[existingIndex] = template;
-    } else {
-      savedTemplates.push(template);
+      // Save or update template via API
+      if (exists) {
+        await templateApi.update(template.id, template);
+        console.log('Template updated successfully');
+      } else {
+        await templateApi.save(template);
+        console.log('Template saved successfully');
+      }
+
+      // Invalidate React Query cache to reload templates
+      queryClient.invalidateQueries({ queryKey: ['labelTemplates'] });
+
+      alert('Template erfolgreich gespeichert!');
+      navigate('/templates'); // Navigate to templates page to see the saved template
+    } catch (error) {
+      console.error('Failed to save template:', error);
+      alert('Fehler beim Speichern des Templates!');
     }
-
-    localStorage.setItem('labelTemplates', JSON.stringify(savedTemplates));
-
-    alert('Template gespeichert!');
-    navigate('/labels');
   };
 
   const handlePrintTemplate = () => {
@@ -462,42 +586,126 @@ export default function LabelTemplateEditor() {
     }
   };
 
-  // Parse tiered prices text into table data
-  const parseTieredPrices = (tieredPricesText: string): { quantity: string; price: string }[] => {
-    const lines = tieredPricesText.split('\n').filter(line => line.trim());
-    const rows: { quantity: string; price: string }[] = [];
+  // Parse tiered prices - prefer structured data over OCR text
+  const parseTieredPrices = (article: any): { quantity: string; price: string }[] => {
+    // First, try to use structured tieredPrices if available
+    if (article?.tieredPrices && Array.isArray(article.tieredPrices) && article.tieredPrices.length > 0) {
+      return article.tieredPrices.map((tier: any, i: number) => {
+        const price = typeof tier.price === 'string' ? parseFloat(tier.price) : tier.price;
+        const prefix = i === 0 ? 'Bis' : 'Ab';
+        return {
+          quantity: `${prefix} ${tier.quantity}`,
+          price: `${price ? price.toFixed(2).replace('.', ',')} €` : '-'
+        };
+      });
+    }
 
-    lines.forEach(line => {
-      // Match patterns like "ab 7 Stück: 190,92 EUR"
-      const match = line.match(/^(ab|bis)\s+(\d+)\s+(?:Stück)?.*?([0-9,]+)\s*(?:€|EUR)/i);
-      if (match) {
-        const prefix = match[1].toLowerCase() === 'ab' ? 'Ab' : 'Bis';
-        const quantity = `${prefix} ${match[2]}`;
-        const price = `${match[3]} €`;
-        rows.push({ quantity, price });
-      }
-    });
+    // Fallback to parsing tieredPricesText, but clean it first
+    if (article?.tieredPricesText) {
+      const lines = article.tieredPricesText
+        .split('\n')
+        .filter(line => {
+          // Clean up OCR garbage
+          return line.trim() &&
+                 !line.includes('©') &&
+                 !line.includes('Service') &&
+                 !line.includes('Hilfe') &&
+                 !line.includes('Goooe') &&
+                 !line.includes('eingeben');
+        });
 
-    return rows;
+      const rows: { quantity: string; price: string }[] = [];
+
+      lines.forEach(line => {
+        // Match patterns like "ab 7 Stück: 190,92 EUR" or "Bis 593 28,49 €"
+        const match = line.match(/^(ab|bis)\s+(\d+).*?([0-9,]+)\s*(?:€|EUR)/i);
+        if (match) {
+          const prefix = match[1].toLowerCase() === 'ab' ? 'Ab' : 'Bis';
+          const quantity = `${prefix} ${match[2]}`;
+          const price = `${match[3]} €`;
+          rows.push({ quantity, price });
+        }
+      });
+
+      return rows;
+    }
+
+    return [];
   };
 
   // Replace placeholder with real data
-  const getDisplayContent = (element: LabelElement): string => {
-    if (!previewArticle) return element.content;
+  const getCurrencySymbol = (currencyCode: string): string => {
+    const currencyMap: { [key: string]: string } = {
+      'EUR': '€',
+      'USD': '$',
+      'GBP': '£',
+      'CHF': 'CHF',
+      'JPY': '¥',
+    };
+    return currencyMap[currencyCode] || currencyCode;
+  };
 
+  const getDisplayContent = (element: LabelElement): string => {
+    // Helper: Check if content is a placeholder
+    const isPlaceholder = (content: string): boolean => {
+      return !content || content.startsWith('{{') || content === 'Überschrift...' || content.trim() === '';
+    };
+
+    // If no article selected, show placeholder or custom content
+    if (!previewArticle) {
+      switch (element.type) {
+        case 'text':
+          return element.content || '{{Produktname}}';
+        case 'description':
+          return element.content || '{{Beschreibung}}';
+        case 'price':
+          return element.content || '{{Preis}}';
+        case 'articleNumber':
+          return element.content || '{{Artikelnummer}}';
+        default:
+          return element.content;
+      }
+    }
+
+    // Article selected - decide between custom content and product data
     switch (element.type) {
       case 'articleNumber':
-        return previewArticle.articleNumber || element.content;
+        // Always show article number from product
+        return previewArticle.articleNumber ? `Artikelnummer: ${previewArticle.articleNumber}` : (element.content || '{{Artikelnummer}}');
+
       case 'price':
-        // Only show single price (not tiered prices)
-        if (previewArticle.price) {
-          return `${previewArticle.price.toFixed(2)} ${previewArticle.currency || 'EUR'}`;
+        // If custom content exists (not placeholder), use it
+        if (!isPlaceholder(element.content)) {
+          return element.content;
         }
-        return element.content;
+        // Otherwise show product price
+        if (previewArticle.price) {
+          const currencySymbol = getCurrencySymbol(previewArticle.currency || 'EUR');
+          return `${previewArticle.price.toFixed(2).replace('.', ',')} ${currencySymbol}`;
+        }
+        return element.content || '{{Preis}}';
+
       case 'description':
-        return previewArticle.description || element.content;
+        // If custom content exists (not placeholder), use it
+        if (!isPlaceholder(element.content)) {
+          return element.content;
+        }
+        // Otherwise show product description
+        return previewArticle.description || element.content || '{{Beschreibung}}';
+
       case 'text':
+        // IMPORTANT: If custom content exists (not placeholder), use it!
+        // This allows article-specific custom headings
+        if (!isPlaceholder(element.content)) {
+          return element.content;
+        }
+        // Otherwise show product name
+        return previewArticle.productName || element.content || '{{Produktname}}';
+
+      case 'freeText':
+        // Always show the static content entered by user (never replace with product data)
         return element.content;
+
       default:
         return element.content;
     }
@@ -544,7 +752,8 @@ export default function LabelTemplateEditor() {
     };
   }, []);
 
-  const selectedElementData = template.elements.find(el => el.id === selectedElement);
+  // Get selected element with article-specific overrides applied
+  const selectedElementData = selectedElement ? getEffectiveElement(selectedElement) : undefined;
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
@@ -641,6 +850,14 @@ export default function LabelTemplateEditor() {
                 className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
               >
                 <Type className="w-4 h-4" />
+                Überschrift
+              </button>
+
+              <button
+                onClick={() => addElement('freeText')}
+                className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center gap-2 text-left"
+              >
+                <Type className="w-4 h-4" />
                 Text
               </button>
 
@@ -696,9 +913,11 @@ export default function LabelTemplateEditor() {
             {/* Preview with Real Data */}
             <div className="mt-6 pt-6 border-t">
               <h3 className="font-semibold text-gray-900 mb-3">Live-Vorschau</h3>
-              <p className="text-xs text-gray-500 mb-3">
-                Teste dein Label mit echten Produktdaten
-              </p>
+              <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-xs text-blue-800">
+                  💡 <strong>Tipp:</strong> Gib eine Artikelnummer ein, um echte Produktdaten anzuzeigen. Änderungen an Elementen werden dann <span className="font-semibold">nur für diesen Artikel</span> gespeichert!
+                </p>
+              </div>
 
               <div className="space-y-2">
                 <label className="text-sm text-gray-600">Artikelnummer</label>
@@ -1100,7 +1319,11 @@ export default function LabelTemplateEditor() {
                   }}
                 />
               )}
-              {template.elements.map(element => (
+              {template.elements.map(templateElement => {
+                // Get effective element (template + article-specific overrides)
+                const element = getEffectiveElement(templateElement.id) || templateElement;
+
+                return (
                 <div
                   key={element.id}
                   onMouseDown={(e) => handleMouseDown(e, element.id)}
@@ -1108,8 +1331,12 @@ export default function LabelTemplateEditor() {
                     previewMode ? 'cursor-default' : 'cursor-move'
                   } ${
                     selectedElement === element.id && !previewMode
-                      ? 'ring-2 ring-blue-500'
-                      : ''
+                      ? hasOverride(element.id)
+                        ? 'ring-2 ring-orange-500'  // Selected + Override = Orange
+                        : 'ring-2 ring-blue-500'    // Selected only = Blue
+                      : hasOverride(element.id)
+                        ? 'ring-1 ring-orange-400'  // Override only = Thin Orange
+                        : ''
                   } ${
                     dragging === element.id ? 'opacity-80' : ''
                   }`}
@@ -1122,9 +1349,18 @@ export default function LabelTemplateEditor() {
                     fontWeight: element.fontWeight,
                     color: element.color,
                     textAlign: element.align,
-                    padding: '4px'
+                    padding: '4px',
+                    userSelect: previewMode ? 'text' : 'none'
                   }}
                 >
+                  {/* Content Wrapper - blocks all pointer events in edit mode */}
+                  <div
+                    className="w-full h-full"
+                    style={{
+                      pointerEvents: previewMode ? 'auto' : 'none',
+                      position: 'relative'
+                    }}
+                  >
                   {element.type === 'image' ? (
                     previewArticle && previewArticle.imageUrl ? (
                       <img
@@ -1155,7 +1391,7 @@ export default function LabelTemplateEditor() {
                       </div>
                     )
                   ) : element.type === 'priceTable' ? (
-                    previewArticle && previewArticle.tieredPricesText ? (
+                    previewArticle && (previewArticle.tieredPricesText || (previewArticle.tieredPrices && previewArticle.tieredPrices.length > 0)) ? (
                       <div
                         className="w-full h-full"
                         style={{
@@ -1185,7 +1421,7 @@ export default function LabelTemplateEditor() {
                                   textAlign: element.tableConfig?.headerAlign
                                 }}
                               >
-                                Anzahl
+                                Menge
                               </th>
                               <th
                                 style={{
@@ -1198,12 +1434,25 @@ export default function LabelTemplateEditor() {
                                   textAlign: element.tableConfig?.headerAlign
                                 }}
                               >
-                                Stückpreis
+                                Einheit
+                              </th>
+                              <th
+                                style={{
+                                  backgroundColor: element.tableConfig?.headerBg,
+                                  color: element.tableConfig?.headerColor,
+                                  fontSize: element.tableConfig?.headerFontSize,
+                                  fontWeight: element.tableConfig?.headerFontWeight,
+                                  padding: element.tableConfig?.cellPadding,
+                                  border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
+                                  textAlign: element.tableConfig?.headerAlign
+                                }}
+                              >
+                                Preis
                               </th>
                             </tr>
                           </thead>
                           <tbody>
-                            {parseTieredPrices(previewArticle.tieredPricesText).map((row, idx) => (
+                            {parseTieredPrices(previewArticle).map((row, idx) => (
                               <tr key={idx}>
                                 <td
                                   style={{
@@ -1216,6 +1465,18 @@ export default function LabelTemplateEditor() {
                                   }}
                                 >
                                   {row.quantity}
+                                </td>
+                                <td
+                                  style={{
+                                    backgroundColor: idx % 2 === 0 ? element.tableConfig?.rowBg : element.tableConfig?.rowAlternateBg,
+                                    color: element.tableConfig?.rowColor,
+                                    fontSize: element.tableConfig?.rowFontSize,
+                                    padding: element.tableConfig?.cellPadding,
+                                    border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
+                                    textAlign: element.tableConfig?.rowAlign
+                                  }}
+                                >
+                                  Stück
                                 </td>
                                 <td
                                   style={{
@@ -1254,9 +1515,30 @@ export default function LabelTemplateEditor() {
                         height: element.originalHeight || element.height
                       }}
                     >
-                      {getDisplayContent(element)}
+                      {element.type === 'articleNumber' && previewArticle?.articleNumber ? (
+                        <>
+                          <span style={{
+                            fontSize: element.labelFontSize || element.fontSize,
+                            fontWeight: element.labelFontWeight || 'normal',
+                            color: element.labelColor || element.color
+                          }}>
+                            Artikelnummer:{' '}
+                          </span>
+                          <span style={{
+                            fontSize: element.fontSize,
+                            fontWeight: element.fontWeight,
+                            color: element.color
+                          }}>
+                            {previewArticle.articleNumber}
+                          </span>
+                        </>
+                      ) : (
+                        getDisplayContent(element)
+                      )}
                     </div>
                   )}
+                  </div>
+                  {/* End Content Wrapper */}
 
                   {/* Resize Handles */}
                   {selectedElement === element.id && !previewMode && (
@@ -1329,7 +1611,8 @@ export default function LabelTemplateEditor() {
                     </>
                   )}
                 </div>
-              ))}
+                );
+              })}
 
               {template.elements.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -1347,28 +1630,82 @@ export default function LabelTemplateEditor() {
         {!previewMode && selectedElementData && (
           <div className="w-80 bg-white border-l p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900">Eigenschaften</h3>
-              <button
-                onClick={() => deleteElement(selectedElementData.id)}
-                className="p-2 text-red-600 hover:bg-red-50 rounded"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-gray-900">Eigenschaften</h3>
+                {hasOverride(selectedElementData.id) && (
+                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded font-medium">
+                    Angepasst
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-1">
+                {hasOverride(selectedElementData.id) && (
+                  <button
+                    onClick={() => resetOverride(selectedElementData.id)}
+                    className="px-2 py-1 text-xs text-orange-600 hover:bg-orange-50 rounded"
+                    title="Zurück zu Template-Werten"
+                  >
+                    Reset
+                  </button>
+                )}
+                <button
+                  onClick={() => deleteElement(selectedElementData.id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
+
+            {/* Info Banner for Article-Specific Overrides */}
+            {hasOverride(selectedElementData.id) && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <div className="text-orange-600 mt-0.5">ℹ️</div>
+                  <div className="flex-1 text-xs text-orange-800">
+                    <p className="font-semibold mb-1">Artikel-spezifische Anpassung</p>
+                    <p>Diese Änderungen gelten nur für <span className="font-mono font-semibold">{previewArticle?.articleNumber}</span>. Das Template bleibt für andere Artikel unverändert.</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-4">
               {/* Content */}
               {selectedElementData.type === 'text' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Text
+                    Überschrift
                   </label>
                   <input
                     type="text"
                     value={selectedElementData.content}
                     onChange={e => updateElement(selectedElementData.id, { content: e.target.value })}
                     className="w-full px-3 py-2 border rounded-lg"
+                    placeholder="Leer = Produktname | Text eingeben = Custom"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Leer lassen = Produktname wird automatisch eingefügt. Text eingeben = Eigene Überschrift
+                    {previewArticle && ` (Artikel: ${previewArticle.articleNumber})`}
+                  </p>
+                </div>
+              )}
+
+              {selectedElementData.type === 'freeText' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Freier Text
+                  </label>
+                  <textarea
+                    value={selectedElementData.content}
+                    onChange={e => updateElement(selectedElementData.id, { content: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    rows={3}
+                    placeholder="z.B. Scannen & im Shop ansehen"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Dieser Text wird immer genau so angezeigt (keine automatischen Produktdaten)
+                  </p>
                 </div>
               )}
 
@@ -1416,8 +1753,104 @@ export default function LabelTemplateEditor() {
                 </div>
               </div>
 
-              {/* Font Settings (for text elements) */}
-              {selectedElementData.type !== 'image' && selectedElementData.type !== 'qrCode' && (
+              {/* Special Styling for articleNumber (Label + Value) */}
+              {selectedElementData.type === 'articleNumber' && (
+                <>
+                  <div className="border-t pt-3">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Label ("Artikelnummer:")</h4>
+
+                    <div className="space-y-2">
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Schriftgröße</label>
+                        <input
+                          type="number"
+                          value={selectedElementData.labelFontSize || selectedElementData.fontSize}
+                          onChange={e => updateElement(selectedElementData.id, { labelFontSize: parseInt(e.target.value) })}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Schriftstärke</label>
+                        <select
+                          value={selectedElementData.labelFontWeight || 'normal'}
+                          onChange={e => updateElement(selectedElementData.id, { labelFontWeight: e.target.value as 'normal' | 'bold' })}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        >
+                          <option value="normal">Normal</option>
+                          <option value="bold">Fett</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Farbe</label>
+                        <input
+                          type="color"
+                          value={selectedElementData.labelColor || selectedElementData.color}
+                          onChange={e => updateElement(selectedElementData.id, { labelColor: e.target.value })}
+                          className="w-full h-10 border rounded-lg"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-3">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Wert (z.B. "1138")</h4>
+
+                    <div className="space-y-2">
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Schriftgröße</label>
+                        <input
+                          type="number"
+                          value={selectedElementData.fontSize}
+                          onChange={e => updateElement(selectedElementData.id, { fontSize: parseInt(e.target.value) })}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Schriftstärke</label>
+                        <select
+                          value={selectedElementData.fontWeight}
+                          onChange={e => updateElement(selectedElementData.id, { fontWeight: e.target.value as 'normal' | 'bold' })}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        >
+                          <option value="normal">Normal</option>
+                          <option value="bold">Fett</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Farbe</label>
+                        <input
+                          type="color"
+                          value={selectedElementData.color}
+                          onChange={e => updateElement(selectedElementData.id, { color: e.target.value })}
+                          className="w-full h-10 border rounded-lg"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Ausrichtung
+                    </label>
+                    <select
+                      value={selectedElementData.align}
+                      onChange={e => updateElement(selectedElementData.id, { align: e.target.value as 'left' | 'center' | 'right' })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    >
+                      <option value="left">Links</option>
+                      <option value="center">Zentriert</option>
+                      <option value="right">Rechts</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* Font Settings (for other text elements) */}
+              {selectedElementData.type !== 'image' && selectedElementData.type !== 'qrCode' && selectedElementData.type !== 'articleNumber' && (
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">

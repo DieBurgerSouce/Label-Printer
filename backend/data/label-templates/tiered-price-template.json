@@ -1,0 +1,153 @@
+{
+  "id": "tiered-price-auto-match",
+  "name": "Staffelpreis-Label (Mengenrabatt)",
+  "width": 400,
+  "height": 350,
+  "widthMm": 100,
+  "heightMm": 87.5,
+  "autoMatchEnabled": true,
+  "rules": {
+    "id": "rule-tiered-price",
+    "enabled": true,
+    "conditions": [
+      {
+        "field": "priceType",
+        "operator": "is",
+        "value": "tiered"
+      }
+    ],
+    "logic": "AND"
+  },
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 20,
+      "y": 20,
+      "width": 360,
+      "height": 25,
+      "content": "{{productName}}",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "color": "#000000",
+      "align": "center"
+    },
+    {
+      "id": "article-num",
+      "type": "articleNumber",
+      "x": 20,
+      "y": 55,
+      "width": 150,
+      "height": 20,
+      "content": "Art.Nr.: {{articleNumber}}",
+      "fontSize": 11,
+      "fontWeight": "normal",
+      "color": "#666666",
+      "align": "left"
+    },
+    {
+      "id": "product-image",
+      "type": "image",
+      "x": 20,
+      "y": 85,
+      "width": 100,
+      "height": 100,
+      "content": "{{productImage}}"
+    },
+    {
+      "id": "tiered-price-header",
+      "type": "text",
+      "x": 140,
+      "y": 85,
+      "width": 240,
+      "height": 25,
+      "content": "MENGENRABATTE:",
+      "fontSize": 14,
+      "fontWeight": "bold",
+      "color": "#FF0000",
+      "align": "left"
+    },
+    {
+      "id": "tiered-prices-display",
+      "type": "tieredPrices",
+      "x": 140,
+      "y": 115,
+      "width": 240,
+      "height": 120,
+      "content": "{{tieredPricesText}}",
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left",
+      "backgroundColor": "#FFF8DC",
+      "borderEnabled": true,
+      "borderColor": "#FFD700",
+      "borderWidth": 2,
+      "padding": 8
+    },
+    {
+      "id": "qr-code",
+      "type": "qrCode",
+      "x": 300,
+      "y": 55,
+      "width": 80,
+      "height": 80,
+      "content": "{{sourceUrl}}"
+    },
+    {
+      "id": "savings-hint",
+      "type": "text",
+      "x": 20,
+      "y": 195,
+      "width": 100,
+      "height": 40,
+      "content": "JETZT SPAREN!",
+      "fontSize": 11,
+      "fontWeight": "bold",
+      "color": "#00AA00",
+      "align": "center"
+    },
+    {
+      "id": "description",
+      "type": "description",
+      "x": 20,
+      "y": 250,
+      "width": 360,
+      "height": 40,
+      "content": "{{description}}",
+      "fontSize": 9,
+      "fontWeight": "normal",
+      "color": "#666666",
+      "align": "left",
+      "maxLines": 2
+    },
+    {
+      "id": "footer-note",
+      "type": "text",
+      "x": 20,
+      "y": 300,
+      "width": 360,
+      "height": 30,
+      "content": "Alle Preise verstehen sich zzgl. MwSt. | Änderungen vorbehalten",
+      "fontSize": 8,
+      "fontWeight": "normal",
+      "color": "#999999",
+      "align": "center"
+    }
+  ],
+  "settings": {
+    "backgroundColor": "#ffffff",
+    "backgroundImageOpacity": 0.5,
+    "defaultFontFamily": "Arial",
+    "defaultFontColor": "#000000",
+    "defaultFontSize": 14,
+    "borderEnabled": true,
+    "borderColor": "#FF6B6B",
+    "borderWidth": 2,
+    "borderRadius": 6,
+    "shadowEnabled": true,
+    "shadowColor": "#000000",
+    "shadowBlur": 3,
+    "padding": 10
+  }
+}

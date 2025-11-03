@@ -63,9 +63,11 @@ export class WebCrawlerService {
     this.activeJobs.set(job.id, job);
 
     // Start crawling in background
-    this.executeCrawl(job).catch(error => {
+    // Note: executeCrawl has its own try-catch-finally, this .catch() is a safety net
+    this.executeCrawl(job).catch((error) => {
+      console.error('🚨 Unhandled error in executeCrawl (this should not happen):', error);
       job.status = 'failed';
-      job.error = error.message;
+      job.error = error.message || 'Unexpected error';
       job.completedAt = new Date();
     });
 
@@ -119,10 +121,54 @@ export class WebCrawlerService {
       job.results.stats.totalPages++;
 
       // Try to detect products automatically
-      const selectors = await this.detectProductSelectors(page, job.config.customSelectors);
+      let selectors = await this.detectProductSelectors(page, job.config.customSelectors);
 
       if (!selectors) {
-        throw new Error('Could not detect product selectors. Please provide custom selectors.');
+        // Last resort: If URL suggests a product page, use fallback selectors
+        const url = page.url();
+        if (url.includes('/produkt/') || url.includes('/product/')) {
+          console.log('⚠️ Using fallback selectors for product page');
+          selectors = {
+            productContainer: 'body',
+            productLink: 'a',
+            productImage: 'img[src*="product"], img[class*="product"], .product-image img',
+            price: '.price, .product-price, .woocommerce-Price-amount',
+            articleNumber: '.sku, .product-sku, .product-detail-ordernumber',
+            productName: 'h1, .product-title, .product-name',
+            nextPageButton: ''
+          };
+        } else {
+          throw new Error('Could not detect product selectors. Please provide custom selectors.');
+        }
+      }
+
+      // CHECK IF CURRENT PAGE IS ALREADY A PRODUCT PAGE
+      const isProductPage = await this.isProductPage(page);
+
+      if (isProductPage) {
+        console.log(`\n✅ Detected product page! Taking screenshot directly...`);
+
+        // Take screenshot of this product page directly
+        await this.captureProductScreenshot(page, job.shopUrl, job, selectors);
+
+        // Mark job as complete
+        job.status = 'completed';
+        job.completedAt = new Date();
+        job.results.duration = Date.now() - startTime;
+
+        // Count variants
+        const baseProducts = job.results.screenshots.filter(
+          s => !s.metadata?.variantInfo || s.metadata.variantInfo.isBaseProduct
+        );
+        const variants = job.results.screenshots.filter(
+          s => s.metadata?.variantInfo && !s.metadata.variantInfo.isBaseProduct
+        );
+
+        await this.browser?.close();
+        this.browser = null;
+
+        console.log(`\n✅ Job complete! Captured ${baseProducts.length} product(s) with ${variants.length} variant(s) (Total: ${job.results.screenshots.length} screenshots).`);
+        return;
       }
 
       // NEW DEEP CRAWL STRATEGY:
@@ -201,9 +247,9 @@ export class WebCrawlerService {
               let nextButton = null;
               for (const pattern of paginationPatterns) {
                 try {
-                  const element = await page.$(pattern);
+                  const element = await page.$(pattern as string);
                   if (element) {
-                    const isDisabled = await page.$eval(pattern, (el: any) =>
+                    const isDisabled = await page.$eval(pattern as string, (el: any) =>
                       el.classList.contains('disabled') ||
                       el.hasAttribute('disabled') ||
                       el.getAttribute('aria-disabled') === 'true'
@@ -313,9 +359,19 @@ export class WebCrawlerService {
       // PHASE 2: Now take screenshots until we reach the target number
       await this.captureAllScreenshots(page, urlsToProcess, job, selectors, targetProducts);
 
+      // Count variants for summary
+      const baseProducts = job.results.screenshots.filter(
+        s => !s.metadata?.variantInfo || s.metadata.variantInfo.isBaseProduct
+      );
+      const variants = job.results.screenshots.filter(
+        s => s.metadata?.variantInfo && !s.metadata.variantInfo.isBaseProduct
+      );
+
       job.status = 'completed';
       job.completedAt = new Date();
       job.results.duration = Date.now() - startTime;
+
+      console.log(`\n✅ Job complete! Captured ${baseProducts.length} product(s) with ${variants.length} variant(s) (Total: ${job.results.screenshots.length} screenshots).`);
 
     } catch (error) {
       job.status = 'failed';
@@ -328,10 +384,66 @@ export class WebCrawlerService {
         stack: error instanceof Error ? error.stack : undefined
       });
     } finally {
+      // CRITICAL: Always close browser to prevent memory leaks
       if (this.browser) {
-        await this.browser.close();
-        this.browser = null;
+        try {
+          await this.browser.close();
+          this.browser = null;
+          console.log('✅ Browser closed and cleaned up');
+        } catch (cleanupError) {
+          console.error('⚠️  Failed to close browser during cleanup:', cleanupError);
+          this.browser = null; // Set to null anyway to avoid keeping reference
+        }
       }
+    }
+  }
+
+  /**
+   * Check if current page is a product page
+   */
+  private async isProductPage(page: Page): Promise<boolean> {
+    try {
+      // Check URL patterns first
+      const url = page.url();
+      if (url.includes('/produkt/') || url.includes('/product/')) {
+        console.log('✅ Product URL pattern detected');
+        return true;
+      }
+
+      // Check for key product page elements
+      const productIndicators = [
+        // Shopware 6 selectors
+        '.product-detail-media img[itemprop="image"]',
+        '.product-detail-ordernumber',
+        '.product-detail-name',
+        '.product-detail-description-text',
+        // WooCommerce/Firmenich selectors
+        'div.product.type-product',
+        '.product-detail-ordernumber-container',
+        '.summary.entry-summary',
+        '.product-configurator-group',
+        // Generic selectors
+        'meta[property="product:price:amount"]',
+        '[itemprop="offers"]',
+        '.product-gallery',
+        '.product-info',
+        'body.single-product'
+      ];
+
+      let found = 0;
+      for (const selector of productIndicators) {
+        const exists = await page.$(selector);
+        if (exists) found++;
+      }
+
+      // If at least 2 product indicators are found, it's likely a product page
+      const isProduct = found >= 2;
+      if (isProduct) {
+        console.log(`✅ Product page detected (${found} indicators found)`);
+      }
+      return isProduct;
+    } catch (error) {
+      return false;
     }
   }
 
@@ -344,6 +456,29 @@ export class WebCrawlerService {
   ): Promise<ProductSelectors | null> {
     if (customSelectors) {
       return customSelectors;
+    }
+
+    // Check URL for known shops
+    const url = page.url();
+    if (url.includes('firmenich.de')) {
+      console.log('🎯 Detected Firmenich shop - using specific selectors');
+      return COMMON_PRODUCT_SELECTORS.firmenich;
+    }
+
+    // Check if we're on a single product page
+    const isProductPage = await this.isProductPage(page);
+    if (isProductPage) {
+      console.log('📦 Single product page detected - using direct capture mode');
+      // Return minimal selectors for single product
+      return {
+        productContainer: 'body',  // Use entire page
+        productLink: 'a',
+        productImage: '.product-image, img[class*="product"]',
+        price: '.price, .product-price',
+        articleNumber: '.sku, .product-sku',
+        productName: '.product-title, h1',
+        nextPageButton: ''  // No pagination on product pages
+      };
     }
 
     // Try common e-commerce platforms
@@ -371,6 +506,7 @@ export class WebCrawlerService {
     try {
       // Common product container patterns
       const containerPatterns = [
+        'li.product',  // WooCommerce list items
         '.product', '.product-item', '.product-card',
         '[class*="product"]', '[data-product]',
         'article', '.item', '.card'
@@ -378,7 +514,8 @@ export class WebCrawlerService {
 
       for (const pattern of containerPatterns) {
         const containers = await page.$$(pattern);
-        if (containers.length >= 3) { // At least 3 products to confirm
+        // Accept 1 or more products (was 3 before)
+        if (containers.length >= 1) {
           // Try to detect pagination button
           const paginationPatterns = [
             'a.next', 'a[rel="next"]', '.next', '.pagination a:last-child',
@@ -577,9 +714,9 @@ export class WebCrawlerService {
         let nextButton = null;
         for (const pattern of paginationPatterns) {
           try {
-            const element = await page.$(pattern);
+            const element = await page.$(pattern as string);
             if (element) {
-              const isDisabled = await page.$eval(pattern, (el: any) =>
+              const isDisabled = await page.$eval(pattern as string, (el: any) =>
                 el.classList.contains('disabled') ||
                 el.hasAttribute('disabled') ||
                 el.getAttribute('aria-disabled') === 'true'
@@ -713,7 +850,9 @@ export class WebCrawlerService {
 
   /**
    * NEW: Collect links from all pagination pages (NO screenshots)
+   * @deprecated - Currently unused but kept for potential future use
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private async collectAllPaginationLinks(
     page: Page,
     job: CrawlJob,
@@ -743,7 +882,6 @@ export class WebCrawlerService {
         ].filter(Boolean);
 
         let nextButton = null;
-        let usedSelector = '';
 
         // Try each pattern until we find a visible button
         for (const pattern of paginationPatterns) {
@@ -754,7 +892,6 @@ export class WebCrawlerService {
               const isVisible = boundingBox !== null;
               if (isVisible) {
                 nextButton = element;
-                usedSelector = pattern as string;
                 break;
               }
             }
@@ -824,7 +961,6 @@ export class WebCrawlerService {
   ): Promise<void> {
     let successfulCount = 0;
     let attemptedCount = 0;
-    const totalUrls = productUrls.length;
 
     console.log(`🎯 Target: ${targetSuccessful} successful screenshots\n`);
 
@@ -1010,13 +1146,13 @@ export class WebCrawlerService {
     page: Page,
     productUrl: string,
     job: CrawlJob,
-    selectors: ProductSelectors
+    _selectors: ProductSelectors
   ): Promise<void> {
     const loadStart = Date.now();
 
     try {
       // Use the new PreciseScreenshotService for clean, consistent screenshots
-      const result = await this.preciseScreenshotService.captureProductScreenshots(
+      const results = await this.preciseScreenshotService.captureProductScreenshots(
         page,
         productUrl,
         job.id
@@ -1024,38 +1160,42 @@ export class WebCrawlerService {
 
       const loadTime = Date.now() - loadStart;
 
-      // Calculate total file size
-      let totalFileSize = 0;
-      const successfulScreenshots = result.screenshots.filter(s => s.success);
+      // Process each result (base product + variants)
+      for (const result of results) {
+        const isVariant = result.variantInfo && !result.variantInfo.isBaseProduct;
 
-      for (const screenshot of successfulScreenshots) {
-        if (screenshot.fileSize) {
-          totalFileSize += screenshot.fileSize;
+        // Calculate total file size for this product/variant
+        let totalFileSize = 0;
+        const successfulScreenshots = result.screenshots.filter(s => s.success);
+
+        for (const screenshot of successfulScreenshots) {
+          if (screenshot.fileSize) {
+            totalFileSize += screenshot.fileSize;
+          }
         }
-      }
 
-      // Use first successful screenshot as main
-      let mainScreenshotPath = '';
-      let thumbnailPath = '';
+        // Use first successful screenshot as main
+        let mainScreenshotPath = '';
+        let thumbnailPath = '';
 
-      if (successfulScreenshots.length > 0) {
-        mainScreenshotPath = successfulScreenshots[0].path;
+        if (successfulScreenshots.length > 0) {
+          mainScreenshotPath = successfulScreenshots[0].path;
 
-        // Find the product-image screenshot to use as thumbnail
-        const productImageScreenshot = successfulScreenshots.find(s => s.type === 'product-image');
-        if (productImageScreenshot) {
-          thumbnailPath = productImageScreenshot.path; // Use product image AS thumbnail!
-        } else {
-          thumbnailPath = mainScreenshotPath; // Fallback to first screenshot
+          // Find the product-image screenshot to use as thumbnail
+          const productImageScreenshot = successfulScreenshots.find(s => s.type === 'product-image');
+          if (productImageScreenshot) {
+            thumbnailPath = productImageScreenshot.path; // Use product image AS thumbnail!
+          } else {
+            thumbnailPath = mainScreenshotPath; // Fallback to first screenshot
+          }
         }
-      }
 
-      // Create screenshot record
-      const screenshotId = uuidv4();
-      const screenshot: Screenshot = {
-        id: screenshotId,
-        url: productUrl,
-        productUrl: productUrl,
+        // Create screenshot record for each product/variant
+        const screenshotId = uuidv4();
+        const screenshot: Screenshot = {
+          id: screenshotId,
+          url: result.url,  // Use the specific URL (might have variant hash)
+          productUrl: result.url,
         imagePath: mainScreenshotPath,
         thumbnailPath: thumbnailPath, // Points to product-image.png directly!
         metadata: {
@@ -1071,10 +1211,26 @@ export class WebCrawlerService {
         extractedElements: {} // Will be filled by OCR later
       };
 
-      job.results.screenshots.push(screenshot);
-      job.results.stats.totalDataTransferred += totalFileSize;
+        // Add variant info to metadata if present
+        if (result.variantInfo) {
+          screenshot.metadata = {
+            ...screenshot.metadata,
+            variantInfo: result.variantInfo,
+            articleNumber: result.articleNumber
+          };
+        }
 
-      console.log(`✓ Captured: ${productUrl} (${loadTime}ms)`);
+        job.results.screenshots.push(screenshot);
+        job.results.stats.totalDataTransferred += totalFileSize;
+
+        // Log with variant info
+        const variantLabel = isVariant ? ` [Variant: ${result.variantInfo?.label}]` : '';
+        console.log(`✓ Captured: ${result.url}${variantLabel} (${loadTime}ms per variant)`);
+      } // End of for loop for each result
+
+      // Update products found count to reflect all variants
+      job.results.productsFound = results.length;
+      console.log(`📊 Total products/variants captured: ${results.length}`);
 
     } catch (error) {
       throw error;
@@ -1083,7 +1239,9 @@ export class WebCrawlerService {
 
   /**
    * Extract product data from page
+   * @deprecated - Currently unused but kept for potential future use
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private async extractProductData(
     page: Page,
     selectors: ProductSelectors
@@ -1144,7 +1302,9 @@ export class WebCrawlerService {
 
   /**
    * Follow pagination links
+   * @deprecated - Currently unused but kept for potential future use
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private async followPagination(
     page: Page,
     job: CrawlJob,
@@ -1173,7 +1333,6 @@ export class WebCrawlerService {
         ].filter(Boolean); // Remove undefined/null
 
         let nextButton = null;
-        let usedSelector = '';
 
         // Try each pattern until we find a visible button
         for (const pattern of paginationPatterns) {
@@ -1185,8 +1344,7 @@ export class WebCrawlerService {
               const isVisible = boundingBox !== null;
               if (isVisible) {
                 nextButton = element;
-                usedSelector = pattern as string;
-                console.log(`✅ Found visible pagination button: ${usedSelector}`);
+                console.log(`✅ Found visible pagination button: ${pattern}`);
                 break;
               } else {
                 console.log(`⚠️ Button found but not visible: ${pattern}`);
@@ -1276,6 +1434,36 @@ export class WebCrawlerService {
   }
 
   /**
+   * Shutdown service and cleanup resources
+   */
+  async shutdown(): Promise<void> {
+    console.log('🛑 Shutting down Web Crawler Service...');
+
+    // Close browser if open
+    if (this.browser) {
+      try {
+        await this.browser.close();
+        this.browser = null;
+        console.log('   ✅ Browser closed');
+      } catch (error) {
+        console.error('   ❌ Error closing browser:', error);
+      }
+    }
+
+    // Mark all running jobs as failed
+    for (const [jobId, job] of this.activeJobs.entries()) {
+      if (job.status === 'crawling') {
+        job.status = 'failed';
+        job.error = 'Service shutdown';
+        job.completedAt = new Date();
+        console.log(`   ⚠️  Marked job ${jobId} as failed (service shutdown)`);
+      }
+    }
+
+    console.log('✅ Web Crawler Service shut down');
+  }
+
+  /**
    * Clean up old jobs
    */
   cleanupOldJobs(maxAge: number = 24 * 60 * 60 * 1000): void {
@@ -1294,7 +1482,9 @@ export class WebCrawlerService {
   /**
    * Capture targeted screenshots of specific elements
    * Returns array of {type, path, thumbnailPath, fileSize}
+   * @deprecated - Currently unused but kept for potential future use
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private async captureTargetedScreenshots(
     page: Page,
     jobId: string,

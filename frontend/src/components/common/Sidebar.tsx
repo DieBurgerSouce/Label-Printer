@@ -19,7 +19,8 @@ const navigation = [
   { name: 'Excel Import (Dynamisch)', to: '/excel-import', icon: FileSpreadsheet },
   { name: 'Print Setup', to: '/print', icon: Printer },
   { name: 'Live Preview', to: '/preview', icon: Eye },
-  { name: 'Templates', to: '/templates', icon: LayoutIcon },
+  { name: 'Label Templates', to: '/templates', icon: LayoutIcon },
+  { name: 'Druck Templates', to: '/print-templates', icon: Printer },
   { name: 'Settings', to: '/settings', icon: Settings },
 ];
 

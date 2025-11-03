@@ -7,6 +7,8 @@ import { Router, Request, Response } from 'express';
 import { templateEngine } from '../../services/template-engine';
 import { LabelTemplate, RenderContext, RenderOptions } from '../../types/template-types';
 import { v4 as uuidv4 } from 'uuid';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 const router = Router();
 

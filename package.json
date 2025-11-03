@@ -33,6 +33,7 @@
     "@types/pdfkit": "^0.17.3",
     "axios": "^1.7.9",
     "bullmq": "^5.28.1",
+    "cheerio": "^1.1.2",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

@@ -22,6 +22,7 @@ export default function Articles() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [showQrCodes, setShowQrCodes] = useState(true);
   const [editingArticle, setEditingArticle] = useState<Product | null>(null);
@@ -75,8 +76,8 @@ export default function Articles() {
 
   // Fetch products
   const { data: productsResponse, isLoading, error } = useQuery({
-    queryKey: ['articles', { page, limit: 50, search: searchTerm }],
-    queryFn: () => articlesApi.getAll({ page, limit: 50, search: searchTerm, published: true }),
+    queryKey: ['articles', { page, limit: itemsPerPage, search: searchTerm }],
+    queryFn: () => articlesApi.getAll({ page, limit: itemsPerPage, search: searchTerm, published: true }),
     refetchInterval: autoRefresh ? 5000 : false, // Refetch every 5 seconds if auto-refresh is on
   });
 
@@ -406,6 +407,27 @@ export default function Articles() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
+
+          {/* Items per page selector */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600">Artikel pro Seite:</label>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setPage(1); // Reset to first page when changing items per page
+              }}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+              <option value={500}>500</option>
+            </select>
+          </div>
+
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2">
             <Filter className="w-5 h-5" />
             Filter
@@ -544,18 +566,44 @@ export default function Articles() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {article.tieredPricesText && article.tieredPricesText.trim() ? (
-                        <div className="text-sm text-gray-600 whitespace-pre-line font-mono">
-                          {article.tieredPricesText}
-                        </div>
-                      ) : article.tieredPrices && Array.isArray(article.tieredPrices) && article.tieredPrices.length > 0 ? (
+                      {/* Prioritize structured tieredPrices over OCR text */}
+                      {article.tieredPrices && Array.isArray(article.tieredPrices) && article.tieredPrices.length > 0 ? (
                         <div className="text-sm text-gray-600">
-                          {article.tieredPrices.map((tier: { quantity: number; price: number }, i: number) => (
-                            <div key={i}>
-                              {tier.quantity}+: {typeof tier.price === 'number' ? tier.price.toFixed(2) : '-'} {article.currency}
-                            </div>
-                          ))}
+                          {article.tieredPrices.map((tier: { quantity: number; price: number | string }, i: number) => {
+                            const price = typeof tier.price === 'string' ? parseFloat(tier.price) : tier.price;
+                            return (
+                              <div key={i}>
+                                {i === 0 ? `Bis ${tier.quantity}` : `Ab ${tier.quantity}`}: {price ? price.toFixed(2) : '-'} {article.currency}
+                              </div>
+                            );
+                          })}
                         </div>
+                      ) : article.tieredPricesText && article.tieredPricesText.trim() ? (
+                        // Only show OCR text if no structured data AND it looks valid
+                        (() => {
+                          // Clean up OCR text - remove obvious garbage
+                          const cleanText = article.tieredPricesText
+                            .split('\n')
+                            .filter(line =>
+                              // Keep lines that contain price patterns
+                              (line.includes('€') || line.includes('EUR') || /\d+[,\.]\d+/.test(line)) &&
+                              // Remove obvious garbage
+                              !line.includes('©') &&
+                              !line.includes('Service') &&
+                              !line.includes('Hilfe') &&
+                              !line.includes('Goooe') &&
+                              !line.includes('eingeben')
+                            )
+                            .join('\n');
+
+                          return cleanText ? (
+                            <div className="text-sm text-gray-600 whitespace-pre-line font-mono">
+                              {cleanText}
+                            </div>
+                          ) : (
+                            <span className="text-gray-500 text-sm">OCR-Fehler</span>
+                          );
+                        })()
                       ) : (
                         <span className="text-gray-500 text-sm">
                           {article.price && article.price > 0 ?

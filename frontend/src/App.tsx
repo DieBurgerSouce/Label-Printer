@@ -8,6 +8,7 @@ import ExcelImportNew from './pages/ExcelImportNew';
 import PrintSetup from './pages/PrintSetup';
 import PrintPreview from './pages/PrintPreview';
 import Templates from './pages/Templates';
+import PrintTemplates from './pages/PrintTemplates';
 import Settings from './pages/Settings';
 import { LivePreview } from './pages/LivePreview';
 import JobMonitor from './pages/JobMonitor';
@@ -44,6 +45,7 @@ function App() {
             <Route path="print" element={<PrintPreview />} />
             <Route path="preview" element={<LivePreview />} />
             <Route path="templates" element={<Templates />} />
+            <Route path="print-templates" element={<PrintTemplates />} />
             <Route path="settings" element={<Settings />} />
             <Route path="jobs/:jobId" element={<JobMonitor />} />
           </Route>

@@ -1,0 +1,128 @@
+{
+  "id": "auf-anfrage-auto-match",
+  "name": "Auf Anfrage Label",
+  "width": 400,
+  "height": 280,
+  "widthMm": 100,
+  "heightMm": 70,
+  "autoMatchEnabled": true,
+  "rules": {
+    "id": "rule-auf-anfrage",
+    "enabled": true,
+    "conditions": [
+      {
+        "field": "priceType",
+        "operator": "is",
+        "value": "auf-anfrage"
+      }
+    ],
+    "logic": "AND"
+  },
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 20,
+      "y": 20,
+      "width": 360,
+      "height": 30,
+      "content": "{{productName}}",
+      "fontSize": 18,
+      "fontWeight": "bold",
+      "color": "#000000",
+      "align": "center"
+    },
+    {
+      "id": "article-num",
+      "type": "articleNumber",
+      "x": 20,
+      "y": 60,
+      "width": 150,
+      "height": 20,
+      "content": "Art.Nr.: {{articleNumber}}",
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "color": "#666666",
+      "align": "left"
+    },
+    {
+      "id": "product-image",
+      "type": "image",
+      "x": 20,
+      "y": 90,
+      "width": 120,
+      "height": 120,
+      "content": "{{productImage}}"
+    },
+    {
+      "id": "auf-anfrage-box",
+      "type": "text",
+      "x": 160,
+      "y": 110,
+      "width": 220,
+      "height": 80,
+      "content": "Preis auf Anfrage",
+      "fontSize": 24,
+      "fontWeight": "bold",
+      "color": "#0066CC",
+      "align": "center",
+      "backgroundColor": "#E8F4FF",
+      "borderEnabled": true,
+      "borderColor": "#0066CC",
+      "borderWidth": 3,
+      "borderStyle": "dashed",
+      "padding": 15
+    },
+    {
+      "id": "contact-hint",
+      "type": "text",
+      "x": 160,
+      "y": 200,
+      "width": 220,
+      "height": 20,
+      "content": "Kontaktieren Sie uns für ein Angebot!",
+      "fontSize": 11,
+      "fontWeight": "normal",
+      "color": "#333333",
+      "align": "center"
+    },
+    {
+      "id": "qr-code",
+      "type": "qrCode",
+      "x": 300,
+      "y": 60,
+      "width": 80,
+      "height": 80,
+      "content": "{{sourceUrl}}"
+    },
+    {
+      "id": "description-short",
+      "type": "description",
+      "x": 20,
+      "y": 230,
+      "width": 360,
+      "height": 30,
+      "content": "{{description}}",
+      "fontSize": 10,
+      "fontWeight": "normal",
+      "color": "#666666",
+      "align": "left",
+      "maxLines": 2
+    }
+  ],
+  "settings": {
+    "backgroundColor": "#ffffff",
+    "backgroundImageOpacity": 0.5,
+    "defaultFontFamily": "Arial",
+    "defaultFontColor": "#000000",
+    "defaultFontSize": 14,
+    "borderEnabled": true,
+    "borderColor": "#0066CC",
+    "borderWidth": 2,
+    "borderRadius": 4,
+    "shadowEnabled": false,
+    "shadowColor": "#000000",
+    "shadowBlur": 5,
+    "padding": 10
+  }
+}

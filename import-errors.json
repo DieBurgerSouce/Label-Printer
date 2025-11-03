@@ -1,0 +1,946 @@
+[
+  {
+    "articleNumber": "8400-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8396",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1316",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8415-I",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8451-SE",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1315-G",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8454-I",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7064-D",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7064-H",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "2028-A",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8453",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8721-CHG",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8390",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8461",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3506-22",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3513-KU",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8721-CHB",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5015-B1c",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3506-KU",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3555-KU",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8418",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3502-KU",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "9135",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5155",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7031-D",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8223",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8722-H",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7033-D",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7033-H",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4313",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4313-N",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8706",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5011",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4088-A",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4089-A",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8724-G",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8724-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7044-L",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7044-M",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7044-S",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7031-EW",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "9153",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8102",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8724-H",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8725-G",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8725-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1119",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8307",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5117",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1109",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5062",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8220",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8212-G",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1106",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1107",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8719-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "87191-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5167",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5119",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8720-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8721-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5121",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8710",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8203",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8308",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5123",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4064",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1434",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8703",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8701",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8722-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1274-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8338-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1276",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1574",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8411-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8412-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8360-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7031-HSP",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4020",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8166",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7828",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7829",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8320-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4092",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "5166-L",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4026",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1216-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8336-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1311-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3788",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4068",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4094",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1322-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1313-FSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1313-OSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8305-GR",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1330-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8370-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8382-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8393-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8394-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8409-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8419-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8420-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8421-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8422-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8423-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8424-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8425-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1347",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8395-OSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1305",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1318",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1324-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8358-OSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1292-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1292-SP",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8380-OSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8380-RESH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8396-OSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8396-RESH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8375-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "83855",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8130",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1445-G-L",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8840-KS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "4069",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "9161-L",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8381-LSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8381-OSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8397-RESH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8394-E",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8408-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8355-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8395-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8376-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8404-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8225",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1485-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8380-N",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8361-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8374-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8335",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8349",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8377-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8340-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8388-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7045",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8319-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8403-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8378-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8328-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1344",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8851",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1298-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1303-S",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8126",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1308-S",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8346-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8347-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8351-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8386-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1289-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8379-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8843-KS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8387",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8161",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8814",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8341-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1339",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8121-C",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1303-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1286-PSH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8360-A",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8360-U",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1308-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8160",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1313-I",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8402-E",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1329",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1330-I",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8369-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1135-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8120-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1345",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8816",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8363-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8359-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1313-O",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8120-C",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1280-I",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1313-F",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1350",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1350-K",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1325-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1003",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1123-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1301-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1321-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1129-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8367",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8402-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1129-E",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8362-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8349-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1298-S",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3562-2",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8146",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "3547-2",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1346",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7531-S",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1311-S",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7628",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7682-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1311-E",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8396-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7634-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8801-C",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8354-SH",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1230-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8801",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8862-GS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "1230-H-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7624-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "8150",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7637-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7653-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7630-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7707-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7652-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      2,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7706-WE",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7580-OS",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7581-TTSE",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7582-FTSE",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  },
+  {
+    "articleNumber": "7525",
+    "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      0,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"null\",\n    \"path\": [\n      \"tieredPrices\",\n      1,\n      \"quantity\"\n    ],\n    \"message\": \"Expected number, received null\"\n  }\n]"
+  }
+]

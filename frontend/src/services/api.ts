@@ -1,7 +1,8 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import type { PrintLayout } from '../store/printStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? window.location.origin : 'http://localhost:3001');
 
 /**
  * Helper function to get full image URL
@@ -11,6 +12,14 @@ export function getImageUrl(imageUrl: string | null | undefined): string {
     console.log('📸 getImageUrl: No image URL provided, using placeholder');
     return 'https://via.placeholder.com/64?text=No+Image';
   }
+
+  // Check if URL is already absolute
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    console.log('📸 getImageUrl: URL is already absolute:', imageUrl);
+    return imageUrl;
+  }
+
+  // For relative URLs, prepend the API base URL
   const fullUrl = `${API_BASE_URL}${imageUrl}`;
   console.log('📸 getImageUrl:', {
     imageUrl,
@@ -332,12 +341,30 @@ export const articlesApi = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+      baseURL: API_BASE_URL,
     }).then(res => res.data);
   },
 
   getValidExcelFields: () =>
     apiClient.get<ApiResponse<Array<{ field: string; description: string; type: string }>>>('/api/articles/excel-valid-fields'),
+};
+
+// Label Template API
+export const templateApi = {
+  save: (template: any) =>
+    apiClient.post<ApiResponse<any>>('/api/label-templates', template),
+
+  list: () =>
+    apiClient.get<ApiResponse<{ templates: any[] }>>('/api/label-templates'),
+
+  getById: (id: string) =>
+    apiClient.get<ApiResponse<any>>(`/api/label-templates/${id}`),
+
+  update: (id: string, template: any) =>
+    apiClient.put<ApiResponse<any>>(`/api/label-templates/${id}`, template),
+
+  delete: (id: string) =>
+    apiClient.delete<ApiResponse<void>>(`/api/label-templates/${id}`),
 };
 
 // Excel Import Types

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Migration Tool</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2563eb;
+      margin-top: 0;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    button.danger {
+      background: #dc2626;
+    }
+    button.danger:hover {
+      background: #b91c1c;
+    }
+    .log {
+      background: #1f2937;
+      color: #10b981;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .log-line {
+      margin: 5px 0;
+    }
+    .log-error {
+      color: #ef4444;
+    }
+    .log-success {
+      color: #10b981;
+    }
+    .log-info {
+      color: #60a5fa;
+    }
+    .warning {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔄 Template Migration Tool</h1>
+    <p>Dieses Tool migriert alte Templates aus dem Browser-localStorage ins Backend.</p>
+
+    <div class="warning">
+      ⚠️ <strong>Wichtig:</strong> Stellen Sie sicher, dass das Backend läuft (http://localhost:3001)
+    </div>
+
+    <div>
+      <button onclick="checkLocalStorage()">1️⃣ localStorage prüfen</button>
+      <button onclick="migrateTemplates()">2️⃣ Templates migrieren</button>
+      <button onclick="clearLocalStorage()" class="danger">3️⃣ localStorage löschen</button>
+    </div>
+
+    <div id="log" class="log"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:3001';
+    let logDiv = document.getElementById('log');
+
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString('de-DE');
+      const className = `log-line log-${type}`;
+      logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function checkLocalStorage() {
+      log('🔍 Prüfe localStorage...', 'info');
+
+      const saved = localStorage.getItem('labelTemplates');
+      if (!saved) {
+        log('❌ Keine Templates in localStorage gefunden', 'error');
+        return;
+      }
+
+      try {
+        const templates = JSON.parse(saved);
+        log(`✅ ${templates.length} Template(s) gefunden:`, 'success');
+        templates.forEach((t, i) => {
+          log(`   ${i + 1}. "${t.name}" (ID: ${t.id})`, 'info');
+        });
+      } catch (error) {
+        log(`❌ Fehler beim Parsen: ${error.message}`, 'error');
+      }
+    }
+
+    async function migrateTemplates() {
+      log('📤 Starte Migration...', 'info');
+
+      const saved = localStorage.getItem('labelTemplates');
+      if (!saved) {
+        log('❌ Keine Templates in localStorage gefunden', 'error');
+        return;
+      }
+
+      try {
+        const templates = JSON.parse(saved);
+        log(`📋 Migriere ${templates.length} Template(s)...`, 'info');
+
+        let successCount = 0;
+        let errorCount = 0;
+
+        for (const template of templates) {
+          try {
+            // Check if template already exists
+            const checkResponse = await fetch(`${API_BASE}/api/label-templates/${template.id}`);
+            const exists = checkResponse.ok;
+
+            let response;
+            if (exists) {
+              log(`   ↻ Update: "${template.name}"...`, 'info');
+              response = await fetch(`${API_BASE}/api/label-templates/${template.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(template)
+              });
+            } else {
+              log(`   ➕ Erstelle: "${template.name}"...`, 'info');
+              response = await fetch(`${API_BASE}/api/label-templates`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(template)
+              });
+            }
+
+            if (response.ok) {
+              log(`   ✅ Erfolg: "${template.name}"`, 'success');
+              successCount++;
+            } else {
+              const error = await response.text();
+              log(`   ❌ Fehler: "${template.name}" - ${error}`, 'error');
+              errorCount++;
+            }
+          } catch (error) {
+            log(`   ❌ Fehler: "${template.name}" - ${error.message}`, 'error');
+            errorCount++;
+          }
+        }
+
+        log('', 'info');
+        log('='.repeat(50), 'info');
+        log(`✅ Migration abgeschlossen!`, 'success');
+        log(`   Erfolg: ${successCount}`, 'success');
+        if (errorCount > 0) {
+          log(`   Fehler: ${errorCount}`, 'error');
+        }
+        log('='.repeat(50), 'info');
+
+      } catch (error) {
+        log(`❌ Kritischer Fehler: ${error.message}`, 'error');
+      }
+    }
+
+    function clearLocalStorage() {
+      if (!confirm('Möchten Sie wirklich den localStorage löschen?\n\nACHTUNG: Migrieren Sie zuerst die Templates!')) {
+        log('❌ Abgebrochen', 'error');
+        return;
+      }
+
+      log('🗑️ Lösche localStorage...', 'info');
+
+      const saved = localStorage.getItem('labelTemplates');
+      if (saved) {
+        const templates = JSON.parse(saved);
+        localStorage.removeItem('labelTemplates');
+        log(`✅ ${templates.length} Template(s) aus localStorage entfernt`, 'success');
+        log('ℹ️  Die Templates sind noch im Backend gespeichert!', 'info');
+      } else {
+        log('ℹ️  localStorage ist bereits leer', 'info');
+      }
+    }
+
+    // Initial message
+    log('🚀 Migration Tool geladen', 'success');
+    log('👉 Schritt 1: localStorage prüfen', 'info');
+    log('👉 Schritt 2: Templates migrieren', 'info');
+    log('👉 Schritt 3: localStorage löschen', 'info');
+    log('', 'info');
+  </script>
+</body>
+</html>

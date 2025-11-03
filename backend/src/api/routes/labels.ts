@@ -6,7 +6,7 @@ import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import { LabelGeneratorService } from '../../services/label-generator-service.js';
 import { StorageService } from '../../services/storage-service.js';
-import { ApiResponse, FilterParams, PaginationParams } from '../../types/label-types.js';
+import { ApiResponse, FilterParams, PaginationParams, PriceLabel } from '../../types/label-types.js';
 
 const router = Router();
 
@@ -290,7 +290,7 @@ router.post('/duplicate/:id', async (req: Request, res: Response): Promise<void>
  */
 router.post('/generate-from-article', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { articleId, templateId } = req.body;
+    const { articleId } = req.body;
 
     if (!articleId) {
       const response: ApiResponse = {
@@ -315,26 +315,22 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
     }
 
     // Generate label from article data
-    const labelData = {
+    const labelData: PriceLabel = {
       id: crypto.randomUUID(),
       articleNumber: article.articleNumber,
       productName: article.productName,
       description: article.description || '',
-      price: article.price || 0,
-      currency: article.currency || 'EUR',
-      ean: article.ean || '',
-      category: article.category || '',
-      manufacturer: article.manufacturer || '',
-      image: article.imageUrl || '',
-      qrCode: article.sourceUrl || '',
-      template: templateId || 'standard-label',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      tags: article.category ? [article.category] : [],
-      metadata: {
-        sourceArticleId: article.id,
-        generatedFrom: 'article',
+      priceInfo: {
+        price: article.price || 0,
+        currency: article.currency || 'EUR',
       },
+      imageUrl: article.imageUrl || undefined,
+      templateType: 'standard',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      tags: article.category ? [article.category] : [],
+      category: article.category || undefined,
+      source: 'manual',
     };
 
     // Save the label

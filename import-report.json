@@ -1,0 +1,1799 @@
+{
+  "timestamp": "2025-11-02T15:56:13.741Z",
+  "totalArticles": 594,
+  "imported": 358,
+  "failed": 236,
+  "needsTierQuantities": 0,
+  "importedArticles": [
+    {
+      "articleNumber": "1136",
+      "id": "8edb2079-15c0-4042-bf45-8da4e7aefdbe",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1224",
+      "id": "56fcbb53-d249-4043-b97d-309e65467049",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1272",
+      "id": "ee28084e-22cc-4b9e-aa27-891aaacbad98",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1273",
+      "id": "3beda5de-27eb-492d-af28-34d7b328e630",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1307-S",
+      "id": "ec96872b-56b5-46f7-9632-8c444fe09f9e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1343",
+      "id": "2212eee9-f19f-470e-8e9b-3e7126232f00",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1351",
+      "id": "3aed741d-8151-4800-874f-5e56ecbdcd30",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1370",
+      "id": "156eca76-4d52-4b83-837f-83886393d998",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1678",
+      "id": "b8fbf03a-fb86-4af5-89c9-ec8d980d393f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "2831",
+      "id": "d88d85be-f368-4f8d-b4fc-cb1dcc784373",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "2832",
+      "id": "0bc58fbe-79ec-4a37-9186-3a63e04e6fc3",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "2833",
+      "id": "2f58ab88-e0c9-4bb7-9d47-21be948b2e52",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3493",
+      "id": "93a16181-81a5-4b97-9f8f-66e421cd5689",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3495",
+      "id": "ed0f1b78-3398-4263-84b2-2d6e50ce0e60",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3504",
+      "id": "8cc4033c-b5ba-4a3a-b350-6e25a4314fbe",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3509",
+      "id": "435a059d-3580-45d3-a3d3-5edc674b66f5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3511",
+      "id": "96009680-7539-4dd1-9587-f7b63b53c105",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3523",
+      "id": "ee043b45-be40-409f-ab24-609be81d7a03",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3524",
+      "id": "4c3f8f57-237a-41bd-be69-044375a95e95",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3535",
+      "id": "27fc1163-70d6-4ebe-8dca-7611c6f5429f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3536",
+      "id": "a8e5a054-b0c0-4e13-9750-b58fe666481d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3536-ST",
+      "id": "b5bd0f12-4135-42ab-8eff-f293cdcc1d6a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3537",
+      "id": "e4cce390-1cae-464c-8012-a93c8a258fd1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3541",
+      "id": "51f2f195-b1df-4b3d-952e-a750f1e17107",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3544",
+      "id": "10e38fcd-3b1c-480e-8b99-455ac30058c0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3548",
+      "id": "3d0111b6-5432-4df4-815c-5d2fcfe19265",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3551",
+      "id": "beddb7b4-2377-4281-86ab-33fffdc7e753",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3551-FLEXI",
+      "id": "9c77eb13-6251-4d6d-affe-5862be8d3815",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3552",
+      "id": "ce076a38-13e8-4482-a0dd-20d924f214a4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3558",
+      "id": "2c50821c-5681-46ff-abad-843753cf5e22",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3559",
+      "id": "5256d1d9-3813-4ed8-bf15-559c3889df9d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3560",
+      "id": "c4ae0352-3385-41ca-80cb-131f3b814d64",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3561",
+      "id": "130ba49c-b388-40e8-b49a-6656f25f9e09",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3570",
+      "id": "1565cbc4-b8fe-4e2b-9d66-5fe4bec35551",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3571",
+      "id": "7033342d-e85a-4193-95b9-a4ce39620604",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3575",
+      "id": "7e5732d6-c973-4484-88d3-b5f0bd77524f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3576",
+      "id": "59456526-5b23-468d-be87-9b19dce3e687",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3577",
+      "id": "ddcb54cd-3ce6-4ec1-b350-3bf0dd0acf02",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3578",
+      "id": "79815f0b-c5a8-4f9f-a732-c26a6b283d5a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3579",
+      "id": "aba307e2-bb00-4338-a499-81403badd24b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3853",
+      "id": "417659a4-a5c0-4162-971a-ae038cebca62",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3854",
+      "id": "8e2f35ab-7d12-4f1a-b4dc-b86ea8c6fef5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3870",
+      "id": "176e1c57-4829-48cc-9307-fdacbf37fa45",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3871",
+      "id": "9d054643-8209-476a-a6bf-5f70ffc22a07",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3872",
+      "id": "4c4ac1bd-5e61-4258-85b8-01e837897839",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3873",
+      "id": "7beca698-48f6-4a8f-8c49-5ed4833a9e05",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3875",
+      "id": "4c415b81-c1d5-4680-bea0-48951ee56d2f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3876",
+      "id": "cd758081-fb0b-4b40-8153-3552065d903d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3877",
+      "id": "0b5b59af-cf50-4d9c-a775-925f2577e167",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3878",
+      "id": "b3e4f0da-aa82-4887-98e4-4fe0e9c5f97c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3879",
+      "id": "195c2137-d2f5-46fa-bfe1-376b23db0b48",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3880",
+      "id": "aea33e68-babb-4135-8ff2-9b6a8a249ab4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3881",
+      "id": "56fa4f28-8c3e-463c-8812-017ad5a97e38",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3882",
+      "id": "10c36d05-8b2d-49d5-82ab-0bcb02765a27",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3883",
+      "id": "539038a9-e020-4963-8e86-3d79fddc1155",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3884",
+      "id": "f5d0ed2b-d69b-4d05-9544-416b393035fe",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3885",
+      "id": "0dc7c0f9-916c-45c6-b1a8-f00b73596fe9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3886",
+      "id": "b22527ae-de01-4a26-8068-14ec6cf0adba",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3887",
+      "id": "265012c0-924d-4da4-bc70-7975e57a8848",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4043",
+      "id": "fab56aa3-d8b7-445a-b5c1-b5eb44f418b4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4044",
+      "id": "ceaa5b13-bcdc-463f-b8eb-a8d9ebc5a5f7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7589",
+      "id": "8692ae14-2d1e-4a20-a8e9-dbafc41d53bf",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7590",
+      "id": "278cf897-24ef-4ad7-be48-6360f06a5e9a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "83582",
+      "id": "9bb9f3bb-fd1f-4fb6-b3ea-7ff81b7f1595",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "83583",
+      "id": "53272966-3081-4d22-8471-a88fd579c368",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8391",
+      "id": "ccd37f80-d490-4f93-9359-a94da1143aa8",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8400-I",
+      "id": "1f8ec534-3699-415b-b26a-7c87b341f52b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8402-I",
+      "id": "958a8189-a1db-4fb4-a2f3-817646b2b9b6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8451-I",
+      "id": "cafe2e7b-c439-4fdc-9340-04026900a034",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8452",
+      "id": "1098be45-547b-4bab-9f2e-71ddbfe42be6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8810",
+      "id": "b1acaea2-2e91-4233-8b26-3e800574406b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "5009-L",
+      "id": "58be8979-56aa-4020-b0cf-d7b7720daecb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1033",
+      "id": "76d5bd57-5dc0-40cb-b38b-bbf07137fec7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6560-OS",
+      "id": "8f0e5ede-b5f4-4618-9f3a-e36ad6c5444c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6564",
+      "id": "5c5739a5-495f-401f-b20d-42c2e2aafda3",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8455",
+      "id": "ffbd11bb-5858-449f-a63e-22b987e7488d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8456",
+      "id": "6ff6066f-1456-460f-90ca-b4fa9b3eabbb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6563",
+      "id": "8869a9c0-71c3-4c2e-bc21-0332dbacac37",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6555-OS",
+      "id": "7e8c9068-db89-4298-bfbe-30605c623e32",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1120",
+      "id": "bf465f33-c30e-461e-adde-95dfa957aa21",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6556",
+      "id": "04e5fe32-1bdc-4f60-8c1b-9a35b2e3d008",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6557",
+      "id": "7bd783d4-5be2-4361-b412-14b3213b54cb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8891",
+      "id": "15a60e27-a204-46fc-9dbb-4fa29c4de6f4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6558",
+      "id": "6c055eef-086d-47df-8e91-4027357f475b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6561-K",
+      "id": "00247ac9-e6a0-4383-b3ca-6b64e182fdce",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6562",
+      "id": "e45c7cf3-317c-4d30-b1e3-2c86c1bb1bd6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1105",
+      "id": "f3f488ea-cbd2-4717-8e18-7bebf79ed149",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6567",
+      "id": "97e704b3-1cec-4fee-8c9e-3d37e0cf3293",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6559",
+      "id": "a9b69bef-e587-4cf6-8fc7-3352e4537b4c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6568",
+      "id": "f106dcb0-421e-4684-b716-2f1a76076c8e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6569",
+      "id": "97d8a7ef-56af-4355-9138-aba86c140725",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6570",
+      "id": "e59719ff-c91a-497c-be0e-537e1615f2cb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6571",
+      "id": "76551f12-7f6b-45c9-84f8-d97141926089",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6576-GE",
+      "id": "f0f3384f-b9fb-49a0-b9ed-36b94a881e5d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6576-R",
+      "id": "0dcb327d-9cb3-44e1-8e00-e9691c9d7100",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6586",
+      "id": "b8bb8819-b388-44bc-ab58-911b4a35044c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1020",
+      "id": "ba16bcfc-369a-45b9-b9d3-7a968c18ad26",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8392",
+      "id": "e02ec288-d3b5-4db5-ad0f-db4b5da57d7e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4370",
+      "id": "1155cc58-7459-4d07-966f-9fe3b2d6a826",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6350-OS",
+      "id": "9445fcc3-fdc3-4d1f-bb4f-c06dd456582c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6566",
+      "id": "7d8c54a6-9650-4a30-98e3-ac87ec5024b0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6577",
+      "id": "e52ced3c-51fd-4fe6-8d8c-c439c6139208",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6579",
+      "id": "0c867b19-5200-4196-98c9-7cd2e9406bd9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1540",
+      "id": "cad084a7-00f4-4252-95fc-5d17aa686f76",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3789",
+      "id": "4f851284-3e07-4e80-b695-91b0917bc3db",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "0901",
+      "id": "420d4c6d-693d-4ad4-9964-1d6ae7327711",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "0902",
+      "id": "737363f3-f3a7-4ede-8d64-fea7f85e2956",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "0903",
+      "id": "4c645377-093c-4b1a-b05d-be22c8c6504d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "0904",
+      "id": "77913106-2f19-49bd-afa1-d04bfdd46e8f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "0905",
+      "id": "dc2bcafa-344a-45b1-adba-2849049d1d8c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "0906",
+      "id": "840c2dd6-ae0c-405c-b056-c78c0f531a18",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3533-SCH",
+      "id": "d7a07d0d-8786-4ce0-8e5a-387829b20bc7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6553",
+      "id": "ae09a0a0-9d82-4471-a321-496692dbf72e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6554",
+      "id": "41b93e83-4edf-41ae-85fc-c7b8483ab997",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8354-S",
+      "id": "1b9ddd6d-20c9-4f01-a155-6cb310f50e10",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1550",
+      "id": "d41ae44c-9674-4195-8c97-33bdf0d57043",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3564-ST",
+      "id": "ab5d92cd-47c8-4b6f-b4a7-f9d751726220",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8766",
+      "id": "924ef08f-d0b9-4ca0-aada-d2e2e76ee8b1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6534-K",
+      "id": "0d08979b-afca-47ca-a479-3bcb7a65f5ea",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6543",
+      "id": "fc93c33e-865a-40cc-8a56-35136321e6f5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3538-SCH",
+      "id": "77a9faec-1fbe-4883-b91a-8e920da202c9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8129",
+      "id": "598dba4a-ab8b-4e9b-a852-c76aefbbf47e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8155",
+      "id": "3de51d5f-d814-4a97-bffa-bbf51747989c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6560-A3",
+      "id": "3f57443d-d90e-45a4-893e-a3383b1140e2",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1277",
+      "id": "e73ab18c-02ff-4ad1-99b7-62988fab0686",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8705-G",
+      "id": "e75d821c-988f-4c9a-b71a-d740c2936c52",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1541",
+      "id": "fc77e75d-cd0f-4660-9afe-acf8c2a72774",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3565-ST",
+      "id": "5cff79f1-3a4f-44d9-a0fd-4e272f64ff50",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "5050",
+      "id": "688930f1-9017-48a6-bea9-04653f7a35cf",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3512",
+      "id": "6dfcef4f-52ca-4507-8a9d-bae6d6034375",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3529-ST",
+      "id": "0869b328-5eeb-4200-9d86-c80caa41d85a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8101",
+      "id": "7d1c0271-31ea-416e-9ac9-2c2d17877db1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8149",
+      "id": "0ac9ad65-b30b-408e-8849-05eeaaef2802",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1278",
+      "id": "baba0ef7-df5a-40cf-9fc3-3bbdf265b7ad",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4369",
+      "id": "c52b691d-bed6-4a4f-a96b-df00955e4e01",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3539-ST",
+      "id": "bb4a866a-4baa-466b-8479-7eb4a5f97ae5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7703",
+      "id": "109cf8e1-a91d-4ded-84dc-f1c0cea4f2fe",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3540-ST",
+      "id": "0bed3d23-a919-4de6-bbe7-49153e74e5f3",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "87241-B",
+      "id": "c6ba3bf1-5ba6-4e56-ae59-f024bfaed126",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "87241-G",
+      "id": "17bdd5b1-5538-4ac0-acf9-c54c5eac45cd",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "87241-GR",
+      "id": "28594939-267b-4b1a-92b1-90445b9de2a6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "5071",
+      "id": "7ef8fbed-0208-4920-9845-1713c0f6b50e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8811",
+      "id": "124434af-aa3e-4d82-bdc4-5b0bd5c8cd07",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1279",
+      "id": "41a68084-fce4-4eff-abd2-a608bc02ef93",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "87261-G",
+      "id": "49160f8b-7e10-4262-9bbf-fc94047d85fc",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "87261-GR",
+      "id": "f92a36c3-d786-4f9b-96cb-26894342bcb9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3530-ST",
+      "id": "701b66b8-0590-412d-bfc0-59e77fd89e7c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4368",
+      "id": "404cdc46-3bb7-49ff-b7f1-30452bc56d3e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8302-B",
+      "id": "457b55d7-a934-441b-b3a1-3effaa4774e4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1275",
+      "id": "7789efe8-e88f-4a31-b189-6a4b48635150",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3533-ST",
+      "id": "916164c1-2784-4416-a63e-ee708c60a34d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4375",
+      "id": "9c366f83-c647-4db1-8c86-2fdd5521f1aa",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4376",
+      "id": "7d4df3ff-39e0-4d95-b4e7-7eecc3f7f2e8",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4081-SH",
+      "id": "006697b9-6b96-4dd4-84d2-ad89154b363d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4085-T",
+      "id": "132b7954-1bab-48d0-b5d3-0bb0b5bdc7e9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4086-T",
+      "id": "ac814b5b-6231-4f16-9fbf-1b3c24904d60",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4087-T",
+      "id": "55b1f76b-b9c5-4f47-9fa0-a4c910c9a730",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4088-T",
+      "id": "1af1b72f-984c-4b09-b2fe-438412611678",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4089-T",
+      "id": "debc4a08-f940-4a98-b450-1f977b4b731d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8976-C",
+      "id": "5f1b4bf9-c617-4520-961d-726e1597efe7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3611",
+      "id": "fa74d599-90b8-49b7-9033-175eacbf3119",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4382",
+      "id": "f828f05f-344e-476a-96bd-c44edc5152f7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3532-ST",
+      "id": "ba046c0d-2e11-456e-a670-e1cd4f93949c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3534-ST",
+      "id": "ee7ffa99-dd07-44c1-94d9-4291476eed56",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6854-D",
+      "id": "c784a2d8-17c8-47dc-8d9d-154693cd79db",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3510",
+      "id": "0c449169-36ba-4985-9b10-df85586a2b49",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8128",
+      "id": "6894f9e9-dd1b-4ace-abef-e9dbb623d7a3",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3110",
+      "id": "dd45c196-b35b-4c1b-bf54-6d33b0b31a4b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8841-ST",
+      "id": "37d1aeb8-f372-4f71-a3da-f999c39fd786",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3557-ST",
+      "id": "df4d7580-510e-4b25-812f-5636f5092b82",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7607-A",
+      "id": "45fb6c8a-fa5a-4e90-a8d2-16776ca7ecf5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3554-ST",
+      "id": "f3fd6044-22cb-416b-88b9-953ad869f2bf",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7706-AK",
+      "id": "b5ce9f08-60d0-4fd1-9b74-cf9ae1f4c93a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1281-A",
+      "id": "815dc242-bcd4-46b8-b320-5c61f2f45759",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8407-SH",
+      "id": "140e91f0-eec0-45c4-9b06-cfe580edf548",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4371",
+      "id": "d3c5ff27-b6a1-4fcf-9dcd-51cc52b84a03",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1977",
+      "id": "70b86e0b-e0df-43be-b4a8-db7ff59af6c7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8154",
+      "id": "0b60da33-80a0-44a5-8dfe-edc4cbf63bb2",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8372",
+      "id": "ec547d24-e231-4094-8d47-6d379e951a90",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3545-ST",
+      "id": "1af8d453-bc24-45d4-ba45-a6531f61c713",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7576-N",
+      "id": "adfcd822-ac17-4f37-9008-0804bc26f916",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8373",
+      "id": "b4ca0439-1bc8-4bb8-af78-468d676e7fb7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8978",
+      "id": "2bae67df-460a-4e0a-ab63-6a1c801b874d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8978-E",
+      "id": "0f16a3a1-d178-4779-867a-e3564b146ac9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1296",
+      "id": "86de3b33-0abc-441e-943e-9d6265d14af2",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8981",
+      "id": "51d56d89-7c23-4641-9001-5a21302fe22c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7699-E",
+      "id": "871478ca-836b-4486-ab5a-23257ec6bbbd",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1296-E",
+      "id": "043e043c-59be-4e78-b9a9-a4689648019f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1685",
+      "id": "90cd12ca-e0c4-4c9d-b334-8055970e479a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3556-ST",
+      "id": "b37d0478-c6cf-42dd-94ca-bdc91f48f863",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8825",
+      "id": "ed7c0415-3089-42b8-8986-e227e4679108",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1686",
+      "id": "f5afcbf7-2ca8-444c-a5c7-2a6ac81cc08c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8842-KK",
+      "id": "a59cb55b-a409-4b43-ab99-226b45ff86e6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8895",
+      "id": "c9ac2606-bcc5-4b7c-9064-3531ce55c3db",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1297",
+      "id": "03075b60-44e4-433f-816d-73dcf58c261c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7706-WH",
+      "id": "0edd6b88-9a22-435b-bf52-78f884c22ff5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7665",
+      "id": "c0617014-fa19-4c4e-8ae2-97a25b39714e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3685",
+      "id": "c975b196-edc0-4c3f-a972-f6e00b37f9b6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3787",
+      "id": "5bb86de1-a79c-4af9-be88-da9e0d378657",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7750",
+      "id": "4b4b0f0b-3dc0-4f7b-9477-32726bdc1325",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8348",
+      "id": "e491a4dc-3f4c-47ba-b833-c82b300c7d2a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6488",
+      "id": "62edf0b9-0902-4936-a086-810d18301667",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1059",
+      "id": "ac62f090-7239-4af4-81dd-b3bdfa324337",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4138",
+      "id": "ed09d3be-6e61-4285-a89c-12d2b97d9408",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3805",
+      "id": "2052a15f-b5f5-4ad1-88c6-b96a03152641",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1359",
+      "id": "bbb26c68-c83d-4b55-a28a-89fc2600e569",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1280-SH",
+      "id": "cabbd86e-64f0-42fc-9c4a-aa50c61bc5a6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1281-SH",
+      "id": "76e1a103-cd05-4625-8afd-6557d61375e0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3200",
+      "id": "2df15d6c-780a-4d45-bb97-4fc0ee0d585c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1128",
+      "id": "cffee59d-adf4-4a8c-9f70-b9023f5a4d70",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3201",
+      "id": "ea73fee7-942c-46e3-91e7-77013a08fd7d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3119",
+      "id": "a27e8e10-100e-47a5-847a-04afc8347dda",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1486",
+      "id": "2d2e03cd-02fe-40a8-8a83-18b79e3d2e2d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1487",
+      "id": "1f80fd29-09e3-4da6-9b54-19575e57767a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7779",
+      "id": "3112167b-13a0-4933-8e98-49c9f702dc92",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1286-A",
+      "id": "98ba9d69-b557-4ac9-976c-333ba1d0055e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7740-SH",
+      "id": "90846a06-afe9-4c52-9cb8-a2e75025fd8b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1242",
+      "id": "b1eb4d6a-4d85-49f7-8b9f-0cfce30dce8e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1283-SH",
+      "id": "64ef03f5-1e50-4af9-b903-b10bda1dc8e6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1284-SH",
+      "id": "269b712d-1136-4b9b-aa81-b5f660c9ec00",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8350",
+      "id": "02e1331c-ba1f-4d96-a595-c26f95b305e9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8843-R",
+      "id": "c1efe778-3bc1-4dab-88b5-2fe7ca95f814",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7905",
+      "id": "0af8eb99-c8d8-450f-b8ab-ecb399dc16f9",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7702-WH",
+      "id": "7c7f83fc-ac6f-4c89-a314-d47eb4e7f490",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3683",
+      "id": "56ace83b-ee34-467f-81a7-8c9da9770054",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1251",
+      "id": "229d1f3d-4c83-4c82-8b78-dd9fbf0e599c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1252",
+      "id": "9c1caa49-aa09-4ef1-8c42-0a2c255f57cf",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1006",
+      "id": "8472bb78-616f-4b56-90d5-d90297fd4ecf",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1253",
+      "id": "e8d23b0a-ad50-42b8-ad73-5e56955a11f0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7699-SH",
+      "id": "d44a8b23-af23-4ae0-b018-741cce48b1a4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8888",
+      "id": "778028ce-1774-4a39-9724-91d44068b93b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3785",
+      "id": "c77b6e8f-fb06-49f2-b9ee-fe74a6136b6e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4372",
+      "id": "c38bf9db-aa53-4692-b43a-b17b9bee2239",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7784",
+      "id": "58325150-1c29-4dca-a19f-369217447639",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4366",
+      "id": "781cd4a4-10eb-4642-b618-714616226a27",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1342",
+      "id": "bd1bd061-87a2-473c-b490-a24984664a98",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3810",
+      "id": "1f245627-ad14-49e9-a437-3578c4ac6416",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "2602",
+      "id": "1fbd8816-8b49-41da-a480-ddfa39726fcb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "2612",
+      "id": "13ff4040-11d6-4477-99c6-7fb469adf412",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7914",
+      "id": "1038b88b-f17d-43ff-b8b9-1bc225d2fc85",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7668",
+      "id": "6a06a7a9-1c54-4b35-ad7d-2ae5507f2eb6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1256",
+      "id": "b4bdcccf-7557-42d3-ac36-9f0c675cb33f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1126-SH",
+      "id": "cb2bced9-461e-4876-b754-8114409d56e5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1259",
+      "id": "5cac0425-95d6-4a1f-b453-33fcd3caf53f",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7906",
+      "id": "8d2d9f02-890f-43e3-8e97-7364597b678a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8398-SH",
+      "id": "b6f0726c-e69f-423c-ac66-4dd27900f666",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7901",
+      "id": "fefe5aff-2d5f-4cbe-96a8-72673fe161f6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7902",
+      "id": "89eb2d32-c3ed-4cfd-b969-d49fdd87a3d6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1127",
+      "id": "eda55b91-86a2-4708-927b-c9018adbaca5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1301-N",
+      "id": "0b26680c-bd68-42ed-bcab-344045d14721",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1360-A",
+      "id": "b69fdb12-7bfa-471a-9ae5-bb237f7a4865",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7786",
+      "id": "a7bcd48b-7382-4e57-9583-7cc3d66c63c1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7902-E",
+      "id": "47d62faf-292f-46ec-81ff-3921571f3a93",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4030",
+      "id": "44f2de2d-0065-4009-96b8-607729643c88",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4361",
+      "id": "7155fde2-ace9-43db-9720-ede555cfa45b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1127-E",
+      "id": "b967d9d9-55bf-4b98-8152-5b7496d518d0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1010",
+      "id": "23652efb-416c-4c1d-a60c-b4d087fe9aa0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1987",
+      "id": "07a6fff1-1697-4a3f-8521-070eb2e79647",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4362",
+      "id": "da45a152-b27c-4722-84ee-ea296ab7ba8b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8382-1c",
+      "id": "ebdbd0ee-ea11-4426-8370-dd767d6c7f29",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7599",
+      "id": "3c5cd161-9626-43f4-8025-f48803935a12",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7908",
+      "id": "2675ac44-1fe3-4386-a54e-e98dc4c89ca0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7744",
+      "id": "1c7256b0-ea05-455d-9160-a8d0da743df7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1121",
+      "id": "04db41b8-e823-4b62-9b48-660f6c4ec4e8",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7787",
+      "id": "97ad0a52-5f56-493e-9a7b-19077247fa2b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7908-E",
+      "id": "5338e1e2-f290-471d-ad29-6a0e032e8d00",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1239",
+      "id": "17490919-9834-441d-870f-5271f778a417",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7705",
+      "id": "6e8e2b5d-fc25-4589-b3a6-a7c10c497605",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7579",
+      "id": "fa54aa91-7ff7-441d-ad3d-86bd013ff5ca",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1989",
+      "id": "25d12b27-7949-4665-aa2b-93bc3bc8b7e1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1013",
+      "id": "3dc09399-51bd-4afe-9b57-7ed866f53c59",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7905-SH",
+      "id": "e5163e35-8154-494b-b0c7-56e9e52ad09a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1311-I",
+      "id": "325875d4-9bd1-45bb-82ad-a79e72c1acd7",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1984",
+      "id": "a1cdb19b-a68d-4210-b81d-313e6ba6baf5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1140-T",
+      "id": "2bbb354c-d329-4573-86df-680eb0e19303",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1141",
+      "id": "e8222a42-a6b7-466e-b62f-bb211029033a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7904",
+      "id": "f849b8c3-701c-44a6-9a29-2c06a9c674ab",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7907",
+      "id": "6e29b9c3-023c-4914-a60a-a201b28a85dd",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7903",
+      "id": "1c981094-6a4c-4567-800d-bcaa0bc3f8fc",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7900-SH",
+      "id": "3f9c2d0e-33ad-4317-85ca-5ef0c74c53fb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8886-S",
+      "id": "6971d691-83b8-4e82-a8f2-05872041ebab",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8886-W",
+      "id": "0f1b691b-118c-4758-be0b-ff03b8015b47",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1990",
+      "id": "c37fda76-e18f-4468-b9c1-579c9a2e3619",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "3804",
+      "id": "c2fa5b4c-7b86-4687-a154-4f8f0313a532",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1367",
+      "id": "975b08f3-77bd-44b9-b833-d1d3ea0b0f25",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1286-S",
+      "id": "3053e4d4-3160-4803-8c9f-ea36d0cd66ee",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1991",
+      "id": "69389196-0be5-4537-b306-2fad9dc2e3ab",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7909",
+      "id": "fdb99c32-bebf-4cfb-914e-f11d6def34e4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1988",
+      "id": "6dbab7ff-f48f-42dd-94bb-0e5a79c98b2a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7669",
+      "id": "62cb8301-42d3-41fc-9acb-0c0ce3e1538d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6857",
+      "id": "2c53da3d-39b0-4fb4-b95c-add5ee8184d0",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7909-E",
+      "id": "43d9328a-b55e-4851-84d8-871c177d9589",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7561",
+      "id": "c7f2452a-74f8-42f9-b160-7007307ba266",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1235",
+      "id": "d2e6d221-42b3-4da0-a549-0ff1a397c3be",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8306-N",
+      "id": "9f31d713-92e5-47f1-928b-cc1aeb876bab",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1017",
+      "id": "dc8db930-b45a-46f3-8dbe-c16e54e35b38",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7906-SH",
+      "id": "91b14fc9-0a15-47ca-a2cd-1a5346f9ff50",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7563",
+      "id": "1e4ee861-37ae-4c87-8f27-cfe509ce4b19",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1233",
+      "id": "43ac3f80-a758-4985-906b-dacaba32abec",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1233-OS",
+      "id": "84c181d1-2049-4198-b121-92f7f0a9e7b6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7576",
+      "id": "dadc20fd-954a-4c85-b834-fea67dd3063b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1320-SH",
+      "id": "f17452de-dc26-4c4b-9086-644e377d7781",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7901-SH",
+      "id": "674e244c-5e91-4cc3-a172-037b188b8b30",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1237-OS",
+      "id": "7a4786f2-7d31-4d03-b2f1-9b15d65b884c",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7562-OS",
+      "id": "00e0caf2-30c3-4e23-8728-aebd887b8657",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8306",
+      "id": "8cfa5887-bca0-4d9c-b553-157748c0d36b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1985",
+      "id": "4f1166e5-eb9a-49ec-9233-d7bfff5ec01b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8828-SH",
+      "id": "adbf5d6f-e7b2-41a6-8b0c-d52949799f8d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7908-SH",
+      "id": "e84f0006-8086-4d6c-9de5-0ffdad95789e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4040",
+      "id": "8687b569-0121-45ec-9dbb-4496a671c97a",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4041",
+      "id": "cead0ddb-105e-4f86-8de2-a6366e2a29b3",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4172",
+      "id": "8e59ae68-f2b1-4a0c-8681-e7bc3984b982",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4194",
+      "id": "929a920e-9a1a-4339-816f-1bdc8c24cd5d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7431",
+      "id": "a330c9fe-a1ff-4dcb-81df-1251478106a5",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8399-SH",
+      "id": "3d3101ab-fb01-47cf-b7c9-5c6b8ddd24ab",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7564-OS",
+      "id": "7beda6c2-88a8-4d63-9807-e2238c513a94",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1992",
+      "id": "c588ae15-ea7b-4210-8e57-4f67b0400988",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4364",
+      "id": "6aa894af-2389-4adf-b688-0d4414628f5e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7909-SH",
+      "id": "d94bfd13-3c1b-4fb0-aa76-c5d5a5318d14",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7709-WE",
+      "id": "3d53f76c-9951-4908-85e5-d80eae26fa17",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7702-OS",
+      "id": "976ac702-b3a7-44a7-91ff-eb214f93325b",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7702-SH",
+      "id": "d2093a60-2c4f-4e1c-ad81-eef246e3621e",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1011",
+      "id": "bfbed2bc-1815-4f96-a477-aaaa0aead247",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8823",
+      "id": "1d4efcdf-f237-4658-9d7e-e10e38a4c70d",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7702-15-WE",
+      "id": "2eed07ae-5f75-4d15-a0ef-fa2c74b4ccaf",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7608-OS",
+      "id": "a0787b0d-0e14-4c83-b141-2aad8ab901ca",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4365",
+      "id": "69ba52fb-6a94-44d0-b8ac-0bdff6c94009",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8822",
+      "id": "06acdaab-81fe-4efd-8e89-bdfac2d4d903",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8827-SH",
+      "id": "2b5a4330-c3de-4daf-819b-083c91a33636",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7701-OS",
+      "id": "6c970297-6342-413e-a35d-143757a5ae39",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "1137",
+      "id": "dfeceb82-55a5-4498-b7fe-e1c656517e28",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7521",
+      "id": "d5707bb5-d155-4509-b6ac-9752e4f249ca",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8824",
+      "id": "357c1a1c-e9fd-4cde-baff-f4fbd96f8e82",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7610-OS",
+      "id": "10b46ba8-9d23-4fde-b1a6-c98290134b98",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7701-300-WE",
+      "id": "a3cb7b72-1fc0-47ae-8ea7-b3b3a138a3c6",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7586",
+      "id": "55c482bf-50da-4b3b-99b6-57c16fe9b4a1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7739-SH",
+      "id": "699b1753-5921-451a-a707-3fbc49486745",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4363",
+      "id": "7ce895e7-d10a-4c42-a08a-e5facad899b4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7580-N",
+      "id": "f2880312-c419-48f7-b090-7fd6d4b95a00",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "6852",
+      "id": "0b286a2a-4d6a-4ec7-8544-4be4734442c4",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7580-TTSE",
+      "id": "475298cb-7c3b-41ad-8ba7-c560ba8e0344",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7583-OS",
+      "id": "02980963-b4a0-4e8f-b2d2-14a1eba8e801",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7602",
+      "id": "9ca5d302-9e56-4bed-a398-81e053595feb",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7701-600",
+      "id": "2aed7377-bccd-4cb7-adef-926ffdce9803",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7584-TTSE",
+      "id": "103d6fa0-aac5-4ca1-b6f7-5c9632f7a4f3",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7585-TTSE",
+      "id": "bc188376-70d0-4e32-b895-1d7aa97bb806",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "8458",
+      "id": "6cd36636-add8-42a0-aef4-00a534214dde",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7583-TTSE",
+      "id": "51873686-e0ea-4453-b745-0b5163cb0c87",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7701-600-WE",
+      "id": "f2eabc8e-b8c5-4165-86fc-ad490887d764",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7537-OS",
+      "id": "31498975-9916-4f4a-8ab1-5e5cb8ed2105",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7522-OS",
+      "id": "e1f478a2-6ea3-4b43-b8bf-a02378d17783",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7523",
+      "id": "17bef483-b27a-4c28-828f-7a69b71d4ebd",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7534-OS",
+      "id": "41170543-1738-4875-95c8-81537ae32cec",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7535-OS",
+      "id": "cf6972ab-9939-43d4-aa44-1d4caff0c453",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7550",
+      "id": "e18da97e-023a-4265-a2a7-b2d50deb0a99",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7538-OS",
+      "id": "b6df7d16-d2ba-4b08-b140-c7a33d31ebb1",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "7536-OS",
+      "id": "42bf0360-c9f8-41fb-bf4d-69098bf82f50",
+      "needsTierQuantities": false
+    },
+    {
+      "articleNumber": "4201",
+      "id": "27785971-0431-4035-af2e-fcdfbcc85a50",
+      "needsTierQuantities": false
+    }
+  ]
+}

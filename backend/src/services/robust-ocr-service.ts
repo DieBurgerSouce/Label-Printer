@@ -4,8 +4,6 @@
  */
 
 import { createWorker, Worker } from 'tesseract.js';
-import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { existsSync } from 'fs';
@@ -26,7 +24,6 @@ const DEFAULT_CONFIG: OCRConfig = {
 
 export class RobustOCRService {
   private workers: Map<string, Worker> = new Map();
-  private activeJobs: Map<string, any> = new Map();
   private isInitialized = false;
   private config: OCRConfig;
   private processedCount = 0;

@@ -258,7 +258,7 @@ class AutomationService {
     const ocrConfig = job.config.ocrConfig || {};
 
     // Get the full screenshot data from the crawler
-    const crawlJobFinal = webCrawlerService.getJob(job.results.crawlJobId);
+    const crawlJobFinal = webCrawlerService.getJob(job.results.crawlJobId || '');
     const fullScreenshots = crawlJobFinal?.results.screenshots || [];
 
     // Deduplicate by folder name (article number OR timestamp)
@@ -285,7 +285,7 @@ class AutomationService {
     console.log(`  📊 Deduplicated: ${fullScreenshots.length} → ${uniqueScreenshots.length} screenshots`);
 
     // Check if we have enough unique screenshots
-    const targetProducts = job.config.maxProducts || 50;
+    const targetProducts = (job.config as any).maxProducts || 50;
     if (uniqueScreenshots.length < targetProducts) {
       console.log(`  ⚠️ WARNING: Only ${uniqueScreenshots.length} unique screenshots found, but ${targetProducts} were requested!`);
       console.log(`  ℹ️ This shop may not have enough unique products. Processing what we have...`);

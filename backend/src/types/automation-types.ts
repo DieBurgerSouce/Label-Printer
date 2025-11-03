@@ -82,6 +82,7 @@ export interface OCRProcessResult {
   confidence: number;
   success: boolean;
   error?: string;
+  productUrl?: string | null;
 }
 
 export interface MatchProcessResult {

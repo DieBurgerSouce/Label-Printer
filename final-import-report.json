@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-11-02T15:57:39.971Z",
+  "phase1_imported": 358,
+  "phase2_imported": 236,
+  "total_imported": 594,
+  "total_failed": 0,
+  "needs_tier_quantities": 236,
+  "csv_for_maintenance": "nachpflege-staffelmengen.csv"
+}

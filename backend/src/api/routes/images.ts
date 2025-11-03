@@ -6,13 +6,10 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 
 const router = express.Router();
 
-// Get __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// __filename and __dirname are available globally in CommonJS
 
 // Base paths for different image types - adjusted for correct directory structure
 // __dirname is in src/api/routes, we need to go up 3 levels to backend, then into data

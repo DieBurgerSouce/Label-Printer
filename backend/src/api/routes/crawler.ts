@@ -71,9 +71,42 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
       });
     }
 
+    // Calculate variant statistics
+    const baseProducts = job.results.screenshots.filter(
+      s => !s.metadata?.variantInfo || s.metadata.variantInfo.isBaseProduct
+    );
+    const variants = job.results.screenshots.filter(
+      s => s.metadata?.variantInfo && !s.metadata.variantInfo.isBaseProduct
+    );
+
+    // Group variants by parent URL
+    const variantsByProduct = new Map<string, any[]>();
+    variants.forEach(variant => {
+      const parentUrl = variant.metadata?.variantInfo?.parentUrl || variant.productUrl;
+      if (!variantsByProduct.has(parentUrl)) {
+        variantsByProduct.set(parentUrl, []);
+      }
+      variantsByProduct.get(parentUrl)?.push(variant);
+    });
+
     res.json({
       success: true,
-      data: job
+      data: {
+        ...job,
+        variantStats: {
+          totalProducts: baseProducts.length,
+          totalVariants: variants.length,
+          totalScreenshots: job.results.screenshots.length,
+          variantsByProduct: Array.from(variantsByProduct.entries()).map(([url, variants]) => ({
+            productUrl: url,
+            variantCount: variants.length,
+            variants: variants.map(v => ({
+              label: v.metadata?.variantInfo?.label,
+              articleNumber: v.metadata?.articleNumber
+            }))
+          }))
+        }
+      }
     });
 
   } catch (error) {

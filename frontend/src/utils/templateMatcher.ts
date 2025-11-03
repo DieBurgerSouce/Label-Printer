@@ -14,19 +14,23 @@ export function evaluateCondition(article: Product, condition: RuleCondition): b
     case 'priceType': {
       const hasTieredPrices = article.tieredPrices && article.tieredPrices.length > 0;
       const hasNormalPrice = typeof article.price === 'number' && article.price > 0;
+      const isAufAnfrage = article.tieredPricesText &&
+                           article.tieredPricesText.toLowerCase().includes('auf anfrage');
 
-      let articlePriceType: 'normal' | 'tiered' | 'none';
+      let articlePriceType: 'normal' | 'tiered' | 'auf-anfrage' | 'none';
 
-      // Priority: If tieredPrices exist, it's a tiered price article
+      // Priority: tieredPrices > auf anfrage > normal > none
       if (hasTieredPrices) {
         articlePriceType = 'tiered';
+      } else if (isAufAnfrage) {
+        articlePriceType = 'auf-anfrage';
       } else if (hasNormalPrice) {
         articlePriceType = 'normal';
       } else {
         articlePriceType = 'none';
       }
 
-      const expectedType = condition.value as 'normal' | 'tiered';
+      const expectedType = condition.value as 'normal' | 'tiered' | 'auf-anfrage';
 
       if (condition.operator === 'is') {
         return articlePriceType === expectedType;

@@ -102,6 +102,7 @@ export default function RuleConditionRow({ condition, onChange, onDelete, showDe
           >
             <option value="normal">Normaler Preis</option>
             <option value="tiered">Staffelpreis</option>
+            <option value="auf-anfrage">Auf Anfrage</option>
           </select>
         ) : condition.field === 'priceRange' ? (
           <input

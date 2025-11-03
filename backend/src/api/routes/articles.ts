@@ -26,8 +26,8 @@ const productBaseSchema = z.object({
   })).optional(),
   tieredPricesText: z.string().optional(), // Raw OCR text for label formatting (e.g., "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR")
   currency: z.string().default('EUR'),
-  imageUrl: z.string().url().optional(),
-  thumbnailUrl: z.string().url().optional(),
+  imageUrl: z.string().optional(),
+  thumbnailUrl: z.string().optional(),
   ean: z.string().optional(),
   category: z.string().optional(),
   manufacturer: z.string().optional(),
@@ -41,12 +41,14 @@ const productBaseSchema = z.object({
 const createProductSchema = productBaseSchema.refine(
   (data) => {
     // Either price or tieredPrices must be provided (but not necessarily both)
+    // Special case: "Auf Anfrage" articles have price=0 and tieredPricesText="Auf Anfrage"
     const hasPrice = data.price !== null && data.price !== undefined && data.price > 0;
     const hasTieredPrices = data.tieredPrices && data.tieredPrices.length > 0;
-    return hasPrice || hasTieredPrices;
+    const isAufAnfrage = data.tieredPricesText && data.tieredPricesText.toLowerCase().includes('auf anfrage');
+    return hasPrice || hasTieredPrices || isAufAnfrage;
   },
   {
-    message: "Either price or tieredPrices must be provided",
+    message: "Either price, tieredPrices, or 'Auf Anfrage' must be provided",
     path: ["price"]
   }
 );
@@ -139,7 +141,7 @@ router.get('/', async (req: Request, res: Response) => {
  * GET /api/articles/stats
  * Get statistics about products
  */
-router.get('/stats', async (req: Request, res: Response) => {
+router.get('/stats', async (_req: Request, res: Response) => {
   try {
     const [total, withImages, verified, published, categories] = await Promise.all([
       prisma.product.count(),

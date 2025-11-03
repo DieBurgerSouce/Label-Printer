@@ -1,0 +1,18 @@
+{
+  "articleNumber": "1050",
+  "productName": "Kistenwaschmaschine Teco",
+  "description": "Professionelle Kistenwaschmaschine für die Industrie. Robuste Konstruktion, energieeffizient, wartungsarm. Ideal für Lebensmittelbetriebe, Logistikzentren und Produktionsanlagen.",
+  "price": 0,
+  "tieredPrices": [],
+  "tieredPricesText": "Auf Anfrage",
+  "currency": "EUR",
+  "imageUrl": "/api/images/screenshots/1d96977d-8429-4cb4-9333-b94411c44348/1050/product-image.png",
+  "thumbnailUrl": "/api/images/screenshots/1d96977d-8429-4cb4-9333-b94411c44348/1050/article-number.png",
+  "sourceUrl": "https://shop.firmenich.de/Kistenwaschmaschinen/Kistenwaschmaschine-Teco",
+  "crawlJobId": "1d96977d-8429-4cb4-9333-b94411c44348",
+  "ocrConfidence": 0.89,
+  "verified": false,
+  "published": true,
+  "category": "Reinigungsmaschinen",
+  "manufacturer": "Teco"
+}

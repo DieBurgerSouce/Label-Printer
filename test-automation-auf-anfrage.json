@@ -1,0 +1,8 @@
+{
+  "urls": ["https://shop.firmenich.de/Kistenwaschmaschinen/Kistenwaschmaschine-Teco"],
+  "options": {
+    "extractImages": true,
+    "extractPrices": true,
+    "extractTieredPrices": true
+  }
+}

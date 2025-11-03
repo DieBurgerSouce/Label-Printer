@@ -12,6 +12,7 @@ export interface OCRResult {
   rawText: string;
   boundingBoxes: BoundingBox[];
   processingTime: number;
+  error?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -122,8 +123,10 @@ export const FIELD_PATTERNS = {
   ],
   tieredPrice: [
     /ab\s+(\d+)\s+(?:St(?:ü|ue?)ck|Stk\.?|St\.?):?\s*(\d+[,\.]\d{2})/gi,
+    /bis\s+(\d+)\s+(?:St(?:ü|ue?)ck|Stk\.?|St\.?)?:?\s*(\d+[,\.]\d{2})/gi,
     /(\d+)\+:?\s*(\d+[,\.]\d{2})/g,
     /Staffel:?\s*(\d+)\s*-\s*(\d+[,\.]\d{2})/gi,
+    /(ab|bis)\s+(\d+)\s*:?\s*(\d+[,\.]\d{2})\s*€/gi,
   ],
   ean: [
     /EAN:?\s*(\d{13})/i,
@@ -149,6 +152,7 @@ export const DEFAULT_PREPROCESSING: ImagePreprocessingOptions = {
   sharpen: true,
   normalize: true,
   grayscale: true,
+  threshold: 180, // More aggressive thresholding for cleaner text
   resize: {
     width: 2000, // Upscale small images for better OCR
     fit: 'inside',

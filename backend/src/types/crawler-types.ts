@@ -42,6 +42,9 @@ export interface Screenshot {
   thumbnailPath?: string;
   metadata: ScreenshotMetadata;
   extractedElements?: ExtractedElements;
+  // Variant relationship fields
+  parentScreenshotId?: string; // ID of parent product screenshot (for variants)
+  variantType?: 'base' | 'color' | 'size' | 'material' | 'other';
 }
 
 export interface ScreenshotMetadata {
@@ -51,6 +54,16 @@ export interface ScreenshotMetadata {
   pageTitle: string;
   fileSize: number;
   format: 'png' | 'jpeg' | 'webp';
+  targetedScreenshots?: any[];
+  layoutType?: string;
+  // Variant tracking fields
+  articleNumber?: string;
+  variantInfo?: {
+    label: string;
+    type: string;
+    isBaseProduct: boolean;
+    parentUrl?: string;
+  };
 }
 
 export interface ExtractedElements {
@@ -174,5 +187,15 @@ export const COMMON_PRODUCT_SELECTORS: Record<string, ProductSelectors> = {
     articleNumber: '.sku',
     productName: '.product-item-name',
     nextPageButton: 'a.action.next'
+  },
+  // Add Firmenich shop specific selectors
+  firmenich: {
+    productContainer: 'li.product',
+    productLink: 'a.woocommerce-LoopProduct-link',
+    productImage: 'img.attachment-woocommerce_thumbnail',
+    price: '.price',
+    articleNumber: '.sku',
+    productName: '.woocommerce-loop-product__title',
+    nextPageButton: 'a.next.page-numbers'
   }
 };

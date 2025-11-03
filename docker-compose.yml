@@ -1,63 +1,31 @@
 version: '3.8'
 
 services:
-  # Backend API Server
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: label-printer-backend
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: screenshot-algo-postgres
     ports:
-      - "3001:3001"
+      - "5432:5432"
     environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-screenshot_algo}
     volumes:
-      - ./backend/src:/app/src
-      - ./backend/data:/app/data
-      - backend_node_modules:/app/node_modules
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - label-printer-network
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  # Frontend React App
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: development
-    container_name: label-printer-frontend
-    ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_URL=http://localhost:3001
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - ./frontend/index.html:/app/index.html
-      - frontend_node_modules:/app/node_modules
-    networks:
-      - label-printer-network
-    depends_on:
-      - backend
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
-  # Redis Cache
+  # Redis Cache & Queue
   redis:
     image: redis:7-alpine
-    container_name: label-printer-redis
+    container_name: screenshot-algo-redis
     ports:
       - '6379:6379'
     volumes:
@@ -72,11 +40,59 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # Frontend Builder (nur für Build-Prozess)
+  frontend-builder:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: builder
+    container_name: screenshot-algo-frontend-builder
+    volumes:
+      - frontend-dist:/app/dist
+    command: sh -c "echo 'Frontend build completed' && sleep 5"
+    profiles:
+      - build
+
+  # Backend API Server (serviert auch das Frontend)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: screenshot-algo-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3001
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-screenshot_algo}?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CORS_ORIGINS=http://localhost:3001
+    volumes:
+      - ./backend/data:/app/data
+      - ./frontend/dist:/app/frontend-build:ro
+    networks:
+      - label-printer-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
 volumes:
+  postgres-data:
+    driver: local
   redis-data:
     driver: local
-  backend_node_modules:
-  frontend_node_modules:
+  frontend-dist:
+    driver: local
 
 networks:
   label-printer-network:

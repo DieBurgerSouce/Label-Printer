@@ -1,0 +1,5224 @@
+{
+  "timestamp": "2025-11-02T16:28:02.755518",
+  "summary": {
+    "totalInExcel": 1039,
+    "totalInSystem": 769,
+    "inBoth": 445,
+    "onlyInSystem_TO_MARK": 324,
+    "onlyInExcel_MISSING": 594
+  },
+  "articlesToMark": [
+    {
+      "id": "975496ad-4966-4db0-b6f7-46409453c993",
+      "articleNumber": "6850",
+      "productName": "NADEL FÜR FOLIENNÄHMASCHINE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ce8883f8-f9a6-4a8a-9e69-a37a450f03af",
+      "articleNumber": "1999",
+      "productName": "RANDSÄCKE GRÜN, 27 X 60 CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "00f38b68-8c4a-4040-9f2e-2ee8078d6845",
+      "articleNumber": "1994",
+      "productName": "BESCHWERUNGSSACK AUS LDPE ZUM BEFÜLLEN\nMIT SAND",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9db4b854-f6eb-48e0-b1ff-30f18ec96bc2",
+      "articleNumber": "6847",
+      "productName": "FOLIENNÄHMASCHINE BETA F",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8ad38d3e-6883-4750-a286-c60e7db9db11",
+      "articleNumber": "1034",
+      "productName": "DRAHTHERING GEOHIT L GEWELLT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1f4cb8cd-2f9c-4a10-8ef7-80bd607a8f11",
+      "articleNumber": "3529",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 2\" X\nINNENGEWINDE 2\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f08439c0-54b8-4d1c-bf5a-d42df7ed5e9f",
+      "articleNumber": "3564",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 2\" X\nAUSSENGEWINDE 2\" STARTVERBINDER",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a51d3b40-d4e0-49c2-b296-6ee0adbb5ffb",
+      "articleNumber": "3556",
+      "productName": "STECKVERBINDER T-STUCK 3 X\nFLACHSCHLAUCH 3\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8e0ca0d6-3fd6-4645-ae5f-59b1c409fff4",
+      "articleNumber": "3557",
+      "productName": "STECKVERBINDER T-STÜCK 3X\nFLACHSCHLAUCH 2\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "45de7b00-e79c-461f-adeb-9a9aa46338e2",
+      "articleNumber": "3565",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 3\" X\nAUSSENGEWINDE 3\" STARTVERBINDER",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c865c8dd-4fd2-4aab-8e34-ddf79ae05ab1",
+      "articleNumber": "3530",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 3\" X\nINNENGEWINDE 3\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9cb22202-f3fd-4900-a89a-fc662dd1f8a0",
+      "articleNumber": "3554",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 3\" X\nFLACHSCHLAUCH 3\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "129c3fbc-ecec-4e21-b5f6-be3635b9e4f5",
+      "articleNumber": "3514",
+      "productName": "DRUCKMINDERER KUNSTSTOFF FEST\nEINGESTELLT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "526b536e-780d-4650-acd9-bb35906cc432",
+      "articleNumber": "7624",
+      "productName": "VERKAUFSWAAGE ER-JR 6 HOCH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "71f3ebd4-833b-46cf-b2e6-504a0ca20bf1",
+      "articleNumber": "7635",
+      "productName": "VERKAUFSWAAGE ER-J 15",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0a403336-f693-4750-874f-7f3cdfbf35c4",
+      "articleNumber": "7631",
+      "productName": "VERKAUFSWAAGE ER PLUS 15 HOCH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "422d5e17-e1d7-46ce-8696-a1fd82e47ae8",
+      "articleNumber": "7683",
+      "productName": "VERKAUFSWAAGE DIGI DS-700 30 KG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "caa77178-c689-47ba-a5e1-2aa1c655f354",
+      "articleNumber": "3498",
+      "productName": "DRUCKMINDERER 3\" - GUSSEISEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5092ada7-f3d0-4b2c-b435-b6045f3aab92",
+      "articleNumber": "7639",
+      "productName": "VERKAUFSWAAGE ER PLUS 30",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "214e5a47-1300-4c21-9920-3af8676dd338",
+      "articleNumber": "3494",
+      "productName": "F7050 SCHEIBENFILTER",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "570ae302-532a-4ae5-b77d-8773040ffa94",
+      "articleNumber": "3499",
+      "productName": "DRUCKMINDERER 2\" - GUSSEISEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "82a93076-1206-4f48-8fe3-85b0a817b0b0",
+      "articleNumber": "7652",
+      "productName": "VERKAUFSWAAGE DIGI DS 781 6 KG MIT\nHOCHANZEIGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3867ce4b-6ec4-4749-b7af-5e69acc9f820",
+      "articleNumber": "7867",
+      "productName": "NETZTEIL FÜR CAS SW-W+",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d6c68818-3c40-4b1a-a619-a58054f407f1",
+      "articleNumber": "7608",
+      "productName": "PLATTFORMWAAGE E - SI10 15 KG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f26b1cf4-e611-4cf3-b320-e548109a7898",
+      "articleNumber": "7651",
+      "productName": "VERKAUFSWAAGE DIGI DS 78115 KG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3934baba-cc7c-4747-9104-1f417008e70f",
+      "articleNumber": "7864",
+      "productName": "NETZTEIL FÜR CAS ERM / ER-PLUS / ER-JR",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5f297d0a-485e-4cd1-b8d0-dead74ee28c0",
+      "articleNumber": "7701",
+      "productName": "PLATTFORMWAAGE DB-II-XL 300",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6f897cf1-6d98-4fb8-8677-5871f3d7f736",
+      "articleNumber": "7866",
+      "productName": "NETZTEIL FÜR CAS PR + SWII",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6e9eef39-c844-4360-986c-9f370b7d34e2",
+      "articleNumber": "7534",
+      "productName": "ETIKETTIERWAAGE CL5200 MIT HOCHANZEIGE\n(6/15)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "be6d13ed-4284-4ab2-9c1a-39a50b9ff235",
+      "articleNumber": "7522",
+      "productName": "ETIKETTIERWAAGE CL5200 (3/6)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f2251b48-bb77-4336-8a2c-255a61d961c6",
+      "articleNumber": "7656",
+      "productName": "MONO-BATTERIEN R20 FÜR WAAGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "886f97c0-d886-4bc4-bd60-898dabb1625a",
+      "articleNumber": "7524",
+      "productName": "HELMAC OFFENE LADENKASSE GPE-XT-NF 15\nKG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3f3c169f-2d87-4e5d-ae86-86b9209c468c",
+      "articleNumber": "7537",
+      "productName": "ETIKETTIERWAAGE CL5000 (15/30)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "67673749-210b-441a-9122-ee1e11e2a0d0",
+      "articleNumber": "7538",
+      "productName": "ETIKETTIERWAAGE CL5000 MIT\nERGONOMISCHER HOCHANZEIGE (15/30)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ccac5ce9-0e9c-4103-b7ac-fc47000bab9b",
+      "articleNumber": "7536",
+      "productName": "ETIKETTIERWAAGE CL5000 MIT\nSELBSTBEDIENER-PANEL (6/15)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5704aef1-2960-40cf-9f3f-42fd88b50ede",
+      "articleNumber": "7535",
+      "productName": "ETIKETTIERWAAGE CL5000 MIT HOCHANZEIGE\n(15/30)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "02fe81c0-b2e2-461f-b5b8-f5e8cbec33e3",
+      "articleNumber": "7613",
+      "productName": "ELICOM ERSATZAKKU PK",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "4458eff2-7808-4ef9-a9b5-243d46261cd1",
+      "articleNumber": "1236",
+      "productName": "ELICOM S300 P 15/30 TISCHWAAGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d8c478dd-5859-458d-aaa3-7ac505322fee",
+      "articleNumber": "7526",
+      "productName": "ETIKETTEN FÜR CL5200 FORMAT 10, 11, 12",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8a1cfe1d-0af7-418e-82e6-6892e211cb63",
+      "articleNumber": "1237",
+      "productName": "ELICOM S300 PM 6/15 TISCHWAAGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "81854697-8d35-4e39-9bc4-199679613d93",
+      "articleNumber": "1232",
+      "productName": "ELICOM S300",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b4996255-fc64-4b06-9cf4-f028a9e34940",
+      "articleNumber": "1231",
+      "productName": "ELICOM S300 6/15 KG MIT HOCHANZEIGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7704f486-e65e-4680-8924-712a98610368",
+      "articleNumber": "1229",
+      "productName": "ELICOM EIERHALTER",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "93e90395-d2eb-4c7e-a889-202c7c8492aa",
+      "articleNumber": "7623",
+      "productName": "CAS CL5500 R-6 BON- & ETIKETTENWAAGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b00645bd-1b02-4c59-8496-12490da45803",
+      "articleNumber": "7618",
+      "productName": "CAS CL5500 B-6 BON- & ETIKETTENWAAGE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0048372e-1161-4ce0-a908-92cc4d42fa65",
+      "articleNumber": "7554",
+      "productName": "CAS HFS PLATTFORMWAAGE MIT\nANZEIGEGERÄT (150 X 150) MIT\nWERKSEICHUNG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2b25cfe1-7b5d-49fc-96bc-03280097d92e",
+      "articleNumber": "7565",
+      "productName": "CAS WAAGE SW-W+ (10KG)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "cee9e951-3802-4240-9897-7f083202850c",
+      "articleNumber": "7553",
+      "productName": "CAS HFS PLATTFORMWAAGE MIT\nANZEIGEGERÄT (150 X 125)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "20cf96d6-4f93-4bde-8f47-f98f6ae4f936",
+      "articleNumber": "7557",
+      "productName": "CAS MP WIEGEHUBWAGEN 1500",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "00f89800-af47-41b4-9253-8f079ebe459e",
+      "articleNumber": "7556",
+      "productName": "CAS-UFS PALETTENWAAGE 3000",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "acdd260b-88dc-4be4-9b4d-c6f3f75300fb",
+      "articleNumber": "7583",
+      "productName": "BON-DRUCKERWAAGE CTF100/6 HOCH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b5cc1b59-f189-4d2b-a197-9b8ab330553a",
+      "articleNumber": "7706",
+      "productName": "WANDHALTERUNG FÜR PB WAAGEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7a075de6-5302-4b4c-9839-fa8400294501",
+      "articleNumber": "7580",
+      "productName": "BON-DRUCKERWAAGE CT 100-N (3/6)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "53701f01-6d38-45b2-9cf3-bb2f609543b9",
+      "articleNumber": "7584",
+      "productName": "BON-DRUCKERWAAGE CT 100-N (6/15) HOCH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "46b4f0d3-713d-481f-bb02-2221e456bd1f",
+      "articleNumber": "7593",
+      "productName": "AKKU FÜR ELICOM S200 / S300",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c7781cd6-c430-4d6d-9a6d-840d299dd8f3",
+      "articleNumber": "7702",
+      "productName": "WANDHALTERUNG FÜR PLATTFORMWAAGE\nDB-II",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a9152d80-465f-46d1-bcd1-5aa5f7338a69",
+      "articleNumber": "7559",
+      "productName": "AKKU FÜR HFS PLATTFORMWAAGE\n(ANZEIGEGERÄT)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0e5be933-1737-47d0-8a5b-080ce3b584b1",
+      "articleNumber": "7600",
+      "productName": "AKKU FUR ELICOM E-SI10",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7e353413-4997-4e12-8f99-9d6d5f3365d9",
+      "articleNumber": "8966",
+      "productName": "VAKUUMVERPACKUNGSMASCHINEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "936cdbf7-f4e5-49a2-8796-dc5520d93ff9",
+      "articleNumber": "7607",
+      "productName": "AKKU FÜR PR II UND SW II",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "07023a75-599e-41e6-9bf1-20b467b6734c",
+      "articleNumber": "7740",
+      "productName": "T-BANDEROLE \"FRISCHER SPARGEL\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "95c5dc19-05a2-40d8-823b-0fc93d57030a",
+      "articleNumber": "8883",
+      "productName": "UMREIFUNGSSYSTEM \"HANDY\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "39331466-8225-4ad6-bc43-84c2628d1b21",
+      "articleNumber": "8402",
+      "productName": "SPARGELBEUTEL AUS PERGAMENT-ERSATZ - 3\nKG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5e310537-4863-430d-94b1-43c01118f834",
+      "articleNumber": "8403",
+      "productName": "SPARGEL-TRICHTER-BEUTEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1c26eb26-79d7-4202-be76-88fa50b310d3",
+      "articleNumber": "8882",
+      "productName": "QUALITÄTSPACKBAND, BRAUN, OHNE DRUCK",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d5d8b7ad-bf59-43ff-9106-a8cb918a3016",
+      "articleNumber": "8881",
+      "productName": "QUALITÄTSPACKBAND, TRANSPARENT, OHNE\nDRUCK",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "01e4c2d4-f0dd-426f-bae0-59bb89a4acdc",
+      "articleNumber": "1114",
+      "productName": "SPANKORBTYPR 3, FÜR 2,5 KG MIT HOLZGRIFF",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7283d349-cefe-4436-9854-cf7a9b967e3d",
+      "articleNumber": "1320",
+      "productName": "SHAKER MIT DECKEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "cd9b5f3b-a0ad-4fe4-89c5-4c8d84f7f99d",
+      "articleNumber": "8970",
+      "productName": "SIEGELRANDGERAT \"FRISCHEPACKER TSS”",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "54069af2-4950-4f2c-a08e-ac8847f79413",
+      "articleNumber": "1292",
+      "productName": "PAPIERTRAGETASCHE UNBEDRUCKT NASSFEST\n- NEU!",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "37b9ff3b-7069-4590-9983-dee295126190",
+      "articleNumber": "8425",
+      "productName": "PAPIERTRAGETASCHE SPARGEL & ERDBEERE &\nKARTOFFEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0ceb7052-3089-43d9-bbe4-9d83bdd92dc4",
+      "articleNumber": "8386",
+      "productName": "PAPIERTRAGETASCHE APFELMOTIV \" AUS DER\nREGION\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f19a328-bba4-4892-8e11-920748745252",
+      "articleNumber": "8421",
+      "productName": "PAPIERTRAGETASCHE KARTOFFELN REGION",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "889763b3-1735-470c-bf4a-cde53aa0ac63",
+      "articleNumber": "8423",
+      "productName": "PAPIERTRAGETASCHE KARTOFFEL & SPARGEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "34203312-0b9a-49a3-b2cf-375d246f7225",
+      "articleNumber": "8420",
+      "productName": "PAPIERTRAGETASCHE SPARGEL & ERDBEERE\nNACHHALTIG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "78ad6c77-5e96-411f-8a80-50aab9420ebe",
+      "articleNumber": "8419",
+      "productName": "PAPIERTRAGETASCHE SPARGEL & ERDBEERE\nNEU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "20b6b167-9359-4bea-93c9-b6cb8a810414",
+      "articleNumber": "8411",
+      "productName": "PAPIERTRAGETASCHE MIT KORDEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5da36bd8-6ff3-4725-bc5b-a49edc612463",
+      "articleNumber": "8422",
+      "productName": "PAPIERTRAGETASCHE BAUERNHOF GENUSS-\nGARANTIE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8767c67d-fe56-4cbb-8307-a22690fcb4e2",
+      "articleNumber": "8424",
+      "productName": "PAPIERTRAGETASCHE BEERENSTARK",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c003d39b-9f09-4acb-ad8d-7faeda5b6c9b",
+      "articleNumber": "8382",
+      "productName": "PAPIERTRAGETASCHE INDIVIDUELL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "758738d9-a009-4499-b7ac-a9c4cdee6bef",
+      "articleNumber": "8394",
+      "productName": "PAPIERTRAGETASCHE \"ERDBEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "47c83a25-6412-419b-9d9e-1ef53c5bd38b",
+      "articleNumber": "1286",
+      "productName": "STEAM FRESH DECKFOLIE NEU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ca3d8aaa-85f3-44f5-8b86-18ef3f11f534",
+      "articleNumber": "8407",
+      "productName": "PAPIERTRAGETASCHE 26+17X25 CM BRAUN,\nUNBEDRUCKT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5376652f-ab67-489a-b8fa-92d9e0d55b1f",
+      "articleNumber": "8408",
+      "productName": "PAPIERTRAGETASCHE \"APFEL - AUS DER\nREGION\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "93303507-1ee4-4c01-ae3d-04bcbced8224",
+      "articleNumber": "8393",
+      "productName": "PAPIERTRAGETASCHE\n\"VERANTWORTUNG/GENUSS\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2a22ca95-c544-401a-95c8-1b5f63031005",
+      "articleNumber": "8388",
+      "productName": "PAPIERTRAGETASCHE \"OBST & GEMÜSE\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7dd83458-d8a1-4836-b92c-d8bce94b487a",
+      "articleNumber": "8409",
+      "productName": "PAPIERTRAGETASCHE \"NATÜRLICH. LECKER.”",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "4722409d-fd5f-4f58-9f0b-3f841dd8df28",
+      "articleNumber": "8370",
+      "productName": "HEMDCHENTRAGETASCHEN EXTRASTARK,\nWEISS",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f2a0d5e-f7f1-443e-b615-fadd21938fca",
+      "articleNumber": "8360",
+      "productName": "HEMDCHENTRAGETASCHEN, TRANSPARENT,\nGELOCHT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "61cfed79-8441-476c-8fe0-e09ea0dea4d2",
+      "articleNumber": "8368",
+      "productName": "HEMDCHENTRAGETASCHE KOMPOSTIERBAR,\nCLEVER EINGETÜTET",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5233c26c-9e1e-4cc3-9fd4-38795550f1ce",
+      "articleNumber": "8361",
+      "productName": "LDPE-HEMDCHENTRAGETASCHEN,\nTRANSPARENT, GELOCHT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f2ccade4-c447-43dc-b7b9-845c4866fd2a",
+      "articleNumber": "8412",
+      "productName": "HEMDCHENTRAGETASCHE BIO PE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "120928b3-4994-4f87-a67a-4ee591076901",
+      "articleNumber": "8336",
+      "productName": "HEMDCHENTRAGETASCHE APFEL & BIRNE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "528e43cf-aff3-4402-92ec-581bfd60ffd4",
+      "articleNumber": "7723",
+      "productName": "GUMMIRINGE GRÜN, \"FRISCHER DEUTSCHER\nSPARGEL\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7bdeb47e-1342-4a49-97bf-a4bed79d7e83",
+      "articleNumber": "8320",
+      "productName": "HEMDCHENTRAGETASCHE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0b2d1ef6-8d1f-42e8-a838-3219f4c5c1e0",
+      "articleNumber": "8340",
+      "productName": "HDPE HEMDCHENTRAGETASCHE EXTRASTARK,\nWEISS",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b19ac3fb-c21e-4665-b8da-7c0e718eab31",
+      "articleNumber": "8328",
+      "productName": "HEMDCHENTRAGETASCHE \"AUS DER REGION\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "41dfa019-67c8-4d9c-9f81-99bf5c445f68",
+      "articleNumber": "8355",
+      "productName": "DIE GUTE GÜNSTIGE ALLROUND -\nPAPIERTRAGETASCHE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "41dfafc1-e604-48f6-9775-6b0466cb0aee",
+      "articleNumber": "1482",
+      "productName": "EINLEGEPAPIER FÜR 7,5 KG KORB 2-SEITIG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ba768fc0-3d2a-4cf5-98d1-36119fc84c58",
+      "articleNumber": "1301",
+      "productName": "BEERENOBSTSCHALEN PET 1.000 G,\nTRANSPARENT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "75543c4f-5791-4e78-9a38-743f5556ed1f",
+      "articleNumber": "1321",
+      "productName": "BEERENOBSTSCHIFFCHEN HOLZSCHLIFF 200 G\nOHNE AUFDRUCK",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6e7525f7-e546-4606-931b-793510846e64",
+      "articleNumber": "1313",
+      "productName": "BEERENOBSTSCHALEN 500 G HOLZSCHLIFF\nOMNI",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c73a5073-7823-430a-9a6f-5aa1ac1673f0",
+      "articleNumber": "8374",
+      "productName": "BODENBEUTEL 2,5 KG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2fb6d976-d144-4d73-a2e1-73cf11a59090",
+      "articleNumber": "1302",
+      "productName": "BEERENOBSTSCHALEN PET 1.000 G, BLAU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b54a72e0-3534-4f25-b5fd-cd822a5c6c89",
+      "articleNumber": "8375",
+      "productName": "BODENBEUTEL1,5KG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f1b47a4e-e0c9-4572-bb7b-5b3df54732fc",
+      "articleNumber": "8378",
+      "productName": "5 KG PAPIERTÜTE FÜR KARTOFFELN \"HAPPY\nPOTATOE\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2f993ca2-7c80-4f3a-a7b2-24e2ca862cd3",
+      "articleNumber": "8381",
+      "productName": "5 KG PAPIERTRAGETASCHE KARTOFFELN NEU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "251e8d08-ce8e-4a0b-aa44-4dbf53999918",
+      "articleNumber": "8884",
+      "productName": "BANDSPANNER F. ALLE UMREIFUNGEN 13 -19 MM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1af5e39d-07cf-407a-b6ff-00d965ced7f4",
+      "articleNumber": "8380",
+      "productName": "2,5 KG PAPIERTRAGETASCHE KARTOFFELN\nNEUTRAL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "97bc3246-8c36-450b-a9c9-3f6a3c90af79",
+      "articleNumber": "8377",
+      "productName": "2,5 KG PAPIERTÜTE FÜR KARTOFFELN \"HAPPY\nPOTATOE\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "20915eed-b257-4510-a290-a7a3abb0f52c",
+      "articleNumber": "8395",
+      "productName": "PAPIERTRAGETASCHE 26+12X35 CM BRAUN,\nUNBEDRUCKT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5884d2f4-0b91-48fc-be21-208eff6818f8",
+      "articleNumber": "8379",
+      "productName": "2,5 KG PAPIERTÜTE FÜR KARTOFFELN MIT\nSICHTFENSTER",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "bffe0b90-fbfb-4f96-92c1-36f118a3d136",
+      "articleNumber": "8376",
+      "productName": "1,5 KG PAPIERTÜTE FÜR KARTOFFELN \"HAPPY\nPOTATOE\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "23eb3143-753a-4067-bbb4-3e76a6b7cefa",
+      "articleNumber": "9879",
+      "productName": "WINKENDES SPARGELMÄNNCHEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "db68ea72-5e73-4ca4-b0f7-c8d34fd448c1",
+      "articleNumber": "4177",
+      "productName": "WERBEBALLON WEIHNACHTSMANN GROSS (7,5\nM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "43c91a2c-9d74-4008-aa8b-89e9ec4207cd",
+      "articleNumber": "9876",
+      "productName": "WINKENDE ERDBEERFIGUR 3,50M",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "cd38ab47-8289-4698-a1b7-fd21bc9e9314",
+      "articleNumber": "4127",
+      "productName": "TROPFENBANNER XL SPEISEKARTOFFELN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "bfe32cd8-d751-4467-adbf-f1781a802d25",
+      "articleNumber": "4154",
+      "productName": "TROPFENBANNER SPARGEL/GRÜNSPARGEL\n(NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "20b6ebe3-1c42-496f-9988-11a60f2bcb4b",
+      "articleNumber": "9877",
+      "productName": "WINKENDES SPARGEL-/ERDBEERMÄNNCHEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c1aede64-dab7-40d2-8787-d910f9d8b906",
+      "articleNumber": "9878",
+      "productName": "WINKENDES SPARGEL-/ERDBEERMÄNNCHEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d4c622d3-0797-4b61-afff-96745a139508",
+      "articleNumber": "4145",
+      "productName": "TROPFENBANNER SPARGEL/ERDBEEREN\nFELDFRISCH (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "afa9a1ff-a0a0-4043-b077-45d6e7ef63af",
+      "articleNumber": "4146",
+      "productName": "TROPFENBANNER SPARGEL (WEISS)\nFELDFRISCH (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ea457aa8-13e2-4da0-bb67-49adaf233e4c",
+      "articleNumber": "4155",
+      "productName": "TROPFENBANNER FRISCHE BEEREN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "fa1b57a0-644b-435c-abbc-26e44011128d",
+      "articleNumber": "0056",
+      "productName": "TROPFENBANNER OBST & GEMÜSE (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0997722b-a285-4548-bbf4-b15a9de2a04c",
+      "articleNumber": "0055",
+      "productName": "TROPFENBANNER KARTOFFELN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d5e0e012-de1f-4d7a-a724-ab46090bd884",
+      "articleNumber": "4128",
+      "productName": "TROPFENBANNER L SPEISEKARTOFFELN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "362355f3-48cb-4a50-8d63-a543c1c113d0",
+      "articleNumber": "0059",
+      "productName": "TROPFENBANNER KIRSCHEN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0509bdfb-0a56-432d-9697-c801674b8f71",
+      "articleNumber": "0054",
+      "productName": "TROPFENBANNER HEIDELBEEREN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "759d4b59-9fc8-4f59-91c2-7e9fe72e0160",
+      "articleNumber": "4167",
+      "productName": "TROPFENBANNER OBST U. GEMÜSE (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "09423f43-3921-4145-98d2-00de141d1083",
+      "articleNumber": "4153",
+      "productName": "TROPFENBANNER KIRSCHEN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c268a7b8-14fe-4d9c-98f9-5e0afa7b6bb0",
+      "articleNumber": "4168",
+      "productName": "TROPFENBANNER KARTOFFELN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b3284de1-25e7-48fd-abde-a10b3b3c276e",
+      "articleNumber": "4169",
+      "productName": "TROPFENBANNER FRISCHE ÄPFEL (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "444882bc-e66c-4d82-9a3f-c2871c91a049",
+      "articleNumber": "4142",
+      "productName": "TROPFENBANNER ERDBEEREN FELDFRISCH AUS\nEIGENEM ANBAU (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a70db8ad-4ec1-4c5f-8c12-16765c850bb1",
+      "articleNumber": "4219",
+      "productName": "TROPFENBANNER FELDFRISCHER SPARGEL &\nERDBEEREN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "fbcda2bf-0c4c-40de-9df8-48b3e667ce7a",
+      "articleNumber": "4218",
+      "productName": "TROPFENBANNER FELDFRISCHER SPARGEL (NUR\nTUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1d153ed7-8741-4877-aa81-f988e5a7cc3b",
+      "articleNumber": "4144",
+      "productName": "TROPFENBANNER ERDBEEREN AUS EIGENEM\nANBAU (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f8be324c-46bc-43d3-a6fb-2cb9f950d3f0",
+      "articleNumber": "0051",
+      "productName": "TROPFENBANNER ERDBEEREN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c60f23d6-4fef-45ea-901c-a8ca232dd3c7",
+      "articleNumber": "4156",
+      "productName": "TROPFENBANNER BIO GEMÜSE (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e04e4a15-9c23-4165-9ee3-432a680e2b61",
+      "articleNumber": "4152",
+      "productName": "TROPFENBANNER \"FELDFRISCHE HEIDELBEEREN\"\n(NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6ac6c2de-d336-439f-93c6-14672654a297",
+      "articleNumber": "0060",
+      "productName": "TROPFENBANNER ÄPFEL (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "045c51db-62ec-4bd4-982b-35038cf09bd9",
+      "articleNumber": "0053",
+      "productName": "TROPFENBANNER BEEREN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7e68a3a2-87c1-4c04-bd17-f8df495aeacd",
+      "articleNumber": "4143",
+      "productName": "TROPFENBANNER ERDBEEREN FELDFRISCH (NUR\nTUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "81e32424-efd6-41b4-afad-c3a0a6ba0ac0",
+      "articleNumber": "4123",
+      "productName": "TRANSPORTTASCHE FÜR TROPFENBANNER XL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "939e1e2f-be5f-4bf6-a343-a9f7c1bbcfc7",
+      "articleNumber": "2950",
+      "productName": "TAFELREINIGER AUF BIOLOGISCHER BASIS",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c1f383ca-daa5-472e-95b2-eb6e542c5397",
+      "articleNumber": "3588",
+      "productName": "SPARGELSCHILD XL134* FAHRBAR ( HÖHE:\n125CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d4ff6acd-5f5c-481c-b9f7-a03f6cbd0f54",
+      "articleNumber": "3607",
+      "productName": "TEDDY STEHEND XL141* ( HÖHE: 145CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "17452623-cc5b-4e84-a6a7-c6afe0d97c9c",
+      "articleNumber": "4163",
+      "productName": "TROPFENBANNER \"ERDBEERE\" (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "544a73b6-c731-45d5-a174-c1cc47e2e650",
+      "articleNumber": "4215",
+      "productName": "SEGELBANNER SPARGEL (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9bb62b41-37ad-4a24-bdf2-bdba9a38278d",
+      "articleNumber": "3591",
+      "productName": "SPARGEL GROSS XL128* ( HÖHE: 190CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8bf9fca5-e867-4835-b17f-9b35be8bfa8b",
+      "articleNumber": "6497",
+      "productName": "SERVIETTEN ERDBEERMOTIV",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "675e46a3-97df-4b36-b446-076638a00d17",
+      "articleNumber": "3592",
+      "productName": "SPARGEL GROSS MIT SCHILD XL129* ( HÖHE:\n230CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5301dbd5-9bb9-4fce-a274-5b7f34b4631a",
+      "articleNumber": "3589",
+      "productName": "SPARGEL MIT TAFEL XL107* ( HÖHE: 180CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3851e5dd-fd79-4f88-8a39-b87722843d3f",
+      "articleNumber": "3594",
+      "productName": "SPARGEL KLEIN MIT SCHILD XL131* ( HÖHE:\n160CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "4d7ffda6-c1db-46f5-aa27-14764432a7ce",
+      "articleNumber": "3590",
+      "productName": "SPARGEL OHNE TAFEL XL108* ( HOHE: 130CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f7eeb985-a7a9-4ae0-9b04-4e358e3280ac",
+      "articleNumber": "4214",
+      "productName": "SEGELBANNER KARTOFFELN (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7a5e1e2e-ef29-49e5-b6af-ed930ce33926",
+      "articleNumber": "6492",
+      "productName": "SERVIETTEN APFELMOTIV",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "351c555c-a38e-4c31-bff1-689e348236e0",
+      "articleNumber": "1383",
+      "productName": "ROLLPLAKAT KLEIN \"KIRSCHEN \"(180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "461b8604-1089-4a4e-aac5-d4a45046642f",
+      "articleNumber": "4213",
+      "productName": "SEGELBANNER ERDBEERE AUFSCHRIFT \"DIREKT\nHIER\" (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c38378d7-28cd-42e3-953a-0bd31b29486e",
+      "articleNumber": "1371",
+      "productName": "ROLLPLAKAT KLEIN \"TÄGLICH FRISCHER\nSPARGEL\" (180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e2c0b206-92fc-4c04-9aa5-75abd19f36c6",
+      "articleNumber": "1453",
+      "productName": "ROLLPLAKAT KLEIN \"HIMBEEREN\" (180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f6f6b8f-6ed9-4320-b098-f541eb4ccd15",
+      "articleNumber": "1387",
+      "productName": "ROLLPLAKAT KLEIN \"KARTOFFELN \"(180 X 60\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d5dd7b16-baf9-4077-a036-79bdedfbef8f",
+      "articleNumber": "4216",
+      "productName": "SEGELBANNER ERDBEERE AUFSCHRIFT \"ZUM\nSELBER PFLUCKEN\" (NUR TUCH)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1e6a5119-1075-4946-b8bd-887de0ace152",
+      "articleNumber": "1437",
+      "productName": "ROLLPLAKAT KLEIN \"SPARGEL & ERDBEEREN\nTÄGLICH FELDFRISCH\" (180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "bba8874b-4dd7-4d48-a938-ff430f595a6b",
+      "articleNumber": "1438",
+      "productName": "ROLLPLAKAT KLEIN \"SPARGEL & GRÜNSPARGEL\nTÄGLICH FELDFRISCH\" (180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "92e1023c-9ad1-44d0-b4b9-3cbca393c071",
+      "articleNumber": "1451",
+      "productName": "ROLLPLAKAT KLEIN \"ZWETSCHGEN\" (180 X 60\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f23ffff2-5666-42f7-baae-ed64efe7de17",
+      "articleNumber": "2186",
+      "productName": "SAUCE VANILLE A 330 ML NASCHKATZE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a6bc6874-78e1-4394-ae80-59045f8140df",
+      "articleNumber": "1375",
+      "productName": "ROLLPLAKAT KLEIN \"FRISCHES OBST & GEMÜSE”\n(180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2a69c18d-78bb-4a40-bb05-bc9ec05161c9",
+      "articleNumber": "1385",
+      "productName": "ROLLPLAKAT KLEIN \"FRISCHE BEEREN \"(180 X 60\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "aaf7eee3-2e80-4b2a-9216-154c5a1b4925",
+      "articleNumber": "1379",
+      "productName": "ROLLPLAKAT KLEIN \"FRISCHE APFEL\"(180 X 60\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f55a2bb-8988-4928-abec-98859db9c3ac",
+      "articleNumber": "1452",
+      "productName": "ROLLPLAKAT GROSS \"ZWETSCHGEN\" (300 X 120\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a1d953c2-ddf7-4702-8312-0082a1754987",
+      "articleNumber": "1373",
+      "productName": "ROLLPLAKAT KLEIN \"FELDFRISCHE\nHEIDELBEEREN\"(180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f7ecf7ca-3f0b-4dd9-8daf-3175d876c0fa",
+      "articleNumber": "1366",
+      "productName": "ROLLPLAKAT KLEIN \"FRISCHER SPARGEL\"(180 X\n60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b647f944-9d6e-40d4-9662-95623f5b3cc2",
+      "articleNumber": "1361",
+      "productName": "ROLLPLAKAT KLEIN \"FRISCHE ERDBEEREN \"(180 X\n60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "349a3b8b-e447-4abd-a0d8-c477d0bd2415",
+      "articleNumber": "1455",
+      "productName": "ROLLPLAKAT KLEIN \"ERDBEEREN — SPARGEL &\nGRÜNSPARGEL \" (180 X 60 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "24ebdd40-19eb-4416-a491-4297bf7a523c",
+      "articleNumber": "1454",
+      "productName": "ROLLPLAKAT GROSS \"HIMBEEREN\" (300 X 120\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "98377538-fbf0-4036-a7c9-619a35cb76e9",
+      "articleNumber": "1456",
+      "productName": "ROLLPLAKAT GROSS \"ERDBEEREN - SPARGEL &\nGRUNSPARGEL\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a2bc1899-4cdf-41fb-be97-ba50de7ccbde",
+      "articleNumber": "1386",
+      "productName": "ROLLPLAKAT \"FRISCHE BEEREN\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "dc53b38e-b067-4502-8f21-aa1703f17b68",
+      "articleNumber": "1337",
+      "productName": "ROLLPLAKAT FRISCHE KARTOFFELN (300 X 120\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ae1b38ca-ff91-47a2-9b8c-c90ff9ddd096",
+      "articleNumber": "1338",
+      "productName": "ROLLPLAKAT FRISCHE KARTOFFELN. (300 X 120\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ba3ea518-7393-4ae8-bcae-19792045695e",
+      "articleNumber": "1388",
+      "productName": "ROLLPLAKAT \"KARTOFFELN\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "350d7d8a-9c67-49d1-bb16-ee8815dc63a8",
+      "articleNumber": "1439",
+      "productName": "ROLLPLAKAT \"SPARGEL & ERDBEEREN TÄGLICH\nFELDFRISCH\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "234a0097-71df-414a-b7e4-d4a87e174c80",
+      "articleNumber": "1372",
+      "productName": "ROLLPLAKAT \"TÄGLICH FRISCHER SPARGEL\"\n(300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2115862a-ea4c-4367-aeab-4cc2587b2b00",
+      "articleNumber": "1360",
+      "productName": "ROLLPLAKAT \"FRISCHE ERDBEEREN\" (300 X 120\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ada2ac3d-7235-4402-b27f-190fb4c8b69e",
+      "articleNumber": "1436",
+      "productName": "ROLLPLAKAT \"SPARGEL & GRÜNSPARGEL\nTÄGLICH FRISCH\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "255736ea-dc8c-4b83-aa79-25dff92e8632",
+      "articleNumber": "1376",
+      "productName": "ROLLPLAKAT \"FRISCHES OBST & GEMÜSE” (300\nX 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c7dfe536-d54c-40c1-b032-20137765e96c",
+      "articleNumber": "1384",
+      "productName": "ROLLPLAKAT \"KIRSCHEN\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "84ef24f7-a4ac-4cec-8e16-8d848e3b7c7e",
+      "articleNumber": "1418",
+      "productName": "ROLLPLAKAT \"DEUTSCHE ERDBEEREN\nFELDFRISCH\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2312f07c-00d2-4fbe-844b-5f749a960645",
+      "articleNumber": "1374",
+      "productName": "ROLLPLAKAT \"FELDFRISCHE HEIDELBEEREN”\n(300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8087c4b8-ec2a-4034-a3ed-d3d7117688ff",
+      "articleNumber": "1410",
+      "productName": "ROLLPLAKAT \"SPARGEL GRUN/WEISS\" (300 X\n120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9751ed50-a652-4909-a830-f474241c2372",
+      "articleNumber": "1380",
+      "productName": "ROLLPLAKAT \"FRISCHE APFEL\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8b3b211f-da8e-4aed-9565-3cea3ef5c80e",
+      "articleNumber": "1412",
+      "productName": "ROLLPLAKAT \"SPARGEL/ERDBEEREN - EINFACH\nLECKER\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "16922eeb-85c6-42e7-b397-2c116d4c13d9",
+      "articleNumber": "1416",
+      "productName": "ROLLPLAKAT \"ERDBEEREN FELDFRISCH AUS\nEIGENEM ANBAU\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "45ed75f1-4d5b-4dfc-9f00-0058cc5bf5bf",
+      "articleNumber": "1420",
+      "productName": "ROLLPLAKAT \"ERDBEEREN AUS EIGENEM\nANBAU\" (300 X 120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f28f2240-aaf9-4917-8a40-25c6a0a7084c",
+      "articleNumber": "1365",
+      "productName": "ROLLPLAKAT \"FELDFRISCHER SPARGEL\" (300 X\n120 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "75e37d7a-0310-4d38-a6b9-886722990edb",
+      "articleNumber": "1449",
+      "productName": "ROLLBANNER SPARGEL FELDFRISCH (200 X 100\nCM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "abbadc8e-deca-4cc2-93ee-daf0d5df8dcd",
+      "articleNumber": "6530",
+      "productName": "PREISTAFEL LAMINIERT A6 \"BIRNEN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3e584ce1-29cb-48e5-98cf-a6d6adc559d8",
+      "articleNumber": "6418",
+      "productName": "PLAKAT DIN A1\"WEIHNACHTSBAUME\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7efeb9c6-8027-4a64-a44c-188e233a88e2",
+      "articleNumber": "2942",
+      "productName": "POSTERMAN LEUCHTPINK 5-15 MM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "51097d75-872b-4ea9-8792-8d7164bc3017",
+      "articleNumber": "2923",
+      "productName": "POSTERMAN HELLBLAU 1-5 MM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "db21814f-0103-4792-a025-7e960d5004c9",
+      "articleNumber": "1448",
+      "productName": "ROLLBANNER ERDBEEREN FELDFRISCH (200 X\n100 CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "49d9cd15-2a42-4d67-a0b9-0e1d22be32b8",
+      "articleNumber": "6440",
+      "productName": "PLAKAT DIN AT”FRISCHES OBST & GEMÜSE\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "948e79cf-3505-43e4-9342-f5820c41ffc2",
+      "articleNumber": "6434",
+      "productName": "PLAKAT DIN A1\"KIRSCHEN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "4cff43df-3e5b-4f1e-83c7-eba1f6a9fda6",
+      "articleNumber": "6432",
+      "productName": "PLAKAT DIN AT”FRISCHE APFEL\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "eaecb926-8d99-4138-8a5f-c2bb3d6ef83e",
+      "articleNumber": "6429",
+      "productName": "PLAKAT DIN AT”FRISCHE BEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "20b3e3d0-aca7-4ff6-a9eb-779d17d8484d",
+      "articleNumber": "6430",
+      "productName": "PLAKAT DIN AT”FRISCHE HEIDELBEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "77b30f40-b5d1-4b60-9098-1f15a8f913e0",
+      "articleNumber": "6436",
+      "productName": "PLAKAT DIN A1\"KARTOFFELN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "bd953087-1fa0-4755-86de-9bc026813f58",
+      "articleNumber": "6361",
+      "productName": "PLAKAT DIN AT”FRISCHE ERDBEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0504791c-3e8f-4b7d-bfb9-21ae53c68c14",
+      "articleNumber": "6426",
+      "productName": "PLAKAT DIN AT1\"FELDFRISCHE ERDBEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "658b4023-b458-4754-8c91-83a7511d26f3",
+      "articleNumber": "6441",
+      "productName": "PLAKAT DIN AT\"FRISCHES OBST & GEMÜSE”\nLAMINIERT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "decd8990-c1f0-4464-b85d-50e6805b7622",
+      "articleNumber": "6424",
+      "productName": "PLAKAT DIN AT”FRISCHE ERDBEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "37ec1281-26d5-42c8-af33-a7295fd7ae76",
+      "articleNumber": "2012",
+      "productName": "OBST-/GEMÜSESCHÄLER MAGIC",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6bced8e4-8109-4859-b904-924d0960413d",
+      "articleNumber": "6359",
+      "productName": "PLAKAT DIN Al \"TÄGLICH FRISCHER SPARGEL\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f270b5d-2630-4665-91a5-6613be126296",
+      "articleNumber": "6352",
+      "productName": "PLAKAT DIN A1\"BLUMEN SELBER SCHNEIDEN II”",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a7f4cdc6-490b-444a-9264-0df5375eac34",
+      "articleNumber": "6438",
+      "productName": "PLAKAT DIN A1”BIO GEMÜSE\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a121a328-65d4-4ce1-8a75-af376c2904f6",
+      "articleNumber": "6373",
+      "productName": "PLAKAT DIN AT“ERDBEEREN FELDFRISCH LEICHT\n& LECKER”",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8a2e5308-70ef-4baf-ad22-a60dec5f4b90",
+      "articleNumber": "6421",
+      "productName": "PLAKAT DIN Al “FELDFRISCHER SPARGEL\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f94decf0-070e-4704-9a47-f7255b93dc6a",
+      "articleNumber": "6354",
+      "productName": "PLAKAT DIN A1\"BLUMEN SELBER SCHNEIDEN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a8a34f49-4487-4e96-af2d-17a41fc45086",
+      "articleNumber": "6422",
+      "productName": "PLAKAT DIN Al \"TÄGLICH FRISCHER SPARGEL\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "611bdca8-fa64-426a-ac4b-92fe233d28be",
+      "articleNumber": "6357",
+      "productName": "PLAKAT DIN AT1\"FELDFRISCHE ERDBEEREN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "116a7bae-987e-42c3-a962-2d54ff521d88",
+      "articleNumber": "2503",
+      "productName": "MOTIVTAFEL HUHN, 22 X 24 CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f7fab86-4e1b-47d9-80ef-8d51a09729e4",
+      "articleNumber": "2821",
+      "productName": "LIEGEHALTER, KLAR 40 X 50 MM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "85c69e2e-a4d3-4b63-96cf-1d7a1f3b755e",
+      "articleNumber": "2182",
+      "productName": "LUKULL SAUCE BEARNAISE A 250 ML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c9c5d77b-0027-403f-9eba-5cd7ba7df885",
+      "articleNumber": "2183",
+      "productName": "LUKULL SAUCE HOLLANDAISE BALANCE A 250\nML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "540787b8-bfc0-4bb5-b8bb-e1a9181a5c64",
+      "articleNumber": "2504",
+      "productName": "MOTIVTAFEL WEINFLASCHE, 10 X 29 CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1d08e91e-358d-4f14-8d30-6507e3691d9c",
+      "articleNumber": "6585",
+      "productName": "MINI-KISTENKLAMMER WEISS",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6316003d-7378-4782-afac-5c774df05cff",
+      "articleNumber": "2180",
+      "productName": "LUKULL SAUCE HOLLANDAISE KLASSIK A IL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d3af0cbb-8d9c-41db-9ec9-8fa23af9d317",
+      "articleNumber": "2178",
+      "productName": "MÄRKER FINE FOOD SAUCE HOLLANDAISE 250\nML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7816dfb5-8a0f-4052-bb85-8b29bd984c4a",
+      "articleNumber": "2108",
+      "productName": "LUKULL SAUCE HOLLANDAISE BALANCE A 250\nML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2e8d5d7a-df36-4931-9645-f5c280db956e",
+      "articleNumber": "2176",
+      "productName": "MÄRKER FINE FOOD SAUCE-VANILLE 1000 ML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f3356bed-33a9-425a-9843-469046a25cf8",
+      "articleNumber": "2536",
+      "productName": "KREIDETAFEL/HOCHKANT DIN A7 GRÜN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6d847186-5896-4c6a-ae76-2363513edce1",
+      "articleNumber": "2903",
+      "productName": "KREIDEMARKER \"ILLUMIGRAPH\" GRÜN 1-5 MM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7db32d1b-1a8d-46b9-8bf2-eb5e04d625fd",
+      "articleNumber": "2581",
+      "productName": "L-AUFSTELLER 3 MM KUNSTSTOFF DIN A8 HOCH\n- SCHWARZ",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "52c90f5f-9091-4ba0-9707-dd7f17a8bbce",
+      "articleNumber": "2580",
+      "productName": "L-AUFSTELLER 3 MM KUNSTSTOFF DIN A8 QUER\n- SCHWARZ",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a3ad18cf-a73c-47a3-97cb-dcf32c2f45c3",
+      "articleNumber": "2591",
+      "productName": "KREIDESCHILDER FÜR REGALBÖDEN - SCHWARZ",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "f18d6d09-d10d-4153-9a9b-516bc78a0896",
+      "articleNumber": "2590",
+      "productName": "KREIDESCHILDER FÜR REGALBÖDEN - SCHWARZ",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2ea02216-8f3e-4f34-ace3-e7aea062ba50",
+      "articleNumber": "4126",
+      "productName": "GESTÄNGE FÜR TROPFENBANNER XXL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0ea997bd-5f93-4da3-9643-ecd89ac0c958",
+      "articleNumber": "4220",
+      "productName": "FAHNE \"KARTOFFELN\", 46 X 55 CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6d46f4f7-d11d-4e44-ace7-2eaf2252a14b",
+      "articleNumber": "2911",
+      "productName": "KREIDEMARKER \"ILLUMIGRAPH\" WEISS 5-15 MM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8f4d269b-a862-4bff-8139-7014d817cc42",
+      "articleNumber": "4125",
+      "productName": "GESTÄNGE FÜR TROPFENBANNER S/M",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2ec26ec1-680c-4c1f-b427-963a52b85a60",
+      "articleNumber": "6546",
+      "productName": "FARBROLLE SMART",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "33762e48-b172-4bfd-93bc-a61b5b0fbab3",
+      "articleNumber": "6547",
+      "productName": "ETIKETTEN 26X12MM PERMANENT/WEISS",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "fafdb4ad-a609-4538-a1bc-8dc9e463da76",
+      "articleNumber": "3601",
+      "productName": "ERDBEERESESSEL G228* ( HÖHE: 98CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "18307f6a-8938-43d6-88b4-adf4d9df8d24",
+      "articleNumber": "3595",
+      "productName": "ERDBEERE M199 ( HOHE: 45CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b94ad246-6667-4d1a-9e5d-bb60234462ac",
+      "articleNumber": "3599",
+      "productName": "ERDBEERE MIT ROHR UND PFEIL G226* ( HÖHE:\n130CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ad28f9a7-b942-426f-8fa7-20eabe61a147",
+      "articleNumber": "3596",
+      "productName": "ERDBEERE M199* ( HÖHE: 45CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2ff0dcf8-fd2a-4f5f-850f-25e0257fc6e0",
+      "articleNumber": "3600",
+      "productName": "ERDBEERSCHILD FAHRBAR G227* ( HÖHE:\n130CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "00bf7d42-5ccf-455c-91d6-ef258b93b4e2",
+      "articleNumber": "3602",
+      "productName": "ERDBEERETISCH G229* ( HÖHE: 110CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "de9a8dc2-aae9-41bc-a539-52130b78039c",
+      "articleNumber": "3598",
+      "productName": "ERDBEERE_FEDERKASTEN K277 ( HÖHE: 13CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "00a452ae-848f-4992-8864-572edbc33eee",
+      "articleNumber": "3606",
+      "productName": "ERDBEERE G078* ( HÖHE: 146CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c59c2ea9-74de-4aa1-aa8d-306ba9047d81",
+      "articleNumber": "3605",
+      "productName": "ERDBEERE G232* ( HÖHE: 100CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2cbca84a-804c-4f01-8be7-6e2a295786b5",
+      "articleNumber": "3604",
+      "productName": "ERDBEERE G231* ( HÖHE: 70CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2a379f75-7c0c-409d-bc81-a99e69420bb7",
+      "articleNumber": "3597",
+      "productName": "ERDBEERE KLEIN MIT PFEIL M217* ( HÖHE: 55CM)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8a236187-92d7-4ce1-be94-b8080df567f5",
+      "articleNumber": "7033",
+      "productName": "WORK NITRIL-HANDSCHUH DAMENGRÖSSE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "683f195a-e749-46ff-a1c8-e56bbf3f1d76",
+      "articleNumber": "7549",
+      "productName": "WIEGEHUBWAGEN 2,5 TONNEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6b31677d-0b42-482c-a645-0ac262eab782",
+      "articleNumber": "2423",
+      "productName": "WECHSELMESSER PASSEND ZU ART. 2424",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "fc8c965d-61da-4ab2-979b-48a4e40bf3ab",
+      "articleNumber": "8729",
+      "productName": "VORKEIMKISTE FÜR KARTOFFELN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d825b76f-3aba-4816-9042-191a6279c199",
+      "articleNumber": "3823",
+      "productName": "THEKENSCHUTZ / SCHUTZSCHEIBE AUF ROLLE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "557fb7ca-6702-4543-9822-bd0a6c0252b6",
+      "articleNumber": "4080",
+      "productName": "TRÄGERTEIL FÜR WECHSELKLINGEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "808fa0e0-cff4-422d-9447-08245bb65fa9",
+      "articleNumber": "8202",
+      "productName": "THERMOBOX BLAU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "cbd78639-079f-47eb-a788-08c923b4b113",
+      "articleNumber": "3202",
+      "productName": "TENSIOMETER 50 CM MESSTIEFE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9f1d6642-05d8-49aa-85a9-4a7d58ed1dd8",
+      "articleNumber": "8971",
+      "productName": "STRETCHFOLIE TRANSPARENT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "345210f6-7a42-431f-a79d-8950629538e0",
+      "articleNumber": "1060",
+      "productName": "STÜTZE FÜR ROLLENBAHN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e7202f9b-f911-4c01-b0c8-9d96d81b5b41",
+      "articleNumber": "7036",
+      "productName": "STECHHANDSCHUH DOUBLEGRIP PLUS GR. 10",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ce5aec7d-fd34-4ae7-94c0-15d0c86dcc12",
+      "articleNumber": "8724",
+      "productName": "SPARGELBEHÄLTER 40X30X13 CM, GRÜN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "83fe39f7-6927-4593-9ef2-957203ed7d0d",
+      "articleNumber": "8795",
+      "productName": "SPANNDECKEL FÜR KISTE 40X30CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6cd5d04e-d607-4fc7-a31e-58b380d40f2f",
+      "articleNumber": "8208",
+      "productName": "SPANNDECKEL FÜR KISTE 60X40CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "02de199f-ffd5-4012-bcd2-f6df5722cd4c",
+      "articleNumber": "1061",
+      "productName": "SEITENFÜHRUNG FÜR ROLLENBAHN, ZWEISEITIG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e5abda91-7b6c-4dd9-b9fb-bcaf1af891ce",
+      "articleNumber": "4058",
+      "productName": "SCHRUMPFSCHLAUCH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "60218b81-9c0a-490f-9413-e35e195e56eb",
+      "articleNumber": "1055",
+      "productName": "ROLLENBAHN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ea7a4732-cb4b-4e16-b186-fe12db65486e",
+      "articleNumber": "7032",
+      "productName": "PROFISORTIERHANDSCHUH 35 CM GR. 11\nAUSLAUFMODELL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a4958513-d026-4cf3-9885-a7bc426257f9",
+      "articleNumber": "1044",
+      "productName": "MECHANISCHE ERNTEHILFE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "58c1efda-7490-47fd-9591-25985f7cf087",
+      "articleNumber": "8827",
+      "productName": "MAP (XTEND) BEUTEL FÜR 5 KG SPARGEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9cdc0f87-da51-4bd9-8db5-698128c3d1f6",
+      "articleNumber": "8721",
+      "productName": "KUNSTSTOFFBEHÄLTER 27 CM HOCH GRAU\nKOMPLETT GESCHLOSSEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3b6d340d-6544-4adf-8c17-40d341b31e96",
+      "articleNumber": "8841",
+      "productName": "KUNSTSTOFFSTOPFEN INKL.\nGEWINDEBOHRUNG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0085ef91-b894-4fa9-910e-c617d6d14a87",
+      "articleNumber": "8720",
+      "productName": "KUNSTSTOFFBEHÄLTER 22 CM HOCH GRAU\nKOMPLETT GESCHLOSSEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ca6a8a87-485d-472b-8e45-0253bee858fc",
+      "articleNumber": "8719",
+      "productName": "KUNSTSTOFFBEHÄLTER 17 CM HOCH GRAU\nKOMPLETT GESCHLOSSEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a21daba5-b636-4c5c-adb1-bf0c32005164",
+      "articleNumber": "8842",
+      "productName": "KUGELKOPFHAHN 2\" FÜR BIG BOX",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "27efb989-edff-45a9-8d2f-6d9f148e57ff",
+      "articleNumber": "7008",
+      "productName": "KLAPP-BÜGELWAGEN BLAU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "9853788e-675a-4ee7-bb1d-25004c82de44",
+      "articleNumber": "1123",
+      "productName": "KISTENEINLEGEBEUTEL FÜR ALLE 40 X 30 CM\nKARTON + KISTEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a621e4e8-2667-4e7b-bee5-bad8ee0f3005",
+      "articleNumber": "7009",
+      "productName": "HUBWAGEN MIT TANDEMROLLE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "87733c11-25e7-4354-8a00-3c792d21edb5",
+      "articleNumber": "8206",
+      "productName": "INLINER FÜR THERMOBOX GRÜN, 2,2 MM PP",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e6e65802-57f3-4405-b19b-20dde4beb06c",
+      "articleNumber": "8722",
+      "productName": "KUNSTSTOFFBEHÄLTER 32 CM HOCH GRAU\nKOMPLETT GESCHLOSSEN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "caa4c680-158a-4fbc-b530-1796e06d2554",
+      "articleNumber": "3820",
+      "productName": "HAND-DESINFEKTIONSGEL 500 ML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "c3d2c351-96a2-474b-a328-60f23b722ed8",
+      "articleNumber": "3799",
+      "productName": "HAND-DESINFEKTIONSGEL 5.000 ML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "df643a84-b47d-483b-b80d-30e18f396e88",
+      "articleNumber": "6853",
+      "productName": "GRINDMASTER TYP ASP",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b819c54d-cd96-4cd1-bdfc-64960753ff3b",
+      "articleNumber": "8212",
+      "productName": "FELDKISTE GESCHLOSSEN, FARBE ROT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "52b5089c-5a34-41b6-a354-6433cc2ac248",
+      "articleNumber": "7286",
+      "productName": "FEUERLÖSCHDECKE (INKL. BEHÄLTER)",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7a8f8f2d-5c54-4cf1-87bc-8b5af538274c",
+      "articleNumber": "7287",
+      "productName": "ERSTE HILFE KOFFER/LANDWIRTSCHAFT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "3b658e3c-3d74-4471-9211-c1bef61d2273",
+      "articleNumber": "8111",
+      "productName": "ERNTEKARRE ALU VARIABEL",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e71dbe35-ceae-4f0c-860a-d8f57ad9a4e0",
+      "articleNumber": "4045",
+      "productName": "ERSATZSCHLEIFBAND FÜR SCHLEIFAUTOMAT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1c30c462-9f1f-467f-965c-6a85328e23ea",
+      "articleNumber": "7031",
+      "productName": "STECHHANDSCHUH \"DOUBLE (GRIP) TEX\" 599\nGR.1",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b665d51e-615c-4044-a988-0774440990e8",
+      "articleNumber": "1062",
+      "productName": "ENDANSCHLAG FÜR ROLLENBAHN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "297946bb-92d4-48d2-9cf3-b8f2d3eac02b",
+      "articleNumber": "3817",
+      "productName": "DESINFEKTIONSMITTEL-SPENDER 500 ML",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5c813191-c3ba-46f9-9e78-5a691128347c",
+      "articleNumber": "3784",
+      "productName": "CLEVERMAX VA",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1bb63277-1c87-46cb-894a-ebeb30ce3e1a",
+      "articleNumber": "8705",
+      "productName": "DECKEL, GRÜN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "10815c49-3726-4c0d-a550-a17c0ea46b76",
+      "articleNumber": "3732",
+      "productName": "BIOTEKE SARS-COV-2 ANTIGEN SCHNELLTEST\nKIT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "28f0da4b-0fc5-4041-8d80-df7e07cad6e8",
+      "articleNumber": "8861",
+      "productName": "BIG BOX, MASSE: 120 X 80 X 79 CM - G/F",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2132a476-304c-4b89-9fe6-993dec42706b",
+      "articleNumber": "8862",
+      "productName": "BIG BOX, MASSE: 120 X 80 X 79 CM - G/K",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "28c9a937-da07-46cc-bc47-c16c31f27474",
+      "articleNumber": "9090",
+      "productName": "BSP PFLASTERVERBAND ROT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "046f72d9-7793-4814-820a-20d7bd334695",
+      "articleNumber": "7064",
+      "productName": "BAUMWOLL-UNTERZIEHHANDSCHUH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "1aa0ff3e-3066-46d7-b8fb-a7e2e880e0fe",
+      "articleNumber": "8803",
+      "productName": "BIG BOX, MASSE: 120 X 100 X 79 CM - DJF",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e000dc58-11fd-4e89-842f-71e4fff830c4",
+      "articleNumber": "3809",
+      "productName": "ATEMSCHUTZMASKE",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ca8d0fb3-d691-4280-a400-129e5375d0f3",
+      "articleNumber": "7201",
+      "productName": "AUFFAHRKEIL FÜR BODENROST",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ee7b3819-5494-4c5a-967f-8f8b68e474b1",
+      "articleNumber": "4141",
+      "productName": "BODENPLATTE 50 X 50 CM",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "07f75ee4-ace7-429c-8343-eb3446876fa5",
+      "articleNumber": "8196",
+      "productName": "DEKO-KARTOFFELN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "b37261f9-49dd-40a3-8416-5079631d23e3",
+      "articleNumber": "8198",
+      "productName": "DEKO-ERDBEEREN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "92f41e14-0d5f-444a-89a1-8fa4ae07597f",
+      "articleNumber": "8195",
+      "productName": "DEKO-HIMBEEREN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "e67a3066-8c22-4aa1-9997-be4db9ed5b22",
+      "articleNumber": "8194",
+      "productName": "DEKO-HEIDELBEEREN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "8b3bd18c-f01f-4701-8133-68dc71033706",
+      "articleNumber": "8358",
+      "productName": "1,5 KG PAPIERTRAGETASCHE KARTOFFELN NEU",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "7fe79315-33e3-451f-9a9d-2b31dd6cc4c9",
+      "articleNumber": "1335",
+      "productName": "BAUZAUN-BANNER XXL TANNENBÄUME PVC",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a1cf1930-100c-4645-bef8-244eb2621297",
+      "articleNumber": "1333",
+      "productName": "BAUZAUN-BANNER XXL FRISCHE KARTOFFELN\nPVC",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "5d8f2f99-0632-4c5f-9277-735b70fe02e7",
+      "articleNumber": "1334",
+      "productName": "BAUZAUN-BANNER XXL KARTOFFELN MESH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "0320a6a6-6c0e-4dbd-8997-0f72a24711aa",
+      "articleNumber": "2195",
+      "productName": "ASAL SAUCE HOLLANDAISE\nKALORIENREDUZIERT OHNE\nGESCHMACKSVERSTÄRKER",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "436edbda-70c1-447b-8a68-6f7cfeebbfc8",
+      "articleNumber": "2188",
+      "productName": "ASAL SAUCE HOLLANDAISE\nKALORIENREDUZIERT",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "2826a078-7272-4de4-b073-dd7b7429e986",
+      "articleNumber": "1336",
+      "productName": "BAUZAUN-BANNER XXL WEIHNACHTEN MESH",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "ff81b868-e107-4325-9cab-e58efa479c79",
+      "articleNumber": "1349",
+      "productName": "BAUZAUN-BANNER XXL SPARGEL + ERDBEEREN",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "a638618b-b9e4-41d6-88e3-f9f0863622f0",
+      "articleNumber": "2199",
+      "productName": "ASAL SAUCE HOLLANDAISE FLÜSSIG",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "d69b9ab5-9daf-4aeb-bd40-23adb1a09cb8",
+      "articleNumber": "6545",
+      "productName": "AUSZEICHNER NEW SMART 626",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "6b28cfce-c0c0-4314-890a-85986edbc1f6",
+      "articleNumber": "2826",
+      "productName": "ANTIREFLEXSCHUTZFOLIE DIN Al",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "80452226-0d96-447a-90c1-afe86fba4fba",
+      "articleNumber": "3811",
+      "productName": "A1-PLAKAT \"ABSTAND HALTEN\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "bc94c728-bac7-49b5-b958-07d72f715e43",
+      "articleNumber": "3815",
+      "productName": "A1-SET (PLAKATSTÄNDER + PLAKAT\n\"ABSTAND\")",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "42d699e0-576d-4a37-9224-2bcd26f1556a",
+      "articleNumber": "3816",
+      "productName": "A1-SET (PLAKATSTANDER + PLAKAT\n\"GEÖFFNET\")",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "419d839b-fd7e-43ef-b615-b6967337a31a",
+      "articleNumber": "3812",
+      "productName": "A1l-PLAKAT \"GEÖFFNET\"",
+      "markAsNotInExcel": true
+    },
+    {
+      "id": "90bfe329-048e-44a2-823c-be5b4972a863",
+      "articleNumber": "4031",
+      "productName": "ACCUSHARP STURDYMOUNT\nMESSERSCHÄRFER",
+      "markAsNotInExcel": true
+    }
+  ],
+  "articlesNotToMark": [
+    {
+      "id": "4e0ecaa3-1139-4b67-994f-edbaf9335722",
+      "articleNumber": "6855",
+      "productName": "SPRÜHLANZE FÜR FOLIENSPRÜHKLEBER\nKARAAT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "96454017-fa81-4d47-9b8a-f2f8b8043763",
+      "articleNumber": "6845",
+      "productName": "HOCHLEISTUNGS-FOLIENKLEBEBAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9e811559-4d5d-4211-8305-9402ad9c4278",
+      "articleNumber": "0907",
+      "productName": "HALTEKLAMMER TYP B FÜR ROHRAUSSEN-© 60\nMM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7430c43b-d949-48de-b779-589ec85263f9",
+      "articleNumber": "1995",
+      "productName": "SILOSACK GRÜN, MIT EINGRIFFLOCH, 25 X 100\nCM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "756b5871-1698-4ba4-93f7-20f9a9d8db01",
+      "articleNumber": "6854",
+      "productName": "KARAAT FOLIENSPRÜHKLEBER 22L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a288fab5-52da-4428-a77a-e109d3534a91",
+      "articleNumber": "1997",
+      "productName": "RÖDELDRÄHTE, LÄNGE: 160 MM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fa149e72-987c-4b54-97c7-e48be2f3951c",
+      "articleNumber": "0908",
+      "productName": "HALTEKLAMMER TYP X FÜR ROHRAUSSEN-© 60\nMM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7e502b61-1e64-407d-87f1-4d56e8c6893f",
+      "articleNumber": "6856",
+      "productName": "SCHLAUCH FÜR FOLIENSPRÜHKLEBER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fe627cb1-92a0-4f6b-be81-d6b26458fd65",
+      "articleNumber": "6849",
+      "productName": "GARN FÜR FOLIENNÄHMASCHINE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "dbe57dff-0d43-47e9-b064-c09437979563",
+      "articleNumber": "8612",
+      "productName": "KLINGEN FÜR FOLIENSCHNEIDER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bf1fe236-1680-4093-9c05-de4dd68adeb0",
+      "articleNumber": "1996",
+      "productName": "DRILLAPPARAT VERDRILLER FÜR RÖDELDRÄHTE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "640866e4-1726-4543-9b7f-3c94f8049331",
+      "articleNumber": "6848",
+      "productName": "FOLIENKLEBEBAND AGRIPATCH SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6ba1eeb2-9053-4aa0-a9fb-58a2a7d48577",
+      "articleNumber": "1039",
+      "productName": "FOLIENSPANNGUMMIS 40CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5eb4fc94-765b-4252-a3a1-6b131517c4de",
+      "articleNumber": "3496",
+      "productName": "VERBINDER TAPE 16 MM X PE/PVC-ROHR",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1001af3b-f5e6-4f20-bc43-2c8a381dda24",
+      "articleNumber": "3506",
+      "productName": "VERBINDER TAPE 16 MM X TAPE 16 MM - MIT\nKUGELHAHN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fa1a00eb-6223-441e-9e97-87021e26fd50",
+      "articleNumber": "3555",
+      "productName": "VERBINDER TROPFROHR 16 MM X TROPFROHR 16\nMM MIT KUGELHAHN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "db9d28b1-71a0-4704-8d66-2a8b5dcaca3d",
+      "articleNumber": "3553",
+      "productName": "VERBINDER TAPE 16 MM X ENDSTOPFEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "54ba0a43-7daa-4354-9433-414db913054c",
+      "articleNumber": "3562",
+      "productName": "TRÖPFCHENSCHLAUCH IRRITEC TAPE 5103027L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c6893759-1ae1-45c6-aa89-04e45c4c7dd7",
+      "articleNumber": "3505",
+      "productName": "VERBINDER TAPE 16 MM X LAYFLAT - LOCHUNG\n19 MM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d2fa7e3a-ba66-4c26-9244-cd78a38fc255",
+      "articleNumber": "3547",
+      "productName": "TRÖPFCHENSCHLAUCH IRRITEC TAPE 5083018L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "865731be-321b-4dce-9da5-f0fb5df12897",
+      "articleNumber": "3528",
+      "productName": "VERBINDER TAPE 16 MM X FLACHSCHLAUCH -\nLOCHUNG 14 MM - OHNE NASE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "afcbb581-4acd-4c7c-b7a3-ca3f7a906737",
+      "articleNumber": "3563",
+      "productName": "TRÖPFCHENSCHLAUCH IRRITEC TAPE 7083027L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "121639d9-0dcb-458e-bf19-b7c8096e3b67",
+      "articleNumber": "3513",
+      "productName": "VERBINDER TAPE 16 MM X 3/4\"\nAUSSENGEWINDE MIT KUGELHAHN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9f216b1e-356d-4c71-b151-3137499f5dfb",
+      "articleNumber": "3502",
+      "productName": "VERBINDER TAPE 16 MM X FLACHSCHLAUCH -\nLOCHUNG 14 MM - MIT KUGELHAHN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "213b1f23-731f-41e1-8c66-87954a6420e9",
+      "articleNumber": "3525",
+      "productName": "VERBINDER TAPE 16 MM 90° WINKELKUPPLUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "32605fb7-4047-4e87-8e6e-14533bc742ee",
+      "articleNumber": "3526",
+      "productName": "VERBINDER TAPE 16 MM T-STÜCK",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "df6b909c-6fe1-4cff-9afa-558e502d8265",
+      "articleNumber": "3546",
+      "productName": "TRÖPFCHENSCHLAUCH IRRITEC TAPE 5063018L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5e1232e9-b763-453f-ad26-ae7600025f28",
+      "articleNumber": "3542",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 715-30-340",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "312296f0-9721-4b23-9298-4d301e739395",
+      "articleNumber": "3501",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 508-30-170 LF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "377065b6-3954-4220-a490-8a7699a80cfe",
+      "articleNumber": "3500",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 506-30-170 LF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8ee320f1-8f83-44d1-a099-9a67e3219d9f",
+      "articleNumber": "3573",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 515-30-340",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8e6847da-bccf-434e-b59d-a3172efdffac",
+      "articleNumber": "3515",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 510-30-340",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e24eacb3-0b2a-43a7-bacf-482af6f68aaf",
+      "articleNumber": "3580",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 508-20-500",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8226e710-55a7-42b2-98f2-3bf0da420e8f",
+      "articleNumber": "3497",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 515-20-500",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c35b7204-276e-42cf-a479-12b6823e5a38",
+      "articleNumber": "3522",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 710-30-340",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "804359b1-6fc3-4050-940d-7289d67636cb",
+      "articleNumber": "3572",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 510-20-500",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2333a117-bfe1-4a3d-b69e-0150bc0364eb",
+      "articleNumber": "3545",
+      "productName": "STECKVERBINDER T-STÜCK 2X\nFLACHSCHLAUCH 3\" X AUSSENGEWINDE 3\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "01698994-4691-4749-97a0-dee74856a28c",
+      "articleNumber": "3874",
+      "productName": "TRÖPFCHENSCHLAUCH T-TAPE 506-20-500",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4796995b-e928-4ead-be1f-66540538b2ad",
+      "articleNumber": "3527",
+      "productName": "STOPFEN FÜR FLACHSCHLAUCH 14 MM LOCH",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b38a3b54-d895-42d9-8243-7c2ca36a4404",
+      "articleNumber": "3532",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 3\" X\nAUSSENGEWINDE 3\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f120877f-754a-4531-a7e8-09519246b585",
+      "articleNumber": "3534",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 3\" X\nENDKUPPLUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1893af7f-b098-4d5b-b1e9-3f7a849019b0",
+      "articleNumber": "3549",
+      "productName": "PVC FLACHSCHLAUCH FLEXIFLAT-S 050-2\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e468178c-6ce9-4906-9c57-ffbe76ec0a9b",
+      "articleNumber": "3550",
+      "productName": "PVC FLACHSCHLAUCH FLEXIFLAT-S 075-3\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ececb3a6-3eed-4a55-bdc2-88336fcde112",
+      "articleNumber": "3539",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 2\" X\nENDKUPPLUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8329c47d-0215-4770-bcd2-9c3221907be7",
+      "articleNumber": "3533",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 2\" X\nFLACHSCHLAUCH 2\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "23dcedaf-ffc0-46fb-a17e-7c6824d70cc4",
+      "articleNumber": "3540",
+      "productName": "STECKVERBINDER FLACHSCHLAUCH 2\" X\nAUSSENGEWINDE 2\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1e4a22c0-e1ff-4b2f-a810-788ee141eba4",
+      "articleNumber": "3507",
+      "productName": "LF-ZANGE - 19 MM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2957ad95-c402-435a-a281-74371a9a53bb",
+      "articleNumber": "3538",
+      "productName": "ROBUSTE SCHLAUCHSCHELLE 3\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ddb98533-bb7b-456c-9b92-779bc7e21283",
+      "articleNumber": "3508",
+      "productName": "LFS-ZANGE - 14 MM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "dab804a9-94da-4db3-914c-444a28499bff",
+      "articleNumber": "1687",
+      "productName": "WAAGSCHALE, RECHTECKIG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a56a78b2-5911-4419-9231-81f54781807e",
+      "articleNumber": "7684",
+      "productName": "Unknown Product",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "23dc94f0-62d5-49d3-adea-12322f2b2f1d",
+      "articleNumber": "7610",
+      "productName": "PLATTFORMWAAGEE - SI10 60KG-GR",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f13f922b-2bf4-48b8-8ce4-9db5dc9502d1",
+      "articleNumber": "7577",
+      "productName": "PLU-HAUBE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "550bb087-6c86-481a-a15e-0c3e883895fb",
+      "articleNumber": "7699",
+      "productName": "GELDEINSATZ FÜR KASSENLADE FÜR CT100",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "61015153-f982-4ef5-8f84-bea3c46070e4",
+      "articleNumber": "7597",
+      "productName": "MECHANISCHE KASSENSCHUBLADE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b31985a8-9f16-43b8-b66c-036b3cbaef88",
+      "articleNumber": "7627",
+      "productName": "CL-WORKS LIGHT FÜR CL5200",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7e0be778-062c-4c41-9fc2-fd6a57110994",
+      "articleNumber": "7666",
+      "productName": "ELICOM ALEX C 30 KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ec1cbc22-e0bb-4602-9258-e8bdcb55fba8",
+      "articleNumber": "7667",
+      "productName": "ELICOM ALEX H 30 KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b23bca4e-8e0d-4bad-b7fd-850119c2bfd4",
+      "articleNumber": "7560",
+      "productName": "CAS SW-II (15 KG)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f4b1f7ec-6268-4708-8cfd-af54fe8609c1",
+      "articleNumber": "7700",
+      "productName": "BONROLLEN FÜR CAS CT-100",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ee104045-b10a-45dd-81d8-d7429e87e509",
+      "articleNumber": "7680",
+      "productName": "BONROLLEN FÜR DRUCKERWAAGE (DIGI)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3daee4df-f459-44e3-a9ef-bb7aa70b54f4",
+      "articleNumber": "7655",
+      "productName": "BABY-BATTERIEN R14",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ae953fed-5429-4f1b-9e94-841845321e68",
+      "articleNumber": "7587",
+      "productName": "AKKU FÜR VERKAUFSWAAGE CT-100",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "865eb795-54f4-4fc2-9907-1e715346b82e",
+      "articleNumber": "1319",
+      "productName": "WELLPAPP-KORB 1,5 KG UNGEWACHST",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0b9b6034-57d9-4588-9e09-330dceda6795",
+      "articleNumber": "8362",
+      "productName": "VLIES-MEHRWEG-HEMDCHEN, GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "243beb82-4161-457d-a6dd-a0f8c4df59b4",
+      "articleNumber": "1317",
+      "productName": "WELLPAPPKORB 2,5 KG \"FRISCHE ERDBEEREN”\nGEWACHST",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6e4f94c9-74bc-4982-8450-51039690bba9",
+      "articleNumber": "8363",
+      "productName": "VLIES-MEHRWEG-HEMDCHEN, ERDBEEREN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "94bb0a10-4318-4bda-a2df-ee33eacf0628",
+      "articleNumber": "8369",
+      "productName": "VLIES-MEHRWEG-HEMDCHEN 6KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "45572efb-dbcc-4139-b220-191c613076b7",
+      "articleNumber": "1314",
+      "productName": "WELLPAPP-KORB1KG UNGEWACHST",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "01c7a5db-3a87-41cd-a7a2-35d6088f8f18",
+      "articleNumber": "8359",
+      "productName": "VLIES-MEHRWEG-HEMDCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "79cee199-11a6-4c05-8539-99de69ab39fe",
+      "articleNumber": "7633",
+      "productName": "AKKU FÜR CAS ER + ERP + ERM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "404a911c-9a74-4c8d-abc4-9f4752ba1386",
+      "articleNumber": "8266",
+      "productName": "STOLLEN-LEICHTSTEIGE BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "de5b005b-d26e-4e8d-8135-59a2e52ac331",
+      "articleNumber": "7739",
+      "productName": "T-BANDEROLE FÜR 500 G SPARGEL\n\"QUALITATSSPARGEL\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d2f6dbaf-3468-4a27-a533-68f1f4e6a5db",
+      "articleNumber": "1280",
+      "productName": "SPARGELSCHALE 500GR. TRANSPARENT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3afb1dbd-1f2b-4ee1-890d-62ba03a88814",
+      "articleNumber": "8371",
+      "productName": "SPITZTUTE750G",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "230f6659-7d82-4957-a251-9871c12b107f",
+      "articleNumber": "7734",
+      "productName": "T-BANDEROLE FÜR 500 G SPARGEL\n\"QUALITATSSPARGEL\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "56698561-13b4-4f54-93a3-9a7c575cd84e",
+      "articleNumber": "1281",
+      "productName": "SPARGELSCHALE 500GR. SCHWARZ - NEU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "daf43a78-6bc1-447b-a0bc-3eb2768e9719",
+      "articleNumber": "1283",
+      "productName": "SPARGELSCHALE 1000GR. TRANSPARENT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "14ff1481-664f-4752-a724-65816e2e9243",
+      "articleNumber": "8107",
+      "productName": "STEIGENTRAGEHILFE 60X40",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b265bdcf-0965-4849-85e7-92f406c00a85",
+      "articleNumber": "8415",
+      "productName": "SPARGELKARTON1,5KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a37d09a6-2005-4b2a-b2c8-7dfe130b8981",
+      "articleNumber": "1485",
+      "productName": "SPARGELEINSCHLAGPAPIER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9f3f5dfc-a958-4049-8b14-0774a0db3f42",
+      "articleNumber": "1122",
+      "productName": "SPARGELPRÄSENTKORB FÜR 1,5 KG, MIT\nHOLZGRIFF + 4-SEITIG BEFESTIGER\nPAPIEREINLAGE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "976e7958-2e4d-4626-a206-978e8f97e095",
+      "articleNumber": "8460",
+      "productName": "SPARGELKARTON 5 KG, GEFALTET - NEUTRAL\nBEDRUCKT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b3dedf2a-b8d3-4c00-a170-0ca6bdeaf23a",
+      "articleNumber": "8462",
+      "productName": "SPARGELKARTON 5 KG FÜR LANGEN SPARGEL,\nGEFALTET - NEUTRAL BEDRUCKT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3ded65a5-f178-441a-82c1-9666438ac297",
+      "articleNumber": "8454",
+      "productName": "SPARGELKARTON 5 KG FÜR LANGEN SPARGEL,\nNEUTRAL BEDRUCKT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "38636fb5-4531-4b64-8f79-ee94aa4a5ee3",
+      "articleNumber": "8451",
+      "productName": "SPARGELKARTON 5 KG, NEUTRAL BEDRUCKT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5abcac80-fa32-4e4e-b450-4664e29f8302",
+      "articleNumber": "1284",
+      "productName": "SPARGELSCHALE 1000GR. SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "aafc363a-61b1-4bc5-8bdb-bdbba8efde86",
+      "articleNumber": "1118",
+      "productName": "SPARGELPRÄSENTKORB FÜR 1,5 KG, MIT\nHOLZGRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5cd1e918-4ce6-4000-960b-ecf9638a8b7d",
+      "articleNumber": "1308",
+      "productName": "PET-BEERENOBSTSCHALE 500 G TRANSPARENT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "24228ded-d5a2-4aff-ae7e-442d30768240",
+      "articleNumber": "8400",
+      "productName": "SPARGELBEUTEL AUS PERGAMENT-ERSATZ - 2\nKG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7a976bad-bdd7-474f-9235-0c8db022bbb9",
+      "articleNumber": "1285",
+      "productName": "SIEGELRANDFOLIE \"PREM. LONG LIFE 175\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ac7c214e-bf1d-48aa-9697-fe61aa9d178c",
+      "articleNumber": "7900",
+      "productName": "RASCHELSÄCKE FÜR 2,5 KG, MIT ZUGBAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7dda429f-f11a-4b9c-b7a8-309a00dbe602",
+      "articleNumber": "1289",
+      "productName": "PAPIERTRAGETASCHE 36+17X27 CM BRAUN,\nUNBEDRUCKT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2cbbadd1-eca7-4267-93e0-00009c673122",
+      "articleNumber": "8354",
+      "productName": "MEHRWEGTASCHE SPARGEL-/ERDBEERDESIGN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2921e4dc-dbd1-4823-a9ec-9c80c363e397",
+      "articleNumber": "8711",
+      "productName": "HOLZDEKORSTEIGE - FALTBAR | 60 X 40 X 11,5\nCM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9b219c55-35e4-4113-b6cb-85f388c4ad1c",
+      "articleNumber": "8712",
+      "productName": "HOLZDEKORSTEIGE - FALTBAR, 600 X 400 X 190\nMM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4b729257-1ac1-4c5c-a60b-a982682a700b",
+      "articleNumber": "8713",
+      "productName": "HOLZDEKORSTEIGE - FALTBAR | 400 X 300 X 160\nMM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "df6cc6f7-9c30-4e28-81c2-def824cb888c",
+      "articleNumber": "1330",
+      "productName": "HOLZSCHLIFFSCHALE 500G DIGITALDRUCK",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2189708c-64d3-46f2-bd85-c7bb2b2139e6",
+      "articleNumber": "8334",
+      "productName": "KNOTENBEUTEL AUF DER ROLLE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "43265a7e-44a0-4f8e-98cd-e29d20c4e38c",
+      "articleNumber": "8341",
+      "productName": "HDPE-HEMDCHENTRAGETASCHEN JUMBO,\nGRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "21014ac3-3c36-4780-bdf6-0011bf009260",
+      "articleNumber": "8880",
+      "productName": "HANDABROLLGERÄT FÜR KLEBEBAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "dd6ea996-8c28-41f7-9847-e69554b268fc",
+      "articleNumber": "8319",
+      "productName": "HDPE HEMDCHENTRAGETASCHEN JUMBO,\nGRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8cbe8287-c500-4600-9944-c5e56417552f",
+      "articleNumber": "7710",
+      "productName": "GUMMIRINGE 1KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "23b06559-92e8-4588-b948-817b4d52c7c9",
+      "articleNumber": "8417",
+      "productName": "GOURMET-SPARGELKARTON TRAY",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2e0f70d1-55d7-4faa-b5fe-10abf2833b35",
+      "articleNumber": "1148",
+      "productName": "EIERKARTON FÜR 6 EIER - GRAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a1121565-3224-4500-9dcb-17fd82693042",
+      "articleNumber": "1150",
+      "productName": "EIERKARTON (EIERHÖCKER) FÜR 30 EIER - GRAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "16f30c9a-8337-455e-b464-378299b95dad",
+      "articleNumber": "1484",
+      "productName": "EINLEGEPAPIER FÜR 7,5 KG KORB 4-SEITIG ALS\nVLIES",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "69658ac7-b4e9-4abe-ae60-26eadc03695d",
+      "articleNumber": "8416",
+      "productName": "GOURMET-SPARGELKARTON TOP",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a9cdefdd-620e-4d65-a171-381d90d53fc9",
+      "articleNumber": "8976",
+      "productName": "ELASTIKGARN FÜR BÜNDELMASCHINEN, 750 M\nSPULE, WEISS",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f72839d4-7ee1-470e-8f52-276a3c40ee0b",
+      "articleNumber": "1149",
+      "productName": "EIERKARTON FÜR 10 EIER - GRAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2aeae209-adcb-4824-9709-73ca5920104a",
+      "articleNumber": "1483",
+      "productName": "EINLEGEPAPIER FÜR 7,5 KG KORB 4-SEITIG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a60fde8c-10f6-4933-9f33-baedcf5c13be",
+      "articleNumber": "1212",
+      "productName": "ERDBEERSTEIGE FÜR 10 SCHALEN A 500 G",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4db13a97-d2ea-4f85-a267-5c74f95459d0",
+      "articleNumber": "1303",
+      "productName": "BEERENOBSTSCHALEN PET BLAU 500 G",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b99dec82-e281-46b9-978d-03e6179aa2b6",
+      "articleNumber": "1298",
+      "productName": "BEERENOBSTSCHALEN 250 G HOLZSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b244bc53-0a4c-47f5-9788-532e173836d3",
+      "articleNumber": "1322",
+      "productName": "BEERENOBSTSCHALEN 400 G HOLZSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2e1b27e7-fd2c-4289-8cfc-a465fc19e117",
+      "articleNumber": "8404",
+      "productName": "BLOCKBODENBEUTEL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "78678983-831f-410a-94f6-c061f5f74f91",
+      "articleNumber": "1311",
+      "productName": "BEERENOBSTSCHALEN 1.000 G HOLZSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "839c47f4-4ef7-49e4-885f-ea2429b959cf",
+      "articleNumber": "1325",
+      "productName": "BEERENOBSTSCHALE KLASSISCH 250 G N\nHOLZSCHLIFF OHNE AUFDRUCK - KARTON A\n1080 STK.",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ef609aea-bc8b-4558-a65f-7da6a7265e21",
+      "articleNumber": "8397",
+      "productName": "5 KG PAPIERTRAGETASCHE KARTOFFELN\nREGIONAL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4122bf00-cbe4-4840-8dda-e8873450a4aa",
+      "articleNumber": "1215",
+      "productName": "60 X 40 PREMIUM WELLPAPPSTEIGE MATT\nSCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7a19375c-a868-4e29-84ea-26616a0fe10c",
+      "articleNumber": "1324",
+      "productName": "BEERENOBSTSCHALE PREMIUM HOLZSCHLIFF\n500 G NEUTRAL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8b98b0de-316b-46c0-ab8b-13314d11be67",
+      "articleNumber": "1216",
+      "productName": "BEEREN-OBSTSCHALE 500G WELLPAPPE\n\"BEERENHUNGER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fd17df8b-05dd-45ba-9152-b608756bf3b1",
+      "articleNumber": "1481",
+      "productName": "ABSTANDSSTEGE FÜR 7,5 KG KORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a2aaa88e-c2bf-4321-9a8f-5eb46d6fe1ce",
+      "articleNumber": "1348",
+      "productName": "2-KG-WELLPAPP-KORB IN SPANKORBOPTIK",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5db48dd2-04ea-4d51-b69d-23fbc6a5a4ff",
+      "articleNumber": "1147",
+      "productName": "2 KG FRISCHE KISTE ERDBEEREN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0018b05d-18e5-46ba-b1b1-7b8b8b5bd0df",
+      "articleNumber": "1146",
+      "productName": "2 KG FRISCHE KISTE SPARGEL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c8cadafa-4ddc-493b-8c9a-2bf0f0e67141",
+      "articleNumber": "6578",
+      "productName": "UNIVERSALKL. MIT GELENK, SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "90e410d0-63d0-43b3-ae7a-8fed50202e5d",
+      "articleNumber": "2011",
+      "productName": "SPARGELSCHÄLER IN FORM EINER\nSPARGELSTANGE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bb2cf358-ad0d-4f47-8429-14f1e1bd7786",
+      "articleNumber": "2824",
+      "productName": "SPEZIALKLAMMERN GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a3562c70-1c93-4a87-b227-4b004b398b2a",
+      "articleNumber": "2026",
+      "productName": "SPARGELSCHÄLER MIT EDELSTAHLKLINGE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ae72b137-49b0-4aa9-ad00-8f4be8928aaf",
+      "articleNumber": "2028",
+      "productName": "SPARGELSCHÄLER \"MINI-MAX\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0a55cf80-76c4-4bba-b9bb-f596e6a1dfe0",
+      "articleNumber": "2030",
+      "productName": "SPARGELSCHÄLER AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "401a2463-7999-4126-a003-81a27cc2b479",
+      "articleNumber": "3593",
+      "productName": "SPARGEL KLEIN XL130* ( HÖHE: 130CM)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ceefea30-8a5d-4f8a-a941-2e280fd20897",
+      "articleNumber": "6561",
+      "productName": "PP-TAFEL DIN A5 SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cbd0d5d5-7239-408c-86a1-81d970ad23e4",
+      "articleNumber": "3813",
+      "productName": "PVC-BANNER \"ABSTAND HALTEN\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0a189350-057a-4634-a238-bc0dced28d71",
+      "articleNumber": "4374",
+      "productName": "PREISSTAB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "12e71fdd-2661-4143-bf77-03ff83f825cb",
+      "articleNumber": "6350",
+      "productName": "PLAKAT DIN A1\"KURBISSE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e69e6cbf-e1b1-4851-a5d3-ff3a4481eafb",
+      "articleNumber": "3814",
+      "productName": "PVC-BANNER \"GEÖFFNET\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "51b8e2b0-f14e-4d6c-8b62-63c3b957486b",
+      "articleNumber": "2035",
+      "productName": "ORIGINAL STAR SPARGELSCHÄLER AUS DER\nSCHWEIZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6edcb364-cf2e-49ec-bffc-2bb910916b3c",
+      "articleNumber": "2024",
+      "productName": "KUNSTSTOFF-SPARGELSCHÄLER GELB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "404dbcf6-1443-4de4-abda-652a06fd1b84",
+      "articleNumber": "4122",
+      "productName": "KREUZFUSS 96 X 96 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ddbccd8c-6b8b-4aaa-a3ad-17c4bf858027",
+      "articleNumber": "2822",
+      "productName": "LIEGEHALTER, KLAR 24 X 17 X 41MM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e395c827-3964-445a-be05-349087467455",
+      "articleNumber": "2025",
+      "productName": "KUNSTSTOFF-HORIZONTALSCHÄLER WEISS",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "df8f2030-d0a0-433b-bc9d-0aff1067203e",
+      "articleNumber": "2002",
+      "productName": "ERSATZKLINGE, EDELSTAHL ROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f80a5db8-ab32-49f3-9785-e9193ba0a5dd",
+      "articleNumber": "2007",
+      "productName": "GROSSER KUNSTSTOFF-HORIZONTALSCHÄLER\nGRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bc454873-5c86-4c5d-979d-296d936eac7b",
+      "articleNumber": "2003",
+      "productName": "ERSATZKLINGE, EDELSTAHL ELEKTROPOLIERT,\nROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0f0894c3-145d-4227-b2e5-7975e261d518",
+      "articleNumber": "2015",
+      "productName": "GROSSER KUNSTSTOFF-HORIZONTALSCHÄLER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d55b9ecb-d8d5-4309-8df8-70c0859af3c9",
+      "articleNumber": "2001",
+      "productName": "ERSATZKLINGE, BRÜNIERT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "26fa9ef6-6efe-46d5-92e7-749f49f9761c",
+      "articleNumber": "4139",
+      "productName": "ERDSPIESS / BODENDORN MIT ROTATOR",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "45c7008c-5021-476f-86ed-773b82d923c3",
+      "articleNumber": "3603",
+      "productName": "ERDBEERETISCH G230* ( HÖHE: 70CM)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1d6c81ce-27ec-409f-bf8d-6b415c4bf597",
+      "articleNumber": "2040",
+      "productName": "DER GRIFFIGE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "012cfb69-17de-484f-8e14-5bc6aa43880d",
+      "articleNumber": "6555",
+      "productName": "EDELSTAHLSTAB FÜR PREISSCHILDER 15 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cc9b2761-582f-439d-ba0e-9087aaf7ce2a",
+      "articleNumber": "8152",
+      "productName": "ZAHLENMARKEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7ba195a1-4739-4f1e-b6d4-211963724cb6",
+      "articleNumber": "4086",
+      "productName": "WECHSELKLINGE \"GERADE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "97230f5e-b795-4630-b748-1688ad7c914f",
+      "articleNumber": "9113",
+      "productName": "WIND-/REGENJACKE FS1000 GR. XXL/4",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "25fc6c86-3c18-40f9-a664-f5b106e6940f",
+      "articleNumber": "4067",
+      "productName": "WECHSELKLINGE DAMASTSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "21620b5a-1c6d-4fd1-8189-c857de776a7e",
+      "articleNumber": "4081",
+      "productName": "WECHSELKLINGE \"NORMAL\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8c76109d-32df-4ccc-91ad-79d43ac857fc",
+      "articleNumber": "4085",
+      "productName": "WECHSELKLINGE INKLUSIVE TRÄGERTEIL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a3b7901c-3866-4e0f-8e95-2e5f1f81899d",
+      "articleNumber": "4087",
+      "productName": "WECHSELKLINGE \"LEHRLINGSKLINGE”\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a679d2a3-47ca-4517-8082-c3a6f88d2fc3",
+      "articleNumber": "4089",
+      "productName": "WECHSELKLINGE \"GEWÖLBT\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9032da3c-8049-44ad-b662-8b2f609006c2",
+      "articleNumber": "4088",
+      "productName": "WECHSELKLINGE \"EXTRABREIT\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8de32e99-c7e3-4dd6-9aa9-2f8337b0d40e",
+      "articleNumber": "1091",
+      "productName": "VINYL-LATZSCHÜRZE \"DIE BEWAHRTE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6f80041e-6742-448a-ac31-f0519507d22e",
+      "articleNumber": "4060",
+      "productName": "WECHSEKLINGE AUS DAMASZENERSTAHL\nKOMPL. MONTIERT IN TRÄGERTEIL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fc468d87-dfea-47db-8f07-5cf7c12b18ac",
+      "articleNumber": "4316",
+      "productName": "TRAUBENSORTIERSCHABLONE AUS ALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "eabb7d87-4321-45a8-90d3-cfe3b96b60b8",
+      "articleNumber": "4315",
+      "productName": "UNIVERSALSORTIERSCHABLONE AUS\nALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "88a4fb57-2377-463d-b8b5-eb70de0431bd",
+      "articleNumber": "3207",
+      "productName": "WATERMARK STARTER SET",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b70ee990-6b10-4420-8afc-c5e0cd503d39",
+      "articleNumber": "3208",
+      "productName": "WATERMARK SENSOREN MIT 1,5 M KABEL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "56496b28-ae83-40c0-838e-0cf6cbebf6a5",
+      "articleNumber": "1573",
+      "productName": "TRAPEZKELLE AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1fa93e10-dcc7-4e8c-b99d-f14de774f919",
+      "articleNumber": "1255",
+      "productName": "TX 10 TENSIOMETER 50 CM MESSTIEFE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "67091c18-1cc2-4bad-b286-e9ab5c228ed2",
+      "articleNumber": "8806",
+      "productName": "VA-EDELSTAHL BIG BOX",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b9629129-c56d-4680-8951-d71753539cdc",
+      "articleNumber": "8309",
+      "productName": "TRANSPORTROLLER 600 X 400 MM BIS 300 KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "71a2ab68-d0a7-4e84-b61a-e4b871d6653c",
+      "articleNumber": "8142",
+      "productName": "TRANSPORTROLLER FÜR DREHSTAPELBOXEN\n(8216)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "47ef778f-7c53-4041-b0e4-5fdbc8dd7caa",
+      "articleNumber": "1572",
+      "productName": "TRAPEZKELLE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5b320dae-6391-4d9d-87aa-0f629c18c6ea",
+      "articleNumber": "8209",
+      "productName": "TRANSPORTROLLER FÜR 50 X 30 CM BEHÄLTER\n(2sT.)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6ef352de-d555-4304-adbd-b63c930714e3",
+      "articleNumber": "1597",
+      "productName": "TRAPEZ-GLÄTTEKELLE 280X180/120X1,0MM,\nROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4a44f300-6d2b-4054-9c11-f6ab6edb3ddc",
+      "articleNumber": "8313",
+      "productName": "TRANSPORTROLLER 800 X 600 MM BIS 400 KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3f57b65d-a4a5-4177-aa7a-59402ddfe1fb",
+      "articleNumber": "1569",
+      "productName": "TRAPEZKELLE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ada52815-afd1-4965-b24e-a1649779b516",
+      "articleNumber": "8314",
+      "productName": "TRANSPORTROLLER 120 X 80 CM BIS 600 KG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8f397d3b-5f60-42f1-9b9c-200e292969fb",
+      "articleNumber": "8231",
+      "productName": "TRANSPORTROLLER GESCHLOSSEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8e79c935-4736-461d-b955-a54657460411",
+      "articleNumber": "8511",
+      "productName": "TRANSPORT-ROLLERSTÄNDER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1c4150e4-108a-433b-8980-9d005604973d",
+      "articleNumber": "8229",
+      "productName": "THERMOBOX MIT GLATTER INLETWANDUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9344c751-6471-4188-9b2b-20845660b562",
+      "articleNumber": "8228",
+      "productName": "TRAGEGRIFF FÜR 60 X 40 CMKISTE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bbd47020-0927-40ee-9e5a-802e59f1f380",
+      "articleNumber": "7061",
+      "productName": "THERMO HANDSCHUH, GR. 10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4e861cad-4d72-4a43-93a6-463139a7ae2b",
+      "articleNumber": "4634",
+      "productName": "TASCHENWETZSTEIN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bead5279-96fd-485d-b989-3a07a611297d",
+      "articleNumber": "1083",
+      "productName": "TASCHENSCHÜRZE, BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "07ae679a-7c3d-401a-9c92-c13fc51cbf01",
+      "articleNumber": "3807",
+      "productName": "THEKENSCHUTZ / SCHUTZWAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c5d289ac-74f4-4c7e-9eb8-4d96f06b4d42",
+      "articleNumber": "1655",
+      "productName": "STRICKHANDSCHUH NEONGRIP GR. 11",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fd010fa5-e60a-4b47-8eaa-6fbc58d1d481",
+      "articleNumber": "8731",
+      "productName": "STÜLPDECKEL GESCHLOSSEN GRAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "abaceece-d3ea-4f9b-8ab9-70c3e22caa5d",
+      "articleNumber": "1444",
+      "productName": "SWEATSHIRT GRAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "942eff21-cb5b-43a5-a5d6-85fa339f0cf8",
+      "articleNumber": "1443",
+      "productName": "SWEATSHIRTJACKE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d26c925f-de02-424c-a67c-5fa497c3709b",
+      "articleNumber": "3203",
+      "productName": "TASCHENMESSGERÄT EC-TM2",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "de5f5ef7-e943-4d79-8092-599dd64aca37",
+      "articleNumber": "3826",
+      "productName": "SUBSTRATBEHÄLTER 18 LITER (1M)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "795eb41d-f518-4b89-a9cf-db9ee449f276",
+      "articleNumber": "7074",
+      "productName": "STRICKHANDSCHUH GRIPFLEX PLUS GR.S",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a8662cf9-b423-4d72-b524-91d0c3999232",
+      "articleNumber": "3205",
+      "productName": "TASCHENMESSGERÄT PH-TM2",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "12e8d59a-164b-46f6-82e9-b38879b036bd",
+      "articleNumber": "4076",
+      "productName": "STECHMESSER \"DER AUFGEKOHLTE KLASSIKER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "54af36f8-2cab-49f8-8aa0-c5b9b906ecd0",
+      "articleNumber": "4084",
+      "productName": "STECHMESSER \"GLATTER KLINGENKOPF\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ab26de97-583e-4913-9400-f3b73b06555e",
+      "articleNumber": "4073",
+      "productName": "STECHMESSER \"DER RUNDE KLASSIKER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d416e5c9-82dd-4eaa-a6f0-2c3bb0e6c60d",
+      "articleNumber": "4062",
+      "productName": "STECHMESSER \"DER FRANZOSE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ce9cbd3e-1fc4-46b5-97a3-313d66c99f24",
+      "articleNumber": "4070",
+      "productName": "STECHMESSER \"DER VIERKANT KLASSIKER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1de38c49-f3c2-4bb4-9286-cd2686cb0056",
+      "articleNumber": "4059",
+      "productName": "STECHMESSER \"DER RUNDE KLASSIKER\" MIT\nKUNSTSTOFFGRIFF GELB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4e35d827-d3a1-4b4b-b284-de7788a83e4a",
+      "articleNumber": "4053",
+      "productName": "STECHMESSER \"DER KURZE KLASSIKER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "df6c6a57-aea9-4824-ac6b-a07b510ac633",
+      "articleNumber": "8979",
+      "productName": "STRETCHFOLIE SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "df12c8c5-90fc-432c-968b-db28bc80a09c",
+      "articleNumber": "4078",
+      "productName": "STECHMESSER \"DER BREITE KLASSIKER\" MIT\nERGONOMISCHEM GRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "98f41b57-6ed4-4b1c-b2bd-906c15b7d18d",
+      "articleNumber": "4074",
+      "productName": "STECHMESSER \"DER BREITE\" MIT STÄRKERER\nABWINKELUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3bf24dd6-ebd0-4051-bd64-e643b5f20ce2",
+      "articleNumber": "4075",
+      "productName": "STECHMESSER \"DAS LEHRLINGSMESSER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "82c668e6-3c32-4877-b410-be7cf3241f69",
+      "articleNumber": "4071",
+      "productName": "STECHMESSER \"DAS GERADE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0d1a8894-0c10-4709-b5c9-7739cb2f10ab",
+      "articleNumber": "8132",
+      "productName": "STECHKORB \"UNSER MEISTVERKAUFTER\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2d56314e-8ce8-4f10-a9b9-5e2e6a8a45c6",
+      "articleNumber": "4072",
+      "productName": "STECHMESSER \"BREIT MIT V-SCHLIFF\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2ee259c8-608d-405d-bcc6-c614b507fe55",
+      "articleNumber": "7037",
+      "productName": "STECHHANDSCHUH DOUBLEGRIP PLUS GR.10 -\nNACHFOLGER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d3052c20-4c01-4166-a596-9a4776d110dd",
+      "articleNumber": "1552",
+      "productName": "STANDARD GLÄTTEKELLE AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3dc39a77-da7e-4001-9775-c7a8c3111dc5",
+      "articleNumber": "1556",
+      "productName": "STANDARD MAURERKELLE AUS\nSPEZIALLEGIERUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c1bc95e7-1931-4685-b8e8-a042b0d8f211",
+      "articleNumber": "4638",
+      "productName": "STATIV FÜR HANDSCHLEIFBOCK",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4a2e1310-e938-4e38-ac82-8ed6df6f5ed6",
+      "articleNumber": "1567",
+      "productName": "SPARGELKELLE AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "79996ff6-a046-403f-bbbd-85dc4e62ae9b",
+      "articleNumber": "8796",
+      "productName": "SPARGELBEHÄLTER, 26 CM HOCH, KOMPLETT\nDURCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "692053e7-0397-48b5-a6f7-714609727a74",
+      "articleNumber": "1566",
+      "productName": "SPARGELKELLE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "53f10af9-4dc8-4a20-ae0c-0dca8de2ffdf",
+      "articleNumber": "1564",
+      "productName": "SPARGELKELLE AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "843cd079-37fb-4e5d-98de-e0580405cf52",
+      "articleNumber": "8114",
+      "productName": "SPARGELERNTEKARRE AUS LACKIERTEM STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "85c3d182-3eb5-4bca-b374-49343b513970",
+      "articleNumber": "8301",
+      "productName": "SPARGELBEHÄLTER SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ce1cc35f-83a1-4e11-b991-36e9cf781a64",
+      "articleNumber": "8797",
+      "productName": "SPARGELBEHÄLTER GRAU, 26 CM HOCH",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4190b955-d4df-4920-b376-76c7896429bb",
+      "articleNumber": "8457",
+      "productName": "SPARGELKARTON 5 KG, GEFALTET - NEUTRAL\nBEDRUCKT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "97747ed7-1a9b-4dc2-b053-948869a21141",
+      "articleNumber": "1563",
+      "productName": "SPARGELKELLE 280MM STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "05787c8a-9c6e-44b7-9ac9-43ad6a12929d",
+      "articleNumber": "1561",
+      "productName": "SPARGELKELLE AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "22900d90-9076-47f4-84d0-d86eb491ed0e",
+      "articleNumber": "7067",
+      "productName": "SORTIERHANDSCHUH \"ASPANEO\", GR. XL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "dc862440-9876-4e82-8f87-16949655f081",
+      "articleNumber": "4319",
+      "productName": "SORTIERMASSBAND AUS ALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d4c214ae-208d-4c62-ba30-1640712a6486",
+      "articleNumber": "4037",
+      "productName": "SICHTSCHLEIFMASCHINE MIT\nDIAMANTSCHLEIFSCHEIBE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a8946b2b-81a8-4127-9fed-7ab4d42d163b",
+      "articleNumber": "7042",
+      "productName": "SORTIERHANDSCHUH ALPHATEC 87-029\nGR.10/XL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9ffa5f5f-6690-4120-87b5-4507f22d6c7a",
+      "articleNumber": "1110",
+      "productName": "SPANKORBUMMANTELUNG FÜR 50 X 30 X 20\nCMKISTE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0432461d-df0d-4de9-ba9c-9697a90865b1",
+      "articleNumber": "9005",
+      "productName": "SONNENSCHUTZKAPPE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cff6f495-2e74-4b4d-87fd-140e65a1d621",
+      "articleNumber": "8211",
+      "productName": "SPANNDECKEL FÜR KISTE 53X35CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "80580d85-7e0a-4be5-bbea-ad7f653bce68",
+      "articleNumber": "8207",
+      "productName": "SPANNDECKEL FÜR KISTE 50X30CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "91f9fc4a-642b-4f64-adce-95a52355e3b4",
+      "articleNumber": "4056",
+      "productName": "SCHWALBENSCHWANZ-STECHMESSER \"UNSER\nMEISTERSTÜCK\" FLACH",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8b3d6f1a-6f34-426f-b946-069a0c1f6c77",
+      "articleNumber": "7078",
+      "productName": "SHOWA 600 HANDSCHUH GR. 7",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c292deb7-fc92-456d-86de-abf1e5dd6622",
+      "articleNumber": "4090",
+      "productName": "SCHWALBENSCHWANZ-STECHMESSER MIT\nERGONOMISCHEM HOLZGRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8b3040c6-24ed-4545-9126-b46ef92d04dc",
+      "articleNumber": "4055",
+      "productName": "SCHWALBENSCHWANZ-STECHMESSER \"UNSER\nMEISTERSTÜCK\" - NICHT MEHR LIEFERBAR -",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ac78dc91-eeae-47f3-a9d8-513a1bc7f051",
+      "articleNumber": "4091",
+      "productName": "SCHWALBENSCHWANZ-STECHMESSER MIT\nERGONOMISCHEM KUNSTSTOFFGRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "18396b50-3cda-4e48-b122-94bbbdcc1f94",
+      "articleNumber": "7079",
+      "productName": "SHOWA 460 KÄLTEHANDSCHUH GR.8",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3eb1c318-8ff6-43c7-87bc-6c2e98b987a0",
+      "articleNumber": "9355",
+      "productName": "SICHERHEITSSCHUHE S3, GR. 41",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9367c9bf-1e2c-47cf-99fa-faa19a4a5724",
+      "articleNumber": "9353",
+      "productName": "SICHERHEITS-HOCHSCHUH S3, GR. 39",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "39884ef4-c99b-4fb1-a4ac-543ebcede116",
+      "articleNumber": "4096",
+      "productName": "SCHWALBENSCHWANZ\nANSCHWEISSMESSERSPITZE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1db550ec-da80-413f-af40-5d347461412f",
+      "articleNumber": "1082",
+      "productName": "SCHÜRZE \"DIE FOLIENSCHURZE\", STÄRKE 50 MM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cda73a11-ceb4-4550-9ad0-a9858c4d18b4",
+      "articleNumber": "3040",
+      "productName": "SCHLACHTMESSER, KLEIN, KLINGENLÄNGE 18\nCM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3bda5e6d-773f-44d0-ac84-547190988db3",
+      "articleNumber": "4032",
+      "productName": "SCHLEIFSTEIN IN V-FORM 120° PROFIL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9d803cf6-6fba-4561-825e-56d62183e348",
+      "articleNumber": "1081",
+      "productName": "SCHÜRZE \"DIE HOCHWERTIGE\" BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e2afd394-e257-4338-adce-5ac2d9c3d21e",
+      "articleNumber": "3010",
+      "productName": "SALATMESSER, KLINGENLÄNGE 13 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f99d3f3e-8e85-488d-8972-85847af9e4c4",
+      "articleNumber": "4635",
+      "productName": "SCHLEIFFIX",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8050d735-dc69-4476-820d-33dd36d7fcd0",
+      "articleNumber": "3050",
+      "productName": "SCHLACHTMESSER, GROSS, KLINGENLÄNGE 26\nCM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f9fef4d7-0688-49a0-84dd-2071996ba0ca",
+      "articleNumber": "1599",
+      "productName": "SCHAUFELKELLE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "06db4a02-ca7c-4242-9d18-66fbafc416a1",
+      "articleNumber": "3020",
+      "productName": "SALATMESSER, KLINGENLÄNGE 10 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "512a185a-ef8f-43ad-982b-190cca886a0c",
+      "articleNumber": "4641",
+      "productName": "RINGFINGERSCHERE 4 1/2\", GERADE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "34ef1494-21aa-4558-9841-03313efec748",
+      "articleNumber": "9131",
+      "productName": "REGENJACKE LANG, GR. XXXL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ff21b579-66a3-4069-ace9-bd1cba60e82c",
+      "articleNumber": "4033",
+      "productName": "RITZSTEIN ZUM NACHARBEITEN DES V-PROFILS",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "09221a70-4e82-4890-8599-cee42eaabc8c",
+      "articleNumber": "8459",
+      "productName": "ROLLERSTANGE FÜR TRANSPORTROLLER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fda20479-7451-44a5-b4c6-600f797ed977",
+      "articleNumber": "9103",
+      "productName": "REGENJACKE MIT EXTRA LANGEM RÜCKENTEIL\nGR. M/0",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f1c876a0-5966-42f7-a8e2-c866568618e6",
+      "articleNumber": "1440",
+      "productName": "RUNDHALS T-SHIRT BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3dcbb256-d342-4533-9a05-d05ec17b508c",
+      "articleNumber": "2424",
+      "productName": "RÜBENHACKE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "da1efa3d-cab8-4370-819f-db542281b8bb",
+      "articleNumber": "9132",
+      "productName": "REGENMANTEL LEICHT GR. XL/2",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "01b8e204-9d4d-4052-9b4a-4f1ba1a2beea",
+      "articleNumber": "9111",
+      "productName": "REGENSET, FS 350 GR. M",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fe85b96e-518b-448a-ab58-f711cfa82321",
+      "articleNumber": "9163",
+      "productName": "REGENBUNDHOSE AUS PU-STRETCH GR. XL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c3ed162c-9889-4603-bf05-b2a08b47221b",
+      "articleNumber": "9165",
+      "productName": "REGENHUT SÜDWESTER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8a7f3d70-f6e6-4e8b-a530-d32bff45ef74",
+      "articleNumber": "4325",
+      "productName": "RANKHAKEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7d4083d2-d8ba-4340-b3bb-e08f1a0b5c61",
+      "articleNumber": "3803",
+      "productName": "RABASEPT 135 DESINFEKTIONSMITTEL 10 L-\nKANISTER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b9a2fbd4-b50c-41ba-aa1f-07193d85e478",
+      "articleNumber": "9160",
+      "productName": "REGENBUNDHOSE, FLEXOTHANE GR. XXL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0af50bec-ef9e-4487-af22-2b11230d0476",
+      "articleNumber": "5122",
+      "productName": "PUTZMESSER AUS ROSTFREIEM EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "91704575-b8a1-445d-a714-e35a7fe8177d",
+      "articleNumber": "9108",
+      "productName": "REGENJACKE + REGENHOSE KOMBI FS 250",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "50431597-34b7-47b4-ab46-ec0b01157175",
+      "articleNumber": "5120",
+      "productName": "PUTZ-/SALATMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7038058b-eb36-49aa-b333-84a6c6b98cad",
+      "articleNumber": "1092",
+      "productName": "PVC-SCHÜRZE \"DIE GÜNSTIGE\" WEISS",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3b0daea1-c129-44f7-b28e-80ec2e655187",
+      "articleNumber": "9164",
+      "productName": "REGENJACKE AUS PU-STRETCH GR. S",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ba445ff2-f0e3-42a4-996a-15a4619db94c",
+      "articleNumber": "4636",
+      "productName": "PRISMENWETZSTEIN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c047e280-9fa3-4eac-ad57-90718ade5583",
+      "articleNumber": "7041",
+      "productName": "PROFI-SORTIERHANDSCHUH GR. L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3b0a3c4e-25ed-4da7-bc7b-53181d1191e7",
+      "articleNumber": "5118",
+      "productName": "PUTZ-/KÜCHENMESSER, BANDSTAHL MIT\nHOLZGRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e40bb5f3-8b84-48fd-ba1f-9cdaef2381b9",
+      "articleNumber": "4036",
+      "productName": "PROFI-SCHLEIFBOCK SF 201",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "94c7bfcd-11ab-4568-a9f4-db2d2a88c14d",
+      "articleNumber": "5101",
+      "productName": "PUTZ-/KÜCHENMESSER LANG, SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ea9def9f-b89e-46a9-8112-1c7f2358ff8c",
+      "articleNumber": "5010",
+      "productName": "PUTZ-/KÜCHENMESSER, BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9e47e0fb-89e8-4b96-9564-9a6f60956175",
+      "articleNumber": "4038",
+      "productName": "PRÄZISIONSOPTIK MIT BELEUCHTUNG FÜR\nSICHTSCHLEIFMASCHINE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bfa86cd9-6a88-4429-b66a-fc259e8ebd26",
+      "articleNumber": "1441",
+      "productName": "POLOSHIRT ROT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "31a35c19-2cd6-4cc2-b1de-fb62aa00859a",
+      "articleNumber": "8118",
+      "productName": "PFLÜCKSCHLITTEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2dc4da5d-18c7-46db-980d-1fe8aab75393",
+      "articleNumber": "8127",
+      "productName": "ORIGINAL FRANZ. STECHKORB MIT\nZWANGSFÜHRUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "37751c8c-4e60-4176-811d-ee8a74b98d57",
+      "articleNumber": "8125",
+      "productName": "ORIGINAL FRANZ. STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "426e00e6-8e62-4403-915b-083b76557f73",
+      "articleNumber": "7073",
+      "productName": "NYLON-STRICKHANDSCHUH,\nBESCHICHTUNGSSTÄRKE 0,5 MM, GR. M",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0015b483-0da5-4505-a526-0b82a16bb24f",
+      "articleNumber": "8176",
+      "productName": "NEUER FRANZ. STECHKORB XL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6210a578-a1d2-4730-9845-6647dcb0e1b4",
+      "articleNumber": "5145",
+      "productName": "PAPRIKA-/TOMATENMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d857d2f8-84b9-4f63-aa19-bd07873eadf6",
+      "articleNumber": "7047",
+      "productName": "NITRIL-EINWEGHANDSCHUHE UNGEPUDERT,\nBLAU GR. S",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6efe947a-3a16-4db2-9de8-6c0c3197520a",
+      "articleNumber": "5140",
+      "productName": "PAPRIKA-/TOMATENMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5e5f7d9a-0be1-42b7-bdc5-fa295ebb268a",
+      "articleNumber": "3090",
+      "productName": "PFÄLZER KOHLSCHLAGMESSER, GROSS,\nKLINGENLÄNGE 20 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "02435c30-3cef-404a-a896-6d5d97e93bff",
+      "articleNumber": "5135",
+      "productName": "PAPRIKA-/TOMATENMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d9136c6f-b814-47ea-bca6-aa2dffb12e7b",
+      "articleNumber": "1603",
+      "productName": "NITRAS WINTERBLOCKERHANDSCHUH 1603W\nGR. 9",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3b59c5c6-1705-4d53-b341-3b0cb5d6d3bd",
+      "articleNumber": "6487",
+      "productName": "MOBILE TOILETTENKABINE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d90e2031-b45d-4926-9c8d-f7f2b3b05406",
+      "articleNumber": "8398",
+      "productName": "LDPE-ABDECKUNG, UNBEDRUCKT,\nTRANSPARENT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8e0757ee-54b5-49ac-9d79-c1bcac7a3d78",
+      "articleNumber": "7075",
+      "productName": "NAHTLOSER STRICKHANDSCHUH,\nNITRILBESCHICHTUNG 0,7 MM, GR. M",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6b013bc6-e959-43f1-b935-be67db167bc3",
+      "articleNumber": "7070",
+      "productName": "MAXIFLEX ULTIMATE NYLON-\nSTRICKHANDSCHUH GR.8",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "533ebbe8-1e5c-4f2a-a2bd-5604898998e1",
+      "articleNumber": "8399",
+      "productName": "LDPE-ABDECKUNG, NEUTRAL BEDRUCKT,\nTRANSPARENT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "46174efa-60b4-481b-98c5-d379de07e93c",
+      "articleNumber": "1126",
+      "productName": "LD-PE KISTENEINLEGEBEUTEL FÜR ALLE 60 X 40\nCM KARTON/KISTEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "64038172-8f34-4981-93f4-7a46831119f6",
+      "articleNumber": "1529",
+      "productName": "LATZSCHÜRZE 529 BORDEAUX-ROT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "aefca9a8-6696-4807-9a42-07ffbea83431",
+      "articleNumber": "7055",
+      "productName": "LANGSTULPENHANDSCHUH 40 CM GR. 10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "66c17b92-d284-4266-b830-c962ae6fe440",
+      "articleNumber": "7066",
+      "productName": "LATEXHANDSCHUH \"ALPHATEC\" 87-245 GR. 9,5",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ae567184-5b68-433b-9c68-f044905db526",
+      "articleNumber": "7043",
+      "productName": "LANGSTULPENHANDSCHUH 75 CM, GR. 9",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4441867a-82f7-4b80-84b5-28da63e83d65",
+      "articleNumber": "1595",
+      "productName": "KURZKELLE EXTRABREIT - VA -",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3e3ba784-e657-4217-9a9f-5d92a9bc56ac",
+      "articleNumber": "7051",
+      "productName": "LATEXHANDSCHUH, 0,5 MM, GR. XL/10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e5df4904-f260-432b-a98b-fadcc7c922a9",
+      "articleNumber": "7044",
+      "productName": "LATEX-EINWEGHANDSCHUHE GEPUDERT GR.\n8/M",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b146045c-cecd-40d3-85cc-ceba2ee83479",
+      "articleNumber": "7072",
+      "productName": "LATEXHANDSCHUH \" DUAL BARRIER\" GR. XL =\n10-10,5",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5c9960a7-28ea-4fc8-ac80-fd6e4a5eacc9",
+      "articleNumber": "7054",
+      "productName": "LATEXHANDSCHUH GR. M/8",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "dbf35d5d-7a10-497c-b6c9-149492bc0f5d",
+      "articleNumber": "7035",
+      "productName": "LANGSTULPENHANDSCHUH 60 CM GR. 10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "59848ae4-d2ab-469f-aaca-a51223360158",
+      "articleNumber": "7063",
+      "productName": "LATEX EINWEGHANDSCHUH UNGEPUDERT GR.8",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "db0cd8c6-aff6-470b-adf5-16302e69b45e",
+      "articleNumber": "1589",
+      "productName": "KURZKELLE AUS EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5262619f-e569-44cf-a630-59f3a2e1d2ef",
+      "articleNumber": "8717",
+      "productName": "KUNSTSTOFFBEHÄLTER GRÜN 17 CM HOCH,\nBODEN DURCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3beebb2a-c5a9-42dd-a4d6-ce483d0e2ed5",
+      "articleNumber": "8708",
+      "productName": "KUNSTSTOFFBEHÄLTER GRAU, KOMPLETT\nGESCHLOSSEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0ad79cec-3fec-48e7-8b2f-d3217a9164bb",
+      "articleNumber": "1588",
+      "productName": "KURZKELLE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a9d4c196-81fe-4594-bfbd-57b4912596f0",
+      "articleNumber": "8700",
+      "productName": "KUNSTSTOFFBEHÄLTER GRAU, 18 CM HOCH,\nKOMPLETT DURCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0ac3722d-22d6-464f-9265-7a3dee23db51",
+      "articleNumber": "8709",
+      "productName": "KUNSTSTOFFBEHÄLTER GRÜN, SEITEN\nGESCHLOSSEN, BODEN DURCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fd18131b-4fb4-4d73-992d-46873721e817",
+      "articleNumber": "8723",
+      "productName": "KUNSTSTOFFBEHÄLTER, 32 CM HOCH",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "846859ac-f8ea-485f-b056-2b59a4e5c5c3",
+      "articleNumber": "8702",
+      "productName": "KUNSTOFFBEHÄLTER, KOMPL. GESCHLOSSEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "857d180e-c74a-4f7b-b59d-d0d42e3aa626",
+      "articleNumber": "8718",
+      "productName": "KUNSTSTOFFBEHÄLTER 21 CM HOCH, BODEN\nDRUCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b2cb104d-ea2d-4e67-99cd-cc2123161d39",
+      "articleNumber": "3070",
+      "productName": "KOHLSCHLAGMESSER, KLEIN, KLINGENLÄNGE 15\nCM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5159cc03-1446-40a0-8387-efa9f2e58312",
+      "articleNumber": "8715",
+      "productName": "KUNSTSTOFFBEHÄLTER 16 CM HOCH",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "04db5e0e-366b-4db9-8d78-3ddb5aca39da",
+      "articleNumber": "8716",
+      "productName": "KUNSTSTOFFBEHÄLTER 21 CM HOCH, KOMPLETT\nDURCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "44df0898-c7f7-4a8c-afca-15cba4e2c65a",
+      "articleNumber": "3080",
+      "productName": "KOHLSCHLAGMESSER, GROSS, KLINGENLÄNGE\n18 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "89c199f0-bccc-4814-ad03-767cb69fa0ea",
+      "articleNumber": "8726",
+      "productName": "KUNSTSTOFFBEHÄLTER 13 CM HOCH, GRÜN,\nKOMPLETT GESCHLOSSEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d7447d3f-a4e1-4527-9a98-5857a9bc40d4",
+      "articleNumber": "9105",
+      "productName": "KOPFHAUBE CLIP -W, GR. 52CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3299410c-61b5-4527-8c74-555d374c547d",
+      "articleNumber": "1135",
+      "productName": "KISTENEINLEGEBEUTEL AUS PE-FOLIE FÜR ALLE\n40 X 30 CM KARTON + KISTEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "14bfe1b5-7c55-439c-9246-15ad0dd1828c",
+      "articleNumber": "5150",
+      "productName": "KL. KOHLSCHLAGMESSER, KLINGENLÄNGE: 13\nCM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5f585e1c-887b-4547-8d56-db22ab9a7559",
+      "articleNumber": "3100",
+      "productName": "KOHLSCHLAGMESSER, AMERIKANISCHE\nKLINGE, KLINGENLÄNGE 20 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d080af85-69ab-427c-a3da-bedb050d4aee",
+      "articleNumber": "5009",
+      "productName": "KLINGENSCHUTZHÜLLEN FÜR ART. 5101",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "711e438b-e7c1-4ec7-a942-453d3f41aea6",
+      "articleNumber": "8119",
+      "productName": "KIRSCHPFLÜCKKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ee94833d-f2ae-4993-ad24-15ef7f41c0c9",
+      "articleNumber": "1047",
+      "productName": "KISTENWASCHMASCHINE TECO - NEUES\nMODELL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3738b624-7459-4eb1-aafd-3f2492010f5b",
+      "articleNumber": "1057",
+      "productName": "KISTENWASCHMASCHINE 1500E",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f84b6f5f-c19d-4253-aad4-e7969bfc736f",
+      "articleNumber": "4063",
+      "productName": "IMPORTSTECHMESSER \"KLASSIK\" VIERKANT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "eb9c102e-d151-4312-b062-98eb5a42230d",
+      "articleNumber": "1144",
+      "productName": "IR-KS KERAMIKSPITZE FÜR NIEDRIGE\nSAUGSPANNUNG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4f3dab2e-81f6-450b-8794-23e7172008b5",
+      "articleNumber": "1442",
+      "productName": "KAPUZENSWEATSHIRT WEISS",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a3d5b35d-ef61-49e2-8ca9-44cc16945d52",
+      "articleNumber": "4054",
+      "productName": "IMPORT SCHWALBENSCHWANZ-STECHMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9ea612bc-aef2-40a5-aeab-4055b00b133c",
+      "articleNumber": "4318",
+      "productName": "KIRSCHENSORTIERSCHABLONE AUS\nALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ded0c6a5-2363-443b-a7a7-56b71067ace8",
+      "articleNumber": "7046",
+      "productName": "HIGH RISK NITRIL-EINWEGHANDSCHUHE\nUNGEPUDERT, BLAU GR.M",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f427828f-0f95-463a-84d2-7da927af35c0",
+      "articleNumber": "8735",
+      "productName": "HEIDELBEERSTEIGE AUS KUNSTSTOFF, GELB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7675af64-984f-44c3-9d1a-e329dd4d55f4",
+      "articleNumber": "3800",
+      "productName": "HORTISEPT CLEAN PLUS REINIGUNGSMITTEL 10\nL-KANISTER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f4aba4ab-7568-4617-a484-9342076437d4",
+      "articleNumber": "7071",
+      "productName": "HANDSCHUH GRIP NACHBAU, GR. M",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8ff2dd59-0320-46cb-8be3-3253246f4099",
+      "articleNumber": "7058",
+      "productName": "HANDSCHUH KCL-SAHARA 100 GR. 7",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ebafffe8-0f24-4f27-b24d-590978f04329",
+      "articleNumber": "7057",
+      "productName": "HANDSCHUH SAHARA BAUGLEICH \"FIRMENICH”\"\nGR. M/8",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "47612db5-7783-4fa9-819c-faa538116900",
+      "articleNumber": "7060",
+      "productName": "HANDSCHUH MAPA-JERSETTE 301, GR. 6-6,5",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cda10871-32b2-4601-964f-df680576ff49",
+      "articleNumber": "7069",
+      "productName": "HANDSCHUH ORIGINAL SHOWA GRIP 310 GR. 9\nGRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7c95a347-b307-479a-bb35-36ce52925b9a",
+      "articleNumber": "7077",
+      "productName": "HANDSCHUH GRIP PLUS, GR. S",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "60a1c19b-2398-4257-9d6c-d1fefe7fd0de",
+      "articleNumber": "7052",
+      "productName": "HANDSCHUH DESERT PLUS, GR. L",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ff85b855-bccb-4fd1-a3d2-6a443ae0a3e7",
+      "articleNumber": "7056",
+      "productName": "HANDSCHUH SAFE GLOVE - GR. 9",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9d0e53f0-3139-4862-bfe6-22e63050ce68",
+      "articleNumber": "7059",
+      "productName": "HANDSCHUH MAPA-JERSETTE 300, GR. 7-7,5",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ece51381-59cb-465c-89aa-585b2833ee92",
+      "articleNumber": "8974",
+      "productName": "HANDABROLLGERÄT FÜR STRETCHFOLIE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5f9bb60a-e9ed-4b8e-929c-de80d1b57628",
+      "articleNumber": "5126",
+      "productName": "GRÜNSPARGELMESSER \"DAS HOCHWERTIGE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "bf485210-7099-4a8b-b7a8-817ea00dcffa",
+      "articleNumber": "5127",
+      "productName": "GRÜNSPARGELMESSER MIT WELLENSCHLIFF\n(ORIGINAL SOLINGEN)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "907e02fb-3231-4c48-aa75-70628905cd3c",
+      "articleNumber": "9351",
+      "productName": "GUMMISTIEFEL, SCHWARZ, GR. 43",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "555167cf-864d-4777-a147-67a88d914142",
+      "articleNumber": "5115",
+      "productName": "GRÜNSPARGELMESSER MIT WELLENSCHLIFF\n(ORIGINAL VICTORINOX)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "489e999f-8fbf-4441-a748-30840612dc1a",
+      "articleNumber": "8156",
+      "productName": "GRÜNER STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f68fc474-6ae7-4681-ab2f-99a27d162281",
+      "articleNumber": "9352",
+      "productName": "GUMMISTIEFEL HOCHWERTIG",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d9c3a2fd-ad53-4142-a4a3-9a722da83757",
+      "articleNumber": "4637",
+      "productName": "HANDSCHLEIFBOCK INKL. PRISMENWETZSTEIN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0de95dae-c1c0-4f02-9ab5-6390cfa7d7ba",
+      "articleNumber": "1557",
+      "productName": "GLÄTTEKELLE STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5a098705-f5fb-4e1d-9a09-860299200ac4",
+      "articleNumber": "1592",
+      "productName": "GLÄTTEKELLE 280X130X0,7MM ROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4141eda3-afb3-4037-a2c6-8b06955f031c",
+      "articleNumber": "1554",
+      "productName": "GLÄTTEKELLE 280X130X0,7MM STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "24280765-9701-433d-9576-6beba7c99703",
+      "articleNumber": "1558",
+      "productName": "GLÄTTEKELLE 280X130X0,7MM ROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3106203b-709d-4988-ab8d-ea2ed303ae0a",
+      "articleNumber": "1591",
+      "productName": "GLÄTTEKELLE EXTRABREIT - VA -",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "474d4191-db7d-4173-af8f-52e4d4ecd4dc",
+      "articleNumber": "1593",
+      "productName": "GLÄTTEKELLE EXTRA STARK ROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0dbcefc3-d649-4d23-8d39-461df5b039c8",
+      "articleNumber": "1551",
+      "productName": "GLÄTTEKELLE 280X130X0,7MM STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "696feca2-ed64-4b5c-bd95-592db117f004",
+      "articleNumber": "1560",
+      "productName": "GLÄTTEKELLE 280X150X0,8MM STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0e8d8a37-f41a-4aca-9959-b32a3c37a588",
+      "articleNumber": "1553",
+      "productName": "GLÄTTEKELLE 280X130X1,0MM STAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b946ce18-6231-4664-878b-2748ef019cda",
+      "articleNumber": "8512",
+      "productName": "GITTER-TRANSPORTROLLER FÜR KISTEN\n600X400MM ROT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "19ccca71-cc95-4a2a-bc87-e0783c770692",
+      "articleNumber": "3802",
+      "productName": "FLORADES DESINFEKTIONSMITTEL 10 L-\nKANISTER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "14289fa1-a35e-4ade-92af-7d5dd8c9153d",
+      "articleNumber": "1555",
+      "productName": "GLÄTTEKELLE 280X130X0,7MM ROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3b5ba9a4-2b17-4035-b488-2d6e3af9e1cd",
+      "articleNumber": "5130",
+      "productName": "GEMÜSEMESSER KLASSIKER 8,5CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3e0d8a66-fb2b-439f-9f7e-d92366aadc4c",
+      "articleNumber": "4100",
+      "productName": "GERADE ANSCHWEISSMESSERSPITZE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "469932b0-8176-4618-9ef2-a3d4d7cfac0b",
+      "articleNumber": "8175",
+      "productName": "FRANZÖSISCHER STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cd709b4c-973f-4e9a-8fc5-9c5c5e819f6b",
+      "articleNumber": "8100",
+      "productName": "GELBER STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "47238f36-2328-4b71-a562-8565d74f33c9",
+      "articleNumber": "1594",
+      "productName": "GLÄTTEKELLE 240X150X1,0MM ROSTFREI",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e9edc9dd-2e9c-40cb-b317-8dcf712e59bc",
+      "articleNumber": "1447",
+      "productName": "FLEECE JACKE SCHWARZ",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9b7a8870-1fd2-4482-bbdd-c0521bc73f10",
+      "articleNumber": "5190",
+      "productName": "GÄRTNERHIPPE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1dbe6f01-7867-4dd3-acd2-b04ffbcead00",
+      "articleNumber": "7053",
+      "productName": "FINGERLINGE, 1 MM STARK, GR. L=4, OHNE\nROLLRAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "35821e4f-15e2-44f1-8f25-3daba0f8f125",
+      "articleNumber": "7049",
+      "productName": "FINGERLINGE, 1,0 MM STARK, GR. XL=5, MIT\nROLLRAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "248b2ccb-b9bd-4fc2-b2ee-9573e7bd29ef",
+      "articleNumber": "5166",
+      "productName": "FELDSALATMESSER, EINSEITIG GESCHLIFFEN\nFÜR LINKSHÄNDER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "97736664-15ff-4b38-9024-1959aad0f2dd",
+      "articleNumber": "3801",
+      "productName": "FADEX H+ REINIGUNGSMITTEL 10 L-KANISTER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8f8d38c7-cc4d-456a-989b-8fec6cd5ba99",
+      "articleNumber": "5170",
+      "productName": "FELDSALAT ERNTEMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7cdd9bf6-b1ba-4880-9821-ed38af07e580",
+      "articleNumber": "7050",
+      "productName": "FINGERLINGE, 0,8 MM STARK, GR. S=2, OHNE\nROLLRAND",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5455ef58-8bff-4135-a7f9-3dd1adaa2f0c",
+      "articleNumber": "8210",
+      "productName": "FELDKISTE, FARBE ROT",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9957bb16-6a21-4c68-a613-6278faa0e9a0",
+      "articleNumber": "5165",
+      "productName": "FELDSALATMESSER, BEIDSEITIG GESCHLIFFEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "57ffd345-d331-498d-a759-c782570e17bd",
+      "articleNumber": "4640",
+      "productName": "ERDBEERRINGMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9d794639-149b-467b-880c-13b2866de53e",
+      "articleNumber": "8145",
+      "productName": "ERNTEKARRE ALU VARIABEL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "67aa6555-2d34-4e61-9e50-d78396206675",
+      "articleNumber": "8181",
+      "productName": "ERNTEKARRE DIE \"NEUE\"",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "53fc6b5e-5293-4a75-b2f9-d30162b1e5df",
+      "articleNumber": "8707",
+      "productName": "ERNTEKISTE GRÜN, BODEN U. SEITEN\nDURCHBROCHEN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "49c3d7ba-a988-48c6-9231-380e0f8d2d11",
+      "articleNumber": "8106",
+      "productName": "ERDBEERERNTEKARRE FÜR 60 X 40 CM STEIGE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "81c537cf-0021-43d7-9b80-7b5acedba5c3",
+      "articleNumber": "8112",
+      "productName": "ERNTEKARRE MIT 2 VARIO-KISTENHALTERN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6d8d8098-b55e-4dba-8f74-11e38e4c87cb",
+      "articleNumber": "3827",
+      "productName": "ERDBEERSUBSTRATBEHÄLTER 15 LITER (1M)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "75900da6-8ce7-4d82-b9b7-3dbb087df00e",
+      "articleNumber": "3821",
+      "productName": "DESINFEKTIONSSTAND MIT FUSSPUMPE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "cee34c98-33f4-42cd-a9c7-a1dd07a61722",
+      "articleNumber": "8201",
+      "productName": "DIE \"SPARGELKISTE\" DUNKELGRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6672a77b-60ba-4c8d-a480-7c1a262e518e",
+      "articleNumber": "7202",
+      "productName": "ECKE FÜR AUFFAHRKEIL FÜR BODENROST, GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7af87e14-9d47-41fb-96de-19bc30e1ed09",
+      "articleNumber": "4039",
+      "productName": "DIAMANTSCHLEIFSCHEIBE FÜR ART. 4037 GROB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1851dd72-682c-48dc-ac6c-d7057eb1c676",
+      "articleNumber": "9106",
+      "productName": "EINWEGÄRMELSCHONER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1c2a9ecb-d803-4440-97d3-2c4307fb8140",
+      "articleNumber": "8236",
+      "productName": "DREHSTAPELBEHÄLTER, (GELOCHT)",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0a434885-c70d-4054-8311-e7063dbffbdc",
+      "articleNumber": "8216",
+      "productName": "DREHSTAPELBEHÄLTER, DUNKELGRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4ff38929-03a8-4651-a126-e0bbd883473b",
+      "articleNumber": "8227",
+      "productName": "EINKLEMMGRIFF FÜR 53 X 35 CM KISTE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b6c4a111-b18a-43b2-85c4-0d19caae47ec",
+      "articleNumber": "3684",
+      "productName": "CLEVERMAX ALU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b6612c26-c4a6-4231-acee-22f8191df781",
+      "articleNumber": "8217",
+      "productName": "DECKEL FÜR DREHSTAPELBEHÄLTER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "031ee11c-803a-429a-b166-e96e1a95637d",
+      "articleNumber": "8804",
+      "productName": "DECKEL FÜR BIG BOX 120 X 80 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "49608061-4b6a-4dad-acb9-efb9a3f9af85",
+      "articleNumber": "9008",
+      "productName": "CHAPS GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9b0cdc75-022b-413e-9cf0-21dca5028add",
+      "articleNumber": "8805",
+      "productName": "DECKEL FÜR BIG BOX 120 X 100 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "db0c32c8-bb2f-47f9-b733-07a2b3c7ae75",
+      "articleNumber": "4633",
+      "productName": "CBN WERKZEUG-SCHLEIFSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fd824b84-9289-4da8-8488-dc731eac9b85",
+      "articleNumber": "8596",
+      "productName": "CHASUBLE BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d81d4111-9521-4ee0-9529-48e687026747",
+      "articleNumber": "5160",
+      "productName": "BRÖTCHENMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f4aa098e-1a30-4b40-ade3-a71d66d7ebaf",
+      "articleNumber": "1435",
+      "productName": "BISTROSCHÜRZE GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4595a1c7-1d8d-4ad9-820e-d49c15adbaf4",
+      "articleNumber": "5015",
+      "productName": "BLUMENMESSER, BLAU",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7633cf16-dd61-4a0d-b50d-2654441042c6",
+      "articleNumber": "7103",
+      "productName": "BODENROST, GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "3c79e58a-75a1-4b70-91e9-9680f79c6f39",
+      "articleNumber": "3030",
+      "productName": "BLOCKMESSER, KLEIN, KLINGENLANGE 13 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d07e0ea9-a98b-48e2-a4e4-82119bcc6b3b",
+      "articleNumber": "5180",
+      "productName": "BLUMENKOHLMESSER MIT WELLENSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c3691470-f764-4294-9b32-e4ead9165f7d",
+      "articleNumber": "7068",
+      "productName": "BAUMWOLL-STRICKHANDSCHUH \"GRIPFLEX\",\nGR.S",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "73ee1496-18f0-48ea-a2f1-b13d0e5ef7d2",
+      "articleNumber": "3060",
+      "productName": "AUSLÖSER, KLINGENLÄNGE 18 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e6f2714b-60b8-415d-b2ff-3e84481ef93e",
+      "articleNumber": "8800",
+      "productName": "BIG BOX, MASSE: 120 X 100 X 79 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "72644432-80dd-4f17-be70-68d2178679cf",
+      "articleNumber": "8157",
+      "productName": "BEERENOBSTPFLÜCKHILFE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "4ed560af-09fb-47ee-bf11-78ef60e02b8e",
+      "articleNumber": "8123",
+      "productName": "BEERENOBSTPFLÜCKHILFE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f5f0bc06-97a0-426a-8deb-90095d107418",
+      "articleNumber": "8808",
+      "productName": "BIG BOX, MASSE: 120 X 100 X 78,5 CM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "b95a5bb0-da1d-4343-b3d1-cebe3ce0a029",
+      "articleNumber": "7661",
+      "productName": "BEUTELVERSCHLIESSER AUS METALL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f115e062-32af-4a01-857a-d28d178b57b1",
+      "articleNumber": "5060",
+      "productName": "ARBEITSMESSER, EDELSTAHL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "66370a17-acad-4915-94fc-d3c4f8b8ed84",
+      "articleNumber": "3806",
+      "productName": "ATEMSCHUTZMASKE FFP2",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "fafc0a0e-540b-4b4d-85fd-129edb0e75a4",
+      "articleNumber": "9107",
+      "productName": "ÄRMELSCHONER AUS VINYL",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "e4d0eb4a-c06a-414e-9fb7-fca6998185d4",
+      "articleNumber": "5065",
+      "productName": "ARBEITSMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "36b20b49-dc71-44f2-904d-a1448ea3811b",
+      "articleNumber": "1050",
+      "productName": "KISTENWASCHMASCHINE TECO",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ba4c671d-fc17-4d14-ab50-62c4001622ad",
+      "articleNumber": "8199",
+      "productName": "DEKO-SPARGELSTANGEN WEISS",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "81cf926c-b1dd-4e9d-a113-a8304f1c09ee",
+      "articleNumber": "8197",
+      "productName": "DEKO-SPARGELSTANGEN GRÜN",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "874a4e2a-e478-4c54-92e0-5a1b2ec52fb3",
+      "articleNumber": "1138",
+      "productName": "1KG PREMIUM-SPARGEL-SCHALE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5de4476e-50a1-4f06-9668-e85bd7d070c6",
+      "articleNumber": "5020",
+      "productName": "BANDSTAHLPUTZMESSER GELB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1d238db8-98e9-4e10-8fb5-5ae9f96fdb3d",
+      "articleNumber": "2825",
+      "productName": "ALUMINIUM-PLAKAT-STANDERDINA1",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "9d6c5d89-1bcb-4d9c-9955-88ab33af8daf",
+      "articleNumber": "4317",
+      "productName": "APFELSORTIERSCHABLONE AUS ALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "757c4fcb-997d-4445-ac85-8ca23054df5e",
+      "articleNumber": "7062",
+      "productName": "ARBEITSHANDSCHUH, GR. 10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "27b371e0-175b-4660-b781-17deffd6258c",
+      "articleNumber": "7065",
+      "productName": "ARBEITSHANDSCHUH, GR. 10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "060f715f-1eb1-4667-a62b-9130030f094b",
+      "articleNumber": "4314",
+      "productName": "APFELSORTIERSCHABLONE AUS ALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f7f94426-dff4-494b-a06d-fcdb020a1c92",
+      "articleNumber": "4631",
+      "productName": "ACCUSHARP",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "61ff948e-b3d0-4cbe-8eb6-9a6b70cbaa7c",
+      "articleNumber": "8124",
+      "productName": "ALUMINIUM-STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "589b9ac5-1192-48db-b726-ba6bded37e31",
+      "articleNumber": "3711",
+      "productName": "ABSCHNEIDEMESSER MIT WELLENSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "5c16313b-5fea-42c3-88b9-c8aaa22b0925",
+      "articleNumber": "8122",
+      "productName": "ALUMINIUM-STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "43da0562-9e8b-44f4-935f-6735f6cfa8f1",
+      "articleNumber": "8116",
+      "productName": "APFELSORTIERSCHABLONE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "1b6c2b59-a7db-4aad-a7b2-06500cf72dec",
+      "articleNumber": "8117",
+      "productName": "APFELPFLÜCKKISTE",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c52f4ad4-3f4b-445b-914f-6fad1a4d3ae4",
+      "articleNumber": "8121",
+      "productName": "APFELPFLÜCKKORB KLEIN AUS ALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "baca018b-fcdb-4346-96ed-07cbe7d3711a",
+      "articleNumber": "8133",
+      "productName": "ALUMINIUM-STECHKORB",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "242c3b62-90e5-4874-9386-51b9a76d05c0",
+      "articleNumber": "8120",
+      "productName": "APFELPFLÜCKKORB GROSS AUS ALUMINIUM",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "ddce6ebc-2edb-4b5c-98c7-d3168ea6202a",
+      "articleNumber": "3710",
+      "productName": "ABSCHNEIDEMESSER MIT GLATTSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "a20f30a1-a4b5-4059-8777-1da294f7f265",
+      "articleNumber": "3709",
+      "productName": "ABSCHNEIDEMESSER MIT KULLENSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "f2383ca2-34bc-4bc4-bdb7-5e28cf4ff8a0",
+      "articleNumber": "3708",
+      "productName": "ABSCHNEIDEMESSER MIT GLATTSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "6bbdf6be-4a7d-4aeb-9ac3-84226173b083",
+      "articleNumber": "3712",
+      "productName": "ABSCHNEIDEMESSER BEIDSEITIGER\nWELLENSCHLIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "7df4ac65-cbe7-4abd-b30e-61e3252afd12",
+      "articleNumber": "4093",
+      "productName": "\"DAS STARKER ABGEBOGENE\"\nSCHWALBENSCHWANZ-STECHMESSER MIT\nKUNSTSTOFFGRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "c2d6f041-f070-4d42-a842-5e30dd5fcea4",
+      "articleNumber": "7034",
+      "productName": "\"DER\" PFLANZENSCHUTZHANDSCHUH 33 CM,\nGR. 10",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "8b819d09-b179-4149-ad22-37d1a493b94e",
+      "articleNumber": "4051",
+      "productName": "\"DAS KURZE\" - SCHWALBENSCHWANZ-\nSTECHMESSER WIE 4091, NUR 7 CM KÜRZER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "d354b890-fa82-4fe9-9dc8-9c5edf09c277",
+      "articleNumber": "4079",
+      "productName": "\"DAS LANGE\" - SCHWALBENSCHWANZ-\nSTECHMESSER MIT KUNSTSTOFFGRIFF",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "2174a3dd-bdfb-44ff-8a99-6db73b61994a",
+      "articleNumber": "4083",
+      "productName": "\"DAS STARKE\" MIT HOLZGRIFF -\nSCHWALBENSCHWANZ-STECHMESSER",
+      "markAsNotInExcel": false
+    },
+    {
+      "id": "0ec86186-9305-4e5e-b2b6-40e0c7164c49",
+      "articleNumber": "4095",
+      "productName": "\"DAS STARKE\" MIT KUNSTSTOFFGRIFF -\nSCHWALBENSCHWANZ-STECHMESSER",
+      "markAsNotInExcel": false
+    }
+  ],
+  "missingInSystem": [
+    "8150",
+    "4081-SH",
+    "1272",
+    "8823",
+    "6852",
+    "6854-D",
+    "1313-I",
+    "1127-E",
+    "3564-ST",
+    "4194",
+    "3511",
+    "6558",
+    "3541",
+    "8354-S",
+    "3554-ST",
+    "1987",
+    "7829",
+    "3537",
+    "8120-C",
+    "7903",
+    "7634-OS",
+    "7699-E",
+    "1298-SH",
+    "4372",
+    "4313-N",
+    "1292-SH",
+    "4087-T",
+    "4172",
+    "8146",
+    "8396-RESH",
+    "3506-22",
+    "8814",
+    "8421-SH",
+    "8862-GS",
+    "1283-SH",
+    "8724-G",
+    "5121",
+    "1344",
+    "3873",
+    "7064-H",
+    "1136",
+    "3805",
+    "1308-S",
+    "7586",
+    "8223",
+    "3787",
+    "1678",
+    "87261-GR",
+    "8377-SH",
+    "1235",
+    "8351-SH",
+    "7589",
+    "1977",
+    "2612",
+    "4026",
+    "3556-ST",
+    "8816",
+    "1109",
+    "7906",
+    "1351",
+    "4138",
+    "3804",
+    "1141",
+    "3557-ST",
+    "8388-SH",
+    "8220",
+    "8454-I",
+    "7576",
+    "1006",
+    "1237-OS",
+    "7739-SH",
+    "7652-OS",
+    "8825",
+    "87191-GR",
+    "8349-SH",
+    "7538-OS",
+    "7905-SH",
+    "8461",
+    "3533-SCH",
+    "1284-SH",
+    "8411-SH",
+    "1107",
+    "0901",
+    "8394-SH",
+    "3878",
+    "7908",
+    "1330-SH",
+    "1230-OS",
+    "7705",
+    "6559",
+    "3570",
+    "1321-SH",
+    "5117",
+    "8355-SH",
+    "1360-A",
+    "1325-SH",
+    "7044-L",
+    "6563",
+    "7045",
+    "8766",
+    "1123-SH",
+    "3883",
+    "7580-TTSE",
+    "8719-GR",
+    "1140-T",
+    "7584-TTSE",
+    "8402-E",
+    "8725-GR",
+    "1281-SH",
+    "1298-S",
+    "7701-OS",
+    "8349",
+    "83855",
+    "8308",
+    "7525",
+    "7624-OS",
+    "4092",
+    "6553",
+    "7583-OS",
+    "6569",
+    "4362",
+    "7561",
+    "1347",
+    "3551",
+    "4068",
+    "7699-SH",
+    "7044-S",
+    "8824",
+    "7602",
+    "7702-SH",
+    "8160",
+    "8348",
+    "4365",
+    "8130",
+    "8340-SH",
+    "7902",
+    "6576-GE",
+    "5009-L",
+    "5155",
+    "1313-F",
+    "2028-A",
+    "3495",
+    "8320-SH",
+    "1259",
+    "3510",
+    "8367",
+    "8362-SH",
+    "1991",
+    "6586",
+    "7580-OS",
+    "8380-RESH",
+    "8328-SH",
+    "2831",
+    "8121-C",
+    "1127",
+    "1988",
+    "3560",
+    "8843-KS",
+    "7576-N",
+    "8419-SH",
+    "8725-G",
+    "8382-1c",
+    "1315-G",
+    "7906-SH",
+    "7669",
+    "1277",
+    "8886-S",
+    "7653-OS",
+    "1010",
+    "3611",
+    "4020",
+    "1296-E",
+    "5071",
+    "3545-ST",
+    "1280-I",
+    "7908-SH",
+    "7702-OS",
+    "1251",
+    "4375",
+    "7787",
+    "3561",
+    "3887",
+    "87241-GR",
+    "8722-GR",
+    "8851",
+    "4364",
+    "6543",
+    "1322-SH",
+    "8724-GR",
+    "0906",
+    "8400-SH",
+    "8374-SH",
+    "8886-W",
+    "1485-SH",
+    "8422-SH",
+    "8455",
+    "3536-ST",
+    "3540-ST",
+    "5166-L",
+    "7031-D",
+    "7590",
+    "7585-TTSE",
+    "7637-OS",
+    "1119",
+    "1445-G-L",
+    "8842-KK",
+    "7535-OS",
+    "8412-SH",
+    "8841-ST",
+    "1233-OS",
+    "4044",
+    "8840-KS",
+    "6566",
+    "4368",
+    "3523",
+    "1329",
+    "8453",
+    "8827-SH",
+    "8407-SH",
+    "7702-WH",
+    "7909-E",
+    "1342",
+    "1686",
+    "8380-OSH",
+    "8128",
+    "87241-B",
+    "3532-ST",
+    "1286-A",
+    "1137",
+    "8703",
+    "1301-SH",
+    "8396-SH",
+    "1343",
+    "1330-I",
+    "7786",
+    "1296",
+    "1297",
+    "7599",
+    "8978",
+    "9135",
+    "5119",
+    "4086-T",
+    "7550",
+    "8425-SH",
+    "1308-SH",
+    "3578",
+    "5015-B1c",
+    "8319-SH",
+    "8843-R",
+    "1256",
+    "4064",
+    "7828",
+    "7706-WH",
+    "5011",
+    "8394-E",
+    "5050",
+    "8302-B",
+    "1279",
+    "3788",
+    "8396-OSH",
+    "8978-E",
+    "8375-SH",
+    "8720-GR",
+    "6576-R",
+    "3509",
+    "1992",
+    "1367",
+    "8451-I",
+    "1239",
+    "1307-S",
+    "8981",
+    "1286-PSH",
+    "1233",
+    "3565-ST",
+    "1311-S",
+    "8801-C",
+    "7630-OS",
+    "8361-SH",
+    "5123",
+    "8149",
+    "7682-OS",
+    "3579",
+    "2833",
+    "8810",
+    "7064-D",
+    "8390",
+    "8360-A",
+    "7909-SH",
+    "8336-SH",
+    "3576",
+    "3529-ST",
+    "1230-H-OS",
+    "3504",
+    "8721-CHB",
+    "8212-G",
+    "1242",
+    "1020",
+    "1313-O",
+    "7901",
+    "7534-OS",
+    "3536",
+    "8372",
+    "7044-M",
+    "8306",
+    "7531-S",
+    "6534-K",
+    "4041",
+    "8458",
+    "7702-15-WE",
+    "7914",
+    "7580-N",
+    "4040",
+    "8423-SH",
+    "1280-SH",
+    "3506-KU",
+    "8456",
+    "8376-SH",
+    "1289-SH",
+    "6567",
+    "3530-ST",
+    "3853",
+    "3685",
+    "0903",
+    "8402-SH",
+    "8402-I",
+    "1318",
+    "8399-SH",
+    "7581-TTSE",
+    "3854",
+    "87261-G",
+    "7579",
+    "3885",
+    "3785",
+    "1303-S",
+    "4363",
+    "7665",
+    "3547-2",
+    "1059",
+    "7610-OS",
+    "3562-2",
+    "8452",
+    "8722-H",
+    "8415-I",
+    "6556",
+    "6564",
+    "4371",
+    "6562",
+    "8706",
+    "4088-A",
+    "1541",
+    "7750",
+    "7431",
+    "8382-SH",
+    "9161-L",
+    "6560-A3",
+    "6561-K",
+    "7583-TTSE",
+    "7562-OS",
+    "8976-C",
+    "8379-SH",
+    "3871",
+    "8154",
+    "8363-SH",
+    "8721-GR",
+    "8409-SH",
+    "1320-SH",
+    "8403-SH",
+    "8359-SH",
+    "7536-OS",
+    "4382",
+    "1129-SH",
+    "0905",
+    "7701-600-WE",
+    "3119",
+    "6568",
+    "3810",
+    "1550",
+    "1350",
+    "1311-I",
+    "1324-SH",
+    "6579",
+    "8129",
+    "8360-SH",
+    "1313-OSH",
+    "1017",
+    "8347-SH",
+    "3502-KU",
+    "8801",
+    "8891",
+    "9153",
+    "1989",
+    "3577",
+    "8392",
+    "3533-ST",
+    "4370",
+    "6857",
+    "8120-OS",
+    "1345",
+    "7707-OS",
+    "7909",
+    "3559",
+    "1253",
+    "4069",
+    "1313-FSH",
+    "3872",
+    "8396",
+    "1281-A",
+    "1224",
+    "1301-N",
+    "0904",
+    "3200",
+    "4094",
+    "7905",
+    "7908-E",
+    "8397-RESH",
+    "7522-OS",
+    "8705-G",
+    "1128",
+    "8391",
+    "3513-KU",
+    "8418",
+    "4366",
+    "6577",
+    "1359",
+    "8370-SH",
+    "8393-SH",
+    "3555-KU",
+    "1305",
+    "6488",
+    "1316",
+    "1278",
+    "7744",
+    "1121",
+    "7701-300-WE",
+    "4030",
+    "4376",
+    "8380-N",
+    "1135-SH",
+    "1984",
+    "7706-WE",
+    "7907",
+    "7628",
+    "1339",
+    "8386-SH",
+    "1311-SH",
+    "8335",
+    "1685",
+    "3534-ST",
+    "3876",
+    "4089-A",
+    "7902-E",
+    "1985",
+    "3880",
+    "1120",
+    "8102",
+    "1370",
+    "4201",
+    "6557",
+    "3538-SCH",
+    "8395-OSH",
+    "1346",
+    "83582",
+    "1252",
+    "1126-SH",
+    "4313",
+    "7608-OS",
+    "8378-SH",
+    "8369-SH",
+    "8354-SH",
+    "8161",
+    "1011",
+    "3535",
+    "8203",
+    "3552",
+    "8166",
+    "3870",
+    "3201",
+    "7564-OS",
+    "3877",
+    "1013",
+    "7523",
+    "1276",
+    "6555-OS",
+    "1350-K",
+    "3886",
+    "8811",
+    "8710",
+    "7904",
+    "1286-S",
+    "3683",
+    "83583",
+    "3551-FLEXI",
+    "3548",
+    "87241-G",
+    "3544",
+    "4089-T",
+    "8126",
+    "7740-SH",
+    "7709-WE",
+    "8373",
+    "7031-HSP",
+    "3882",
+    "6554",
+    "8398-SH",
+    "1311-E",
+    "8424-SH",
+    "1487",
+    "7521",
+    "8306-N",
+    "4361",
+    "8404-SH",
+    "7563",
+    "1274-SH",
+    "7033-H",
+    "5062",
+    "1540",
+    "1106",
+    "3571",
+    "4085-T",
+    "1990",
+    "8307",
+    "7031-EW",
+    "3493",
+    "1434",
+    "6571",
+    "4043",
+    "3524",
+    "1216-SH",
+    "8381-OSH",
+    "8888",
+    "8305-GR",
+    "1003",
+    "5167",
+    "8408-SH",
+    "1129-E",
+    "7537-OS",
+    "8895",
+    "1033",
+    "8358-OSH",
+    "8346-SH",
+    "7779",
+    "7784",
+    "3884",
+    "2602",
+    "6570",
+    "8341-SH",
+    "8822",
+    "8451-SE",
+    "8721-CHG",
+    "8350",
+    "4088-T",
+    "6350-OS",
+    "3789",
+    "1273",
+    "8225",
+    "3881",
+    "7668",
+    "1292-SP",
+    "8387",
+    "1486",
+    "8338-SH",
+    "8701",
+    "3875",
+    "3512",
+    "3575",
+    "7033-D",
+    "8724-H",
+    "8381-LSH",
+    "3879",
+    "1574",
+    "6560-OS",
+    "7607-A",
+    "1303-SH",
+    "3539-ST",
+    "4369",
+    "7901-SH",
+    "0902",
+    "1275",
+    "7701-600",
+    "8101",
+    "8400-I",
+    "1105",
+    "7582-FTSE",
+    "3558",
+    "7706-AK",
+    "8828-SH",
+    "3110",
+    "2832",
+    "7703",
+    "8360-U",
+    "8395-SH",
+    "8155",
+    "7900-SH",
+    "8420-SH"
+  ]
+}

@@ -6,31 +6,36 @@ import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import labelsRouter from './api/routes/labels.js';
-import excelRouter from './api/routes/excel.js';
-import printRouter from './api/routes/print.js';
-import crawlerRouter from './api/routes/crawler.js';
-import ocrRouter from './api/routes/ocr.js';
-import templatesRouter from './api/routes/templates.js';
-import automationRouter from './api/routes/automation.js';
-import testWebSocketRouter from './api/routes/test-websocket.js';
-import articlesRouter from './api/routes/articles.js';
-import imagesRouter from './api/routes/images.js';
-import { StorageService } from './services/storage-service.js';
-import { ocrService } from './services/ocr-service.js';
-import { initializeWebSocketServer } from './websocket/socket-server.js';
+import fs from 'fs';
+import labelsRouter from './api/routes/labels';
+import excelRouter from './api/routes/excel';
+import printRouter from './api/routes/print';
+import crawlerRouter from './api/routes/crawler';
+import ocrRouter from './api/routes/ocr';
+import templatesRouter from './api/routes/templates';
+import labelTemplatesRouter from './api/routes/label-templates';
+import automationRouter from './api/routes/automation';
+// import testWebSocketRouter from './api/routes/test-websocket'; // Disabled - requires Supabase
+import articlesRouter from './api/routes/articles';
+import imagesRouter from './api/routes/images';
+import { StorageService } from './services/storage-service';
+import { ocrService } from './services/ocr-service';
+import { webCrawlerService } from './services/web-crawler-service';
+import { initializeWebSocketServer } from './websocket/socket-server';
 
-// Get __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// __filename and __dirname are available globally in CommonJS
 
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+// Middleware - Configure CORS to allow all origins (required for ngrok)
+app.use(cors({
+  origin: '*',
+  credentials: false,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -47,27 +52,68 @@ app.use('/api/print', printRouter);
 app.use('/api/crawler', crawlerRouter);
 app.use('/api/ocr', ocrRouter);
 app.use('/api/templates', templatesRouter);
+app.use('/api/label-templates', labelTemplatesRouter);
 app.use('/api/automation', automationRouter);
-app.use('/api/test-websocket', testWebSocketRouter);
+// app.use('/api/test-websocket', testWebSocketRouter); // Disabled - requires Supabase
 app.use('/api/articles', articlesRouter);
 app.use('/api/images', imagesRouter);
 
 // Health check
 app.get('/api/health', (_req, res) => {
+  const memUsage = process.memoryUsage();
+  const totalMemory = require('os').totalmem();
+  const freeMemory = require('os').freemem();
+  const usedMemory = totalMemory - freeMemory;
+
   res.json({
     success: true,
     message: 'Server is running',
+    memory: {
+      process: {
+        rss: Math.round(memUsage.rss / 1024 / 1024), // MB
+        heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024), // MB
+        heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024), // MB
+        external: Math.round(memUsage.external / 1024 / 1024), // MB
+      },
+      system: {
+        total: Math.round(totalMemory / 1024 / 1024), // MB
+        free: Math.round(freeMemory / 1024 / 1024), // MB
+        used: Math.round(usedMemory / 1024 / 1024), // MB
+        percentage: Math.round((usedMemory / totalMemory) * 100)
+      }
+    },
+    uptime: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),
   });
 });
 
-// 404 handler
-app.use((_req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found',
+// Serve frontend static files in production
+// Check for Docker volume first, then fallback to local development path
+const dockerFrontendPath = path.join(__dirname, '../frontend-build');
+const localFrontendPath = path.join(__dirname, '../../frontend/dist');
+const frontendDistPath = fs.existsSync(dockerFrontendPath) ? dockerFrontendPath : localFrontendPath;
+
+if (fs.existsSync(frontendDistPath)) {
+  console.log('✅ Serving frontend static files from:', frontendDistPath);
+  app.use(express.static(frontendDistPath));
+
+  // SPA fallback - send index.html for all non-API routes
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
-});
+} else {
+  console.log('⚠️  Frontend dist folder not found at:', dockerFrontendPath, 'or', localFrontendPath);
+  console.log('    For Docker: Ensure frontend-builder has run successfully');
+  console.log('    For local dev: Run "npm run build" in frontend directory');
+
+  // 404 handler for API-only mode
+  app.use((_req, res) => {
+    res.status(404).json({
+      success: false,
+      error: 'Route not found - Frontend not built',
+    });
+  });
+}
 
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -117,13 +163,19 @@ async function start() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('SIGTERM signal received: closing HTTP server');
-  await ocrService.shutdown();
+  await Promise.all([
+    ocrService.shutdown(),
+    webCrawlerService.shutdown()
+  ]);
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   console.log('SIGINT signal received: closing HTTP server');
-  await ocrService.shutdown();
+  await Promise.all([
+    ocrService.shutdown(),
+    webCrawlerService.shutdown()
+  ]);
   process.exit(0);
 });
 

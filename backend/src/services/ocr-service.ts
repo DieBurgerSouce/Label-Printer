@@ -18,13 +18,15 @@ import {
   FIELD_PATTERNS,
   ImagePreprocessingOptions,
   DEFAULT_PREPROCESSING,
-  TieredPrice,
 } from '../types/ocr-types';
+import { cloudVisionService } from './cloud-vision-service';
 
 class OCRService {
   private workers: Map<string, Worker> = new Map();
   private processingQueue: Map<string, OCRResult> = new Map();
   private readonly maxWorkers = 8; // Increased from 4 to handle more parallel OCR
+  private processedCount = 0;
+  private readonly maxProcessedBeforeCleanup = 50; // Clean up workers after 50 images
 
   /**
    * Initialize OCR workers
@@ -40,6 +42,13 @@ class OCRService {
           }
         },
       });
+
+      // Configure Tesseract for better results
+      await worker.setParameters({
+        tessedit_pageseg_mode: 6, // Assume uniform block of text
+        tessedit_ocr_engine_mode: 1, // Use LSTM engine
+        preserve_interword_spaces: 0, // Reduce garbage spaces
+      } as any);
 
       this.workers.set(`worker-${i}`, worker);
     }
@@ -103,6 +112,31 @@ class OCRService {
           const { data } = await worker.recognize(filePath);
 
           let extractedText = data.text.trim();
+          let confidence = data.confidence;
+
+          // Check if we should use Cloud Vision as fallback
+          if (cloudVisionService.shouldUseFallback(confidence / 100)) {
+            console.log(`    ☁️ Using Cloud Vision fallback for ${mapping.file} (low confidence: ${Math.round(confidence)}%)`);
+            const cloudData = await cloudVisionService.processImage(filePath);
+            if (cloudData) {
+              // Use cloud data if available
+              if (mapping.field === 'articleNumber' && cloudData.articleNumber) {
+                extractedText = cloudData.articleNumber;
+                confidence = 95; // Cloud Vision typically has high accuracy
+              } else if (mapping.field === 'productName' && cloudData.productName) {
+                extractedText = cloudData.productName;
+                confidence = 95;
+              } else if (mapping.field === 'price' && cloudData.price) {
+                extractedText = cloudData.price;
+                confidence = 95;
+              } else if (mapping.field === 'tieredPrices' && cloudData.tieredPrices) {
+                extractedText = cloudData.tieredPrices.map(t =>
+                  `${t.quantity}: ${t.price}`
+                ).join('\n');
+                confidence = 95;
+              }
+            }
+          }
 
           // Clean up based on field type
           if (mapping.clean) {
@@ -124,7 +158,7 @@ class OCRService {
             elementResults[mapping.field] = extractedText;
           }
 
-          confidenceSum += data.confidence;
+          confidenceSum += confidence;
           confidenceCount++;
 
           console.log(`    ✅ ${mapping.field}: ${extractedText.substring(0, 50)}...`);
@@ -262,6 +296,9 @@ class OCRService {
 
     let pipeline = sharp(imagePath);
 
+    // Remove alpha channel and set white background
+    pipeline = pipeline.flatten({ background: { r: 255, g: 255, b: 255 } });
+
     // Convert to grayscale
     if (options.grayscale) {
       pipeline = pipeline.grayscale();
@@ -277,15 +314,18 @@ class OCRService {
       pipeline = pipeline.normalize();
     }
 
-    // Sharpen
+    // Sharpen more aggressively
     if (options.sharpen) {
-      pipeline = pipeline.sharpen();
+      pipeline = pipeline.sharpen({ sigma: 1.5, m1: 0.7, m2: 0.5 });
     }
 
-    // Apply threshold for better text recognition
+    // Apply threshold for better text recognition (more aggressive)
     if (options.threshold) {
-      pipeline = pipeline.threshold(options.threshold);
+      pipeline = pipeline.threshold(options.threshold || 180); // Default to 180 if true
     }
+
+    // Add contrast boost
+    pipeline = pipeline.linear(1.2, 0); // Increase contrast
 
     await pipeline.toFile(outputPath);
 
@@ -465,10 +505,55 @@ class OCRService {
    * Get available OCR worker
    */
   private async getAvailableWorker(): Promise<Worker> {
+    // Check if we need to clean up workers
+    this.processedCount++;
+    if (this.processedCount >= this.maxProcessedBeforeCleanup) {
+      console.log(`🧹 Cleaning up OCR workers after ${this.processedCount} images...`);
+      await this.cleanupWorkers();
+      this.processedCount = 0;
+    }
+
     // Simple round-robin for now
     const workerIds = Array.from(this.workers.keys());
     const workerId = workerIds[Math.floor(Math.random() * workerIds.length)];
     return this.workers.get(workerId)!;
+  }
+
+  /**
+   * Clean up and recreate workers to free memory
+   */
+  private async cleanupWorkers(): Promise<void> {
+    try {
+      // Terminate all existing workers
+      for (const [id, worker] of this.workers) {
+        try {
+          await worker.terminate();
+          console.log(`   ✅ Terminated worker ${id}`);
+        } catch (error) {
+          console.error(`   ❌ Error terminating worker ${id}:`, error);
+        }
+      }
+
+      // Clear the workers map
+      this.workers.clear();
+
+      // Force garbage collection if available
+      if (global.gc) {
+        global.gc();
+        console.log('   🧹 Forced garbage collection');
+      }
+
+      // Wait a bit for cleanup
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Re-initialize workers
+      await this.initialize();
+      console.log('   ✅ Workers re-initialized');
+    } catch (error) {
+      console.error('❌ Error during worker cleanup:', error);
+      // Re-initialize even if cleanup failed
+      await this.initialize();
+    }
   }
 
   /**
@@ -505,39 +590,78 @@ class OCRService {
    */
   private parseTieredPriceTable(text: string): TieredPrice[] {
     const prices: TieredPrice[] = [];
-    const lines = text.split('\n').filter(line => line.trim());
 
-    // Pattern to match price table rows: "ab X Stück Y,ZZ €"
-    const pricePattern = /ab\s+(\d+)\s+(?:Stück|St\.|Stk\.?)?\s*([\d,]+)\s*€/gi;
+    // First, clean the text from obvious garbage
+    const cleanedLines = text.split('\n')
+      .filter(line => {
+        const trimmed = line.trim();
+        // Filter out garbage patterns
+        if (!trimmed) return false;
+        if (trimmed.includes('©')) return false;
+        if (trimmed.includes('Service')) return false;
+        if (trimmed.includes('Hilfe')) return false;
+        if (trimmed.includes('Goooe')) return false;
+        if (trimmed.includes('eingeben')) return false;
+        if (trimmed.includes('@')) return false;
+        // Only keep lines that look like prices
+        return /\d/.test(trimmed) && (trimmed.includes('€') || trimmed.includes('EUR') || /\d+[,\.]\d+/.test(trimmed));
+      });
 
-    // Alternative pattern for different formats
-    const altPattern = /(\d+)\s*(?:Stück|St\.|Stk\.?|\+)?\s*([\d,]+)\s*€/gi;
+    // Pattern to match price table rows: "ab X Stück Y,ZZ €" or "Bis X Y,ZZ €"
+    const pricePattern = /(ab|bis)\s+(\d+)\s+(?:Stück|St\.|Stk\.?)?\s*([\d,]+)\s*€/gi;
 
-    for (const line of lines) {
+    // Alternative patterns for different formats
+    const altPattern1 = /(\d+)\s*(?:Stück|St\.|Stk\.?|\+)?\s*([\d,]+)\s*€/gi;
+    const altPattern2 = /(ab|bis)\s+(\d+)[:\s]+([\d,]+)\s*€/gi;
+
+    for (const line of cleanedLines) {
+      // Reset regex lastIndex
+      pricePattern.lastIndex = 0;
+      altPattern1.lastIndex = 0;
+      altPattern2.lastIndex = 0;
+
       let match = pricePattern.exec(line);
       if (match) {
-        prices.push({
-          minQuantity: parseInt(match[1]),
-          price: parseFloat(match[2].replace(',', '.'))
-        });
+        const quantity = parseInt(match[2]);
+        const price = match[3].replace(',', '.');
+        if (!isNaN(quantity) && !isNaN(parseFloat(price))) {
+          prices.push({ quantity, price });
+        }
         continue;
       }
 
-      // Try alternative pattern
-      match = altPattern.exec(line);
+      // Try alternative pattern with ab/bis prefix
+      match = altPattern2.exec(line);
       if (match) {
-        prices.push({
-          minQuantity: parseInt(match[1]),
-          price: parseFloat(match[2].replace(',', '.'))
-        });
+        const quantity = parseInt(match[2]);
+        const price = match[3].replace(',', '.');
+        if (!isNaN(quantity) && !isNaN(parseFloat(price))) {
+          prices.push({ quantity, price });
+        }
+        continue;
+      }
+
+      // Try simple pattern
+      match = altPattern1.exec(line);
+      if (match) {
+        const quantity = parseInt(match[1]);
+        const price = match[2].replace(',', '.');
+        if (!isNaN(quantity) && !isNaN(parseFloat(price))) {
+          prices.push({ quantity, price });
+        }
       }
     }
 
-    // Sort by quantity
-    prices.sort((a, b) => a.minQuantity - b.minQuantity);
+    // Sort by quantity and remove duplicates
+    prices.sort((a, b) => a.quantity - b.quantity);
 
-    console.log(`    📊 Parsed ${prices.length} price tiers`);
-    return prices;
+    // Remove duplicates with same quantity
+    const uniquePrices = prices.filter((price, index, arr) =>
+      index === 0 || price.quantity !== arr[index - 1].quantity
+    );
+
+    console.log(`    📊 Parsed ${uniquePrices.length} price tiers from ${cleanedLines.length} cleaned lines`);
+    return uniquePrices;
   }
 
   /**
