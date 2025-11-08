@@ -1,0 +1,30 @@
+{
+  "id": "A4-3x4-compact",
+  "name": "A4 3×4 (12 Labels)",
+  "description": "Kompaktes A4 Layout mit 3 Spalten und 4 Zeilen - 12 Labels pro Seite",
+  "paperFormat": {
+    "type": "A4",
+    "width": 210,
+    "height": 297,
+    "orientation": "portrait"
+  },
+  "gridLayout": {
+    "columns": 3,
+    "rows": 4,
+    "spacing": 5,
+    "margins": {
+      "top": 10,
+      "bottom": 10,
+      "left": 10,
+      "right": 10
+    }
+  },
+  "settings": {
+    "showCutMarks": true,
+    "showBorders": false,
+    "labelScale": "fit",
+    "dpi": 300
+  },
+  "createdAt": "2025-11-07T00:00:00.000Z",
+  "updatedAt": "2025-11-07T00:00:00.000Z"
+}

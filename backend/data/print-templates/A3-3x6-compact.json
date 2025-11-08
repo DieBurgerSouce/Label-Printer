@@ -1,0 +1,30 @@
+{
+  "id": "A3-3x6-compact",
+  "name": "A3 3×6 (18 Labels)",
+  "description": "Kompaktes A3 Layout mit 3 Spalten und 6 Zeilen - 18 Labels pro Seite",
+  "paperFormat": {
+    "type": "A3",
+    "width": 297,
+    "height": 420,
+    "orientation": "portrait"
+  },
+  "gridLayout": {
+    "columns": 3,
+    "rows": 6,
+    "spacing": 5,
+    "margins": {
+      "top": 10,
+      "bottom": 10,
+      "left": 10,
+      "right": 10
+    }
+  },
+  "settings": {
+    "showCutMarks": true,
+    "showBorders": false,
+    "labelScale": "fit",
+    "dpi": 300
+  },
+  "createdAt": "2025-11-07T00:00:00.000Z",
+  "updatedAt": "2025-11-07T00:00:00.000Z"
+}

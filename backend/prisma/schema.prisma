@@ -1,5 +1,7 @@
 // Prisma Schema for Label Printer System
-// Database: Supabase (PostgreSQL)
+// Database: PostgreSQL (Docker Container)
+// ✅ FIXED: Using local PostgreSQL, NOT Supabase
+// Connection: localhost:5432 (screenshot-algo-postgres container)
 
 generator client {
   provider = "prisma-client-js"
@@ -229,7 +231,8 @@ model Product {
   description   String?  @db.Text
 
   // Pricing
-  price         Float?   // Nullable when using tieredPrices
+  price         Float?   // Nullable when using tieredPrices or "auf anfrage"
+  priceType     String   @default("normal") // 'normal', 'tiered', 'auf_anfrage', 'unknown'
   tieredPrices  Json?    // [{quantity: 10, price: 45.99}, {quantity: 50, price: 42.99}]
   tieredPricesText String? @db.Text // Raw OCR text: "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR"
   currency      String   @default("EUR")

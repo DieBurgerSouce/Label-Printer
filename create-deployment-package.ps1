@@ -38,11 +38,26 @@ if (Test-Path "backend\.dockerignore") {
     Copy-Item "backend\.dockerignore" "$tempDir\backend\.dockerignore" -Force
 }
 
-Write-Host "[3/6] Copying Frontend..."
+Write-Host "[3/6] Building and Copying Frontend..."
+# Build frontend first!
+Push-Location frontend
+Write-Host "  - Installing frontend dependencies..."
+npm install --silent 2>&1 | Out-Null
+Write-Host "  - Building frontend (this may take a moment)..."
+npm run build 2>&1 | Out-Null
+Pop-Location
+
 # Frontend Source
 robocopy "frontend\src" "$tempDir\frontend\src" /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
 if (Test-Path "frontend\public") {
     robocopy "frontend\public" "$tempDir\frontend\public" /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+}
+# CRITICAL: Copy the built dist folder!
+if (Test-Path "frontend\dist") {
+    robocopy "frontend\dist" "$tempDir\frontend\dist" /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+    Write-Host "  OK: Frontend build included (dist/)" -ForegroundColor Green
+} else {
+    Write-Host "  ERROR: Frontend dist/ folder missing!" -ForegroundColor Red
 }
 
 # Frontend Files - explicit copy

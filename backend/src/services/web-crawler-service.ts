@@ -11,6 +11,8 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import sharp from 'sharp';
 import { PreciseScreenshotService } from './precise-screenshot-service';
+import htmlExtractionService from './html-extraction-service';
+import dataValidationService from './data-validation-service';
 import {
   CrawlJob,
   CrawlConfig,
@@ -86,15 +88,20 @@ export class WebCrawlerService {
       // Ensure screenshots directory exists
       await this.ensureDirectory(this.screenshotsDir);
 
-      // Launch browser
+      // Launch browser with Docker-optimized settings
       this.browser = await puppeteerExtra.launch({
-        headless: job.config.headless,
+        headless: true, // Always use headless mode (required for Docker)
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
           '--disable-accelerated-2d-canvas',
-          '--disable-gpu'
+          '--disable-gpu',
+          '--disable-software-rasterizer',
+          '--disable-extensions',
+          '--disable-blink-features=AutomationControlled',
+          '--window-size=1920,1080',
+          '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         ]
       });
 
@@ -111,9 +118,12 @@ export class WebCrawlerService {
       // Navigate to shop URL
       console.log(`Crawling: ${job.shopUrl}`);
       await page.goto(job.shopUrl, {
-        waitUntil: 'networkidle2',
-        timeout: job.config.timeout
+        waitUntil: 'domcontentloaded', // More reliable in Docker than networkidle2
+        timeout: 60000 // Increased timeout for Docker
       });
+
+      // Wait a bit for dynamic content to load
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       // CRITICAL: Accept cookies BEFORE crawling to avoid cookie banners on screenshots
       await this.acceptCookies(page);
@@ -179,7 +189,7 @@ export class WebCrawlerService {
 
       console.log(`\n🗂️  PHASE 1: Discovering shop structure (categories & products)...`);
       const uniqueUrls = new Set<string>();
-      const targetProducts = job.config.maxProducts || 50;
+      const targetProducts = job.config.maxProducts || 10000;
 
       // Step 1: Find category links from navigation
       const categoryUrls = await this.findCategoryLinks(page, job.shopUrl);
@@ -193,9 +203,12 @@ export class WebCrawlerService {
 
           try {
             await page.goto(categoryUrl, {
-              waitUntil: 'networkidle2',
-              timeout: job.config.timeout
+              waitUntil: 'domcontentloaded', // More reliable in Docker than networkidle2
+              timeout: 60000 // Increased timeout for Docker
             });
+
+            // Wait for dynamic content
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
             job.results.stats.totalPages++;
 
@@ -209,12 +222,7 @@ export class WebCrawlerService {
 
             console.log(`   ✅ Category complete: +${newProducts} new products (${uniqueUrls.size} total unique)`);
 
-            // Stop if we have enough products (unless fullShopScan is enabled)
-            if (!job.config.fullShopScan && uniqueUrls.size >= targetProducts * 2) {
-              console.log(`   ⏹️  Reached target (${targetProducts * 2} products), stopping category crawl`);
-              console.log(`   💡 Tip: Set fullShopScan: true to crawl the entire shop`);
-              break;
-            }
+            // Continue crawling all categories - no artificial limits
           } catch (error) {
             console.error(`   ❌ Failed to crawl category ${categoryUrl}:`, error instanceof Error ? error.message : 'Unknown');
           }
@@ -325,10 +333,7 @@ export class WebCrawlerService {
             currentPage++;
             job.results.stats.totalPages = currentPage;
 
-            if (!job.config.fullShopScan && uniqueUrls.size >= targetProducts * 3) {
-              console.log(`✅ Found ${uniqueUrls.size} unique products (stopping at 3x target of ${targetProducts})`);
-              break;
-            }
+            // Continue crawling all pages - no artificial limits
 
           } catch (error) {
             console.log(`⚠️ Error on page ${currentPage}: ${error instanceof Error ? error.message : 'Unknown'}`);
@@ -337,18 +342,14 @@ export class WebCrawlerService {
         }
       }
 
-      // CRITICAL: To guarantee exact number of screenshots, collect MORE URLs than needed
-      // This compensates for screenshots that might fail
+      // Process ALL discovered URLs - no artificial limits
       const allUniqueUrls = Array.from(uniqueUrls);
-      const bufferMultiplier = 2; // Collect 2x URLs to ensure we get enough successful screenshots
-      const urlsToCollect = Math.min(allUniqueUrls.length, targetProducts * bufferMultiplier);
-      const urlsToProcess = allUniqueUrls.slice(0, urlsToCollect);
+      const urlsToProcess = allUniqueUrls; // Process everything we found
 
       console.log(`\n📊 SHOP SCAN COMPLETE:`);
       console.log(`   - Total unique products found: ${allUniqueUrls.length}`);
       console.log(`   - Pages scanned: ${job.results.stats.totalPages}`);
-      console.log(`   - Products to process: ${urlsToProcess.length} (target: ${targetProducts} successful screenshots)`);
-      console.log(`   - Buffer: Collecting ${urlsToCollect} URLs to guarantee ${targetProducts} successful screenshots`);
+      console.log(`   - Products to process: ALL ${urlsToProcess.length} products`);
 
       if (allUniqueUrls.length < targetProducts) {
         console.log(`   ⚠️ NOTE: Shop only has ${allUniqueUrls.length} products, processing all of them`);
@@ -735,26 +736,55 @@ export class WebCrawlerService {
           break;
         }
 
-        // Click next page
+        // Click next page - FIX: Wait for content to CHANGE, not just exist!
+
+        // 1. Save first product link BEFORE clicking (to detect change)
+        const oldFirstProduct = await page.$eval(
+          '[class*="product"] a[href*="/detail/"]',
+          el => (el as HTMLAnchorElement).href
+        ).catch(() => null);
+
+        console.log(`      ⏳ Clicking next page button...`);
         await nextButton.click();
-        await new Promise(r => setTimeout(r, 2000)); // Wait for AJAX
+        await new Promise(r => setTimeout(r, 2000)); // Wait for AJAX to start
 
         try {
-          await page.waitForSelector(selectors.productContainer, { timeout: 10000 });
+          // 2. Wait for content to CHANGE (not just for body to exist!)
+          await page.waitForFunction(
+            (oldHref) => {
+              // Check if first product link changed
+              const firstLink = document.querySelector('[class*="product"] a[href*="/detail/"]') as HTMLAnchorElement;
+              if (firstLink && firstLink.href !== oldHref) {
+                return true; // Content changed!
+              }
+
+              // Alternative: Check if page number in pagination changed
+              const pagination = document.querySelector('.pagination .page-item.active');
+              if (pagination && parseInt(pagination.textContent || '0') > 1) {
+                return true;
+              }
+
+              return false;
+            },
+            { timeout: 15000 },
+            oldFirstProduct
+          );
+
+          // 3. Additional safety: Wait a bit more for all products to load
+          await new Promise(r => setTimeout(r, 1000));
+
+          console.log(`      ✅ Page ${categoryPage + 1} loaded successfully`);
+
         } catch {
           console.log(`      ⚠️  Timeout waiting for products on page ${categoryPage + 1}`);
+          console.log(`      💡 This might be the last page, or pagination failed`);
           break;
         }
 
         job.results.stats.totalPages++;
         categoryPage++;
 
-        // Don't collect too many products from one category (unless fullShopScan)
-        // This prevents spending too long in one category
-        if (!job.config.fullShopScan && productUrls.length >= targetProducts) {
-          console.log(`      ⏹️  Reached limit for this category (${productUrls.length}), moving to next category`);
-          break;
-        }
+        // Continue crawling all category pages - no artificial limits
 
       } catch (error) {
         console.log(`      ❌ Error on category page ${categoryPage}:`, error instanceof Error ? error.message : 'Unknown');
@@ -775,20 +805,48 @@ export class WebCrawlerService {
     selectors: ProductSelectors
   ): Promise<string[]> {
     try {
-      // Wait for product containers
-      await page.waitForSelector(selectors.productContainer, {
-        timeout: 10000
-      });
+      // IMPROVED: Try multiple container patterns with fallback logic
+      const containerPatterns = [
+        selectors.productContainer,
+        '.product', '.product-item', '.product-card',
+        'li.product', 'div.product',
+        '[class*="product"]', '[data-product]',
+        'article', 'a[href*="/"]' // Last resort: all links
+      ];
 
-      if (job.config.waitForImages) {
-        await page.waitForSelector(selectors.productImage, { timeout: 5000 });
+      let allUrls: string[] = [];
+      let workingContainer: string | null = null;
+
+      // Try each pattern until we find product links
+      for (const containerPattern of containerPatterns) {
+        try {
+          // Check if container exists (but don't wait long)
+          const containers = await page.$$(containerPattern);
+          if (containers.length === 0) continue;
+
+          console.log(`   🔍 Trying container: ${containerPattern} (${containers.length} found)`);
+
+          // Try to get links from this container
+          const urls = await page.$$eval(
+            `${containerPattern} a`,
+            (links: any[]) => links.map((link: any) => link.href).filter(Boolean)
+          );
+
+          if (urls.length > 0) {
+            allUrls = urls;
+            workingContainer = containerPattern;
+            console.log(`   ✅ Found ${urls.length} links using: ${containerPattern}`);
+            break; // Success! Stop trying more patterns
+          }
+        } catch (e) {
+          // This pattern didn't work, try next one
+          continue;
+        }
       }
 
-      // Get all product links
-      const allUrls = await page.$$eval(
-        `${selectors.productContainer} ${selectors.productLink}`,
-        (links: any[]) => links.map((link: any) => link.href).filter(Boolean)
-      );
+      if (!workingContainer || allUrls.length === 0) {
+        throw new Error(`No product links found with any selector pattern`);
+      }
 
       // Filter to ONLY product pages (not categories, legal pages, account pages)
       const productUrls = allUrls.filter(url => {
@@ -1131,9 +1189,12 @@ export class WebCrawlerService {
       // CRITICAL: Return to the listing page so pagination can work!
       console.log(`✅ Returning to listing page: ${listingPageUrl}`);
       await page.goto(listingPageUrl, {
-        waitUntil: 'networkidle2',
-        timeout: job.config.timeout
+        waitUntil: 'domcontentloaded', // More reliable in Docker than networkidle2
+        timeout: 60000 // Increased timeout for Docker
       });
+
+      // Wait for dynamic content
+      await new Promise(resolve => setTimeout(resolve, 2000));
     } catch (error) {
       throw new Error(`Failed to extract products: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -1151,7 +1212,33 @@ export class WebCrawlerService {
     const loadStart = Date.now();
 
     try {
-      // Use the new PreciseScreenshotService for clean, consistent screenshots
+      // STEP 1: Extract HTML data (primary source, 100% accurate)
+      console.log('📄 Extracting HTML data...');
+      const htmlData = await htmlExtractionService.extractProductData(page);
+      const htmlValidation = htmlExtractionService.validateExtractedData(htmlData);
+      const htmlConfidence = htmlExtractionService.getOverallConfidence(htmlData);
+
+      console.log(`   HTML Extraction: ${htmlValidation.isValid ? '✅' : '⚠️'} Confidence: ${(htmlConfidence * 100).toFixed(0)}%`);
+      if (htmlValidation.warnings.length > 0) {
+        console.log(`   Warnings: ${htmlValidation.warnings.join(', ')}`);
+      }
+
+      // Save HTML data to file for later use
+      const jobDir = path.join(this.screenshotsDir, job.id);
+      await this.ensureDirectory(jobDir);
+
+      // Use articleNumber from HTML or generate from URL
+      const articleNumber = htmlData.articleNumber || this.extractArticleNumberFromUrl(productUrl);
+      const articleDir = path.join(jobDir, articleNumber);
+      await this.ensureDirectory(articleDir);
+
+      // Save HTML extracted data
+      const htmlDataPath = path.join(articleDir, 'html-data.json');
+      await fs.writeFile(htmlDataPath, JSON.stringify(htmlData, null, 2));
+      console.log(`   💾 HTML data saved: ${htmlDataPath}`);
+
+      // STEP 2: Take screenshots (for OCR fallback and image extraction)
+      console.log('📸 Capturing element screenshots...');
       const results = await this.preciseScreenshotService.captureProductScreenshots(
         page,
         productUrl,
@@ -1219,6 +1306,14 @@ export class WebCrawlerService {
             articleNumber: result.articleNumber
           };
         }
+
+        // Add HTML extracted data to metadata for hybrid approach
+        screenshot.metadata = {
+          ...screenshot.metadata,
+          htmlData: htmlData, // Store HTML data for later use
+          htmlConfidence: htmlConfidence,
+          htmlValidation: htmlValidation
+        };
 
         job.results.screenshots.push(screenshot);
         job.results.stats.totalDataTransferred += totalFileSize;
@@ -1593,6 +1688,42 @@ export class WebCrawlerService {
   /**
    * Clean article number by removing common prefixes and colons
    */
+  /**
+   * Extract article number from URL (fallback when HTML extraction fails)
+   */
+  private extractArticleNumberFromUrl(url: string): string {
+    try {
+      // Try to extract from URL path (common patterns)
+      const match = url.match(/\/produkt\/([^\/\?#]+)|\/product\/([^\/\?#]+)|\/p\/([^\/\?#]+)/i);
+      if (match) {
+        const slug = match[1] || match[2] || match[3];
+        // Extract numbers from slug
+        const numbers = slug.match(/\d+/);
+        if (numbers) {
+          return numbers[0];
+        }
+        return slug;
+      }
+
+      // Fallback: use URL hash or last segment
+      const urlObj = new URL(url);
+      const pathSegments = urlObj.pathname.split('/').filter(Boolean);
+      if (pathSegments.length > 0) {
+        const lastSegment = pathSegments[pathSegments.length - 1];
+        const numbers = lastSegment.match(/\d+/);
+        if (numbers) {
+          return numbers[0];
+        }
+        return lastSegment;
+      }
+
+      // Last resort: use timestamp
+      return `article-${Date.now()}`;
+    } catch {
+      return `article-${Date.now()}`;
+    }
+  }
+
   private cleanArticleNumber(raw: string): string {
     if (!raw) return '';
 

@@ -1,0 +1,30 @@
+{
+  "id": "A3-2x4-standard",
+  "name": "A3 2×4 (8 Labels)",
+  "description": "Standard A3 Layout mit 2 Spalten und 4 Zeilen - 8 Labels pro Seite",
+  "paperFormat": {
+    "type": "A3",
+    "width": 297,
+    "height": 420,
+    "orientation": "portrait"
+  },
+  "gridLayout": {
+    "columns": 2,
+    "rows": 4,
+    "spacing": 5,
+    "margins": {
+      "top": 10,
+      "bottom": 10,
+      "left": 10,
+      "right": 10
+    }
+  },
+  "settings": {
+    "showCutMarks": true,
+    "showBorders": false,
+    "labelScale": "fit",
+    "dpi": 300
+  },
+  "createdAt": "2025-11-07T00:00:00.000Z",
+  "updatedAt": "2025-11-07T00:00:00.000Z"
+}

@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3b82f6" />
@@ -34,6 +37,42 @@
           });
         });
       }
+    </script>
+
+    <!-- Force Cache Clear on Version Mismatch -->
+    <script>
+      (function() {
+        const APP_VERSION = '2.0.2'; // Increment this to force cache clear
+        const storedVersion = localStorage.getItem('appVersion');
+
+        if (storedVersion !== APP_VERSION) {
+          console.log('Version mismatch detected. Clearing cache...');
+
+          // Clear all caches
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              names.forEach(name => caches.delete(name));
+            });
+          }
+
+          // Clear localStorage except appVersion
+          const backup = {};
+          for (let key in localStorage) {
+            if (key !== 'appVersion') {
+              backup[key] = localStorage.getItem(key);
+            }
+          }
+          localStorage.clear();
+
+          // Set new version
+          localStorage.setItem('appVersion', APP_VERSION);
+
+          // Force reload from server (bypass cache)
+          if (storedVersion) { // Only reload if this isn't the first visit
+            window.location.reload(true);
+          }
+        }
+      })();
     </script>
   </body>
 </html>

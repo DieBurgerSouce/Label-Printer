@@ -37,27 +37,39 @@ export default function Articles() {
   const [matchResult, setMatchResult] = useState<MatchResult>({ matched: [], skipped: [] });
   const [showMatchPreview, setShowMatchPreview] = useState(false);
 
-  // Load available templates from localStorage
+  // Load available templates from API
   useEffect(() => {
-    const loadTemplates = () => {
+    const loadTemplates = async () => {
       try {
-        const saved = localStorage.getItem('labelTemplates');
-        if (saved) {
-          const templates: LabelTemplate[] = JSON.parse(saved);
-          setAvailableTemplates(templates);
-          // Auto-select first template with print layout
-          const defaultTemplate = templates.find(t => t.printLayoutId);
-          if (defaultTemplate && !selectedTemplateId) {
-            setSelectedTemplateId(defaultTemplate.id);
+        const response = await fetch(`${window.location.origin}/api/label-templates`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.templates) {
+            setAvailableTemplates(data.templates);
+            // Auto-select first template with print layout
+            const defaultTemplate = data.templates.find((t: any) => t.printLayoutId);
+            if (defaultTemplate && !selectedTemplateId) {
+              setSelectedTemplateId(defaultTemplate.id);
+            }
           }
         }
       } catch (error) {
-        console.error('Error loading templates:', error);
+        console.error('Error loading templates from API:', error);
+        // Fallback to localStorage
+        try {
+          const saved = localStorage.getItem('labelTemplates');
+          if (saved) {
+            const templates: LabelTemplate[] = JSON.parse(saved);
+            setAvailableTemplates(templates);
+          }
+        } catch (fallbackError) {
+          console.error('Fallback to localStorage failed:', fallbackError);
+        }
       }
     };
 
     loadTemplates();
-    // Reload when window gets focus (in case templates were saved in another tab)
+    // Reload when window gets focus
     window.addEventListener('focus', loadTemplates);
     return () => window.removeEventListener('focus', loadTemplates);
   }, [selectedTemplateId]);
@@ -125,9 +137,33 @@ export default function Articles() {
   // Label generation mutation (manual template selection)
   const generateLabelsMutation = useMutation({
     mutationFn: async ({ articleIds, templateId }: { articleIds: string[]; templateId: string }) => {
-      const results = await Promise.allSettled(
-        articleIds.map(articleId => labelApi.generateFromArticle(articleId, templateId))
-      );
+      // ✅ FIX: Process in batches to avoid overwhelming the server
+      const BATCH_SIZE = 50; // Process 50 articles at a time
+      const results: PromiseSettledResult<any>[] = [];
+
+      // Show progress for large batches
+      if (articleIds.length > 100) {
+        showToast({
+          type: 'info',
+          message: `🔄 Generiere ${articleIds.length} Labels in Batches...`,
+          duration: 3000,
+        });
+      }
+
+      // Process in batches
+      for (let i = 0; i < articleIds.length; i += BATCH_SIZE) {
+        const batch = articleIds.slice(i, i + BATCH_SIZE);
+        const batchResults = await Promise.allSettled(
+          batch.map(articleId => labelApi.generateFromArticle(articleId, templateId))
+        );
+        results.push(...batchResults);
+
+        // Show progress
+        if (articleIds.length > 100) {
+          const progress = Math.min(i + BATCH_SIZE, articleIds.length);
+          console.log(`✅ Progress: ${progress}/${articleIds.length} labels generated`);
+        }
+      }
 
       const successful = results.filter(r => r.status === 'fulfilled').length;
       const failed = results.filter(r => r.status === 'rejected').length;
@@ -208,6 +244,37 @@ export default function Articles() {
       setSelectedArticles(new Set());
     } else {
       setSelectedArticles(new Set(articles.map((a: Product) => a.id)));
+    }
+  };
+
+  // ✅ NEW: Select ALL articles from database (not just current page)
+  const selectAllArticlesFromDB = async () => {
+    try {
+      showToast({
+        type: 'info',
+        message: '📥 Lade alle Artikel...',
+        duration: 2000,
+      });
+
+      // Fetch ALL articles (up to 2000)
+      const response = await articlesApi.getAll({ page: 1, limit: 2000, published: true });
+      const allArticles = response.data || [];
+
+      // Select all article IDs
+      const allIds = allArticles.map((a: Product) => a.id);
+      setSelectedArticles(new Set(allIds));
+
+      showToast({
+        type: 'success',
+        message: `✅ ${allIds.length} Artikel ausgewählt!`,
+        duration: 3000,
+      });
+    } catch (error) {
+      showToast({
+        type: 'error',
+        message: 'Fehler beim Laden aller Artikel',
+        duration: 3000,
+      });
     }
   };
 
@@ -378,9 +445,17 @@ export default function Articles() {
           <p className="text-sm text-gray-600">Gesamt Artikel</p>
           <p className="text-2xl font-bold text-gray-900">{stats?.total || 0}</p>
         </div>
-        <div className="card">
+        <div className="card relative">
           <p className="text-sm text-gray-600">Ausgewählt</p>
           <p className="text-2xl font-bold text-blue-600">{selectedArticles.size}</p>
+          {/* ✅ NEW: Select All Articles Button */}
+          <button
+            onClick={selectAllArticlesFromDB}
+            className="absolute top-2 right-2 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+            title="Alle Artikel aus der Datenbank auswählen (bis zu 2000)"
+          >
+            Alle wählen
+          </button>
         </div>
         <div className="card">
           <p className="text-sm text-gray-600">Mit Bildern</p>
@@ -425,6 +500,8 @@ export default function Articles() {
               <option value={100}>100</option>
               <option value={200}>200</option>
               <option value={500}>500</option>
+              <option value={1000}>1000</option>
+              <option value={2000}>Alle (Max 2000)</option>
             </select>
           </div>
 

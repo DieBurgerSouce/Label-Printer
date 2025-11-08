@@ -1,0 +1,200 @@
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:16:45.259Z - GET /api/articles
+2025-11-04T15:16:45.260Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:16:46.256Z - GET /api/health
+2025-11-04T15:16:50.285Z - GET /api/articles
+2025-11-04T15:16:50.285Z - GET /api/articles/stats
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:16:55.335Z - GET /api/articles
+2025-11-04T15:16:55.336Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:00.417Z - GET /api/articles
+2025-11-04T15:17:00.418Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:05.507Z - GET /api/articles
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+2025-11-04T15:17:05.510Z - GET /api/articles/stats
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+2025-11-04T15:17:10.356Z - GET /api/articles
+2025-11-04T15:17:10.357Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:15.317Z - GET /api/articles
+2025-11-04T15:17:15.318Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+2025-11-04T15:17:16.131Z - GET /api/health
+2025-11-04T15:17:20.353Z - GET /api/articles/stats
+2025-11-04T15:17:20.354Z - GET /api/articles
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:25.408Z - GET /api/articles
+2025-11-04T15:17:25.409Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:30.479Z - GET /api/articles
+2025-11-04T15:17:30.479Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:35.753Z - GET /api/articles/stats
+2025-11-04T15:17:35.753Z - GET /api/articles
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:40.605Z - GET /api/articles
+2025-11-04T15:17:40.605Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:45.560Z - GET /api/articles
+2025-11-04T15:17:45.561Z - GET /api/articles/stats
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:46.015Z - GET /api/health
+2025-11-04T15:17:50.580Z - GET /api/articles
+2025-11-04T15:17:50.580Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:17:55.634Z - GET /api/articles
+2025-11-04T15:17:55.635Z - GET /api/articles/stats
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:18:00.729Z - GET /api/articles/stats
+2025-11-04T15:18:00.729Z - GET /api/articles
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:18:05.803Z - GET /api/articles
+2025-11-04T15:18:05.803Z - GET /api/articles/stats
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3
+2025-11-04T15:18:10.657Z - GET /api/articles
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+2025-11-04T15:18:10.658Z - GET /api/articles/stats
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."published" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."imageUrl" IS NOT NULL OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."products"."category" FROM "public"."products" WHERE "public"."products"."category" IS NOT NULL GROUP BY "public"."products"."category" OFFSET $1
+prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."products"."id" FROM "public"."products" WHERE "public"."products"."verified" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."products"."id", "public"."products"."articleNumber", "public"."products"."productName", "public"."products"."description", "public"."products"."price", "public"."products"."tieredPrices", "public"."products"."tieredPricesText", "public"."products"."currency", "public"."products"."imageUrl", "public"."products"."thumbnailUrl", "public"."products"."ean", "public"."products"."category", "public"."products"."manufacturer", "public"."products"."sourceUrl", "public"."products"."crawlJobId", "public"."products"."ocrConfidence", "public"."products"."verified", "public"."products"."published", "public"."products"."createdAt", "public"."products"."updatedAt" FROM "public"."products" WHERE "public"."products"."published" = $1 ORDER BY "public"."products"."createdAt" DESC LIMIT $2 OFFSET $3

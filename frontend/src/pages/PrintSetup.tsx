@@ -9,6 +9,7 @@ import FormatSelector, {
 } from '../components/PrintConfigurator/FormatSelector';
 import GridConfigurator from '../components/PrintConfigurator/GridConfigurator';
 import PrintPreview from '../components/PrintConfigurator/PrintPreview';
+import PrintTemplateSelector from '../components/PrintConfigurator/PrintTemplateSelector';
 
 export default function PrintSetup() {
   const { layout, setPaperFormat, setGridConfig } = usePrintStore();
@@ -21,7 +22,7 @@ export default function PrintSetup() {
   // Generate Preview Mutation
   const generatePreviewMutation = useMutation({
     mutationFn: async () => {
-      const response = await printApi.preview({
+      const requestData = {
         labelIds: layout.labelIds,
         format: layout.paperFormat.type === 'Custom' ? 'A4' : layout.paperFormat.type,
         gridConfig: {
@@ -36,13 +37,26 @@ export default function PrintSetup() {
         outputFormat: 'png',
         customWidth: layout.paperFormat.type === 'Custom' ? customWidth : undefined,
         customHeight: layout.paperFormat.type === 'Custom' ? customHeight : undefined,
-      });
+      };
+
+      console.log('📤 Sending preview request:', requestData);
+      console.log('📊 Current layout state:', layout);
+
+      const response = await printApi.preview(requestData);
       return response.data;
     },
     onSuccess: (data: any) => {
       // Create blob URL for preview
       if (data.previewUrl) {
-        setPreviewUrl(data.previewUrl);
+        // If it's a base64 data URL, use it directly
+        if (data.previewUrl.startsWith('data:')) {
+          setPreviewUrl(data.previewUrl);
+        } else {
+          // Otherwise convert to blob URL (for future binary responses)
+          const blob = new Blob([data.previewUrl], { type: 'image/png' });
+          const url = URL.createObjectURL(blob);
+          setPreviewUrl(url);
+        }
       }
       showToast({
         type: 'success',
@@ -157,20 +171,150 @@ export default function PrintSetup() {
   };
 
   const handleDownloadPdf = () => {
+    // ⚠️ Warning for large batches
+    if (layout.labelIds.length > 100) {
+      const confirmed = window.confirm(
+        `⚠️ You are about to generate a PDF with ${layout.labelIds.length} labels.\n\n` +
+        `This may take several minutes and could use significant memory.\n\n` +
+        `Estimated time: ${Math.ceil(layout.labelIds.length / 20)} minutes\n\n` +
+        `Continue?`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      showToast({
+        type: 'info',
+        message: `Generating large PDF (${layout.labelIds.length} labels). Please be patient...`,
+      });
+    }
+
     downloadPdfMutation.mutate();
   };
 
-  const handlePrint = () => {
-    if (previewUrl) {
-      const printWindow = window.open(previewUrl, '_blank');
-      printWindow?.print();
+  const handlePrint = async () => {
+    // ✅ FIX: Generate and print actual PDF, not preview PNG!
+    if (layout.labelIds.length === 0) {
+      showToast({
+        type: 'warning',
+        message: 'No labels selected for printing',
+      });
+      return;
+    }
+
+    // ⚠️ Warning for large batches
+    if (layout.labelIds.length > 100) {
+      const confirmed = window.confirm(
+        `⚠️ You are about to print ${layout.labelIds.length} labels.\n\n` +
+        `Generating the PDF may take several minutes.\n\n` +
+        `Estimated time: ${Math.ceil(layout.labelIds.length / 20)} minutes\n\n` +
+        `Continue?`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    try {
+      const estimatedTime = layout.labelIds.length > 100
+        ? ` This may take ${Math.ceil(layout.labelIds.length / 20)} minutes.`
+        : ' This may take a moment.';
+
+      showToast({
+        type: 'info',
+        message: `Generating PDF for ${layout.labelIds.length} labels...${estimatedTime}`,
+      });
+
+      // Generate full PDF
+      const blob = await printApi.export({
+        labelIds: layout.labelIds,
+        format: layout.paperFormat.type === 'Custom' ? 'A4' : layout.paperFormat.type,
+        gridConfig: {
+          columns: layout.gridLayout.columns,
+          rows: layout.gridLayout.rows,
+          marginTop: layout.gridLayout.margins.top,
+          marginBottom: layout.gridLayout.margins.bottom,
+          marginLeft: layout.gridLayout.margins.left,
+          marginRight: layout.gridLayout.margins.right,
+          spacing: layout.gridLayout.spacing,
+        },
+        customWidth: layout.paperFormat.type === 'Custom' ? customWidth : undefined,
+        customHeight: layout.paperFormat.type === 'Custom' ? customHeight : undefined,
+      });
+
+      // ✅ FIX: Use iframe for reliable printing
+      const url = window.URL.createObjectURL(blob);
+
+      // Create hidden iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      document.body.appendChild(iframe);
+
+      // Wait for PDF to load in iframe, then print
+      iframe.onload = () => {
+        setTimeout(() => {
+          try {
+            // Focus iframe and trigger print
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+
+            // Show success message
+            showToast({
+              type: 'success',
+              message: 'Print dialog opened. PDF ready for printing.',
+            });
+          } catch (error) {
+            console.error('Print failed:', error);
+            // Fallback: Open PDF in new tab for manual printing
+            window.open(url, '_blank');
+            showToast({
+              type: 'info',
+              message: 'PDF opened in new tab. Use Ctrl+P to print.',
+            });
+          }
+
+          // Cleanup after printing
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+            window.URL.revokeObjectURL(url);
+          }, 1000);
+        }, 500); // Small delay to ensure PDF is fully loaded
+      };
+
+      // Fallback if iframe doesn't load
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+          // Open in new tab as fallback
+          window.open(url, '_blank');
+          showToast({
+            type: 'info',
+            message: 'PDF opened in new tab. Use Ctrl+P to print.',
+          });
+
+          // Cleanup URL later
+          setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+          }, 60000);
+        }
+      }, 10000); // 10 second timeout
+
+    } catch (error: any) {
+      showToast({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to generate PDF for printing',
+      });
     }
   };
 
   const handleResetConfig = () => {
+    // ✅ Match printStore defaults: 2×3 = 6 labels/page
     setGridConfig({
-      columns: 3,
-      rows: 4,
+      columns: 2,
+      rows: 3,
       spacing: 5,
       margins: {
         top: 10,
@@ -249,6 +393,9 @@ export default function PrintSetup() {
           )}
         </div>
       </div>
+
+      {/* Print Template Selector */}
+      <PrintTemplateSelector />
 
       {/* Configuration Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

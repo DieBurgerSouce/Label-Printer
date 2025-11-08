@@ -1,0 +1,30 @@
+{
+  "id": "A4-2x3-standard",
+  "name": "A4 2×3 (6 Labels)",
+  "description": "Standard A4 Layout mit 2 Spalten und 3 Zeilen - 6 Labels pro Seite",
+  "paperFormat": {
+    "type": "A4",
+    "width": 210,
+    "height": 297,
+    "orientation": "portrait"
+  },
+  "gridLayout": {
+    "columns": 2,
+    "rows": 3,
+    "spacing": 5,
+    "margins": {
+      "top": 10,
+      "bottom": 10,
+      "left": 10,
+      "right": 10
+    }
+  },
+  "settings": {
+    "showCutMarks": true,
+    "showBorders": false,
+    "labelScale": "fit",
+    "dpi": 300
+  },
+  "createdAt": "2025-11-07T00:00:00.000Z",
+  "updatedAt": "2025-11-07T00:00:00.000Z"
+}

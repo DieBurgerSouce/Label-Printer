@@ -31,7 +31,8 @@ export class ProductService {
         articleNumber: ocrResult.articleNumber,
         productName: ocrResult.productName || screenshot.productName || 'Unknown Product',
         description: ocrResult.fullText?.substring(0, 500), // First 500 chars
-        price: ocrResult.price || 0,
+        price: ocrResult.price !== undefined ? ocrResult.price : 0,
+        priceType: (ocrResult as any).priceType || 'normal', // auf_anfrage, normal, tiered, unknown
         tieredPrices: ocrResult.tieredPrices as any || [],
         tieredPricesText: (ocrResult as any).tieredPricesText || null, // Raw text from OCR (e.g., "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR")
         imageUrl: screenshot.imageUrl,
@@ -164,14 +165,46 @@ export class ProductService {
 
       for (const ocrResult of ocrResults) {
         try {
-          // Skip if OCR failed or no article number found
-          if (!ocrResult.success || !ocrResult.extractedData?.articleNumber) {
-            console.log(`Skipping product: no article number`);
+          // DEFENSIVE: Try to get extractedData from multiple possible locations
+          let extractedData = ocrResult.extractedData || ocrResult;
+
+          // Get article number from ANY available location
+          const articleNumber = extractedData.articleNumber ||
+                                ocrResult.articleNumber ||
+                                ocrResult?.extractedData?.articleNumber;
+
+          // DEBUG: Log what we received
+          console.log(`🐛 DEBUG ocrResult:`, {
+            success: ocrResult.success,
+            status: ocrResult.status,
+            hasExtractedData: !!ocrResult.extractedData,
+            hasTopLevelArticleNumber: !!ocrResult.articleNumber,
+            extractedDataArticleNumber: ocrResult.extractedData?.articleNumber,
+            finalArticleNumber: articleNumber,
+            ocrResultKeys: Object.keys(ocrResult).slice(0, 10) // First 10 keys
+          });
+
+          // Skip ONLY if no article number found anywhere
+          if (!articleNumber) {
+            console.log(`⚠️ Skipping product: No article number found in any location`, {
+              hasOcrResult: !!ocrResult,
+              ocrResultType: typeof ocrResult,
+              hasExtractedData: !!ocrResult?.extractedData,
+              sampleKeys: Object.keys(ocrResult || {}).slice(0, 5)
+            });
             results.skipped++;
             continue;
           }
 
-          const extractedData = ocrResult.extractedData;
+          // Ensure extractedData has article number
+          if (!extractedData.articleNumber) {
+            extractedData.articleNumber = articleNumber;
+          }
+
+          // Add fallback for missing product name
+          if (!extractedData.productName) {
+            extractedData.productName = `Product ${extractedData.articleNumber}`;
+          }
 
           // Parse tiered prices if they're a string
           let tieredPrices = [];
@@ -202,7 +235,8 @@ export class ProductService {
             articleNumber: extractedData.articleNumber,
             productName: extractedData.productName || 'Unknown Product',
             description: extractedData.description?.substring(0, 500), // First 500 chars
-            price: parseFloat(extractedData.price) || 0,
+            price: extractedData.price ? parseFloat(extractedData.price) : null,
+            priceType: extractedData.priceType || 'normal',
             tieredPrices: tieredPrices,
             tieredPricesText: extractedData.tieredPricesText || null, // Raw OCR text for labels
             imageUrl: imageUrl, // Set the image URL

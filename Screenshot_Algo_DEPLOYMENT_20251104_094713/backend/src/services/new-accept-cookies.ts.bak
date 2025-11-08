@@ -1,0 +1,83 @@
+  /**
+   * Accept all cookies to remove cookie banners from screenshots
+   * CRITICAL: This must run BEFORE any product screenshots are taken!
+   */
+  private async acceptCookies(page: Page): Promise<void> {
+    try {
+      // Text-based XPath searches (most reliable for Puppeteer)
+      const textSearches = [
+        'Alle Cookies akzeptieren',
+        'Alle akzeptieren',
+        'Accept all',
+        'Accept All Cookies',
+        'Akzeptieren'
+      ];
+
+      let cookieAccepted = false;
+
+      // Try XPath text-based search first (most reliable)
+      for (const text of textSearches) {
+        try {
+          // Search for button OR a elements containing this text (case-insensitive)
+          const xpath = `//*[self::button or self::a][contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${text.toLowerCase()}')]`;
+          const elements = await page.$x(xpath);
+
+          if (elements.length > 0) {
+            // Click the first visible button
+            for (const element of elements) {
+              const isVisible = await (element as any).boundingBox();
+              if (isVisible) {
+                console.log(`✓ Found cookie button: "${text}"`);
+                await (element as any).click();
+                cookieAccepted = true;
+                break;
+              }
+            }
+            if (cookieAccepted) break;
+          }
+        } catch (e) {
+          // Continue to next text
+        }
+      }
+
+      // If text search failed, try common CSS selectors
+      if (!cookieAccepted) {
+        const cssSelectors = [
+          '#onetrust-accept-btn-handler',
+          '.cookie-accept-all',
+          '[data-testid="cookie-accept-all"]',
+          'button[class*="cookie"][class*="accept"]',
+          'button[class*="consent"][class*="accept"]',
+          'a[class*="cookie"][class*="accept"]'
+        ];
+
+        for (const selector of cssSelectors) {
+          try {
+            const element = await page.$(selector);
+            if (element) {
+              const isVisible = await element.boundingBox();
+              if (isVisible) {
+                console.log(`✓ Found cookie button via CSS: ${selector}`);
+                await element.click();
+                cookieAccepted = true;
+                break;
+              }
+            }
+          } catch (e) {
+            // Continue to next selector
+          }
+        }
+      }
+
+      if (cookieAccepted) {
+        console.log('✓ Cookie banner accepted');
+        // Wait for cookie banner to disappear
+        await new Promise(resolve => setTimeout(resolve, 800));
+      } else {
+        console.log('⚠️  No cookie banner found (might already be accepted)');
+      }
+    } catch (error) {
+      console.log('⚠️  Cookie acceptance failed:', error instanceof Error ? error.message : 'Unknown');
+      // Don't throw - continue crawling even if cookie acceptance fails
+    }
+  }

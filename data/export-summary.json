@@ -1,42 +1,42 @@
 {
-  "exportDate": "2025-11-02T17:34:23.190Z",
+  "exportDate": "2025-11-04T13:03:34.201Z",
   "statistics": {
-    "total": 1363,
-    "fromExcel": 1039,
-    "shopOnly": 324,
-    "needsTierQuantities": 236,
-    "other": 0
+    "total": 49,
+    "fromExcel": 0,
+    "shopOnly": 0,
+    "needsTierQuantities": 0,
+    "other": 49
   },
   "sampleArticles": [
     {
-      "articleNumber": "7525",
-      "productName": "offene Ladenkasse Helmac GPE-XT-NF 30 kg",
-      "price": 2021.69,
-      "category": "FROM_EXCEL"
+      "articleNumber": "8358",
+      "productName": "1,5 Kg Papiertragetasche Kartoffeln Neu",
+      "price": 0,
+      "category": null
     },
     {
-      "articleNumber": "7582-FTSE",
-      "productName": "Bon-Druckerwaage CT 100-FTSE (15/30)",
-      "price": 677.6,
-      "category": "FROM_EXCEL"
+      "articleNumber": "8194",
+      "productName": "Deko-heidelbeeren",
+      "price": 83.67,
+      "category": null
     },
     {
-      "articleNumber": "7581-TTSE",
-      "productName": "Bon-Druckerwaage CT 100-TTSE (6/15)",
-      "price": 677.6,
-      "category": "FROM_EXCEL"
+      "articleNumber": "1138",
+      "productName": "1kg Premium-spargel-schale",
+      "price": 0.43,
+      "category": null
     },
     {
-      "articleNumber": "7580-OS",
-      "productName": "Bon-Druckerwaage CT 100",
-      "price": 638.81,
-      "category": "FROM_EXCEL"
+      "articleNumber": "8199",
+      "productName": "Deko-spargelstangen Weiss",
+      "price": 25.94,
+      "category": null
     },
     {
-      "articleNumber": "7706-WE",
-      "productName": "PB Plattformwaage 15/30 mit Werkseichung",
-      "price": 378.74,
-      "category": "FROM_EXCEL"
+      "articleNumber": "4141",
+      "productName": "Bodenplatte 50 X 50 Cm",
+      "price": 86.35,
+      "category": null
     }
   ]
 }

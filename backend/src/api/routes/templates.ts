@@ -1,14 +1,15 @@
 /**
  * Template API Routes
  * Endpoints for template management and rendering
+ * Refactored to use TemplateStorageService for CRUD and TemplateEngine for rendering
  */
 
 import { Router, Request, Response } from 'express';
 import { templateEngine } from '../../services/template-engine';
+import templateStorageService from '../../services/template-storage-service';
+import { convertLabelTemplateToRenderingTemplate } from '../../services/label-to-rendering-converter';
 import { LabelTemplate, RenderContext, RenderOptions } from '../../types/template-types';
 import { v4 as uuidv4 } from 'uuid';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 const router = Router();
 
@@ -20,40 +21,61 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const templateData: Partial<LabelTemplate> = req.body;
 
-    // Validate required fields
-    if (!templateData.name) {
-      return res.status(400).json({ error: 'Template name is required' });
-    }
-
-    if (!templateData.dimensions) {
-      return res.status(400).json({ error: 'Template dimensions are required' });
-    }
-
     // Create template with defaults
     const template: LabelTemplate = {
-      id: uuidv4(),
-      name: templateData.name,
+      id: templateData.id || uuidv4(),
+      name: templateData.name || 'Untitled Template',
       description: templateData.description,
-      version: '1.0.0',
-      dimensions: templateData.dimensions,
+      version: templateData.version || '1.0.0',
+      dimensions: templateData.dimensions || { width: 400, height: 300, unit: 'px', dpi: 300 },
       layers: templateData.layers || [],
       fieldStyles: templateData.fieldStyles || [],
       formattingOptions: templateData.formattingOptions || {},
       globalStyles: templateData.globalStyles || {},
       variables: templateData.variables || [],
       settings: templateData.settings || {},
-      createdAt: new Date(),
+      createdAt: templateData.createdAt || new Date(),
       updatedAt: new Date(),
     };
 
-    await templateEngine.saveTemplate(template);
+    // Use storage service with validation
+    const savedTemplate = await templateStorageService.createTemplate(template);
 
     res.json({
       success: true,
-      template,
+      template: savedTemplate,
     });
   } catch (error: any) {
-    console.error('Template creation error:', error);
+    console.error('❌ Template creation error:', error);
+
+    if (error.message.includes('already exists')) {
+      return res.status(409).json({
+        error: 'Template already exists',
+        message: error.message,
+      });
+    }
+
+    if (error.message.includes('Invalid') || error.message.includes('required')) {
+      return res.status(400).json({
+        error: 'Invalid template',
+        message: error.message,
+      });
+    }
+
+    if (error.code === 'EACCES') {
+      return res.status(500).json({
+        error: 'Permission denied',
+        message: 'Server does not have permission to write template files',
+      });
+    }
+
+    if (error.code === 'ENOSPC') {
+      return res.status(500).json({
+        error: 'No space left',
+        message: 'Server disk is full',
+      });
+    }
+
     res.status(500).json({
       error: 'Template creation failed',
       message: error.message,
@@ -67,7 +89,7 @@ router.post('/', async (req: Request, res: Response) => {
  */
 router.get('/', async (_req: Request, res: Response) => {
   try {
-    const templates = await templateEngine.listTemplates();
+    const templates = await templateStorageService.listTemplates();
 
     res.json({
       success: true,
@@ -75,7 +97,7 @@ router.get('/', async (_req: Request, res: Response) => {
       count: templates.length,
     });
   } catch (error: any) {
-    console.error('Template listing error:', error);
+    console.error('❌ Template listing error:', error);
     res.status(500).json({
       error: 'Template listing failed',
       message: error.message,
@@ -90,18 +112,29 @@ router.get('/', async (_req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const template = await templateEngine.loadTemplate(id);
-
-    if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
-    }
+    const template = await templateStorageService.getTemplate(id);
 
     res.json({
       success: true,
       template,
     });
   } catch (error: any) {
-    console.error('Template fetch error:', error);
+    console.error('❌ Template fetch error:', error);
+
+    if (error.message.includes('Invalid template ID')) {
+      return res.status(400).json({
+        error: 'Invalid template ID',
+        message: error.message,
+      });
+    }
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({
+        error: 'Template not found',
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       error: 'Template fetch failed',
       message: error.message,
@@ -118,28 +151,43 @@ router.put('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const updates: Partial<LabelTemplate> = req.body;
 
-    // Load existing template
-    const existingTemplate = await templateEngine.loadTemplate(id);
-    if (!existingTemplate) {
-      return res.status(404).json({ error: 'Template not found' });
-    }
-
-    // Merge updates
+    // Merge updates with updatedAt
     const updatedTemplate: LabelTemplate = {
-      ...existingTemplate,
-      ...updates,
-      id, // Preserve ID
+      ...updates as LabelTemplate,
+      id, // Preserve ID from URL
       updatedAt: new Date(),
     };
 
-    await templateEngine.saveTemplate(updatedTemplate);
+    const savedTemplate = await templateStorageService.updateTemplate(id, updatedTemplate);
 
     res.json({
       success: true,
-      template: updatedTemplate,
+      template: savedTemplate,
     });
   } catch (error: any) {
-    console.error('Template update error:', error);
+    console.error('❌ Template update error:', error);
+
+    if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('mismatch')) {
+      return res.status(400).json({
+        error: 'Invalid template',
+        message: error.message,
+      });
+    }
+
+    if (error.code === 'EACCES') {
+      return res.status(500).json({
+        error: 'Permission denied',
+        message: 'Server does not have permission to write template files',
+      });
+    }
+
+    if (error.code === 'ENOSPC') {
+      return res.status(500).json({
+        error: 'No space left',
+        message: 'Server disk is full',
+      });
+    }
+
     res.status(500).json({
       error: 'Template update failed',
       message: error.message,
@@ -154,19 +202,36 @@ router.put('/:id', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-
-    const success = await templateEngine.deleteTemplate(id);
-
-    if (!success) {
-      return res.status(404).json({ error: 'Template not found or could not be deleted' });
-    }
+    await templateStorageService.deleteTemplate(id);
 
     res.json({
       success: true,
       message: 'Template deleted successfully',
     });
   } catch (error: any) {
-    console.error('Template deletion error:', error);
+    console.error('❌ Template deletion error:', error);
+
+    if (error.message.includes('Invalid template ID')) {
+      return res.status(400).json({
+        error: 'Invalid template ID',
+        message: error.message,
+      });
+    }
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({
+        error: 'Template not found',
+        message: error.message,
+      });
+    }
+
+    if (error.code === 'EACCES') {
+      return res.status(500).json({
+        error: 'Permission denied',
+        message: 'Server does not have permission to delete template files',
+      });
+    }
+
     res.status(500).json({
       error: 'Template deletion failed',
       message: error.message,
@@ -187,11 +252,8 @@ router.post('/:id/render', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Data is required for rendering' });
     }
 
-    // Load template
-    const template = await templateEngine.loadTemplate(id);
-    if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
-    }
+    // Load template from storage service
+    const template = await templateStorageService.getTemplate(id);
 
     // Create render context
     const context: RenderContext = {
@@ -200,7 +262,7 @@ router.post('/:id/render', async (req: Request, res: Response) => {
       options: options as RenderOptions,
     };
 
-    // Render
+    // Render using template engine
     const result = await templateEngine.render(context);
 
     if (!result.success) {
@@ -216,7 +278,15 @@ router.post('/:id/render', async (req: Request, res: Response) => {
     res.set('X-Render-Time', `${result.renderTime}ms`);
     res.send(result.buffer);
   } catch (error: any) {
-    console.error('Template rendering error:', error);
+    console.error('❌ Template rendering error:', error);
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({
+        error: 'Template not found',
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       error: 'Template rendering failed',
       message: error.message,
@@ -237,11 +307,8 @@ router.post('/:id/render/base64', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Data is required for rendering' });
     }
 
-    // Load template
-    const template = await templateEngine.loadTemplate(id);
-    if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
-    }
+    // Load template from storage service
+    const template = await templateStorageService.getTemplate(id);
 
     // Create render context
     const context: RenderContext = {
@@ -250,7 +317,7 @@ router.post('/:id/render/base64', async (req: Request, res: Response) => {
       options: options as RenderOptions,
     };
 
-    // Render
+    // Render using template engine
     const result = await templateEngine.render(context);
 
     if (!result.success) {
@@ -269,7 +336,15 @@ router.post('/:id/render/base64', async (req: Request, res: Response) => {
       renderTime: result.renderTime,
     });
   } catch (error: any) {
-    console.error('Template rendering error:', error);
+    console.error('❌ Template rendering error:', error);
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({
+        error: 'Template not found',
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       error: 'Template rendering failed',
       message: error.message,
@@ -278,10 +353,9 @@ router.post('/:id/render/base64', async (req: Request, res: Response) => {
 });
 
 /**
- * POST /api/templates/render-batch
- * Render multiple labels with a template
+ * Shared handler for batch rendering
  */
-router.post('/render-batch', async (req: Request, res: Response) => {
+const renderBatchHandler = async (req: Request, res: Response) => {
   try {
     const { templateId, dataArray, options } = req.body;
 
@@ -293,13 +367,10 @@ router.post('/render-batch', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Data array is required' });
     }
 
-    // Load template
-    const template = await templateEngine.loadTemplate(templateId);
-    if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
-    }
+    // Load template from storage service
+    const template = await templateStorageService.getTemplate(templateId);
 
-    // Render all labels
+    // Render all labels using template engine
     const results = await Promise.all(
       dataArray.map(async (data, index) => {
         const context: RenderContext = {
@@ -332,13 +403,33 @@ router.post('/render-batch', async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Batch rendering error:', error);
+    console.error('❌ Batch rendering error:', error);
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({
+        error: 'Template not found',
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       error: 'Batch rendering failed',
       message: error.message,
     });
   }
-});
+};
+
+/**
+ * POST /api/templates/render-batch
+ * Render multiple labels with a template
+ */
+router.post('/render-batch', renderBatchHandler);
+
+/**
+ * POST /api/templates/render/batch
+ * Alias for /render-batch (Frontend compatibility)
+ */
+router.post('/render/batch', renderBatchHandler);
 
 /**
  * POST /api/templates/preview
@@ -385,6 +476,108 @@ router.post('/preview', async (req: Request, res: Response) => {
     console.error('Template preview error:', error);
     res.status(500).json({
       error: 'Template preview failed',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * POST /api/templates/convert
+ * Convert Label Template (Visual Editor) to Rendering Template
+ */
+router.post('/convert', async (req: Request, res: Response) => {
+  try {
+    const { labelTemplate, saveAs } = req.body;
+
+    if (!labelTemplate) {
+      return res.status(400).json({ error: 'Label template is required' });
+    }
+
+    // Convert Label Template to Rendering Template
+    const renderingTemplate = convertLabelTemplateToRenderingTemplate(labelTemplate);
+
+    // Optionally save the converted template
+    if (saveAs) {
+      renderingTemplate.name = saveAs;
+      const savedTemplate = await templateStorageService.createTemplate(renderingTemplate);
+
+      return res.json({
+        success: true,
+        template: savedTemplate,
+        message: `Template converted and saved as: ${saveAs}`,
+      });
+    }
+
+    // Just return the converted template without saving
+    res.json({
+      success: true,
+      template: renderingTemplate,
+      message: 'Template converted successfully',
+    });
+  } catch (error: any) {
+    console.error('❌ Template conversion error:', error);
+    res.status(500).json({
+      error: 'Template conversion failed',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * POST /api/templates/:id/export-pdf
+ * Export template as PDF using article data
+ */
+router.post('/:id/export-pdf', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { articleData, options } = req.body;
+
+    if (!articleData) {
+      return res.status(400).json({ error: 'Article data is required' });
+    }
+
+    // Load template
+    const template = await templateStorageService.getTemplate(id);
+
+    // Create render context
+    const context: RenderContext = {
+      template,
+      data: articleData,
+      options: {
+        ...options,
+        format: 'pdf',
+      } as RenderOptions,
+    };
+
+    // Render as PDF
+    const result = await templateEngine.render(context);
+
+    if (!result.success) {
+      return res.status(500).json({
+        error: 'PDF export failed',
+        message: result.error,
+      });
+    }
+
+    // Return PDF data
+    res.json({
+      success: true,
+      pdf: result.base64,
+      fileName: `${template.name}_${articleData.articleNumber || 'export'}.pdf`,
+      message: 'PDF generated successfully',
+    });
+  } catch (error: any) {
+    console.error('❌ PDF export error:', error);
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({
+        error: 'Template not found',
+        message: error.message,
+      });
+    }
+
+    res.status(500).json({
+      error: 'PDF export failed',
       message: error.message,
     });
   }

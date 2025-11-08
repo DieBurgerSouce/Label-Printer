@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
 export interface PaperFormat {
   type: 'A3' | 'A4' | 'A5' | 'Letter' | 'Custom';
@@ -84,70 +84,78 @@ const defaultLayout: PrintLayout = {
 
 export const usePrintStore = create<PrintState>()(
   devtools(
-    (set) => ({
-      // Initial state
-      layout: defaultLayout,
-      previewImage: undefined,
-      isGeneratingPreview: false,
-      isExporting: false,
+    persist(
+      (set) => ({
+        // Initial state
+        layout: defaultLayout,
+        previewImage: undefined,
+        isGeneratingPreview: false,
+        isExporting: false,
 
-      // Actions
-      setLayout: (layout) =>
-        set((state) => ({
-          layout: { ...state.layout, ...layout },
-        })),
+        // Actions
+        setLayout: (layout) =>
+          set((state) => ({
+            layout: { ...state.layout, ...layout },
+          })),
 
-      setPaperFormat: (format) =>
-        set((state) => ({
-          layout: {
-            ...state.layout,
-            paperFormat: { ...state.layout.paperFormat, ...format },
-          },
-        })),
+        setPaperFormat: (format) =>
+          set((state) => ({
+            layout: {
+              ...state.layout,
+              paperFormat: { ...state.layout.paperFormat, ...format },
+            },
+          })),
 
-      setGridConfig: (grid) =>
-        set((state) => ({
-          layout: {
-            ...state.layout,
-            gridLayout: { ...state.layout.gridLayout, ...grid },
-          },
-        })),
+        setGridConfig: (grid) =>
+          set((state) => ({
+            layout: {
+              ...state.layout,
+              gridLayout: { ...state.layout.gridLayout, ...grid },
+            },
+          })),
 
-      setSettings: (settings) =>
-        set((state) => ({
-          layout: {
-            ...state.layout,
-            settings: { ...state.layout.settings, ...settings },
-          },
-        })),
+        setSettings: (settings) =>
+          set((state) => ({
+            layout: {
+              ...state.layout,
+              settings: { ...state.layout.settings, ...settings },
+            },
+          })),
 
-      addLabelToLayout: (labelId) =>
-        set((state) => ({
-          layout: {
-            ...state.layout,
-            labelIds: [...state.layout.labelIds, labelId],
-          },
-        })),
+        addLabelToLayout: (labelId) =>
+          set((state) => ({
+            layout: {
+              ...state.layout,
+              labelIds: [...state.layout.labelIds, labelId],
+            },
+          })),
 
-      removeLabelFromLayout: (labelId) =>
-        set((state) => ({
-          layout: {
-            ...state.layout,
-            labelIds: state.layout.labelIds.filter((id) => id !== labelId),
-          },
-        })),
+        removeLabelFromLayout: (labelId) =>
+          set((state) => ({
+            layout: {
+              ...state.layout,
+              labelIds: state.layout.labelIds.filter((id) => id !== labelId),
+            },
+          })),
 
-      clearLayout: () =>
-        set((state) => ({
-          layout: { ...state.layout, labelIds: [] },
-        })),
+        clearLayout: () =>
+          set((state) => ({
+            layout: { ...state.layout, labelIds: [] },
+          })),
 
-      resetLayout: () => set({ layout: defaultLayout }),
+        resetLayout: () => set({ layout: defaultLayout }),
 
-      setPreviewImage: (image) => set({ previewImage: image }),
-      setIsGeneratingPreview: (value) => set({ isGeneratingPreview: value }),
-      setIsExporting: (value) => set({ isExporting: value }),
-    }),
+        setPreviewImage: (image) => set({ previewImage: image }),
+        setIsGeneratingPreview: (value) => set({ isGeneratingPreview: value }),
+        setIsExporting: (value) => set({ isExporting: value }),
+      }),
+      {
+        name: 'print-layout-storage', // localStorage key
+        partialize: (state) => ({
+          layout: state.layout, // Only persist the layout, not UI state
+        }),
+      }
+    ),
     { name: 'PrintStore' }
   )
 );

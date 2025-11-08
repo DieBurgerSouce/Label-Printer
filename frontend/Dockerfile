@@ -26,29 +26,12 @@ FROM nginx:alpine AS production
 # Copy built files to nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Create nginx configuration for SPA
-RUN echo 'server { \n\
-    listen 80; \n\
-    server_name localhost; \n\
-    root /usr/share/nginx/html; \n\
-    index index.html; \n\
-    \n\
-    # SPA fallback \n\
-    location / { \n\
-        try_files $uri $uri/ /index.html; \n\
-    } \n\
-    \n\
-    # Health check \n\
-    location /health { \n\
-        access_log off; \n\
-        return 200 "healthy\\n"; \n\
-        add_header Content-Type text/plain; \n\
-    } \n\
-}' > /etc/nginx/conf.d/default.conf
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 3001
 
-HEALTHCHECK --interval=30s --timeout=3s CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
+HEALTHCHECK --interval=30s --timeout=3s CMD wget --quiet --tries=1 --spider http://localhost:3001/health || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
 

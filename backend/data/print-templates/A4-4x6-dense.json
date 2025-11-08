@@ -1,0 +1,30 @@
+{
+  "id": "A4-4x6-dense",
+  "name": "A4 4×6 (24 Labels)",
+  "description": "Sehr kompaktes A4 Layout mit 4 Spalten und 6 Zeilen - 24 kleine Labels pro Seite",
+  "paperFormat": {
+    "type": "A4",
+    "width": 210,
+    "height": 297,
+    "orientation": "portrait"
+  },
+  "gridLayout": {
+    "columns": 4,
+    "rows": 6,
+    "spacing": 3,
+    "margins": {
+      "top": 8,
+      "bottom": 8,
+      "left": 8,
+      "right": 8
+    }
+  },
+  "settings": {
+    "showCutMarks": true,
+    "showBorders": false,
+    "labelScale": "fit",
+    "dpi": 300
+  },
+  "createdAt": "2025-11-07T00:00:00.000Z",
+  "updatedAt": "2025-11-07T00:00:00.000Z"
+}

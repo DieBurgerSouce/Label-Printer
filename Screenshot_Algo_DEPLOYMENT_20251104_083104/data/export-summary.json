@@ -1,0 +1,42 @@
+{
+  "exportDate": "2025-11-04T07:31:04.570Z",
+  "statistics": {
+    "total": 49,
+    "fromExcel": 0,
+    "shopOnly": 0,
+    "needsTierQuantities": 0,
+    "other": 49
+  },
+  "sampleArticles": [
+    {
+      "articleNumber": "8358",
+      "productName": "1,5 Kg Papiertragetasche Kartoffeln Neu",
+      "price": 0,
+      "category": null
+    },
+    {
+      "articleNumber": "8194",
+      "productName": "Deko-heidelbeeren",
+      "price": 83.67,
+      "category": null
+    },
+    {
+      "articleNumber": "1138",
+      "productName": "1kg Premium-spargel-schale",
+      "price": 0.43,
+      "category": null
+    },
+    {
+      "articleNumber": "8199",
+      "productName": "Deko-spargelstangen Weiss",
+      "price": 25.94,
+      "category": null
+    },
+    {
+      "articleNumber": "4141",
+      "productName": "Bodenplatte 50 X 50 Cm",
+      "price": 86.35,
+      "category": null
+    }
+  ]
+}

@@ -17,7 +17,7 @@ const navigation = [
   { name: 'Labels', to: '/labels', icon: Tags },
   { name: 'Articles', to: '/articles', icon: Package },
   { name: 'Excel Import (Dynamisch)', to: '/excel-import', icon: FileSpreadsheet },
-  { name: 'Print Setup', to: '/print', icon: Printer },
+  { name: 'Print Setup', to: '/print-setup', icon: Printer },
   { name: 'Live Preview', to: '/preview', icon: Eye },
   { name: 'Label Templates', to: '/templates', icon: LayoutIcon },
   { name: 'Druck Templates', to: '/print-templates', icon: Printer },

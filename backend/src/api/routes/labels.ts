@@ -77,6 +77,29 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/labels/stats - Get label statistics (alias for /stats/summary)
+ * IMPORTANT: Must be BEFORE /:id route
+ */
+router.get('/stats', async (_req: Request, res: Response) => {
+  try {
+    const stats = await StorageService.getStats();
+
+    const response: ApiResponse = {
+      success: true,
+      data: stats,
+    };
+
+    res.json(response);
+  } catch (error) {
+    const response: ApiResponse = {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+    res.status(500).json(response);
+  }
+});
+
+/**
  * GET /api/labels/:id - Get single label
  */
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
@@ -104,6 +127,99 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
       error: error instanceof Error ? error.message : 'Unknown error',
     };
     res.status(500).json(response);
+  }
+});
+
+/**
+ * GET /api/labels/:id/image - Get label image as blob
+ */
+router.get('/:id/image', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const label = await StorageService.getLabel(req.params.id);
+
+    if (!label) {
+      res.status(404).json({
+        success: false,
+        error: 'Label not found',
+      });
+      return;
+    }
+
+    if (!label.imageData) {
+      res.status(404).json({
+        success: false,
+        error: 'No image data available for this label',
+      });
+      return;
+    }
+
+    // imageData is already a Buffer
+    const buffer = Buffer.isBuffer(label.imageData)
+      ? label.imageData
+      : Buffer.from(label.imageData);
+
+    res.contentType('image/png');
+    res.send(buffer);
+  } catch (error) {
+    console.error('Error serving label image:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to serve image',
+    });
+  }
+});
+
+/**
+ * GET /api/labels/:id/thumbnail - Get label thumbnail (resized image)
+ */
+router.get('/:id/thumbnail', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const label = await StorageService.getLabel(req.params.id);
+
+    if (!label) {
+      res.status(404).json({
+        success: false,
+        error: 'Label not found',
+      });
+      return;
+    }
+
+    if (!label.imageData) {
+      res.status(404).json({
+        success: false,
+        error: 'No image data available for this label',
+      });
+      return;
+    }
+
+    // Parse query parameters for size
+    const width = parseInt(req.query.width as string) || 200;
+    const height = parseInt(req.query.height as string) || 200;
+
+    // imageData is already a Buffer
+    const buffer = Buffer.isBuffer(label.imageData)
+      ? label.imageData
+      : Buffer.from(label.imageData);
+
+    // Resize using sharp (already installed)
+    const sharp = (await import('sharp')).default;
+    const thumbnail = await sharp(buffer)
+      .resize(width, height, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .png()
+      .toBuffer();
+
+    res.contentType('image/png');
+    res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+    res.send(thumbnail);
+  } catch (error) {
+    console.error('Error generating thumbnail:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate thumbnail',
+    });
   }
 });
 
@@ -290,7 +406,7 @@ router.post('/duplicate/:id', async (req: Request, res: Response): Promise<void>
  */
 router.post('/generate-from-article', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { articleId } = req.body;
+    const { articleId, templateId } = req.body;
 
     if (!articleId) {
       const response: ApiResponse = {
@@ -314,7 +430,80 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
       return;
     }
 
-    // Generate label from article data
+    // Convert tieredPrices to staffelpreise format if available
+    const staffelpreise = article.tieredPrices?.map(tp => ({
+      quantity: tp.quantity || 0,
+      price: parseFloat(tp.price?.toString() || '0')
+    }));
+
+    // OPTION A: Render label WITH image
+    let imageData: Buffer | undefined;
+
+    if (templateId) {
+      try {
+        console.log(`🎨 Rendering label for article ${article.articleNumber} with template ${templateId}`);
+
+        // Load the template from the CORRECT location (data/label-templates/)
+        const LabelTemplateService = (await import('../../services/label-template-service.js')).default;
+        const template = await LabelTemplateService.getTemplate(templateId);
+
+        if (template) {
+          // Import rendering services
+          const { convertLabelTemplateToRenderingTemplate } = await import('../../services/label-to-rendering-converter.js');
+          const { templateEngine } = await import('../../services/template-engine.js');
+
+          // Convert Label Template to Rendering Template (if needed)
+          const renderingTemplate = convertLabelTemplateToRenderingTemplate(template);
+
+          // Prepare data for rendering
+          const renderData = {
+            articleNumber: article.articleNumber,
+            productName: article.productName,
+            description: article.description || '',
+            price: article.price || 0,
+            currency: article.currency || 'EUR',
+            tieredPrices: staffelpreise || [],
+            imageUrl: article.imageUrl,
+            sourceUrl: article.sourceUrl || '',
+          };
+
+          // 🔍 DEBUG: Log render data to verify prices
+          console.log(`🔍 RENDER DATA for Article ${article.articleNumber}:`);
+          console.log(`   - Price: ${renderData.price} ${renderData.currency}`);
+          console.log(`   - Tiered Prices: ${renderData.tieredPrices.length} tiers`);
+          if (renderData.tieredPrices.length > 0) {
+            renderData.tieredPrices.forEach((tp: any, i: number) => {
+              console.log(`     ${i + 1}. ${tp.quantity} Stk → ${tp.price} EUR`);
+            });
+          }
+
+          // Render template to PNG
+          const renderResult = await templateEngine.render({
+            template: renderingTemplate,
+            data: renderData,
+            options: {
+              format: 'png',
+              quality: 90,
+              scale: 1,
+            },
+          });
+
+          if (renderResult.success && renderResult.buffer) {
+            imageData = renderResult.buffer;
+            console.log(`✅ Label rendered successfully: ${renderResult.width}x${renderResult.height} in ${renderResult.renderTime}ms`);
+          } else {
+            console.error('❌ Label rendering failed:', renderResult.error);
+          }
+        } else {
+          console.warn(`⚠️  Template ${templateId} not found, generating label without image`);
+        }
+      } catch (renderError) {
+        console.error('❌ Error during label rendering:', renderError);
+        // Continue without image - don't fail the whole request
+      }
+    }
+
+    // Generate label from article data with template
     const labelData: PriceLabel = {
       id: crypto.randomUUID(),
       articleNumber: article.articleNumber,
@@ -323,9 +512,11 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
       priceInfo: {
         price: article.price || 0,
         currency: article.currency || 'EUR',
+        staffelpreise: staffelpreise,
       },
       imageUrl: article.imageUrl || undefined,
-      templateType: 'standard',
+      imageData: imageData, // ⭐ NOW INCLUDING THE RENDERED IMAGE!
+      templateType: templateId ? 'custom' : 'standard',
       createdAt: new Date(),
       updatedAt: new Date(),
       tags: article.category ? [article.category] : [],
@@ -348,6 +539,43 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
+    };
+    res.status(500).json(response);
+  }
+});
+
+/**
+ * POST /api/labels/extract - Extract label from URL (screenshot + OCR)
+ * NOTE: This route is not fully implemented yet. Use /api/automation/start-simple instead
+ * for full screenshot + OCR + label generation workflow.
+ */
+router.post('/extract', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { url, articleNumber } = req.body;
+
+    if (!url) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'URL is required',
+      };
+      res.status(400).json(response);
+      return;
+    }
+
+    // This route requires complex integration with PreciseScreenshotService and RobustOCRService
+    // which need Page instances and jobIds. For now, redirect users to the automation API.
+    const response: ApiResponse = {
+      success: false,
+      error: 'Not implemented - use /api/automation/start-simple instead',
+      message: 'This route is not yet fully implemented. Please use the automation API endpoint /api/automation/start-simple for screenshot + OCR + label generation.',
+    };
+
+    res.status(501).json(response);
+  } catch (error) {
+    console.error('Error in label extraction route:', error);
+    const response: ApiResponse = {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
     };
     res.status(500).json(response);
   }

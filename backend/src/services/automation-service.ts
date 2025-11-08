@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { webCrawlerService } from './web-crawler-service';
-import { ocrService } from './ocr-service';
+import { robustOCRService } from './robust-ocr-service';
 import { matcherService } from './matcher-service';
 import { templateEngine } from './template-engine';
 import { ProductService } from './product-service';
@@ -177,7 +177,8 @@ class AutomationService {
     }
 
     const crawlConfig = {
-      maxProducts: job.config.crawlerConfig?.maxProducts || 50,
+      maxProducts: job.config.crawlerConfig?.maxProducts || 2000,
+      fullShopScan: (job.config.crawlerConfig as any)?.fullShopScan ?? true,
       followPagination: job.config.crawlerConfig?.followPagination ?? true,
       screenshotQuality: job.config.crawlerConfig?.screenshotQuality || 90,
     };
@@ -327,30 +328,98 @@ class AutomationService {
           const fileName = pathParts[pathParts.length - 1]; // e.g., "product-image.png"
           const folderName = pathParts[pathParts.length - 2]; // e.g., "8803" or "product-1729123456"
 
-          // Check if it's an article number OR timestamp folder
+          console.log(`  🐛 DEBUG: fileName="${fileName}", folderName="${folderName}", imagePath="${screenshot.imagePath}"`);
+
+          // Check if it's an article number (with optional suffix) OR timestamp folder
           if (folderName && fileName === 'product-image.png' && (
-            /^\d+$/.test(folderName) || // Pure article number
+            /^\d+(-[A-Z]+)?$/.test(folderName) || // Article number with optional suffix (e.g., "5020", "5020-GE", "8120-C")
             /^product-\d+$/.test(folderName) // Timestamp folder
           )) {
-            // New precise screenshot method for element-based screenshots
+            // New precise screenshot method for element-based screenshots with HTML fusion
             const screenshotDir = pathParts.slice(0, -2).join(pathSeparator); // Get directory without folder name
-            console.log(`  🎯 Using element OCR for folder ${folderName}`);
-            result = await ocrService.processElementScreenshots(screenshotDir, folderName, job.id);
+
+            // Extract pure article number (remove suffix like "-GE", "-C", etc.)
+            const articleNumber = folderName.split('-')[0]; // "5020-GE" -> "5020"
+
+            console.log(`  🎯 Using element OCR with HTML fusion for folder ${folderName} (article ${articleNumber})`);
+
+            // Process with robust OCR service (HTML + OCR fusion)
+            const robustResult = await robustOCRService.processArticleElements(screenshotDir, articleNumber);
+
+            // Calculate overall confidence from individual field confidences
+            const confidenceValues = Object.values(robustResult.confidence || {}).filter((v: any) => typeof v === 'number');
+            const overallConfidence = confidenceValues.length > 0
+              ? confidenceValues.reduce((sum: number, val: number) => sum + val, 0) / confidenceValues.length
+              : 0.8;
+
+            // Convert to format expected by product-service
+            result = {
+              id: uuidv4(),
+              screenshotId: screenshot.id,
+              status: robustResult.success ? 'completed' : 'failed', // ← FIX: Add status field!
+              success: robustResult.success,
+              productUrl: screenshot.productUrl || screenshot.url || '', // ← FIX: Use REAL crawled URL!
+              confidence: {
+                overall: overallConfidence // ← FIX: Calculate average of all field confidences!
+              },
+              extractedData: {
+                articleNumber: robustResult.data.articleNumber || articleNumber, // ← FIX: Use data.articleNumber!
+                productName: robustResult.data.productName || '',
+                description: robustResult.data.description || '',
+                price: robustResult.data.price || 0,
+                tieredPrices: robustResult.data.tieredPrices || [],
+                tieredPricesText: robustResult.data.tieredPricesText || ''
+              },
+              screenshot: screenshot as any
+            } as any;
+          } else if (fileName === 'title.png' || fileName === 'article-number.png' ||
+                     fileName === 'description.png' || fileName === 'price-table.png') {
+            // Skip element screenshots - they're already processed via product-image.png
+            console.log(`  ⏩ Skipping element screenshot: ${fileName}`);
+            processed++;
+            return;
           } else {
-            // Fallback to old method
+            // Fallback to old OCR method (no HTML fusion available)
             console.log(`  📄 Using standard OCR for ${screenshot.imagePath}`);
+            const { ocrService } = await import('./ocr-service');
             result = await ocrService.processScreenshot(screenshot.imagePath, ocrConfig, job.id);
           }
+
+          // SAFETY CHECK: Ensure result exists before pushing
+          if (!result) {
+            console.error(`  ❌ ERROR: result is undefined for ${screenshot.imagePath}`);
+            processed++;
+            return;
+          }
+
+          // DEBUG: Log extraction result
+          console.log(`  🐛 Extraction complete:`, {
+            status: result.status,
+            hasExtractedData: !!result.extractedData,
+            articleNumber: result.extractedData?.articleNumber,
+            productName: result.extractedData?.productName,
+            priceType: result.extractedData?.priceType,
+            hasProductUrl: !!(screenshot.productUrl || screenshot.url)
+          });
 
           job.results.ocrResults.push({
             screenshotId: result.screenshotId,
             ocrResultId: result.id,
             extractedData: result.extractedData,
-            confidence: result.confidence.overall,
+            // FIX: Map extractedData fields to top-level for product-service compatibility
+            articleNumber: result.extractedData?.articleNumber,
+            productName: result.extractedData?.productName,
+            price: result.extractedData?.price,
+            priceType: result.extractedData?.priceType, // auf_anfrage, normal, tiered, unknown
+            tieredPrices: result.extractedData?.tieredPrices,
+            tieredPricesText: result.extractedData?.tieredPricesText,
+            fullText: result.extractedData?.description, // Map description to fullText
+            confidence: result.confidence?.overall || 0.5,
             success: result.status === 'completed',
+            status: result.status, // Add status field
             error: result.status === 'failed' ? 'OCR processing failed' : undefined,
             productUrl: screenshot.productUrl || screenshot.url || null, // Add product URL
-          });
+          } as any);
 
           if (result.status === 'completed') {
             job.results.summary.successfulOCR++;

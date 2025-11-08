@@ -1,0 +1,176 @@
+===========================================
+Screenshot Algo - CLEAN Deployment Package
+===========================================
+
+Version:    1.1.0 - Memory Leak Fixes & Variant Detection
+Build Date: 2025-11-03 11:15:57
+Package:    Screenshot_Algo_20251103_111557.zip
+Size:       380 KB (compact, no data)
+Database:   EMPTY (ready for your data!)
+
+===========================================
+NEW IN THIS VERSION
+===========================================
+
+✓ Memory Leak Fixes
+  - Browser wird immer geschlossen (auch bei Fehlern)
+  - Graceful Shutdown (SIGTERM/SIGINT)
+  - Keine Zombie-Prozesse mehr
+
+✓ Variant Detection (Shopware 6)
+  - Automatische Erkennung von Produktvarianten
+  - Eindeutige Artikelnummern pro Variante
+  - Cookie Banner Handling
+
+✓ Bug Fixes
+  - CSS Selector Fix für IDs mit Zahlen
+  - Improved error handling in finally blocks
+  - Fixed return type for variant detection
+
+✓ Performance
+  - Memory-Nutzung reduziert (~6 MB nach mehreren Jobs)
+  - Variant Detection: ~7.7s pro Variante
+  - Graceful Shutdown: < 2 Sekunden
+
+===========================================
+QUICK START
+===========================================
+
+Windows:
+1. Entpacke Screenshot_Algo_20251103_111557.zip
+2. Doppelklick auf START.bat
+3. Öffne Browser: http://localhost:3000
+
+Linux/Mac:
+1. Entpacke Screenshot_Algo_20251103_111557.zip
+2. Terminal: chmod +x *.sh
+3. Terminal: ./start.sh
+4. Öffne Browser: http://localhost:3000
+
+===========================================
+DATABASE - LEER & BEREIT
+===========================================
+
+Dieses Package enthält eine LEERE Datenbank.
+Grund: Keine unnötigen Test-Daten, nur deine echten Daten!
+
+Daten selbst crawlen:
+1. Öffne http://localhost:3000
+2. Gehe zu "Crawler" im Menü
+3. Gib Shop-URL ein (z.B. https://shop.example.com)
+4. Klicke "Crawl starten"
+5. Warte auf Fertigstellung
+6. Fertig! Deine Produkte sind jetzt in der DB
+
+API-Crawl (Alternative):
+curl -X POST http://localhost:3001/api/crawler/start \
+  -H "Content-Type: application/json" \
+  -d '{"shopUrl": "https://shop.example.com", "maxProducts": 100}'
+
+===========================================
+WHAT'S INCLUDED
+===========================================
+
+✓ Backend (Node.js + TypeScript)
+  - Express API Server
+  - OCR Service (Tesseract)
+  - Web Crawler (Puppeteer)
+  - PostgreSQL Database (empty)
+  - Redis Cache
+
+✓ Frontend (React + Vite)
+  - Web-UI für Crawler
+  - Label Generator
+  - Template Editor
+  - Real-time Updates (WebSocket)
+
+✓ Docker Setup
+  - docker-compose.yml
+  - Multi-stage builds
+  - Health checks
+  - Volume mounts
+
+✓ Scripts
+  - START.bat / start.sh
+  - STOP.bat / stop.sh
+  - UPDATE.bat / update.sh
+
+✓ Documentation
+  - DEPLOYMENT_README.md (complete guide)
+  - COMPREHENSIVE_TEST_REPORT.md (test results)
+  - MEMORY_LEAK_FIXES.md (memory leak docs)
+  - VARIANT_DETECTION_FIXED.md (variant info)
+
+===========================================
+SYSTEM REQUIREMENTS
+===========================================
+
+- Docker Desktop (Windows/Mac) oder Docker (Linux)
+- 4 GB RAM (minimum)
+- 10 GB Festplatte
+- Internet-Verbindung (für Docker Images)
+
+===========================================
+TESTED & VERIFIED
+===========================================
+
+✓ Memory Leak Fixes - Verified
+  - Test: 2 failed crawl jobs
+  - Result: Only 6 MB memory increase
+  - Browser cleanup: ✓ Working
+
+✓ Variant Detection - Verified
+  - Test: Firmenich Horizontalschäler (8 variants)
+  - Result: All 8 variants captured
+  - Time: ~61 seconds total
+
+✓ Graceful Shutdown - Verified
+  - Test: docker-compose stop
+  - Result: Clean shutdown in < 2 seconds
+  - Resources released: ✓ All
+
+===========================================
+SUPPORT & TROUBLESHOOTING
+===========================================
+
+Problem: Docker startet nicht
+→ Lösung: Docker Desktop neu starten
+
+Problem: Port 3000/3001 belegt
+→ Lösung: Ports in docker-compose.yml ändern
+
+Problem: Crawl schlägt fehl
+→ Lösung: Logs prüfen: docker logs screenshot-algo-backend
+
+Problem: Varianten werden nicht erkannt
+→ Lösung: Nur für Shopware 6 unterstützt
+         Für andere Shops: Custom Selectors konfigurieren
+
+Mehr Hilfe: Siehe DEPLOYMENT_README.md
+
+===========================================
+NEXT STEPS
+===========================================
+
+1. Entpacke ZIP-Datei
+2. Führe START.bat aus
+3. Warte bis "Server is running" erscheint
+4. Öffne http://localhost:3000
+5. Crawle deinen ersten Shop!
+
+Beispiel-URL zum Testen:
+https://shop.firmenich.de/detail/088dad9cfeac403cb7b26e88f1407dc5
+
+===========================================
+READY FOR PRODUCTION! 🚀
+===========================================
+
+Alle Tests bestanden ✓
+Keine Memory Leaks ✓
+Varianten-Erkennung funktioniert ✓
+Graceful Shutdown implementiert ✓
+Vollständig dokumentiert ✓
+
+Viel Erfolg beim Crawlen!
+
+===========================================

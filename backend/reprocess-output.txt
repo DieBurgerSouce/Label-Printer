@@ -1,0 +1,271 @@
+ℹ Supabase credentials not found - running without Supabase features (optional)
+
+🔄 Reprocessing existing job with FIXED code
+======================================================================
+Job ID: 03662514-c9b0-444e-8d5d-2f34d71b224e
+Base Dir: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e
+======================================================================
+
+📂 Found 60 article folders
+   First few: 1138, 1333, 1333-M, 1334, 1334-P...
+
+🔧 Initializing RobustOCRService...
+🔍 Initializing Robust OCR Service...
+✅ Worker 0 initialized successfully
+✅ Worker 1 initialized successfully
+✅ OCR Service initialized with 2/2 workers
+
+📊 Processing articles...
+
+  [1/60] Processing 1138 (article: 1138)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1138/1138
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1138/1138
+    ⚠️  Extraction failed for 1138
+  [2/60] Processing 1333 (article: 1333)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1333/1333
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1333/1333
+    ⚠️  Extraction failed for 1333
+  [3/60] Processing 1333-M (article: 1333)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1333-M/1333
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1333-M/1333
+    ⚠️  Extraction failed for 1333
+  [4/60] Processing 1334 (article: 1334)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1334/1334
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1334/1334
+    ⚠️  Extraction failed for 1334
+  [5/60] Processing 1334-P (article: 1334)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1334-P/1334
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1334-P/1334
+    ⚠️  Extraction failed for 1334
+  [6/60] Processing 1335 (article: 1335)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1335/1335
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1335/1335
+    ⚠️  Extraction failed for 1335
+  [7/60] Processing 1335-M (article: 1335)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1335-M/1335
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1335-M/1335
+    ⚠️  Extraction failed for 1335
+  [8/60] Processing 1336 (article: 1336)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1336/1336
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1336/1336
+    ⚠️  Extraction failed for 1336
+  [9/60] Processing 1336-IP (article: 1336)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1336-IP/1336
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1336-IP/1336
+    ⚠️  Extraction failed for 1336
+  [10/60] Processing 1336-P (article: 1336)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1336-P/1336
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1336-P/1336
+    ⚠️  Extraction failed for 1336
+  [11/60] Processing 1349 (article: 1349)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1349/1349
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/1349/1349
+    ⚠️  Extraction failed for 1349
+  [12/60] Processing 2188 (article: 2188)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2188/2188
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2188/2188
+    ⚠️  Extraction failed for 2188
+  [13/60] Processing 2195 (article: 2195)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2195/2195
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2195/2195
+    ⚠️  Extraction failed for 2195
+  [14/60] Processing 2199 (article: 2199)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2199/2199
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2199/2199
+    ⚠️  Extraction failed for 2199
+  [15/60] Processing 2825 (article: 2825)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2825/2825
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2825/2825
+    ⚠️  Extraction failed for 2825
+  [16/60] Processing 2826 (article: 2826)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2826/2826
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/2826/2826
+    ⚠️  Extraction failed for 2826
+  [17/60] Processing 3708 (article: 3708)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3708/3708
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3708/3708
+    ⚠️  Extraction failed for 3708
+  [18/60] Processing 3709 (article: 3709)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3709/3709
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3709/3709
+    ⚠️  Extraction failed for 3709
+  [19/60] Processing 3710 (article: 3710)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3710/3710
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3710/3710
+    ⚠️  Extraction failed for 3710
+  [20/60] Processing 3711 (article: 3711)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3711/3711
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3711/3711
+    ⚠️  Extraction failed for 3711
+  [21/60] Processing 3712 (article: 3712)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3712/3712
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3712/3712
+    ⚠️  Extraction failed for 3712
+  [22/60] Processing 3811 (article: 3811)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3811/3811
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3811/3811
+    ⚠️  Extraction failed for 3811
+  [23/60] Processing 3812 (article: 3812)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3812/3812
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3812/3812
+    ⚠️  Extraction failed for 3812
+  [24/60] Processing 3815 (article: 3815)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3815/3815
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3815/3815
+    ⚠️  Extraction failed for 3815
+  [25/60] Processing 3816 (article: 3816)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3816/3816
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/3816/3816
+    ⚠️  Extraction failed for 3816
+  [26/60] Processing 4031 (article: 4031)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4031/4031
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4031/4031
+    ⚠️  Extraction failed for 4031
+  [27/60] Processing 4051 (article: 4051)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4051/4051
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4051/4051
+    ⚠️  Extraction failed for 4051
+  [28/60] Processing 4079 (article: 4079)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4079/4079
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4079/4079
+    ⚠️  Extraction failed for 4079
+  [29/60] Processing 4083 (article: 4083)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4083/4083
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4083/4083
+    ⚠️  Extraction failed for 4083
+  [30/60] Processing 4091 (article: 4091)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4091/4091
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4091/4091
+    ⚠️  Extraction failed for 4091
+  [31/60] Processing 4093 (article: 4093)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4093/4093
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4093/4093
+    ⚠️  Extraction failed for 4093
+  [32/60] Processing 4095 (article: 4095)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4095/4095
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4095/4095
+    ⚠️  Extraction failed for 4095
+  [33/60] Processing 4141 (article: 4141)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4141/4141
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4141/4141
+    ⚠️  Extraction failed for 4141
+  [34/60] Processing 4314 (article: 4314)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4314/4314
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4314/4314
+    ⚠️  Extraction failed for 4314
+  [35/60] Processing 4317 (article: 4317)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4317/4317
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4317/4317
+    ⚠️  Extraction failed for 4317
+  [36/60] Processing 4631 (article: 4631)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4631/4631
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/4631/4631
+    ⚠️  Extraction failed for 4631
+  [37/60] Processing 5020 (article: 5020)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020/5020
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020/5020
+    ⚠️  Extraction failed for 5020
+  [38/60] Processing 5020-B (article: 5020)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020-B/5020
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020-B/5020
+    ⚠️  Extraction failed for 5020
+  [39/60] Processing 5020-GE (article: 5020)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020-GE/5020
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020-GE/5020
+    ⚠️  Extraction failed for 5020
+  [40/60] Processing 5020-R (article: 5020)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020-R/5020
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/5020-R/5020
+    ⚠️  Extraction failed for 5020
+  [41/60] Processing 6545 (article: 6545)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/6545/6545
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/6545/6545
+    ⚠️  Extraction failed for 6545
+  [42/60] Processing 7034 (article: 7034)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/7034/7034
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/7034/7034
+    ⚠️  Extraction failed for 7034
+  [43/60] Processing 7062 (article: 7062)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/7062/7062
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/7062/7062
+    ⚠️  Extraction failed for 7062
+  [44/60] Processing 7065 (article: 7065)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/7065/7065
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/7065/7065
+    ⚠️  Extraction failed for 7065
+  [45/60] Processing 8116 (article: 8116)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8116/8116
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8116/8116
+    ⚠️  Extraction failed for 8116
+  [46/60] Processing 8117 (article: 8117)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8117/8117
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8117/8117
+    ⚠️  Extraction failed for 8117
+  [47/60] Processing 8120 (article: 8120)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8120/8120
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8120/8120
+    ⚠️  Extraction failed for 8120
+  [48/60] Processing 8120-C (article: 8120)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8120-C/8120
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8120-C/8120
+    ⚠️  Extraction failed for 8120
+  [49/60] Processing 8121 (article: 8121)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8121/8121
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8121/8121
+    ⚠️  Extraction failed for 8121
+  [50/60] Processing 8121-C (article: 8121)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8121-C/8121
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8121-C/8121
+    ⚠️  Extraction failed for 8121
+  [51/60] Processing 8122 (article: 8122)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8122/8122
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8122/8122
+    ⚠️  Extraction failed for 8122
+  [52/60] Processing 8124 (article: 8124)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8124/8124
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8124/8124
+    ⚠️  Extraction failed for 8124
+  [53/60] Processing 8133 (article: 8133)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8133/8133
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8133/8133
+    ⚠️  Extraction failed for 8133
+  [54/60] Processing 8194 (article: 8194)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8194/8194
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8194/8194
+    ⚠️  Extraction failed for 8194
+  [55/60] Processing 8195 (article: 8195)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8195/8195
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8195/8195
+    ⚠️  Extraction failed for 8195
+  [56/60] Processing 8196 (article: 8196)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8196/8196
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8196/8196
+    ⚠️  Extraction failed for 8196
+  [57/60] Processing 8197 (article: 8197)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8197/8197
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8197/8197
+    ⚠️  Extraction failed for 8197
+  [58/60] Processing 8198 (article: 8198)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8198/8198
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8198/8198
+    ⚠️  Extraction failed for 8198
+  [59/60] Processing 8199 (article: 8199)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8199/8199
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8199/8199
+    ⚠️  Extraction failed for 8199
+  [60/60] Processing 8358 (article: 8358)...
+    🔍 Looking for article at: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8358/8358
+    ❌ Article directory NOT found: data/screenshots/03662514-c9b0-444e-8d5d-2f34d71b224e/8358/8358
+    ⚠️  Extraction failed for 8358
+
+======================================================================
+📊 REPROCESSING COMPLETE
+======================================================================
+Total Processed: 60
+✅ Created:      0
+🔄 Updated:      0
+⏭️  Skipped:      60
+❌ Errors:       0
+======================================================================
+
+✅ Reprocessing job completed

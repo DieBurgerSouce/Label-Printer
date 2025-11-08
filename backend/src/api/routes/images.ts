@@ -11,13 +11,20 @@ const router = express.Router();
 
 // __filename and __dirname are available globally in CommonJS
 
-// Base paths for different image types - adjusted for correct directory structure
-// __dirname is in src/api/routes, we need to go up 3 levels to backend, then into data
-const SCREENSHOTS_DIR = path.join(__dirname, '../../../data/screenshots');
-const LABELS_DIR = path.join(__dirname, '../../../data/labels');
+// Base paths for different image types
+// In Docker: __dirname = /app/dist/api/routes, data is at /app/data
+// In local dev: __dirname = src/api/routes, data is at ../../data
+const isDocker = process.env.NODE_ENV === 'production';
+const BASE_DIR = isDocker
+  ? path.join(__dirname, '../../..') // /app/dist -> /app
+  : path.join(__dirname, '../../..');  // src/api/routes -> backend root
+
+const SCREENSHOTS_DIR = path.join(BASE_DIR, 'data/screenshots');
+const LABELS_DIR = path.join(BASE_DIR, 'data/labels');
 
 console.log('Images route initialized. Screenshots dir:', SCREENSHOTS_DIR);
 console.log('Current __dirname:', __dirname);
+console.log('BASE_DIR:', BASE_DIR);
 
 /**
  * GET /api/images/screenshots/:jobId/:articleNumber/:filename

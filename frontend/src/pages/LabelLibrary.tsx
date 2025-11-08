@@ -21,7 +21,6 @@ export default function LabelLibrary() {
     selectedLabels,
     selectLabel,
     clearSelection,
-    selectAll,
   } = useLabelStore();
 
   const { addLabelToLayout } = usePrintStore();
@@ -60,9 +59,16 @@ export default function LabelLibrary() {
       }),
   });
 
-  // Ensure labels is always an array
-  const labels = Array.isArray(labelsData?.data) ? labelsData.data : [];
-  const pagination = labelsData?.pagination;
+  // Ensure labels is always an array - API returns { data: { labels: [], total, page, limit, pages } }
+  const labelsResponse: any = labelsData?.data || {};
+  const labels = Array.isArray(labelsResponse.labels) ? labelsResponse.labels : [];
+  const pagination = {
+    total: labelsResponse.total || 0,
+    page: labelsResponse.page || 1,
+    limit: labelsResponse.limit || 50,
+    pages: labelsResponse.pages || 0,
+    totalPages: labelsResponse.pages || 0
+  };
 
   // Extract unique categories and tags from labels
   const categories = Array.from(
@@ -114,7 +120,7 @@ export default function LabelLibrary() {
     addLabelToLayout(label.id);
     showToast({
       type: 'success',
-      message: `${label.productName} added to print layout`,
+      message: `${label.productName} added to print layout. Go to Print Setup to configure.`,
     });
   };
 
@@ -142,9 +148,11 @@ export default function LabelLibrary() {
     selectedLabels.forEach((id) => addLabelToLayout(id));
     showToast({
       type: 'success',
-      message: `${selectedLabels.length} labels added to print layout`,
+      message: `${selectedLabels.length} labels added to print layout. Go to Print Setup to configure.`,
     });
     clearSelection();
+    // Navigate to print setup after a short delay
+    setTimeout(() => navigate('/print-setup'), 1500);
   };
 
   const handleCreateLabel = () => {
@@ -248,7 +256,10 @@ export default function LabelLibrary() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => selectAll()}
+            onClick={() => {
+              // Select all labels on current page
+              labels.forEach((label: any) => selectLabel(label.id));
+            }}
             className="text-sm text-gray-700 hover:text-gray-900 font-medium"
           >
             Select All

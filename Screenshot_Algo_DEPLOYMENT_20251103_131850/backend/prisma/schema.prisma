@@ -1,0 +1,334 @@
+// Prisma Schema for Label Printer System
+// Database: Supabase (PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// CRAWLER MODELS
+// ========================================
+
+model CrawlJob {
+  id          String   @id @default(uuid())
+  name        String
+  status      String   // 'pending', 'running', 'completed', 'failed', 'cancelled'
+  targetUrl   String
+  maxProducts Int      @default(50)
+
+  // Progress tracking
+  productsFound    Int      @default(0)
+  productsScraped  Int      @default(0)
+  currentPage      Int      @default(1)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  // Error handling
+  error       String?
+
+  // Relations
+  screenshots Screenshot[]
+
+  @@map("crawl_jobs")
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Screenshot {
+  id          String   @id @default(uuid())
+  crawlJobId  String
+
+  // Image URLs (ImageKit)
+  imageUrl    String   // Full screenshot URL on ImageKit
+  thumbnailUrl String? // Thumbnail URL on ImageKit
+
+  // Image metadata
+  width       Int
+  height      Int
+  fileSize    Int      // in bytes
+  format      String   // 'png', 'jpg'
+
+  // Product info
+  productUrl  String
+  productName String?
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+
+  // Relations
+  crawlJob    CrawlJob @relation(fields: [crawlJobId], references: [id], onDelete: Cascade)
+  ocrResults  OcrResult[]
+
+  @@map("screenshots")
+  @@index([crawlJobId])
+  @@index([createdAt])
+}
+
+// ========================================
+// OCR MODELS
+// ========================================
+
+model OcrResult {
+  id            String   @id @default(uuid())
+  screenshotId  String
+
+  // OCR Status
+  status        String   // 'pending', 'processing', 'completed', 'failed'
+  confidence    Float?   // 0-1
+
+  // Extracted data
+  fullText      String?  @db.Text
+  articleNumber String?
+  price         Float?
+  ean           String?
+  productName   String?
+
+  // Tiered Prices (JSON)
+  tieredPrices  Json?    // [{quantity: 10, price: 45.99}, {quantity: 50, price: 42.99}]
+  tieredPricesText String? @db.Text // Raw OCR text: "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR"
+
+  // Bounding boxes (JSON)
+  boundingBoxes Json?    // [{text: "Art.Nr.", x: 10, y: 20, width: 50, height: 20}]
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Error handling
+  error         String?
+
+  // Relations
+  screenshot    Screenshot @relation(fields: [screenshotId], references: [id], onDelete: Cascade)
+  matches       Match[]
+
+  @@map("ocr_results")
+  @@index([screenshotId])
+  @@index([status])
+  @@index([articleNumber])
+}
+
+// ========================================
+// MATCHING MODELS
+// ========================================
+
+model Match {
+  id          String   @id @default(uuid())
+  ocrResultId String
+
+  // Match data
+  matchType   String   // 'exact', 'fuzzy', 'manual'
+  confidence  Float    // 0-1
+
+  // Matched fields
+  articleNumber String?
+  ean           String?
+  productName   String?
+  price         Float?
+
+  // Excel data (if matched with Excel)
+  excelData   Json?    // Complete matched row from Excel
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+
+  // Relations
+  ocrResult   OcrResult @relation(fields: [ocrResultId], references: [id], onDelete: Cascade)
+
+  @@map("matches")
+  @@index([ocrResultId])
+  @@index([articleNumber])
+}
+
+// ========================================
+// TEMPLATE MODELS
+// ========================================
+
+model Template {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+
+  // Dimensions
+  width       Float    // in mm
+  height      Float    // in mm
+  unit        String   @default("mm") // 'mm', 'cm', 'in'
+
+  // DPI for rendering
+  dpi         Int      @default(300)
+
+  // Layers (JSON)
+  layers      Json     // [{type: 'text', properties: {...}}, {type: 'image', ...}]
+
+  // Styling options
+  backgroundColor String @default("#FFFFFF")
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  labels      Label[]
+  automationJobs AutomationJob[]
+
+  @@map("templates")
+  @@index([name])
+}
+
+model Label {
+  id          String   @id @default(uuid())
+  templateId  String
+
+  // Data for rendering
+  data        Json     // {articleNumber: "...", price: 49.99, tieredPrices: [...]}
+
+  // Rendered output (ImageKit URLs)
+  imageUrl    String?  // Rendered label PNG on ImageKit
+  pdfUrl      String?  // Rendered label PDF (future)
+
+  // Rendering metadata
+  width       Int?     // rendered width in pixels
+  height      Int?     // rendered height in pixels
+  fileSize    Int?     // in bytes
+
+  // Status
+  status      String   @default("pending") // 'pending', 'rendering', 'completed', 'failed'
+  error       String?
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  template    Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@map("labels")
+  @@index([templateId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ========================================
+// PRODUCT MODELS (Consolidated Articles)
+// ========================================
+
+model Product {
+  id            String   @id @default(uuid())
+
+  // Core product data
+  articleNumber String   @unique
+  productName   String
+  description   String?  @db.Text
+
+  // Pricing
+  price         Float?   // Nullable when using tieredPrices
+  tieredPrices  Json?    // [{quantity: 10, price: 45.99}, {quantity: 50, price: 42.99}]
+  tieredPricesText String? @db.Text // Raw OCR text: "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR"
+  currency      String   @default("EUR")
+
+  // Images
+  imageUrl      String?  // Product image from shop
+  thumbnailUrl  String?  // Thumbnail version
+
+  // Additional data
+  ean           String?
+  category      String?
+  manufacturer  String?
+
+  // Source information
+  sourceUrl     String   // Original product URL
+  crawlJobId    String?  // Which crawl job found this product
+
+  // OCR confidence
+  ocrConfidence Float?   // 0-1
+
+  // Status
+  verified      Boolean  @default(false) // Manual verification
+  published     Boolean  @default(true)  // Show in article list
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("products")
+  @@index([articleNumber])
+  @@index([crawlJobId])
+  @@index([published])
+  @@index([createdAt])
+}
+
+// ========================================
+// AUTOMATION MODELS
+// ========================================
+
+model AutomationJob {
+  id          String   @id @default(uuid())
+  name        String
+  status      String   // 'pending', 'running', 'completed', 'failed', 'cancelled'
+
+  // Configuration (JSON)
+  config      Json     // {crawlerConfig: {...}, templateId: "...", matchingConfig: {...}}
+
+  // Progress tracking
+  currentStage String? // 'crawling', 'ocr', 'matching', 'rendering'
+  totalStages  Int     @default(4)
+
+  progress    Json?    // {crawling: 50, ocr: 0, matching: 0, rendering: 0}
+
+  // Result summary
+  resultSummary Json?  // {screenshotsCount: 50, ocrSuccess: 48, matchedCount: 45, labelsGenerated: 45}
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  // Error handling
+  error       String?
+
+  // Template reference
+  templateId  String?
+  template    Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  @@map("automation_jobs")
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ========================================
+// EXCEL DATA (Optional - for caching)
+// ========================================
+
+model ExcelData {
+  id          String   @id @default(uuid())
+
+  // File metadata
+  fileName    String
+  fileSize    Int      // in bytes
+  sheetName   String?
+
+  // Data (JSON)
+  data        Json     // Array of rows: [{articleNumber: "...", price: 49.99, ...}]
+  headers     Json     // Array of column names
+
+  // Statistics
+  rowCount    Int
+  columnCount Int
+
+  // Timestamps
+  uploadedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("excel_data")
+  @@index([fileName])
+  @@index([uploadedAt])
+}

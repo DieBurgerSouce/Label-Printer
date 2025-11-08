@@ -1,0 +1,153 @@
+{
+  "id": "288454ba-6155-47c2-bc69-ee186f6103b7",
+  "name": "Neues Label Template",
+  "width": 400,
+  "height": 300,
+  "elements": [
+    {
+      "id": "38cd4e43-7115-4389-b932-1e98fd0131e5",
+      "type": "text",
+      "x": 50,
+      "y": 50,
+      "width": 200,
+      "height": 30,
+      "originalWidth": 200,
+      "originalHeight": 30,
+      "content": "{{Produktname}}",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left"
+    },
+    {
+      "id": "20cc6cf5-979b-44be-9e67-c1e5f1debd8b",
+      "type": "freeText",
+      "x": 50,
+      "y": 80,
+      "width": 200,
+      "height": 30,
+      "originalWidth": 200,
+      "originalHeight": 30,
+      "content": "Text eingeben...",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left"
+    },
+    {
+      "id": "2a1ae992-6af6-49a6-886c-548619cd3463",
+      "type": "articleNumber",
+      "x": 50,
+      "y": 110,
+      "width": 200,
+      "height": 30,
+      "originalWidth": 200,
+      "originalHeight": 30,
+      "content": "{{Artikelnummer}}",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left"
+    },
+    {
+      "id": "0a65cecb-4214-4552-9c42-903cf0e02b89",
+      "type": "image",
+      "x": 50,
+      "y": 170,
+      "width": 200,
+      "height": 100,
+      "originalWidth": 200,
+      "originalHeight": 100,
+      "content": "{{Produktbild}}",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left"
+    },
+    {
+      "id": "bbb35591-041c-40a8-b062-28c23689f628",
+      "type": "qrCode",
+      "x": 50,
+      "y": 200,
+      "width": 200,
+      "height": 30,
+      "originalWidth": 200,
+      "originalHeight": 30,
+      "content": "{{QR-Code}}",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left"
+    },
+    {
+      "id": "1271afca-343d-4c09-a519-4e1cb2b53c84",
+      "type": "priceTable",
+      "x": 50,
+      "y": 200,
+      "width": 400,
+      "height": 150,
+      "originalWidth": 400,
+      "originalHeight": 150,
+      "content": "{{Staffelpreise}}",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#000000",
+      "align": "left",
+      "tableConfig": {
+        "headerBg": "#e5e7eb",
+        "headerColor": "#000000",
+        "headerFontSize": 14,
+        "headerFontWeight": "bold",
+        "headerAlign": "left",
+        "rowBg": "#ffffff",
+        "rowAlternateBg": "#f9fafb",
+        "rowColor": "#000000",
+        "rowFontSize": 12,
+        "rowAlign": "left",
+        "borderColor": "#d1d5db",
+        "borderWidth": 1,
+        "cellPadding": 8
+      }
+    }
+  ],
+  "settings": {
+    "backgroundColor": "#ffffff",
+    "backgroundImageOpacity": 0.5,
+    "defaultFontFamily": "Arial",
+    "defaultFontColor": "#000000",
+    "defaultFontSize": 14,
+    "borderEnabled": true,
+    "borderColor": "#d1d5db",
+    "borderWidth": 1,
+    "borderRadius": 0,
+    "shadowEnabled": false,
+    "shadowColor": "#000000",
+    "shadowBlur": 5,
+    "padding": 0
+  },
+  "autoMatchEnabled": false,
+  "articleOverrides": {
+    "8358": {
+      "bbb35591-041c-40a8-b062-28c23689f628": {
+        "x": 196,
+        "y": 109.33333333333336,
+        "width": 199.33333333333334,
+        "height": 139.33333333333331
+      },
+      "0a65cecb-4214-4552-9c42-903cf0e02b89": {
+        "x": 3.9999999999999996,
+        "y": 172.6666666666667
+      },
+      "0d4f0e85-bb33-401b-adeb-31e7c4f37490": {
+        "x": 48.00000000000001,
+        "y": 140
+      },
+      "1271afca-343d-4c09-a519-4e1cb2b53c84": {
+        "x": 111.33333333333336,
+        "y": 94.6666666666667,
+        "width": 284.6666666666667,
+        "height": 125.33333333333331
+      }
+    }
+  }
+}

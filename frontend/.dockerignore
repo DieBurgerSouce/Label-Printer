@@ -45,7 +45,7 @@ build/
 Dockerfile
 docker-compose.yml
 .dockerignore
-nginx.conf
+# nginx.conf - NEEDED for Docker build!
 
 # Documentation
 README.md

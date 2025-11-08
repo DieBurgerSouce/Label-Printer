@@ -1,0 +1,20 @@
+{
+  "id": "test-label-1",
+  "name": "Test Label for Conversion",
+  "widthMm": 80,
+  "heightMm": 50,
+  "elements": [
+    {
+      "id": "elem-1",
+      "type": "text",
+      "text": "Product Name",
+      "x": 10,
+      "y": 10,
+      "width": 200,
+      "height": 30,
+      "fontSize": 18,
+      "fontWeight": "bold"
+    }
+  ],
+  "settings": {}
+}

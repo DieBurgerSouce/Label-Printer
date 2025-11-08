@@ -9,24 +9,17 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
  */
 export function getImageUrl(imageUrl: string | null | undefined): string {
   if (!imageUrl) {
-    console.log('📸 getImageUrl: No image URL provided, using placeholder');
-    return 'https://via.placeholder.com/64?text=No+Image';
+    // Return a small gray placeholder as base64 data URL (1x1 gray pixel)
+    return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8cPj4fwAHqQN8stI9HQAAAABJRU5ErkJggg==';
   }
 
   // Check if URL is already absolute
   if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-    console.log('📸 getImageUrl: URL is already absolute:', imageUrl);
     return imageUrl;
   }
 
   // For relative URLs, prepend the API base URL
   const fullUrl = `${API_BASE_URL}${imageUrl}`;
-  console.log('📸 getImageUrl:', {
-    imageUrl,
-    API_BASE_URL,
-    fullUrl,
-    env: import.meta.env.VITE_API_URL
-  });
   return fullUrl;
 }
 
@@ -166,7 +159,7 @@ export const labelApi = {
     apiClient.post<ApiResponse<any>>('/api/labels/generate-from-article', { articleId, templateId }),
 
   batch: (labelIds: string[], action: 'delete' | 'export') =>
-    apiClient.post<ApiResponse<any>>('/api/labels/batch', { labelIds, action }),
+    apiClient.post<ApiResponse<any>>('/api/labels/batch', { operation: action, labelIds }),
 
   getStats: () =>
     apiClient.get<ApiResponse<any>>('/api/labels/stats'),
@@ -213,8 +206,44 @@ export const printApi = {
   preview: (data: any) =>
     apiClient.post<ApiResponse<any>>('/api/print/preview', data),
 
-  export: (data: any) =>
-    apiClient.post<Blob>('/api/print/export', data, { responseType: 'blob' }),
+  export: async (data: any): Promise<Blob> => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/print/export`,
+        data,
+        {
+          responseType: 'blob',
+          headers: {
+            'Accept': 'application/pdf',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Check if response is actually a Blob
+      if (!(response.data instanceof Blob)) {
+        throw new Error('Response is not a Blob');
+      }
+
+      // Check if it's an error response disguised as Blob
+      if (response.data.type === 'application/json') {
+        // Error responses might come as JSON Blob
+        const text = await response.data.text();
+        const errorData = JSON.parse(text);
+        throw new Error(errorData.error || 'PDF generation failed');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      // Re-throw with better error message
+      if (error.response?.data instanceof Blob && error.response.data.type === 'application/json') {
+        const text = await error.response.data.text();
+        const errorData = JSON.parse(text);
+        throw new Error(errorData.error || 'Failed to generate PDF');
+      }
+      throw error;
+    }
+  },
 
   /**
    * Export labels as PDF
@@ -252,6 +281,9 @@ export const printApi = {
 
   addTemplate: (template: any) =>
     apiClient.post<ApiResponse<any>>('/api/print/templates', template),
+
+  deleteTemplate: (id: string) =>
+    apiClient.delete<ApiResponse<any>>(`/api/print/templates/${id}`),
 
   validateLayout: (data: any) =>
     apiClient.post<ApiResponse<any>>('/api/print/validate-layout', data),
@@ -349,7 +381,7 @@ export const articlesApi = {
     apiClient.get<ApiResponse<Array<{ field: string; description: string; type: string }>>>('/api/articles/excel-valid-fields'),
 };
 
-// Label Template API
+// Label Template API (Visual Editor - /api/label-templates)
 export const templateApi = {
   save: (template: any) =>
     apiClient.post<ApiResponse<any>>('/api/label-templates', template),
@@ -365,6 +397,47 @@ export const templateApi = {
 
   delete: (id: string) =>
     apiClient.delete<ApiResponse<void>>(`/api/label-templates/${id}`),
+};
+
+// Rendering Template API (Server-Side Rendering - /api/templates)
+export const renderingTemplateApi = {
+  create: (template: any) =>
+    apiClient.post<ApiResponse<any>>('/api/templates', template),
+
+  list: () =>
+    apiClient.get<ApiResponse<{ templates: any[]; count: number }>>('/api/templates'),
+
+  getById: (id: string) =>
+    apiClient.get<ApiResponse<{ template: any }>>(`/api/templates/${id}`),
+
+  update: (id: string, template: any) =>
+    apiClient.put<ApiResponse<any>>(`/api/templates/${id}`, template),
+
+  delete: (id: string) =>
+    apiClient.delete<ApiResponse<{ message: string }>>(`/api/templates/${id}`),
+
+  // Rendering endpoints
+  renderImage: (id: string, data: any, options?: any) =>
+    apiClient.post<Blob>(`/api/templates/${id}/render/image`, { data, options }, { responseType: 'blob' }),
+
+  renderPdf: (id: string, data: any, options?: any) =>
+    apiClient.post<any>(`/api/templates/${id}/render/pdf`, { data, options }),
+
+  renderBatch: (templateId: string, dataArray: any[]) =>
+    apiClient.post<any>('/api/templates/render/batch', { templateId, dataArray }),
+
+  // Conversion endpoints
+  convert: (labelTemplate: any, saveAs?: string) =>
+    apiClient.post<ApiResponse<{ template: any; message: string }>>('/api/templates/convert', {
+      labelTemplate,
+      saveAs
+    }),
+
+  exportPdf: (id: string, articleData: any, options?: any) =>
+    apiClient.post<ApiResponse<{ pdf: string; fileName: string; message: string }>>(
+      `/api/templates/${id}/export-pdf`,
+      { articleData, options }
+    ),
 };
 
 // Excel Import Types

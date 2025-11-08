@@ -1,11 +1,14 @@
 /**
  * Template Engine Service
  * Merges OCR/Excel data with templates and applies dynamic styling
+ * CRUD operations now delegated to TemplateStorageService
  */
 
-import sharp from 'sharp';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import QRCode from 'qrcode';
+import puppeteer from 'puppeteer';
+import templateStorageService from './template-storage-service';
 import {
   LabelTemplate,
   RenderContext,
@@ -45,14 +48,10 @@ class TemplateEngine {
       // Generate SVG with styled text
       const svg = await this.generateSVG(template, data, width, height);
 
-      // Render SVG to image using Sharp
+      // Render SVG to image using Puppeteer (Sharp can't handle embedded data: URIs properly)
       const format = options.format || template.settings.exportSettings?.format || 'png';
-      const quality = options.quality || template.settings.exportSettings?.quality || 90;
 
-      const buffer = await sharp(Buffer.from(svg))
-        .resize(width, height)
-        .toFormat(format as any, { quality })
-        .toBuffer();
+      const buffer = await this.renderSVGWithPuppeteer(svg, width, height, format);
 
       const renderTime = Date.now() - startTime;
 
@@ -112,6 +111,67 @@ class TemplateEngine {
   }
 
   /**
+   * Render SVG to PNG/JPEG using Puppeteer
+   * This is needed because Sharp doesn't properly handle embedded data: URIs (base64 images)
+   */
+  private async renderSVGWithPuppeteer(
+    svg: string,
+    width: number,
+    height: number,
+    format: string
+  ): Promise<Buffer> {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+      ]
+    });
+
+    try {
+      const page = await browser.newPage();
+
+      // Set viewport to exact dimensions
+      await page.setViewport({ width, height });
+
+      // Create HTML with embedded SVG
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            * { margin: 0; padding: 0; }
+            body { width: ${width}px; height: ${height}px; overflow: hidden; }
+            svg { display: block; width: 100%; height: 100%; }
+          </style>
+        </head>
+        <body>${svg}</body>
+        </html>
+      `;
+
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+
+      // Take screenshot
+      const buffer = await page.screenshot({
+        type: format === 'jpeg' ? 'jpeg' : 'png',
+        omitBackground: false,
+        clip: {
+          x: 0,
+          y: 0,
+          width,
+          height
+        }
+      });
+
+      return Buffer.from(buffer);
+    } finally {
+      await browser.close();
+    }
+  }
+
+  /**
    * Render a single layer
    */
   private async renderLayer(
@@ -129,10 +189,10 @@ class TemplateEngine {
         return this.renderStaticText(layer, props);
 
       case 'image':
-        return ''; // TODO: Implement image layers
+        return await this.renderImage(layer, props, data);
 
       case 'qrcode':
-        return this.renderQRCode(layer, props, data);
+        return await this.renderQRCode(layer, props, data);
 
       case 'shape':
         return this.renderShape(layer, props);
@@ -154,7 +214,13 @@ class TemplateEngine {
   ): string {
     // Get data value
     let value = data[props.dataField];
+
+    // 🔍 DEBUG: Log field rendering
+    console.log(`   🎨 Rendering field: ${props.dataField} (${props.fieldType})`);
+    console.log(`      Value: ${JSON.stringify(value)}`);
+
     if (value === undefined || value === null) {
+      console.log(`      ⚠️ Field ${props.dataField} is undefined/null!`);
       return ''; // Field not found
     }
 
@@ -165,6 +231,8 @@ class TemplateEngine {
       template.formattingOptions,
       props.formatting
     );
+
+    console.log(`      Formatted: "${formattedValue}"`);
 
     // Get position and size
     const x = this.convertToPixels(layer.position.x, layer.position.unit, template.dimensions.dpi);
@@ -282,14 +350,62 @@ class TemplateEngine {
   /**
    * Render QR code placeholder
    */
-  private renderQRCode(layer: TemplateLayer, _props: any, _data: Record<string, any>): string {
-    // TODO: Generate actual QR code using a library
+  private async renderQRCode(layer: TemplateLayer, props: any, data: Record<string, any>): Promise<string> {
+    console.log(`🔲 Rendering QR code layer: ${layer.id}`);
+
     const x = this.convertToPixels(layer.position.x, layer.position.unit, 300);
     const y = this.convertToPixels(layer.position.y, layer.position.unit, 300);
     const size = this.convertToPixels(layer.size.width, layer.size.unit, 300);
 
-    return `<rect x="${x}" y="${y}" width="${size}" height="${size}" fill="#000" opacity="0.1"/>
-            <text x="${x + size/2}" y="${y + size/2}" text-anchor="middle" font-size="10" fill="#666">QR Code</text>`;
+    // Get QR code content from props or data
+    let qrContent = props.content || props.dataField;
+
+    // If it's a template variable like {{articleNumber}}, extract and replace
+    if (qrContent && qrContent.includes('{{')) {
+      const matches = qrContent.match(/\{\{(\w+)\}\}/g);
+      if (matches) {
+        matches.forEach((match: string) => {
+          const field = match.replace(/\{\{|\}\}/g, '');
+          const value = data[field] || '';
+          qrContent = qrContent.replace(match, value);
+        });
+      }
+    }
+
+    // If still no content, try to get from data using dataField
+    if (!qrContent && props.dataField) {
+      qrContent = data[props.dataField];
+    }
+
+    // Default to article number or product name if no content specified
+    if (!qrContent) {
+      qrContent = data.articleNumber || data.productName || 'No Data';
+    }
+
+    console.log(`   - QR Content: ${qrContent}`);
+
+    try {
+      // Generate QR code as data URL
+      const qrDataUrl = await QRCode.toDataURL(String(qrContent), {
+        width: size,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+
+      console.log(`   ✅ QR code generated (${qrDataUrl.length} bytes)`);
+
+      return `<image x="${x}" y="${y}" width="${size}" height="${size}"
+                     href="${qrDataUrl}"
+                     preserveAspectRatio="xMidYMid meet"/>`;
+    } catch (error: any) {
+      console.error(`   ❌ Error generating QR code:`, error.message);
+      // Fallback to placeholder
+      return `<rect x="${x}" y="${y}" width="${size}" height="${size}" fill="#FFCCCC" stroke="#FF0000" stroke-width="2"/>
+              <text x="${x + size/2}" y="${y + size/2}" text-anchor="middle" font-size="10" fill="#666">QR Error</text>`;
+    }
   }
 
   /**
@@ -306,6 +422,73 @@ class TemplateEngine {
     }
 
     return '';
+  }
+
+  /**
+   * Render image
+   */
+  private async renderImage(
+    layer: TemplateLayer,
+    props: any,
+    data: Record<string, any>
+  ): Promise<string> {
+    console.log(`🖼️ Rendering image layer: ${layer.id}`);
+
+    const x = this.convertToPixels(layer.position.x, layer.position.unit, 300);
+    const y = this.convertToPixels(layer.position.y, layer.position.unit, 300);
+    const width = this.convertToPixels(layer.size.width, layer.size.unit, 300);
+    const height = this.convertToPixels(layer.size.height, layer.size.unit, 300);
+
+    // Get image URL from data
+    // Check for imageUrl or productImage fields
+    let imageUrl = data.imageUrl || data.productImage;
+
+    console.log(`   - imageUrl from data: ${imageUrl}`);
+
+    if (!imageUrl) {
+      console.log(`   ⚠️ No image URL found, showing placeholder`);
+      // Return gray placeholder
+      return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#CCCCCC" stroke="#999999" stroke-width="1"/>
+              <text x="${x + width/2}" y="${y + height/2}" text-anchor="middle" font-size="12" fill="#666666">Bild</text>`;
+    }
+
+    try {
+      // Load image from filesystem or URL
+      let imageBuffer: Buffer;
+
+      if (imageUrl.startsWith('/api/images/')) {
+        // Local screenshot - construct file path
+        const imagePath = imageUrl.replace('/api/images/screenshots/', '/app/data/screenshots/');
+        console.log(`   - Loading local image: ${imagePath}`);
+        imageBuffer = await fs.readFile(imagePath);
+      } else if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+        // External URL - would need to fetch (not implemented for security)
+        console.log(`   ⚠️ External URLs not supported yet: ${imageUrl}`);
+        return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#CCCCCC" stroke="#999999" stroke-width="1"/>
+                <text x="${x + width/2}" y="${y + height/2}" text-anchor="middle" font-size="10" fill="#666666">URL</text>`;
+      } else {
+        // Relative path - try to load from data directory
+        const imagePath = path.join('/app/data', imageUrl);
+        console.log(`   - Loading relative image: ${imagePath}`);
+        imageBuffer = await fs.readFile(imagePath);
+      }
+
+      // Convert to base64
+      const base64 = imageBuffer.toString('base64');
+      const mimeType = 'image/png'; // Assume PNG for now
+
+      console.log(`   ✅ Image loaded (${imageBuffer.length} bytes), embedding in SVG`);
+
+      // Embed as SVG image element
+      return `<image x="${x}" y="${y}" width="${width}" height="${height}"
+                     href="data:${mimeType};base64,${base64}"
+                     preserveAspectRatio="xMidYMid meet"/>`;
+    } catch (error: any) {
+      console.error(`   ❌ Error loading image ${imageUrl}:`, error.message);
+      // Return error placeholder
+      return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#FFCCCC" stroke="#FF0000" stroke-width="1"/>
+              <text x="${x + width/2}" y="${y + height/2}" text-anchor="middle" font-size="10" fill="#CC0000">Error</text>`;
+    }
   }
 
   /**
@@ -507,21 +690,32 @@ class TemplateEngine {
 
   /**
    * Save template
+   * @deprecated Use templateStorageService.createTemplate() or updateTemplate() instead
+   * Delegates to TemplateStorageService for robust storage with atomic writes
    */
   async saveTemplate(template: LabelTemplate): Promise<void> {
-    const templatesDir = path.join(process.cwd(), 'templates');
-    await fs.mkdir(templatesDir, { recursive: true });
+    try {
+      // Check if exists
+      const exists = await templateStorageService.templateExists(template.id);
 
-    const templatePath = path.join(templatesDir, `${template.id}.json`);
-    await fs.writeFile(templatePath, JSON.stringify(template, null, 2));
+      if (exists) {
+        await templateStorageService.updateTemplate(template.id, template);
+      } else {
+        await templateStorageService.createTemplate(template);
+      }
 
-    this.templatesCache.set(template.id, template);
-
-    console.log(`✅ Template saved: ${template.name}`);
+      // Update cache
+      this.templatesCache.set(template.id, template);
+    } catch (error: any) {
+      console.error(`Failed to save template ${template.id}:`, error);
+      throw error;
+    }
   }
 
   /**
    * Load template by ID or name
+   * @deprecated Use templateStorageService.getTemplate() directly
+   * Delegates to TemplateStorageService with caching
    */
   async loadTemplate(templateId: string): Promise<LabelTemplate | null> {
     // Check cache first
@@ -529,12 +723,9 @@ class TemplateEngine {
       return this.templatesCache.get(templateId)!;
     }
 
-    // Try loading by ID first
-    const templatePath = path.join(process.cwd(), 'templates', `${templateId}.json`);
-
     try {
-      const data = await fs.readFile(templatePath, 'utf-8');
-      const template = JSON.parse(data) as LabelTemplate;
+      // Try loading by ID using storage service
+      const template = await templateStorageService.getTemplate(templateId);
       this.templatesCache.set(templateId, template);
       return template;
     } catch (error) {
@@ -567,20 +758,22 @@ class TemplateEngine {
 
   /**
    * List all templates
+   * @deprecated Use templateStorageService.listTemplates() directly
+   * Delegates to TemplateStorageService
    */
   async listTemplates(): Promise<LabelTemplate[]> {
-    const templatesDir = path.join(process.cwd(), 'templates');
-
     try {
-      await fs.mkdir(templatesDir, { recursive: true });
-      const files = await fs.readdir(templatesDir);
-      const jsonFiles = files.filter(f => f.endsWith('.json'));
+      const summaries = await templateStorageService.listTemplates();
 
+      // Load full templates (not just summaries)
       const templates: LabelTemplate[] = [];
-
-      for (const file of jsonFiles) {
-        const data = await fs.readFile(path.join(templatesDir, file), 'utf-8');
-        templates.push(JSON.parse(data));
+      for (const summary of summaries) {
+        try {
+          const template = await templateStorageService.getTemplate(summary.id);
+          templates.push(template);
+        } catch (error) {
+          console.warn(`⚠️ Skipping template ${summary.id}:`, error);
+        }
       }
 
       return templates;
@@ -592,14 +785,13 @@ class TemplateEngine {
 
   /**
    * Delete template
+   * @deprecated Use templateStorageService.deleteTemplate() directly
+   * Delegates to TemplateStorageService
    */
   async deleteTemplate(templateId: string): Promise<boolean> {
-    const templatePath = path.join(process.cwd(), 'templates', `${templateId}.json`);
-
     try {
-      await fs.unlink(templatePath);
+      await templateStorageService.deleteTemplate(templateId);
       this.templatesCache.delete(templateId);
-      console.log(`✅ Template deleted: ${templateId}`);
       return true;
     } catch (error) {
       console.error(`Failed to delete template ${templateId}:`, error);

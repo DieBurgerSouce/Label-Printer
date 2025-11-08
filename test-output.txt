@@ -1,0 +1,31 @@
+ℹ Supabase credentials not found - running without Supabase features (optional)
+
+🧪 Testing articleNumber Fix...
+
+🚀 Starting automation job: 3a013a46-0f81-4b6a-9de9-6b2214f9b87e
+   Shop URL: undefined
+   Template: undefined
+📸 Step 1/4: Crawling undefined...
+✅ Started test job: 3a013a46-0f81-4b6a-9de9-6b2214f9b87e
+
+Waiting for crawl to complete...
+
+Crawling: undefined
+✅ Browser closed and cleaned up
+✅ Crawl complete: 0 products found
+🔍 Step 2/4: Processing 0 screenshots with OCR...
+  📊 Deduplicated: 0 → 0 screenshots
+  ⚠️ WARNING: Only 0 unique screenshots found, but 50 were requested!
+  ℹ️ This shop may not have enough unique products. Processing what we have...
+  📦 Processing 0 screenshots in 0 batches of 10...
+✅ OCR complete: 0/0 successful
+💾 Step 2.5/4: Saving products to database...
+⚠️  No OCR results to save
+✅ Automation job 3a013a46-0f81-4b6a-9de9-6b2214f9b87e completed!
+   Products: 0
+   Labels Generated: 0
+   Time: 1002ms
+
+❌ ERROR: automationService.getJobStatus is not a function
+TypeError: automationService.getJobStatus is not a function
+    at test (/app/test-articleNumber-fix.js:30:50)

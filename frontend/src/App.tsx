@@ -15,17 +15,26 @@ import JobMonitor from './pages/JobMonitor';
 import ShopAutomation from './pages/ShopAutomation';
 import Articles from './pages/Articles';
 import LabelTemplateEditor from './pages/LabelTemplateEditor';
+import RenderingTemplates from './pages/RenderingTemplates';
+import RenderingTemplateEditor from './pages/RenderingTemplateEditor';
 
-// Create React Query client
+// Create React Query client - Version 2.0.2
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 0, // No cache - always fetch fresh data
+      gcTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes (formerly cacheTime)
     },
   },
 });
+
+// Clear cache on app start to prevent stale data issues
+queryClient.clear();
+
+// Force cache bust - build timestamp
+console.log('App version: 2.0.2 - Built at:', new Date().toISOString());
 
 function App() {
   return (
@@ -45,6 +54,8 @@ function App() {
             <Route path="print" element={<PrintPreview />} />
             <Route path="preview" element={<LivePreview />} />
             <Route path="templates" element={<Templates />} />
+            <Route path="rendering-templates" element={<RenderingTemplates />} />
+            <Route path="rendering-template-editor" element={<RenderingTemplateEditor />} />
             <Route path="print-templates" element={<PrintTemplates />} />
             <Route path="settings" element={<Settings />} />
             <Route path="jobs/:jobId" element={<JobMonitor />} />

@@ -1,0 +1,42 @@
+{
+  "exportDate": "2025-11-02T17:34:23.190Z",
+  "statistics": {
+    "total": 1363,
+    "fromExcel": 1039,
+    "shopOnly": 324,
+    "needsTierQuantities": 236,
+    "other": 0
+  },
+  "sampleArticles": [
+    {
+      "articleNumber": "7525",
+      "productName": "offene Ladenkasse Helmac GPE-XT-NF 30 kg",
+      "price": 2021.69,
+      "category": "FROM_EXCEL"
+    },
+    {
+      "articleNumber": "7582-FTSE",
+      "productName": "Bon-Druckerwaage CT 100-FTSE (15/30)",
+      "price": 677.6,
+      "category": "FROM_EXCEL"
+    },
+    {
+      "articleNumber": "7581-TTSE",
+      "productName": "Bon-Druckerwaage CT 100-TTSE (6/15)",
+      "price": 677.6,
+      "category": "FROM_EXCEL"
+    },
+    {
+      "articleNumber": "7580-OS",
+      "productName": "Bon-Druckerwaage CT 100",
+      "price": 638.81,
+      "category": "FROM_EXCEL"
+    },
+    {
+      "articleNumber": "7706-WE",
+      "productName": "PB Plattformwaage 15/30 mit Werkseichung",
+      "price": 378.74,
+      "category": "FROM_EXCEL"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ export class StorageService {
 
   /**
    * Save a label
+   * ✅ FIX: Save imageData separately as PNG to preserve Buffer
    */
   static async saveLabel(label: PriceLabel): Promise<void> {
     this.labels.set(label.id, label);
@@ -48,15 +49,25 @@ export class StorageService {
       JSON.stringify(metadata, null, 2)
     );
 
-    // Save label data
+    // ✅ FIX: Save imageData separately as PNG (preserves Buffer!)
+    if (label.imageData && Buffer.isBuffer(label.imageData)) {
+      await fs.writeFile(
+        path.join(labelDir, 'image.png'),
+        label.imageData
+      );
+    }
+
+    // Save label data WITHOUT imageData (to avoid Buffer serialization issue)
+    const { imageData, ...labelWithoutImage } = label;
     await fs.writeFile(
       path.join(labelDir, 'label.json'),
-      JSON.stringify(label, null, 2)
+      JSON.stringify(labelWithoutImage, null, 2)
     );
   }
 
   /**
    * Get label by ID
+   * ✅ FIX: Load imageData separately as Buffer
    */
   static async getLabel(id: string): Promise<PriceLabel | null> {
     // Check in-memory cache first
@@ -67,8 +78,42 @@ export class StorageService {
     // Load from disk
     try {
       const labelPath = path.join(this.dataDir, id, 'label.json');
+      const imagePath = path.join(this.dataDir, id, 'image.png');
+
+      // Load label JSON
       const data = await fs.readFile(labelPath, 'utf-8');
       const label = JSON.parse(data) as PriceLabel;
+
+      // ✅ FIX: Load imageData as actual Buffer (not JSON serialized!)
+      try {
+        const imageData = await fs.readFile(imagePath);
+        label.imageData = imageData;  // ✅ Real Buffer!
+        console.log(`✅ Loaded imageData for label ${id} (${imageData.length} bytes)`);
+      } catch (imageError) {
+        // No image file exists
+        // ⚠️ COMPATIBILITY: Check if imageData was stored as JSON Object (old format)
+        if (label.imageData && !Buffer.isBuffer(label.imageData)) {
+          const bufferData = label.imageData as any;
+          if (bufferData.type === 'Buffer' && Array.isArray(bufferData.data)) {
+            // Convert JSON-serialized Buffer back to real Buffer
+            label.imageData = Buffer.from(bufferData.data);
+            console.log(`✅ Converted legacy imageData for label ${id} (${label.imageData.length} bytes)`);
+
+            // Re-save in new format (migrate automatically)
+            try {
+              await fs.writeFile(imagePath, label.imageData);
+              console.log(`✅ Migrated imageData to new format for label ${id}`);
+            } catch (migrationError) {
+              console.warn(`⚠️ Could not migrate imageData for label ${id}`);
+            }
+          } else {
+            console.warn(`⚠️ Invalid imageData format for label ${id}`);
+            label.imageData = undefined;
+          }
+        } else {
+          console.log(`⚠️ No imageData for label ${id}`);
+        }
+      }
 
       // Cache it
       this.labels.set(id, label);

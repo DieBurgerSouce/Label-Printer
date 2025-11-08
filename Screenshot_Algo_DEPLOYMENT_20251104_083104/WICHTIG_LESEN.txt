@@ -1,0 +1,130 @@
+================================
+SCREENSHOT ALGO - DEPLOYMENT PAKET
+================================
+
+Datum: 04.11.2025
+Paket: Screenshot_Algo_DEPLOYMENT_20251104_083104.zip
+
+NEUE FEATURES IN DIESEM BUILD:
+================================
+
+1. TEMPLATE-INTEGRATION
+   - Label Templates können zu Rendering Templates konvertiert werden
+   - Neue UI-Buttons im Label Editor:
+     * "Zu Rendering Template" (Lila)
+     * "Als PDF exportieren" (Orange)
+
+2. RENDERING TEMPLATE SYSTEM
+   - Komplett neues Frontend für Rendering Templates
+   - Routes: /rendering-templates und /rendering-template-editor
+   - Vollständige CRUD-Operationen
+
+3. ROBUSTE STORAGE SERVICES
+   - Atomic File Writes (Crash-Safe)
+   - Path Traversal Protection
+   - Umfassende Validierung
+
+WICHTIGE DATEIEN IN DER ZIP:
+================================
+
+README-Dateien:
+  - DEPLOYMENT_LATEST_FEATURES.md  <-- NEUE FEATURES & ANLEITUNG
+  - DEPLOYMENT_GUIDE.md             <-- Allgemeine Installation
+  - README.md                       <-- System-Übersicht
+
+Installation:
+  - FRESH_INSTALL.bat               <-- Automatische Installation
+
+Daten:
+  - data/articles-export.json       <-- 49 vorgeladene Artikel
+  - data/tier-quantities.csv        <-- Staffelpreise
+
+SCHNELLSTART:
+================================
+
+1. ZIP entpacken
+2. FRESH_INSTALL.bat ausführen
+3. Warten bis "Backend listening on http://0.0.0.0:3001" erscheint
+4. Browser öffnen: http://localhost:3001
+
+NEUE FEATURES TESTEN:
+================================
+
+1. Label Template erstellen:
+   - Navigiere zu: http://localhost:3001/templates
+   - Erstelle ein Template
+   - Klicke "Zu Rendering Template"
+
+2. Rendering Templates:
+   - Navigiere zu: http://localhost:3001/rendering-templates
+   - Sieh konvertierte Templates
+   - Bearbeite Templates im Editor
+
+API-ENDPOINTS (NEU):
+================================
+
+Template Konvertierung:
+  POST /api/templates/convert
+
+PDF Export:
+  POST /api/templates/:id/export-pdf
+
+Rendering Templates CRUD:
+  GET    /api/templates
+  POST   /api/templates
+  PUT    /api/templates/:id
+  DELETE /api/templates/:id
+
+TECHNISCHE DETAILS:
+================================
+
+Größe: 708 KB (komprimiert)
+Enthält:
+  - Vollständiger Backend Source Code
+  - Vollständiger Frontend Build
+  - 49 vorgeladene Artikel
+  - Alle Konfigurationsdateien
+  - Docker Setup
+
+Neue Services:
+  - label-template-service.ts
+  - template-storage-service.ts
+  - label-to-rendering-converter.ts (580 Zeilen)
+
+Neue Frontend-Komponenten:
+  - RenderingTemplates.tsx
+  - RenderingTemplateEditor.tsx
+  - Integration Buttons im LabelTemplateEditor
+
+BEKANNTE EINSCHRÄNKUNGEN:
+================================
+
+⚠️ PDF-Rendering von konvertierten Templates:
+   - Konvertierung funktioniert einwandfrei
+   - Rendering hat noch Optimierungsbedarf
+   - Workaround: Templates im Rendering Editor nachbearbeiten
+
+SUPPORT:
+================================
+
+Bei Problemen:
+  1. Logs prüfen: docker-compose logs -f backend
+  2. Health Check: curl http://localhost:3001/api/health
+  3. Container neu starten: docker-compose restart backend
+
+System-Status prüfen:
+  - Backend: http://localhost:3001/api/health
+  - Frontend: http://localhost:3001/
+
+ZUSAMMENFASSUNG:
+================================
+
+✅ Production-Ready Template-Integration
+✅ Robuste Storage Services
+✅ Vollständiges Frontend
+✅ 49 vorgeladene Artikel
+✅ Automatische Installation
+
+Dieses Paket enthält alle neuesten Features und ist bereit für Production!
+
+Viel Erfolg! 🚀
