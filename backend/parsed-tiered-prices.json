@@ -1,0 +1,278 @@
+[
+  {
+    "articleNumber": "1123",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 1,
+        "unit": "Bis 1 Stk.",
+        "price": "85,75"
+      },
+      {
+        "quantity": 9,
+        "unit": "Bis 9 Stk.",
+        "price": "76,75"
+      },
+      {
+        "quantity": 19,
+        "unit": "Bis 19 Stk.",
+        "price": "72,25"
+      },
+      {
+        "quantity": 20,
+        "unit": "Ab 20 Stk.",
+        "price": "68,50"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1216",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 999,
+        "unit": "Bis 999 Stk.",
+        "price": "29,89"
+      },
+      {
+        "quantity": 2999,
+        "unit": "Bis 2999 Stk.",
+        "price": "29,89"
+      },
+      {
+        "quantity": 4999,
+        "unit": "Bis 4999 Stk.",
+        "price": "28,82"
+      },
+      {
+        "quantity": 5000,
+        "unit": "Ab 5000 Stk.",
+        "price": "28,25"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1298",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 14,
+        "unit": "Bis 14 Stk.",
+        "price": "55,22"
+      },
+      {
+        "quantity": 74,
+        "unit": "Bis 74 Stk.",
+        "price": "52,56"
+      },
+      {
+        "quantity": 149,
+        "unit": "Bis 149 Stk.",
+        "price": "50,27"
+      },
+      {
+        "quantity": 150,
+        "unit": "Ab 150 Stk.",
+        "price": "46,21"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1308",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 5,
+        "unit": "Bis 5 Stk.",
+        "price": "69,93"
+      },
+      {
+        "quantity": 19,
+        "unit": "Bis 19 Stk.",
+        "price": "66,01"
+      },
+      {
+        "quantity": 39,
+        "unit": "Bis 39 Stk.",
+        "price": "65,00"
+      },
+      {
+        "quantity": 40,
+        "unit": "Ab 40 Stk.",
+        "price": "64,25"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1313-OSH",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 593,
+        "unit": "Bis 593 Stk.",
+        "price": "28,49"
+      },
+      {
+        "quantity": 504,
+        "unit": "Ab 504 Stk.",
+        "price": "26,79"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1324",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 20,
+        "unit": "Bis 20 Stk.",
+        "price": "35,17"
+      },
+      {
+        "quantity": 62,
+        "unit": "Bis 62 Stk.",
+        "price": "33,19"
+      },
+      {
+        "quantity": 209,
+        "unit": "Bis 209 Stk.",
+        "price": "32,20"
+      },
+      {
+        "quantity": 210,
+        "unit": "Ab 210 Stk.",
+        "price": "30,71"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1325",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 4,
+        "unit": "Bis 4 Stk.",
+        "price": "82,59"
+      },
+      {
+        "quantity": 7,
+        "unit": "Bis 7 Stk.",
+        "price": "80,84"
+      },
+      {
+        "quantity": 19,
+        "unit": "Bis 19 Stk.",
+        "price": "79,03"
+      },
+      {
+        "quantity": 20,
+        "unit": "Ab 20 Stk.",
+        "price": "77,21"
+      }
+    ]
+  },
+  {
+    "articleNumber": "1330",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 20,
+        "unit": "Bis 20 Stk.",
+        "price": "33,19"
+      },
+      {
+        "quantity": 62,
+        "unit": "Bis 62 Stk.",
+        "price": "30,71"
+      },
+      {
+        "quantity": 209,
+        "unit": "Bis 209 Stk.",
+        "price": "29,67"
+      },
+      {
+        "quantity": 210,
+        "unit": "Ab 210 Stk.",
+        "price": "28,34"
+      }
+    ]
+  },
+  {
+    "articleNumber": "7031-HSP",
+    "priceType": "auf-anfrage",
+    "tiers": []
+  },
+  {
+    "articleNumber": "8320",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 4,
+        "unit": "Bis 4 Stk.",
+        "price": "24,97"
+      },
+      {
+        "quantity": 9,
+        "unit": "Bis 9 Stk.",
+        "price": "20,43"
+      },
+      {
+        "quantity": 19,
+        "unit": "Bis 19 Stk.",
+        "price": "18,37"
+      },
+      {
+        "quantity": 20,
+        "unit": "Ab 20 Stk.",
+        "price": "17,34"
+      }
+    ]
+  },
+  {
+    "articleNumber": "8328",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 4,
+        "unit": "Bis 4 Stk.",
+        "price": "51,39"
+      },
+      {
+        "quantity": 9,
+        "unit": "Bis 9 Stk.",
+        "price": "47,93"
+      },
+      {
+        "quantity": 10,
+        "unit": "Ab 10 Stk.",
+        "price": "43,34"
+      }
+    ]
+  },
+  {
+    "articleNumber": "8396-RE",
+    "priceType": "auf-anfrage",
+    "tiers": []
+  },
+  {
+    "articleNumber": "8424",
+    "priceType": "tiered",
+    "tiers": [
+      {
+        "quantity": 5,
+        "unit": "Bis 5 Stk.",
+        "price": "34,06"
+      },
+      {
+        "quantity": 19,
+        "unit": "Bis 19 Stk.",
+        "price": "31,99"
+      },
+      {
+        "quantity": 49,
+        "unit": "Bis 49 Stk.",
+        "price": "28,79"
+      }
+    ]
+  }
+]

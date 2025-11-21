@@ -22,22 +22,100 @@ export class HtmlExtractionService {
 
     try {
       // ALLES läuft im Browser-Context - kein Zugriff auf Node.js oder 'this'!
+      // @ts-nocheck - Browser context functions don't support type annotations
       const extractedData = await page.evaluate(() => {
       // ===== HELPER FUNCTIONS (Browser-Context) =====
 
       /**
+       * Normalize common character encoding errors (OCR artifacts)
+       * Fixes: é→ö, ™→", ©→Ø, etc.
+       */
+      function normalizeCharacters(text: string): string {
+        if (!text) return '';
+
+        const replacements = {
+          // Common OCR encoding errors
+          'é': 'ö',
+          'ä': 'ü',
+          '™': '"',
+          '©': 'Ø',
+          '@': 'Ø',  // Alternative OCR interpretation of Ø
+          'Ã¶': 'ö',
+          'Ã¼': 'ü',
+          'Ã¤': 'ä',
+          'ÃŸ': 'ß',
+          // Fix common quote errors (using Unicode escapes to avoid TypeScript issues)
+          '\u201C': '"',  // Left double quote
+          '\u201D': '"',  // Right double quote
+          '\u2018': "'",  // Left single quote
+          '\u2019': "'"   // Right single quote
+        };
+
+        let normalized = text;
+        for (const [wrong, correct] of Object.entries(replacements)) {
+          normalized = normalized.replace(new RegExp(wrong, 'g'), correct);
+        }
+
+        return normalized;
+      }
+
+      /**
+       * Remove cookie banner and navigation contamination from text
+       */
+      function removeContamination(text: string): string {
+        if (!text) return '';
+
+        // Patterns that indicate cookie/header contamination
+        const contaminationPatterns = [
+          /©\s*servicer.*?(?=\n|$)/gi,
+          /egriff eingeben.*?(?=\n|$)/gi,
+          /Goooe.*?(?=\n|$)/gi,
+          /cookie.*?akzeptieren/gi,
+          /alle cookies/gi,
+          /zur suche springen/gi,
+          /zum hauptinhalt/gi,
+          /zur hauptnavigation/gi,
+          /anmelden oder registrieren/gi,
+          /ihr konto/gi,
+          /zeige alle kategorien/gi
+        ];
+
+        let cleaned = text;
+        for (const pattern of contaminationPatterns) {
+          cleaned = cleaned.replace(pattern, '');
+        }
+
+        // Remove multiple consecutive newlines
+        cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+        return cleaned.trim();
+      }
+
+      /**
        * Clean and extract text from element
        */
-      function cleanText(text: string | null | undefined): string {
+      function cleanText(text: string): string {
         if (!text) return '';
-        return text.trim().replace(/\s+/g, ' ');
+
+        // Apply cleaning pipeline
+        let cleaned = text.trim();
+        cleaned = removeContamination(cleaned);
+        cleaned = normalizeCharacters(cleaned);
+
+        // FIX: Ensure line breaks always create spaces between words
+        // Step 1: Replace all newlines/line breaks with a space
+        cleaned = cleaned.replace(/[\r\n]+/g, ' ');
+        // Step 2: Collapse multiple spaces into one
+        cleaned = cleaned.replace(/\s+/g, ' ');
+
+        return cleaned;
       }
 
       /**
        * Remove "Produktinformationen" prefix and product name from description
        * Cleans up redundant shop-specific prefixes
        */
-      function cleanDescription(text: string, productName?: string): string {
+      function cleanDescription(text: string, productName: string): string {
         if (!text) return '';
 
         // Remove "Produktinformationen" prefix (with or without quotes)
@@ -53,11 +131,32 @@ export class HtmlExtractionService {
       }
 
       /**
-       * Extract number from text (removes prefixes like "Produktnummer: ")
+       * Extract article number from text (removes prefixes like "Produktnummer: ")
+       * Supports formats like: "3547-2", "ABC-123", "1234.5", etc.
        */
       function extractNumber(text: string): string {
-        const match = text.match(/\d+/);
-        return match ? match[0] : text;
+        // Step 1: Try to split by colon and take the part after it
+        // Handles: "Produktnummer: 3547-2" → "3547-2"
+        if (text.includes(':')) {
+          const parts = text.split(':');
+          if (parts.length > 1) {
+            text = parts[1].trim();
+          }
+        }
+
+        // Step 2: Remove common prefixes
+        const prefixes = ['Produktnummer', 'Product Number', 'Art.Nr.', 'Art.', 'SKU'];
+        for (const prefix of prefixes) {
+          if (text.toLowerCase().startsWith(prefix.toLowerCase())) {
+            text = text.substring(prefix.length).trim();
+            break;
+          }
+        }
+
+        // Step 3: Extract the article number (must START with digit)
+        // Matches: "3547-2", "123ABC", "45.67" but NOT "Produktnummer"
+        const match = text.match(/\d+[A-Za-z0-9\-./]*/);
+        return match ? match[0] : text.trim();
       }
 
       /**
@@ -79,7 +178,7 @@ export class HtmlExtractionService {
        * Detect "Auf Anfrage" button or text (product without price)
        * Returns true if this is a "price on request" product
        */
-      function detectAufAnfrageProduct(): boolean {
+      function detectAufAnfrageProduct() {
         // Search patterns for "price on request" in German
         const requestPatterns = [
           'produkt anfragen',
@@ -94,7 +193,7 @@ export class HtmlExtractionService {
           'kontaktieren sie uns'
         ];
 
-        // Check buttons and links
+        // Check buttons and links - ONLY in product area, not entire page!
         const buttonSelectors = [
           'button',
           'a.button',
@@ -106,6 +205,7 @@ export class HtmlExtractionService {
           'a[href*="contact"]'
         ];
 
+        // First check specific selectors
         for (const selector of buttonSelectors) {
           const elements = document.querySelectorAll(selector);
           for (const element of Array.from(elements)) {
@@ -115,9 +215,33 @@ export class HtmlExtractionService {
 
             const allText = `${text} ${title} ${ariaLabel}`;
             if (requestPatterns.some(pattern => allText.includes(pattern))) {
-              console.log(`   ✓ Found "Auf Anfrage" button: "${text}"`);
+              console.log(`   ✓ Found "Auf Anfrage" button/link: "${text}" (selector: ${selector})`);
               return true;
             }
+          }
+        }
+
+        // Then check plain <a> tags, but ONLY in product detail area to avoid false positives
+        const productAreaSelectors = [
+          '.product-detail',
+          '.product-info',
+          '.product-main',
+          'main',
+          '[class*="product"]'
+        ];
+
+        for (const areaSelector of productAreaSelectors) {
+          const productArea = document.querySelector(areaSelector);
+          if (productArea) {
+            const links = productArea.querySelectorAll('a');
+            for (const link of Array.from(links)) {
+              const text = link.textContent?.toLowerCase().trim() || '';
+              if (requestPatterns.some(pattern => text.includes(pattern))) {
+                console.log(`   ✓ Found "Auf Anfrage" link in product area: "${text}"`);
+                return true;
+              }
+            }
+            break; // Found product area, no need to check other selectors
           }
         }
 
@@ -264,10 +388,13 @@ export class HtmlExtractionService {
 
         for (const selector of productNameSelectors) {
           const element = document.querySelector(selector);
-          if (element && element.textContent) {
-            data.productName = cleanText(element.textContent);
-            data.confidence.productName = 1.0;
-            break;
+          if (element) {
+            const text = (element as any).innerText || element.textContent;
+            if (text) {
+              data.productName = cleanText(text);
+              data.confidence.productName = 1.0;
+              break;
+            }
           }
         }
       } catch (error) {
@@ -287,10 +414,11 @@ export class HtmlExtractionService {
         for (const selector of descriptionSelectors) {
           const element = document.querySelector(selector);
           if (element) {
-            // Get text content, preserving some structure but removing excessive whitespace
-            let descText = element.textContent || '';
+            // FIX: Use innerText to preserve <br> tags as newlines!
+            // This ensures "Gusseisen<br>2" becomes "Gusseisen 2" (not "Gusseisen2")
+            let descText = (element as any).innerText || element.textContent || '';
             descText = cleanText(descText);
-            descText = cleanDescription(descText, data.productName); // Remove "Produktinformationen" prefix
+            descText = cleanDescription(descText, data.productName || ''); // Remove "Produktinformationen" prefix
 
             if (descText && descText.length > 10) {
               data.description = descText;
@@ -316,12 +444,15 @@ export class HtmlExtractionService {
 
         for (const selector of articleNumberSelectors) {
           const element = document.querySelector(selector);
-          if (element && element.textContent) {
-            const articleText = cleanText(element.textContent);
-            // Extract just the number (remove "Produktnummer:" prefix)
-            data.articleNumber = extractNumber(articleText);
-            data.confidence.articleNumber = data.articleNumber ? 1.0 : 0;
-            break;
+          if (element) {
+            const text = (element as any).innerText || element.textContent;
+            if (text) {
+              const articleText = cleanText(text);
+              // Extract just the number (remove "Produktnummer:" prefix)
+              data.articleNumber = extractNumber(articleText);
+              data.confidence.articleNumber = data.articleNumber ? 1.0 : 0;
+              break;
+            }
           }
         }
       } catch (error) {

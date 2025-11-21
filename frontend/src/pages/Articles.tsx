@@ -633,14 +633,25 @@ export default function Articles() {
                         <span className="font-semibold text-gray-900">
                           {article.price.toFixed(2)} {article.currency}
                         </span>
-                      ) : (
-                        <span className="text-gray-500 text-sm">
-                          {(article.tieredPrices && article.tieredPrices.length > 0) ||
-                           (article.tieredPricesText && article.tieredPricesText.trim()) ?
-                            'Siehe Staffelpreise' :
-                            '-'}
-                        </span>
-                      )}
+                      ) : (() => {
+                        // ✅ FIX: Check for "auf anfrage" first
+                        const text = (article.tieredPricesText || '').toLowerCase();
+                        if (text.includes('auf anfrage') || text.includes('preis auf anfrage')) {
+                          return (
+                            <span className="text-sm text-orange-600 font-medium">
+                              Auf Anfrage
+                            </span>
+                          );
+                        }
+
+                        // Otherwise check for tiered prices
+                        if ((article.tieredPrices && article.tieredPrices.length > 0) ||
+                            (article.tieredPricesText && article.tieredPricesText.trim())) {
+                          return <span className="text-gray-500 text-sm">Siehe Staffelpreise</span>;
+                        }
+
+                        return <span className="text-gray-500 text-sm">-</span>;
+                      })()}
                     </td>
                     <td className="px-4 py-3">
                       {/* Prioritize structured tieredPrices over OCR text */}
@@ -658,6 +669,17 @@ export default function Articles() {
                       ) : article.tieredPricesText && article.tieredPricesText.trim() ? (
                         // Only show OCR text if no structured data AND it looks valid
                         (() => {
+                          const text = article.tieredPricesText.toLowerCase();
+
+                          // ✅ FIX: Handle "Preis auf Anfrage" / "Auf Anfrage" specially
+                          if (text.includes('auf anfrage') || text.includes('preis auf anfrage')) {
+                            return (
+                              <span className="text-sm text-gray-500">
+                                Siehe Basispreis
+                              </span>
+                            );
+                          }
+
                           // Clean up OCR text - remove obvious garbage
                           const cleanText = article.tieredPricesText
                             .split('\n')

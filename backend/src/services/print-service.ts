@@ -237,7 +237,7 @@ export class PrintService {
     if (imageBuffer) {
       try {
         console.log(`🖼️ Embedding image for label ${label.id} at position (${x}, ${y}) with size ${width}x${height}`);
-        // Embed the rendered PNG image into the PDF
+        // Use 'fit' to ensure labels fit within cells without being cut off
         doc.image(imageBuffer, x, y, {
           fit: [width, height],
           align: 'center',

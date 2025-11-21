@@ -21,8 +21,10 @@ const BASE_DIR = isDocker
 
 const SCREENSHOTS_DIR = path.join(BASE_DIR, 'data/screenshots');
 const LABELS_DIR = path.join(BASE_DIR, 'data/labels');
+const PRODUCTS_DIR = path.join(BASE_DIR, 'uploads/products');
 
 console.log('Images route initialized. Screenshots dir:', SCREENSHOTS_DIR);
+console.log('Products dir:', PRODUCTS_DIR);
 console.log('Current __dirname:', __dirname);
 console.log('BASE_DIR:', BASE_DIR);
 
@@ -118,6 +120,57 @@ router.get('/labels/:filename', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to serve label'
+    });
+  }
+});
+
+/**
+ * GET /api/images/products/:filename
+ * Serve downloaded product images
+ */
+router.get('/products/:filename', (req, res) => {
+  try {
+    const { filename } = req.params;
+
+    // Construct the full path
+    const imagePath = path.join(PRODUCTS_DIR, filename);
+
+    console.log('Product image request:', filename);
+    console.log('Looking for image at:', imagePath);
+
+    // Check if file exists
+    if (!fs.existsSync(imagePath)) {
+      console.log('Product image not found at path:', imagePath);
+      return res.status(404).json({
+        success: false,
+        error: 'Product image not found',
+        path: imagePath
+      });
+    }
+
+    // Get file extension for MIME type
+    const ext = path.extname(filename).toLowerCase();
+    let contentType = 'image/jpeg'; // Default
+
+    if (ext === '.png') {
+      contentType = 'image/png';
+    } else if (ext === '.gif') {
+      contentType = 'image/gif';
+    } else if (ext === '.webp') {
+      contentType = 'image/webp';
+    }
+
+    // Set proper headers and send file
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+
+    // Send the file
+    res.sendFile(imagePath);
+  } catch (error) {
+    console.error('Error serving product image:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to serve product image'
     });
   }
 });

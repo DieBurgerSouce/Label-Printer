@@ -1,0 +1,16 @@
+{
+  "articleNumber": "8358",
+  "productName": "1,5 Kg Papiertragetasche Kartoffeln",
+  "description": "Produktinformationen 1,5 kg Papiertragetasche Kartoffeln NEU - Maße: 180 + 80 x 220 mm Qualität: 90 g/m², 1,5 kg, im Karton a 250 Stück Es fallen zusätzlich Entsorgungsgebühren an.",
+  "price": 33.54,
+  "currency": "EUR",
+  "templateId": "tiered-price-auto-match",
+  "imageUrl": "/api/images/screenshots/052f82d3-3fdd-4878-b3d2-15c37663b1d9/8358/product-image.png",
+  "sourceUrl": "https://shop.firmenich.de/Papier/1-5-kg-Papiertragetasche-Kartoffeln-NEU",
+  "staffelpreise": [
+    {"quantity": 11, "price": "33.54"},
+    {"quantity": 35, "price": "35.60"},
+    {"quantity": 49, "price": "22.70"},
+    {"quantity": 50, "price": "20.59"}
+  ]
+}

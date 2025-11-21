@@ -13,6 +13,7 @@ import sharp from 'sharp';
 import { PreciseScreenshotService } from './precise-screenshot-service';
 import htmlExtractionService from './html-extraction-service';
 import dataValidationService from './data-validation-service';
+import { ImageDownloadService } from './image-download-service';
 import {
   CrawlJob,
   CrawlConfig,
@@ -1232,7 +1233,32 @@ export class WebCrawlerService {
       const articleDir = path.join(jobDir, articleNumber);
       await this.ensureDirectory(articleDir);
 
-      // Save HTML extracted data
+      // STEP 1.5: Download product image if URL was extracted
+      if (htmlData.imageUrl && htmlData.imageUrl.trim() !== '') {
+        console.log('📥 Downloading product image...');
+        const imageDownloadService = new ImageDownloadService();
+
+        try {
+          const localImageUrl = await imageDownloadService.downloadImage(
+            htmlData.imageUrl,
+            articleNumber
+          );
+
+          if (localImageUrl) {
+            // Replace remote URL with local URL
+            htmlData.imageUrl = localImageUrl;
+            console.log(`   ✅ Image downloaded: ${localImageUrl}`);
+          } else {
+            console.log(`   ⚠️ Image download failed, keeping original URL`);
+          }
+        } catch (error: any) {
+          console.error(`   ❌ Image download error:`, error.message);
+        }
+      } else {
+        console.log('   ⚠️ No image URL found in HTML data');
+      }
+
+      // Save HTML extracted data (with downloaded local image URL)
       const htmlDataPath = path.join(articleDir, 'html-data.json');
       await fs.writeFile(htmlDataPath, JSON.stringify(htmlData, null, 2));
       console.log(`   💾 HTML data saved: ${htmlDataPath}`);

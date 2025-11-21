@@ -1,7 +1,7 @@
 {
   "metadata": {
     "exportDate": "2025-11-04T13:03:34.198Z",
-    "totalArticles": 49,
+    "totalArticles": 50,
     "categories": {
       "FROM_EXCEL": 0,
       "SHOP_ONLY": 0,
@@ -9,7 +9,8 @@
       "OTHER": 49
     },
     "version": "1.0.0",
-    "exportedFrom": "Screenshot_Algo System"
+    "exportedFrom": "Screenshot_Algo System",
+    "lastUpdated": "2025-11-10T22:13:18.738Z"
   },
   "articles": [
     {
@@ -1524,6 +1525,41 @@
       "published": true,
       "createdAt": "2025-11-03T20:42:49.952Z",
       "updatedAt": "2025-11-03T20:42:49.952Z"
+    },
+    {
+      "id": "315e87eb-1a99-4932-8344-57a4122227d1",
+      "articleNumber": "7634",
+      "productName": "VERKAUFSWAAGE ER-J 6",
+      "description": "Wiegebereich: 3/6 kg Teilung: 1/2 g Kompakt einfach! Die ERJ überzeugt als budget-optimiertes Basismodell mit ihrem überragenden Preis-/Leistungsverhältnis. Ist die neue SmartPower-Option aktiviert, kann die ERJ völlig unkompliziert wahlweise mit Batterie oder Akku betrieben werden – ideal für den mobilen Einsatz auf z.B. dem Wochenmarkt oder im Ladengeschäft.",
+      "price": 0,
+      "tieredPrices": [
+        {
+          "quantity": 2,
+          "price": "180.60"
+        },
+        {
+          "quantity": 3,
+          "price": "164.09"
+        },
+        {
+          "quantity": 4,
+          "price": "138.70"
+        }
+      ],
+      "tieredPricesText": "Bis 2: 180.60 EUR\nAb 3: 164.09 EUR\nAb 4: 138.70 EUR",
+      "currency": "EUR",
+      "imageUrl": "/api/images/screenshots/315e87eb-1a99-4932-8344-57a4122227d1/7634/product-image.png",
+      "thumbnailUrl": "/api/images/screenshots/315e87eb-1a99-4932-8344-57a4122227d1/7634/product-image.png",
+      "ean": null,
+      "category": "Waagen",
+      "manufacturer": "CAS",
+      "sourceUrl": "https://shop.firmenich.de/CAS/Verkaufswaage-ER-J#combination=7d349d962ec14e4b8dd7aae93e69804f",
+      "crawlJobId": "315e87eb-1a99-4932-8344-57a4122227d1",
+      "ocrConfidence": 100,
+      "verified": true,
+      "published": true,
+      "createdAt": "2025-11-10T22:07:55.708Z",
+      "updatedAt": "2025-11-10T22:13:18.737Z"
     }
   ]
 }

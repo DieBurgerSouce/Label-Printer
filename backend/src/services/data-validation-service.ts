@@ -504,6 +504,66 @@ export class DataValidationService {
   }
 
   /**
+   * Detect data corruption from OCR or encoding errors
+   * Returns corruption score (0 = clean, 1 = severely corrupted)
+   */
+  detectCorruptedData(data: MergedProductData): {
+    isCorrupted: boolean;
+    corruptionScore: number;
+    issues: string[];
+  } {
+    try {
+      const issues: string[] = [];
+      let corruptionScore = 0;
+
+      // Corruption patterns to detect
+      const encodingErrorPatterns = [
+        { pattern: /[©®™]/g, name: 'OCR encoding artifacts (©, ®, ™)', weight: 0.3 },
+        { pattern: /é/g, name: 'Character encoding error (é → ö)', weight: 0.2 },
+        { pattern: /servicerHilfe|egriff eingeben|Goooe/gi, name: 'Cookie banner contamination', weight: 0.5 },
+        { pattern: /zur suche springen|zum hauptinhalt/gi, name: 'Navigation contamination', weight: 0.4 },
+        { pattern: /Ã[¶¼¤ŸÃ]/g, name: 'UTF-8 encoding corruption', weight: 0.3 }
+      ];
+
+      // Check all text fields
+      const textFields = [
+        { field: 'productName', value: data.productName },
+        { field: 'description', value: data.description },
+        { field: 'tieredPricesText', value: data.tieredPricesText }
+      ];
+
+      for (const { field, value } of textFields) {
+        if (!value || typeof value !== 'string') continue;
+
+        for (const { pattern, name, weight } of encodingErrorPatterns) {
+          const matches = value.match(pattern);
+          if (matches && matches.length > 0) {
+            issues.push(`${field}: ${name} (${matches.length} occurrence${matches.length > 1 ? 's' : ''})`);
+            corruptionScore += weight * Math.min(matches.length / 5, 1); // Cap at 5 occurrences
+          }
+        }
+      }
+
+      // Cap corruption score at 1.0
+      corruptionScore = Math.min(corruptionScore, 1.0);
+
+      return {
+        isCorrupted: corruptionScore > 0.2, // Threshold: 20%
+        corruptionScore,
+        issues
+      };
+
+    } catch (error: any) {
+      console.error('[DataValidationService] Error detecting corruption:', error);
+      return {
+        isCorrupted: false,
+        corruptionScore: 0,
+        issues: ['Error detecting corruption']
+      };
+    }
+  }
+
+  /**
    * Quick validation for single field (legacy support)
    *
    * @deprecated Use validateProductData() instead for better performance!

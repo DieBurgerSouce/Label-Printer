@@ -18,6 +18,7 @@ import automationRouter from './api/routes/automation';
 // import testWebSocketRouter from './api/routes/test-websocket'; // Disabled - requires Supabase
 import articlesRouter from './api/routes/articles';
 import imagesRouter from './api/routes/images';
+import lexwareRouter from './api/routes/lexware';
 import { StorageService } from './services/storage-service';
 import { ocrService } from './services/ocr-service';
 import { webCrawlerService } from './services/web-crawler-service';
@@ -57,6 +58,7 @@ app.use('/api/automation', automationRouter);
 // app.use('/api/test-websocket', testWebSocketRouter); // Disabled - requires Supabase
 app.use('/api/articles', articlesRouter);
 app.use('/api/images', imagesRouter);
+app.use('/api/lexware', lexwareRouter);
 
 // Health check
 app.get('/api/health', (_req, res) => {

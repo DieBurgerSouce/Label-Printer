@@ -1,0 +1,393 @@
+[
+  {
+    "articleNumber": "1123",
+    "priceType": "tiered",
+    "price": 85.75,
+    "tieredPrices": [
+      {
+        "minQty": 1,
+        "maxQty": 1,
+        "pricePerUnit": 85.75,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 9,
+        "maxQty": 9,
+        "pricePerUnit": 76.75,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 19,
+        "maxQty": 19,
+        "pricePerUnit": 72.25,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 20,
+        "maxQty": null,
+        "pricePerUnit": 68.5,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 1 Stk.: 85,75€\nBis 9 Stk.: 76,75€\nBis 19 Stk.: 72,25€\nAb 20 Stk.: 68,50€"
+  },
+  {
+    "articleNumber": "1216",
+    "priceType": "tiered",
+    "price": 29.89,
+    "tieredPrices": [
+      {
+        "minQty": 999,
+        "maxQty": 999,
+        "pricePerUnit": 29.89,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 2999,
+        "maxQty": 2999,
+        "pricePerUnit": 29.89,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 4999,
+        "maxQty": 4999,
+        "pricePerUnit": 28.82,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 5000,
+        "maxQty": null,
+        "pricePerUnit": 28.25,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 999 Stk.: 29,89€\nBis 2999 Stk.: 29,89€\nBis 4999 Stk.: 28,82€\nAb 5000 Stk.: 28,25€"
+  },
+  {
+    "articleNumber": "1281-A",
+    "priceType": "single",
+    "price": 24
+  },
+  {
+    "articleNumber": "1286-A",
+    "priceType": "single",
+    "price": 64
+  },
+  {
+    "articleNumber": "1286-S",
+    "priceType": "single",
+    "price": 159.96
+  },
+  {
+    "articleNumber": "1298",
+    "priceType": "tiered",
+    "price": 55.22,
+    "tieredPrices": [
+      {
+        "minQty": 14,
+        "maxQty": 14,
+        "pricePerUnit": 55.22,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 74,
+        "maxQty": 74,
+        "pricePerUnit": 52.56,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 149,
+        "maxQty": 149,
+        "pricePerUnit": 50.27,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 150,
+        "maxQty": null,
+        "pricePerUnit": 46.21,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 14 Stk.: 55,22€\nBis 74 Stk.: 52,56€\nBis 149 Stk.: 50,27€\nAb 150 Stk.: 46,21€"
+  },
+  {
+    "articleNumber": "1308",
+    "priceType": "tiered",
+    "price": 69.93,
+    "tieredPrices": [
+      {
+        "minQty": 5,
+        "maxQty": 5,
+        "pricePerUnit": 69.93,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 19,
+        "maxQty": 19,
+        "pricePerUnit": 66.01,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 39,
+        "maxQty": 39,
+        "pricePerUnit": 65,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 40,
+        "maxQty": null,
+        "pricePerUnit": 64.25,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 5 Stk.: 69,93€\nBis 19 Stk.: 66,01€\nBis 39 Stk.: 65,00€\nAb 40 Stk.: 64,25€"
+  },
+  {
+    "articleNumber": "1313-OSH",
+    "priceType": "tiered",
+    "price": 28.49,
+    "tieredPrices": [
+      {
+        "minQty": 593,
+        "maxQty": 593,
+        "pricePerUnit": 28.49,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 504,
+        "maxQty": null,
+        "pricePerUnit": 26.79,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 593 Stk.: 28,49€\nAb 504 Stk.: 26,79€"
+  },
+  {
+    "articleNumber": "1324",
+    "priceType": "tiered",
+    "price": 35.17,
+    "tieredPrices": [
+      {
+        "minQty": 20,
+        "maxQty": 20,
+        "pricePerUnit": 35.17,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 62,
+        "maxQty": 62,
+        "pricePerUnit": 33.19,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 209,
+        "maxQty": 209,
+        "pricePerUnit": 32.2,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 210,
+        "maxQty": null,
+        "pricePerUnit": 30.71,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 20 Stk.: 35,17€\nBis 62 Stk.: 33,19€\nBis 209 Stk.: 32,20€\nAb 210 Stk.: 30,71€"
+  },
+  {
+    "articleNumber": "1325",
+    "priceType": "tiered",
+    "price": 82.59,
+    "tieredPrices": [
+      {
+        "minQty": 4,
+        "maxQty": 4,
+        "pricePerUnit": 82.59,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 7,
+        "maxQty": 7,
+        "pricePerUnit": 80.84,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 19,
+        "maxQty": 19,
+        "pricePerUnit": 79.03,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 20,
+        "maxQty": null,
+        "pricePerUnit": 77.21,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 4 Stk.: 82,59€\nBis 7 Stk.: 80,84€\nBis 19 Stk.: 79,03€\nAb 20 Stk.: 77,21€"
+  },
+  {
+    "articleNumber": "1330",
+    "priceType": "tiered",
+    "price": 33.19,
+    "tieredPrices": [
+      {
+        "minQty": 20,
+        "maxQty": 20,
+        "pricePerUnit": 33.19,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 62,
+        "maxQty": 62,
+        "pricePerUnit": 30.71,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 209,
+        "maxQty": 209,
+        "pricePerUnit": 29.67,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 210,
+        "maxQty": null,
+        "pricePerUnit": 28.34,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 20 Stk.: 33,19€\nBis 62 Stk.: 30,71€\nBis 209 Stk.: 29,67€\nAb 210 Stk.: 28,34€"
+  },
+  {
+    "articleNumber": "4085-T",
+    "priceType": "single",
+    "price": 12.69
+  },
+  {
+    "articleNumber": "4086-T",
+    "priceType": "single",
+    "price": 12.69
+  },
+  {
+    "articleNumber": "4087-T",
+    "priceType": "single",
+    "price": 12.69
+  },
+  {
+    "articleNumber": "4088-T",
+    "priceType": "single",
+    "price": 12.69
+  },
+  {
+    "articleNumber": "7031-HSP",
+    "priceType": "auf-anfrage"
+  },
+  {
+    "articleNumber": "7524",
+    "priceType": "single",
+    "price": 1537.68
+  },
+  {
+    "articleNumber": "7619",
+    "priceType": "single",
+    "price": 1250.01
+  },
+  {
+    "articleNumber": "7666",
+    "priceType": "single",
+    "price": 1999
+  },
+  {
+    "articleNumber": "7667",
+    "priceType": "single",
+    "price": 1999
+  },
+  {
+    "articleNumber": "8320",
+    "priceType": "tiered",
+    "price": 24.97,
+    "tieredPrices": [
+      {
+        "minQty": 4,
+        "maxQty": 4,
+        "pricePerUnit": 24.97,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 9,
+        "maxQty": 9,
+        "pricePerUnit": 20.43,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 19,
+        "maxQty": 19,
+        "pricePerUnit": 18.37,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 20,
+        "maxQty": null,
+        "pricePerUnit": 17.34,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 4 Stk.: 24,97€\nBis 9 Stk.: 20,43€\nBis 19 Stk.: 18,37€\nAb 20 Stk.: 17,34€"
+  },
+  {
+    "articleNumber": "8328",
+    "priceType": "tiered",
+    "price": 51.39,
+    "tieredPrices": [
+      {
+        "minQty": 4,
+        "maxQty": 4,
+        "pricePerUnit": 51.39,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 9,
+        "maxQty": 9,
+        "pricePerUnit": 47.93,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 10,
+        "maxQty": null,
+        "pricePerUnit": 43.34,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 4 Stk.: 51,39€\nBis 9 Stk.: 47,93€\nAb 10 Stk.: 43,34€"
+  },
+  {
+    "articleNumber": "8396-RE",
+    "priceType": "auf-anfrage"
+  },
+  {
+    "articleNumber": "8424",
+    "priceType": "tiered",
+    "price": 34.06,
+    "tieredPrices": [
+      {
+        "minQty": 5,
+        "maxQty": 5,
+        "pricePerUnit": 34.06,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 19,
+        "maxQty": 19,
+        "pricePerUnit": 31.99,
+        "unit": "Stk."
+      },
+      {
+        "minQty": 49,
+        "maxQty": 49,
+        "pricePerUnit": 28.79,
+        "unit": "Stk."
+      }
+    ],
+    "tieredPricesText": "Bis 5 Stk.: 34,06€\nBis 19 Stk.: 31,99€\nBis 49 Stk.: 28,79€"
+  }
+]

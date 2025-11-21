@@ -71,7 +71,7 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
           },
         },
         settings: {
-          showCutMarks: true,
+          showCutMarks: false,
           showBorders: false,
         },
       };
@@ -193,7 +193,7 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
           },
         },
         settings: {
-          showCutMarks: true,
+          showCutMarks: false,
           showBorders: false,
         },
       };

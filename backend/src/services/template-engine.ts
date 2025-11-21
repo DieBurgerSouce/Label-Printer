@@ -313,14 +313,27 @@ class TemplateEngine {
     }
     svg += '>';
 
-    // Handle multi-line text (for tiered prices)
+    // ⚡ FIX: Handle multi-line text with word wrapping
+    const lineHeight = style.lineHeight || 1.2; // Default line height if not specified
+
     if (props.fieldType === 'tieredPrice' && Array.isArray(value)) {
+      // Tiered prices - already has newlines
       const lines = transformedText.split('\n');
       lines.forEach((line, i) => {
         if (i === 0) {
           svg += this.escapeXML(line);
         } else {
-          svg += `<tspan x="${textX}" dy="${fontSize * style.lineHeight}">${this.escapeXML(line)}</tspan>`;
+          svg += `<tspan x="${textX}" dy="${fontSize * lineHeight}">${this.escapeXML(line)}</tspan>`;
+        }
+      });
+    } else if (props.fieldType === 'description' || props.fieldType === 'productName') {
+      // ⚡ FIX: Wrap long descriptions into multiple lines
+      const wrappedLines = this.wrapText(transformedText, width, fontSize);
+      wrappedLines.forEach((line: string, i: number) => {
+        if (i === 0) {
+          svg += this.escapeXML(line);
+        } else {
+          svg += `<tspan x="${textX}" dy="${fontSize * lineHeight}">${this.escapeXML(line)}</tspan>`;
         }
       });
     } else {
@@ -357,8 +370,18 @@ class TemplateEngine {
     const y = this.convertToPixels(layer.position.y, layer.position.unit, 300);
     const size = this.convertToPixels(layer.size.width, layer.size.unit, 300);
 
-    // Get QR code content from props or data
-    let qrContent = props.content || props.dataField;
+    // ⚡ FIX: Handle 'data' field from QRCodeLayerProperties
+    let qrContent = props.content || props.dataField || props.data;
+
+    // If qrContent is a field name (not a URL), get value from data
+    if (qrContent && !qrContent.includes('http') && !qrContent.includes('{{')) {
+      // It's a field reference like 'sourceUrl'
+      const fieldValue = data[qrContent];
+      if (fieldValue) {
+        qrContent = fieldValue;
+        console.log(`   - QR field '${props.data}' resolved to: ${qrContent}`);
+      }
+    }
 
     // If it's a template variable like {{articleNumber}}, extract and replace
     if (qrContent && qrContent.includes('{{')) {
@@ -372,14 +395,9 @@ class TemplateEngine {
       }
     }
 
-    // If still no content, try to get from data using dataField
-    if (!qrContent && props.dataField) {
-      qrContent = data[props.dataField];
-    }
-
     // Default to article number or product name if no content specified
     if (!qrContent) {
-      qrContent = data.articleNumber || data.productName || 'No Data';
+      qrContent = data.sourceUrl || data.articleNumber || data.productName || 'No Data';
     }
 
     console.log(`   - QR Content: ${qrContent}`);
@@ -686,6 +704,56 @@ class TemplateEngine {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;');
+  }
+
+  /**
+   * ⚡ NEW: Wrap text to fit within a given width
+   * Simple word-wrapping algorithm for SVG text
+   */
+  private wrapText(text: string, maxWidth: number, fontSize: number): string[] {
+    if (!text) return [];
+
+    // Approximate character width for Arial (more conservative estimate)
+    // Average character is about 65% of fontSize in pixels
+    const avgCharWidth = fontSize * 0.65;
+    const maxCharsPerLine = Math.floor(maxWidth / avgCharWidth);
+
+    console.log(`   🔤 Word wrap: maxWidth=${maxWidth}px, fontSize=${fontSize}px, avgCharWidth=${avgCharWidth}px, maxCharsPerLine=${maxCharsPerLine}`);
+
+    if (maxCharsPerLine < 10) {
+      // Width too small, just return single line
+      console.log(`   ⚠️  Width too small for wrapping`);
+      return [text];
+    }
+
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+
+      if (testLine.length <= maxCharsPerLine) {
+        currentLine = testLine;
+      } else {
+        // Line is too long, push current line and start new one
+        if (currentLine) {
+          lines.push(currentLine);
+        }
+        currentLine = word;
+      }
+    }
+
+    // Push remaining text
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    console.log(`   ✂️  Wrapped into ${lines.length} lines`);
+    lines.forEach((line, i) => console.log(`      Line ${i+1}: ${line.substring(0, 60)}${line.length > 60 ? '...' : ''}`));
+
+    // Limit to reasonable number of lines to avoid overflow
+    return lines.slice(0, 8);
   }
 
   /**

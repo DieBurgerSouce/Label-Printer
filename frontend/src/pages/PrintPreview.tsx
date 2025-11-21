@@ -11,15 +11,9 @@ import { Printer, Download, Settings, ArrowLeft } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getLayoutById } from '../data/printLayouts';
 import { articlesApi, getImageUrl, type Product } from '../services/api';
-
-interface LabelTemplate {
-  id: string;
-  name: string;
-  elements: any[];
-  printLayoutId?: string;
-  widthMm?: number;
-  heightMm?: number;
-}
+import { QRCodeSVG } from 'qrcode.react';
+import { findMatchingTemplate } from '../utils/templateMatcher';
+import type { LabelTemplate } from '../types/template.types';
 
 export default function PrintPreview() {
   const navigate = useNavigate();
@@ -28,25 +22,27 @@ export default function PrintPreview() {
   const { labels, selectedLabels: selectedLabelIds } = useLabelStore();
 
   const [articles, setArticles] = useState<Product[]>([]);
+  const [availableTemplates, setAvailableTemplates] = useState<LabelTemplate[]>([]);
   const [loadedTemplate, setLoadedTemplate] = useState<LabelTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPrinting, setIsPrinting] = useState(false);
 
   const selectedLabels = labels.filter(label => selectedLabelIds.includes(label.id));
 
-  // Load template and articles from URL if templateId is provided
+  // Load templates and articles
   useEffect(() => {
     const loadTemplateAndArticles = async () => {
       const templateId = searchParams.get('templateId');
-      if (!templateId) {
-        setLoading(false);
-        return;
-      }
 
       try {
-        // Load template from localStorage
+        // Load all templates from localStorage or API
         const savedTemplates = JSON.parse(localStorage.getItem('labelTemplates') || '[]');
-        const template = savedTemplates.find((t: any) => t.id === templateId);
+        setAvailableTemplates(savedTemplates);
+
+        // If templateId is provided, use that specific template for layout
+        const template = templateId
+          ? savedTemplates.find((t: any) => t.id === templateId)
+          : savedTemplates.find((t: any) => t.printLayoutId); // Fallback to first template with print layout
 
         if (template && template.printLayoutId) {
           setLoadedTemplate(template);
@@ -317,12 +313,32 @@ export default function PrintPreview() {
 
             {/* Labels */}
             {gridPositions.map((pos, index) => {
-              const article = pos.article;
-              const productName = (article as any).productName || 'Produkt';
-              const price = (article as any).price || (article as any).priceInfo?.price || 0;
-              const currency = (article as any).currency || (article as any).priceInfo?.currency || 'EUR';
-              const articleNumber = (article as any).articleNumber || 'N/A';
-              const imageUrl = (article as any).imageUrl;
+              const article = pos.article as Product; // Type assertion - we know these are Products from articles array
+              const productName = article.productName || 'Produkt';
+              const price = article.price || 0;
+              const currency = article.currency || 'EUR';
+              const articleNumber = article.articleNumber || 'N/A';
+              const imageUrl = article.imageUrl || article.thumbnailUrl;
+              const description = article.description || '';
+              const sourceUrl = article.sourceUrl || '';
+              const tieredPrices = article.tieredPrices || [];
+              const tieredPricesText = article.tieredPricesText || '';
+
+              // Check if "auf anfrage"
+              const isAufAnfrage = tieredPricesText.toLowerCase().includes('auf anfrage') ||
+                                   tieredPricesText.toLowerCase().includes('preis auf anfrage');
+
+              // ✅ AUTO-MATCH: Find the correct template for this article
+              const matchedTemplate = findMatchingTemplate(article, availableTemplates);
+
+              // Check if the matched template is for tiered prices
+              // by checking if the template's rules contain priceType: 'tiered'
+              const isTieredTemplate = matchedTemplate?.rules?.conditions?.some(
+                (condition) => condition.field === 'priceType' && condition.value === 'tiered'
+              ) || false;
+
+              // Determine which template to use based on the matched template
+              const showTieredTemplate = isTieredTemplate;
 
               return (
                 <div
@@ -336,29 +352,113 @@ export default function PrintPreview() {
                   }}
                 >
                   {/* Label Content */}
-                  <div className="p-2 h-full flex flex-col justify-between text-xs">
-                    <div>
-                      {/* Product Image if available */}
+                  <div className="p-2 h-full flex flex-col text-xs">
+                    {/* Top Section: Image + Product Info */}
+                    <div className="flex gap-2 mb-2">
+                      {/* Product Image */}
                       {imageUrl && (
-                        <div className="mb-2">
+                        <div className="flex-shrink-0" style={{ width: '35%' }}>
                           <img
                             src={getImageUrl(imageUrl)}
                             alt={productName}
-                            className="w-full h-16 object-contain"
+                            className="w-full h-20 object-contain border border-gray-200 rounded"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                             }}
                           />
                         </div>
                       )}
-                      <div className="font-bold text-gray-900 truncate">
-                        {productName}
+
+                      {/* Product Name + Price/Tiered Prices */}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-gray-900 text-xs leading-tight mb-1"
+                             style={{
+                               display: '-webkit-box',
+                               WebkitLineClamp: 2,
+                               WebkitBoxOrient: 'vertical',
+                               overflow: 'hidden'
+                             }}>
+                          {productName}
+                        </div>
+
+                        {showTieredTemplate ? (
+                          // Staffelpreis Template
+                          <div className="mt-1">
+                            {isAufAnfrage ? (
+                              <div className="text-orange-600 font-semibold text-xs">
+                                Auf Anfrage
+                              </div>
+                            ) : tieredPrices.length > 0 ? (
+                              <div className="text-[10px] text-gray-700 space-y-0.5">
+                                {tieredPrices.slice(0, 3).map((tier: any, i: number) => {
+                                  const tierPrice = typeof tier.price === 'string' ? parseFloat(tier.price) : tier.price;
+                                  return (
+                                    <div key={i} className="flex justify-between">
+                                      <span className="text-gray-600">
+                                        {i === 0 ? `Bis ${tier.quantity}` : `Ab ${tier.quantity}`}:
+                                      </span>
+                                      <span className="font-semibold">
+                                        {tierPrice ? tierPrice.toFixed(2) : '-'} {currency}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <div className="text-[10px] text-gray-600 whitespace-pre-line"
+                                   style={{
+                                     display: '-webkit-box',
+                                     WebkitLineClamp: 3,
+                                     WebkitBoxOrient: 'vertical',
+                                     overflow: 'hidden'
+                                   }}>
+                                {tieredPricesText}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          // Normal Template - just price
+                          <div className="text-base font-bold text-blue-600 mt-1">
+                            {isAufAnfrage ? (
+                              <span className="text-orange-600 text-xs">Auf Anfrage</span>
+                            ) : typeof price === 'number' && price > 0 ? (
+                              `${price.toFixed(2)} ${currency}`
+                            ) : (
+                              <span className="text-gray-500 text-xs">-</span>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-lg font-bold text-blue-600 mt-1">
-                        {typeof price === 'number' ? price.toFixed(2) : price} {currency}
-                      </div>
+
+                      {/* QR Code */}
+                      {sourceUrl && (
+                        <div className="flex-shrink-0">
+                          <QRCodeSVG
+                            value={sourceUrl}
+                            size={labelWidthPx * 0.15}
+                            level="M"
+                            includeMargin={false}
+                            fgColor="#1e293b"
+                          />
+                        </div>
+                      )}
                     </div>
-                    <div className="text-gray-500 text-[10px]">
+
+                    {/* Description */}
+                    {description && (
+                      <div className="text-[10px] text-gray-600 mb-2"
+                           style={{
+                             display: '-webkit-box',
+                             WebkitLineClamp: 2,
+                             WebkitBoxOrient: 'vertical',
+                             overflow: 'hidden'
+                           }}>
+                        {description}
+                      </div>
+                    )}
+
+                    {/* Bottom: Article Number */}
+                    <div className="mt-auto text-gray-500 text-[9px] pt-1 border-t border-gray-200">
                       Art-Nr: {articleNumber}
                     </div>
                   </div>

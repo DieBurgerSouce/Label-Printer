@@ -58,6 +58,7 @@ services:
       - CORS_ORIGINS=http://localhost:3001,http://frontend:3001
     volumes:
       - ./backend/data:/app/data
+      - ./backend/uploads:/app/uploads
     networks:
       - label-printer-network
     depends_on:

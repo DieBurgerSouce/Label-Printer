@@ -27,6 +27,15 @@ export class ProductService {
         return null;
       }
 
+      // CRITICAL: Validate we have actual product data
+      const hasProductName = !!(ocrResult.productName || screenshot.productName);
+      const hasDescription = !!(ocrResult.fullText && ocrResult.fullText.length > 10);
+
+      if (!hasProductName && !hasDescription) {
+        console.log(`❌ SKIPPING ${ocrResult.articleNumber}: No product name AND no description - failed OCR extraction`);
+        return null;
+      }
+
       const productData = {
         articleNumber: ocrResult.articleNumber,
         productName: ocrResult.productName || screenshot.productName || 'Unknown Product',
@@ -51,16 +60,34 @@ export class ProductService {
       });
 
       if (existing) {
-        // Update existing product if new data has higher confidence
-        if (!ocrResult.confidence || !existing.ocrConfidence || ocrResult.confidence > existing.ocrConfidence) {
+        // ALWAYS update if existing product has placeholder name (broken data)
+        const hasPlaceholderName = existing.productName?.startsWith('Product ');
+        const hasNoDescription = !existing.description || existing.description.trim() === '';
+        const hasNoPrice = existing.price === null || existing.price === 0;
+        const isBroken = hasPlaceholderName || (hasNoDescription && hasNoPrice);
+
+        // Update if: broken data OR higher confidence OR no confidence info
+        if (isBroken || !ocrResult.confidence || !existing.ocrConfidence || ocrResult.confidence > existing.ocrConfidence) {
+          // CRITICAL: Preserve existing images if new data has no images
+          // This prevents image loss during re-crawl when screenshots aren't regenerated
+          const updateData = {
+            ...productData,
+            imageUrl: productData.imageUrl || existing.imageUrl,
+            thumbnailUrl: productData.thumbnailUrl || existing.thumbnailUrl
+          };
+
           const updated = await prisma.product.update({
             where: { id: existing.id },
-            data: productData
+            data: updateData
           });
-          console.log(`Updated product: ${updated.articleNumber}`);
+          if (isBroken) {
+            console.log(`Force-updated broken product: ${updated.articleNumber} (had placeholder/incomplete data)`);
+          } else {
+            console.log(`Updated product: ${updated.articleNumber} (higher confidence)`);
+          }
           return updated;
         } else {
-          console.log(`Skipped update for ${existing.articleNumber} (lower confidence)`);
+          console.log(`Skipped update for ${existing.articleNumber} (lower confidence, data already complete)`);
           return existing;
         }
       } else {
@@ -201,7 +228,15 @@ export class ProductService {
             extractedData.articleNumber = articleNumber;
           }
 
-          // Add fallback for missing product name
+          // CRITICAL: Validate that we have actual data
+          // If both productName AND description are empty, this is a failed extraction
+          // DO NOT save placeholder products - skip them instead
+          if (!extractedData.productName && !extractedData.description) {
+            console.log(`❌ SKIPPING ${extractedData.articleNumber}: No product name AND no description - failed extraction`);
+            return null; // Skip this product instead of saving garbage
+          }
+
+          // Add fallback for missing product name (only if we have a description)
           if (!extractedData.productName) {
             extractedData.productName = `Product ${extractedData.articleNumber}`;
           }
@@ -221,14 +256,29 @@ export class ProductService {
           // Find the product image screenshot path
           let imageUrl = null;
           let thumbnailUrl = null;
+          let screenshotArticleNumber = null;
+
+          // CRITICAL: Extract the article number from screenshotPath
+          // Screenshot service uses /\d{3,}/ regex which ONLY matches base numbers (e.g., "3556")
+          // HTML extraction uses /\d+[A-Za-z0-9\-./]*/ which matches variants (e.g., "3556-ST")
+          // So screenshots are in /3556/ folder but extracted articleNumber is "3556-ST"
+          // We MUST extract the folder name from screenshotPath!
+          if (ocrResult.screenshotPath) {
+            // Extract article folder from path like "data/screenshots/{jobId}/3556/product-image.png"
+            const pathMatch = ocrResult.screenshotPath.match(/\/screenshots\/[^\/]+\/([^\/]+)\//);
+            if (pathMatch && pathMatch[1]) {
+              screenshotArticleNumber = pathMatch[1];
+              console.log(`📁 Extracted screenshot folder: ${screenshotArticleNumber} from path: ${ocrResult.screenshotPath}`);
+            }
+          }
 
           // Try to find screenshots for this article
-          if (crawlJobId && extractedData.articleNumber) {
-            // Build the expected path for the product image
-            const expectedPath = `/api/images/screenshots/${crawlJobId}/${extractedData.articleNumber}/product-image.png`;
+          if (crawlJobId && screenshotArticleNumber) {
+            // Use the folder name from screenshotPath (this is where images actually are!)
+            const expectedPath = `/api/images/screenshots/${crawlJobId}/${screenshotArticleNumber}/product-image.png`;
             imageUrl = expectedPath;
             // Use article-number as thumbnail
-            thumbnailUrl = `/api/images/screenshots/${crawlJobId}/${extractedData.articleNumber}/article-number.png`;
+            thumbnailUrl = `/api/images/screenshots/${crawlJobId}/${screenshotArticleNumber}/article-number.png`;
           }
 
           const productData = {
@@ -249,19 +299,32 @@ export class ProductService {
             published: true
           };
 
-          // Try to find existing product by article number
-          const existing = await prisma.product.findUnique({
-            where: { articleNumber: extractedData.articleNumber }
+          // FUZZY MATCHING: Handle variant suffixes (e.g., "3556-ST" should match "3556")
+          // Extract base article number (remove variant suffix after dash)
+          const baseArticleNumber = extractedData.articleNumber.split('-')[0];
+
+          const existing = await prisma.product.findFirst({
+            where: {
+              OR: [
+                // Exact match: "3556-ST" = "3556-ST"
+                { articleNumber: extractedData.articleNumber },
+                // Base match: "3556-ST" → matches "3556"
+                { articleNumber: baseArticleNumber },
+                // Variant pattern match: "3556" in DB should match "3556-ST" from HTML
+                { articleNumber: { startsWith: baseArticleNumber + '-' } }
+              ]
+            }
           });
 
           if (existing) {
             // ALWAYS update existing product with new crawl data (regardless of confidence)
             // This ensures products stay fresh with latest shop data
-            const updated = await prisma.product.update({
+            // UPDATE with NEW article number from shop (the extracted one is the correct one)
+            await prisma.product.update({
               where: { id: existing.id },
-              data: productData
+              data: productData // Use all new data including correct article number
             });
-            console.log(`✅ Updated product: ${updated.articleNumber} (confidence: ${productData.ocrConfidence})`);
+            console.log(`✅ Updated product: ${existing.articleNumber} → ${extractedData.articleNumber} (confidence: ${productData.ocrConfidence})`);
             results.updated++;
           } else {
             // Create new product

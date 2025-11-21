@@ -1,0 +1,29 @@
+{
+  "labelIds": [
+    "2dc0d0cf-db3f-4b17-b74f-2ae0f66fba75",
+    "0e302812-0d8a-4606-8e55-ddec1c9aae71",
+    "7849d79f-02e2-46a8-9b77-c056ad6eb050"
+  ],
+  "layout": {
+    "paperFormat": {
+      "type": "A4",
+      "width": 210,
+      "height": 297
+    },
+    "gridLayout": {
+      "columns": 2,
+      "rows": 3,
+      "spacing": 5,
+      "margins": {
+        "top": 10,
+        "right": 10,
+        "bottom": 10,
+        "left": 10
+      }
+    },
+    "settings": {
+      "showBorders": true,
+      "showCutMarks": false
+    }
+  }
+}

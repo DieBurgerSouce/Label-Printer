@@ -6,7 +6,8 @@
 import { Page } from 'puppeteer';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { VariantDetectionService, VariantGroup } from './variant-detection-service';
+import { VariantDetectionService, VariantGroup, ProductVariant } from './variant-detection-service';
+import htmlExtractionService from './html-extraction-service';
 
 /**
  * Precise selectors for product page elements
@@ -238,105 +239,173 @@ export class PreciseScreenshotService {
       const variantGroups = await this.variantDetectionService.detectVariants(page);
 
       if (variantGroups.length > 0) {
-        console.log(`\n🎯 FOUND VARIANTS! Processing all ${variantGroups.reduce((sum, g) => sum + g.variants.length, 0)} variants...`);
+        // 🔍 DEBUGGING: Log ALL detected variant groups and variants
+        console.log(`\n📋 VARIANT DETECTION SUMMARY:`);
+        for (const group of variantGroups) {
+          console.log(`   📦 Group: "${group.label}" (Type: ${group.type})`);
+          for (const v of group.variants) {
+            console.log(`      - ${v.label} (value: ${v.value}, selected: ${v.isSelected})`);
+          }
+        }
+
+        // 🔧 NEW: Generate ALL combinations of variants (cartesian product)
+        const combinations = this.generateVariantCombinations(variantGroups);
+        console.log(`\n🎯 FOUND ${combinations.length} VARIANT COMBINATIONS (from ${variantGroups.length} groups)!`);
 
         // Store all variant results
         const allVariantResults: ProductScreenshots[] = [result]; // Include base product
+        const processedCombinations = new Set<string>();
 
-        // Process each variant group
-        for (const group of variantGroups) {
-          console.log(`\n📦 Processing variant group: ${group.label}`);
+        // Process each combination
+        for (let i = 0; i < combinations.length; i++) {
+          const combination = combinations[i];
 
-          for (const variant of group.variants) {
-            if (variant.isSelected) {
-              console.log(`   ⏩ Skipping ${variant.label} (already captured as base product)`);
-              continue;
+          // Create a unique key for this combination
+          const combinationKey = combination.map(v => v.value).join('|');
+
+          // Check if this is the initially loaded combination (all selected variants)
+          const isInitialCombination = combination.every(v => v.isSelected);
+          if (isInitialCombination) {
+            console.log(`\n   ⏩ Skipping combination ${i + 1}/${combinations.length} (already captured as base product)`);
+            processedCombinations.add(combinationKey);
+            continue;
+          }
+
+          // Skip if already processed
+          if (processedCombinations.has(combinationKey)) {
+            console.log(`\n   ⏩ Skipping duplicate combination ${i + 1}/${combinations.length}`);
+            continue;
+          }
+
+          console.log(`\n📦 Processing combination ${i + 1}/${combinations.length}:`);
+          for (const variant of combination) {
+            const groupLabel = variantGroups.find(g => g.variants.some(v => v.value === variant.value))?.label || 'Unknown';
+            console.log(`   • ${groupLabel}: ${variant.label}`);
+          }
+
+          // Select ALL variants in this combination
+          let selectionFailed = false;
+          for (const variant of combination) {
+            const group = variantGroups.find(g => g.variants.some(v => v.value === variant.value));
+            if (!group) {
+              console.log(`   ❌ Could not find group for variant ${variant.label}`);
+              selectionFailed = true;
+              break;
             }
 
-            console.log(`\n   🔄 Selecting variant: ${variant.label}`);
-
-            // Select the variant
+            console.log(`   🔄 Selecting: ${variant.label}...`);
             const selected = await this.variantDetectionService.selectVariant(page, variant, group);
             if (!selected) {
               console.log(`   ❌ Failed to select variant ${variant.label}`);
-              continue;
+              selectionFailed = true;
+              break;
             }
 
-            // Wait for page to update
-            await new Promise(r => setTimeout(r, 1500));
-
-            // Extract the article number for this variant
-            let variantArticleNumber = variant.articleNumber;
-            if (!variantArticleNumber) {
-              // Try to extract article number again
-              const selectors = [
-                '.product-detail-ordernumber-container',
-                '[class*="article-number"]',
-                '[class*="product-number"]',
-                '[class*="sku"]'
-              ];
-
-              for (const selector of selectors) {
-                const element = await page.$(selector);
-                if (element) {
-                  const text = await element.evaluate(el => el.textContent?.trim() || '');
-                  const match = text.match(/\d{3,}(?:-[A-Z]+)?/);
-                  if (match) {
-                    variantArticleNumber = match[0];
-                    break;
-                  }
-                }
-              }
-            }
-
-            if (!variantArticleNumber) {
-              // Generate article number based on base number and variant label
-              if (extractedArticleNumber) {
-                // Extract suffix from variant label (e.g., "Fruitmax" -> "F", "OMNI" -> "O")
-                const suffix = variant.label.substring(0, 1).toUpperCase();
-                variantArticleNumber = `${extractedArticleNumber}-${suffix}`;
-              } else {
-                variantArticleNumber = `variant-${variant.label.replace(/\s+/g, '-')}`;
-              }
-            }
-
-            console.log(`   📝 Variant article number: ${variantArticleNumber}`);
-
-            // Create a new result object for this variant
-            const variantResult: ProductScreenshots = {
-              url: productUrl + '#variant=' + variant.value,
-              layoutType: await this.detectLayoutType(page),
-              screenshots: [],
-              timestamp: new Date(),
-              articleNumber: variantArticleNumber,
-              variantInfo: {
-                label: variant.label,
-                type: group.type || 'unknown',  // Use group.type instead of variant.type
-                isBaseProduct: false,
-                parentUrl: productUrl
-              }
-            };
-
-            // Capture screenshots for this variant
-            const variantFolder = variantArticleNumber || `variant-${Date.now()}`;
-            const elementsToCapture = this.getElementsToCapture(variantResult.layoutType);
-
-            for (const elementConfig of elementsToCapture) {
-              const screenshot = await this.captureElement(
-                page,
-                elementConfig.type,
-                elementConfig.selector,
-                jobId,
-                variantFolder
-              );
-              variantResult.screenshots.push(screenshot);
-            }
-
-            console.log(`   ✅ Captured ${variantResult.screenshots.filter(s => s.success).length} screenshots for variant: ${variant.label} (${variantArticleNumber})`);
-
-            // Store variant result
-            allVariantResults.push(variantResult);
+            // Wait for page to update after each selection
+            await new Promise(r => setTimeout(r, 1200));
           }
+
+          if (selectionFailed) {
+            console.log(`   ⚠️ Skipping combination due to selection failure`);
+            continue;
+          }
+
+          // Mark as processed
+          processedCombinations.add(combinationKey);
+
+          // Wait a bit longer after all selections
+          await new Promise(r => setTimeout(r, 800));
+
+          // Extract the article number for this COMBINATION
+          let combinationArticleNumber: string | null = null;
+          console.log(`   🔍 Extracting article number for combination...`);
+
+          // Try to extract article number from page
+          const selectors = [
+            '.product-detail-ordernumber-container',
+            '[class*="article-number"]',
+            '[class*="product-number"]',
+            '[class*="sku"]'
+          ];
+
+          for (const selector of selectors) {
+            const element = await page.$(selector);
+            if (element) {
+              const text = await element.evaluate(el => el.textContent?.trim() || '');
+              console.log(`   🔍 Found element "${selector}" with text: "${text}"`);
+              const match = text.match(/\d{3,}(?:-[A-Z]+)?/);
+              if (match) {
+                combinationArticleNumber = match[0];
+                console.log(`   ✅ Extracted article number from page: ${combinationArticleNumber}`);
+                break;
+              }
+            }
+          }
+
+          if (!combinationArticleNumber) {
+            // Generate article number based on base number and combination labels
+            if (extractedArticleNumber) {
+              // Create suffix from all variant labels in combination
+              const suffixes = combination.map(v => {
+                // Try to extract meaningful suffix
+                const words = v.label.split(/[\s-]+/);
+                return words[0].substring(0, 2).toUpperCase();
+              });
+              combinationArticleNumber = `${extractedArticleNumber}-${suffixes.join('-')}`;
+              console.log(`   🔧 Generated article number from base: ${combinationArticleNumber}`);
+            } else {
+              // Use combination labels
+              const labels = combination.map(v => v.label.replace(/\s+/g, '-')).join('_');
+              combinationArticleNumber = `variant-${labels}`;
+              console.log(`   🔧 Generated generic variant ID: ${combinationArticleNumber}`);
+            }
+          }
+
+          console.log(`   📝 FINAL Combination article number: ${combinationArticleNumber}`);
+
+          // Extract HTML data for this COMBINATION (after all selections)
+          console.log(`   📄 Extracting HTML data for combination ${combinationArticleNumber}...`);
+          const combinationHtmlData = await this.extractVariantHtmlData(page, combinationArticleNumber);
+          console.log(`   ✅ Combination HTML extracted: articleNumber=${combinationHtmlData.articleNumber}, name=${combinationHtmlData.productName}`);
+
+          // Save HTML data to combination folder
+          const combinationFolder = combinationArticleNumber || `combination-${Date.now()}`;
+          await this.saveVariantHtmlData(jobId, combinationFolder, combinationHtmlData);
+
+          // Create a new result object for this combination
+          const combinationResult: ProductScreenshots = {
+            url: productUrl + '#combination=' + combinationKey,
+            layoutType: await this.detectLayoutType(page),
+            screenshots: [],
+            timestamp: new Date(),
+            articleNumber: combinationArticleNumber,
+            variantInfo: {
+              label: combination.map(v => v.label).join(' + '),
+              type: 'combination',
+              isBaseProduct: false,
+              parentUrl: productUrl
+            }
+          };
+
+          // Capture screenshots for this combination
+          const elementsToCapture = this.getElementsToCapture(combinationResult.layoutType);
+
+          for (const elementConfig of elementsToCapture) {
+            const screenshot = await this.captureElement(
+              page,
+              elementConfig.type,
+              elementConfig.selector,
+              jobId,
+              combinationFolder
+            );
+            combinationResult.screenshots.push(screenshot);
+          }
+
+          const combinationLabel = combination.map(v => v.label).join(' + ');
+          console.log(`   ✅ Captured ${combinationResult.screenshots.filter(s => s.success).length} screenshots for combination: ${combinationLabel} (${combinationArticleNumber})`);
+
+          // Store combination result
+          allVariantResults.push(combinationResult);
         }
 
         console.log(`\n🎉 TOTAL: Captured ${allVariantResults.length} product variants (including base product)`);
@@ -724,6 +793,86 @@ export class PreciseScreenshotService {
       console.error('Error comparing screenshots:', error);
       return { match: false, difference: 100 };
     }
+  }
+
+  /**
+   * 🔧 NEW: Extract HTML data for a variant (after variant selection)
+   */
+  private async extractVariantHtmlData(page: Page, variantArticleNumber: string): Promise<any> {
+    try {
+      // Extract HTML data from the current page state (variant is already selected)
+      const htmlData = await htmlExtractionService.extractProductData(page);
+
+      // Override article number with variant-specific one if it differs
+      // This ensures variants get their correct article number (e.g., "7900-SH" instead of just "7900")
+      if (variantArticleNumber && variantArticleNumber !== htmlData.articleNumber) {
+        console.log(`   🔧 Overriding HTML articleNumber "${htmlData.articleNumber}" with variant number "${variantArticleNumber}"`);
+        htmlData.articleNumber = variantArticleNumber;
+      }
+
+      return htmlData;
+    } catch (error) {
+      console.error(`   ❌ Failed to extract HTML data for variant:`, error);
+      // Return minimal data structure
+      return {
+        articleNumber: variantArticleNumber,
+        productName: `Product ${variantArticleNumber}`,
+        price: null,
+        priceType: 'unknown',
+        description: '',
+        tieredPrices: [],
+        tieredPricesText: ''
+      };
+    }
+  }
+
+  /**
+   * 🔧 NEW: Save HTML data to variant folder
+   */
+  private async saveVariantHtmlData(jobId: string, variantFolder: string, htmlData: any): Promise<void> {
+    try {
+      const jobDir = path.join(this.screenshotDir, jobId);
+      const variantDir = path.join(jobDir, variantFolder);
+
+      // Ensure directory exists
+      await fs.mkdir(variantDir, { recursive: true });
+
+      // Save HTML data
+      const htmlDataPath = path.join(variantDir, 'html-data.json');
+      await fs.writeFile(htmlDataPath, JSON.stringify(htmlData, null, 2));
+
+      console.log(`   💾 Variant HTML data saved: ${htmlDataPath}`);
+    } catch (error) {
+      console.error(`   ❌ Failed to save variant HTML data:`, error);
+    }
+  }
+
+  /**
+   * 🎯 NEW: Generate all possible combinations of variants (cartesian product)
+   * Example: If we have 2 variant groups:
+   *   Group 1: [A, B]
+   *   Group 2: [X, Y, Z]
+   * This will generate: [[A,X], [A,Y], [A,Z], [B,X], [B,Y], [B,Z]]
+   */
+  private generateVariantCombinations(variantGroups: VariantGroup[]): ProductVariant[][] {
+    if (variantGroups.length === 0) return [];
+    if (variantGroups.length === 1) {
+      // Single group: return each variant as a single-element array
+      return variantGroups[0].variants.map(v => [v]);
+    }
+
+    // Recursive cartesian product
+    const [firstGroup, ...restGroups] = variantGroups;
+    const restCombinations = this.generateVariantCombinations(restGroups);
+
+    const combinations: ProductVariant[][] = [];
+    for (const variant of firstGroup.variants) {
+      for (const restCombo of restCombinations) {
+        combinations.push([variant, ...restCombo]);
+      }
+    }
+
+    return combinations;
   }
 }
 

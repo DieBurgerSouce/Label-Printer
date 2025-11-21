@@ -228,10 +228,11 @@ class AutomationService {
       thumbnailPath: s.thumbnailPath,
     }));
 
-    job.results.summary.totalProducts = screenshots.length;
+    // DON'T set totalProducts here - it will be set after deduplication in stepOCR
+    // This raw count includes duplicates (e.g., multiple screenshots per product)
     job.progress.currentStepProgress = 100;
 
-    console.log(`✅ Crawl complete: ${screenshots.length} products found`);
+    console.log(`✅ Crawl complete: ${screenshots.length} raw screenshots captured (deduplication happens in OCR step)`);
   }
 
   /**
@@ -285,6 +286,11 @@ class AutomationService {
 
     console.log(`  📊 Deduplicated: ${fullScreenshots.length} → ${uniqueScreenshots.length} screenshots`);
 
+    // 🔧 FIX: Set totalProducts AFTER deduplication, not before!
+    // This ensures the job monitor shows the correct count
+    job.results.summary.totalProducts = uniqueScreenshots.length;
+    console.log(`  ✅ Total unique products to process: ${uniqueScreenshots.length}`);
+
     // Check if we have enough unique screenshots
     const targetProducts = (job.config as any).maxProducts || 50;
     if (uniqueScreenshots.length < targetProducts) {
@@ -332,14 +338,15 @@ class AutomationService {
 
           // Check if it's an article number (with optional suffix) OR timestamp folder
           if (folderName && fileName === 'product-image.png' && (
-            /^\d+(-[A-Z]+)?$/.test(folderName) || // Article number with optional suffix (e.g., "5020", "5020-GE", "8120-C")
+            /^\d+(-[A-Z]+)?$/.test(folderName) || // Article number with optional suffix (e.g., "5020", "5020-GE", "8120-C", "7900-SH")
             /^product-\d+$/.test(folderName) // Timestamp folder
           )) {
             // New precise screenshot method for element-based screenshots with HTML fusion
             const screenshotDir = pathParts.slice(0, -2).join(pathSeparator); // Get directory without folder name
 
-            // Extract pure article number (remove suffix like "-GE", "-C", etc.)
-            const articleNumber = folderName.split('-')[0]; // "5020-GE" -> "5020"
+            // 🔧 FIX: Use FULL folder name as article number (INCLUDING variant suffix like "-SH")
+            // This ensures variants like "7900-SH" are treated as separate articles from base "7900"
+            const articleNumber = folderName; // Keep suffix! "7900-SH" stays "7900-SH"
 
             console.log(`  🎯 Using element OCR with HTML fusion for folder ${folderName} (article ${articleNumber})`);
 
@@ -419,6 +426,7 @@ class AutomationService {
             status: result.status, // Add status field
             error: result.status === 'failed' ? 'OCR processing failed' : undefined,
             productUrl: screenshot.productUrl || screenshot.url || null, // Add product URL
+            screenshotPath: screenshot.imagePath, // CRITICAL: Add screenshotPath for product-service to extract folder name
           } as any);
 
           if (result.status === 'completed') {
@@ -499,20 +507,24 @@ class AutomationService {
         crawlJobId
       );
 
-      console.log(`✅ Products saved: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`);
+      if (results) {
+        console.log(`✅ Products saved: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`);
 
-      // Emit WebSocket event
-      try {
-        const wsServer = getWebSocketServer();
-        wsServer.emitJobUpdated(job.id, {
-          status: 'products-saved',
-          progress: 60,
-          currentStage: 'products-saved',
-          message: `${results.created + results.updated} products saved to database`,
-          timestamp: new Date().toISOString(),
-        });
-      } catch (err) {
-        // WebSocket not initialized, ignore
+        // Emit WebSocket event
+        try {
+          const wsServer = getWebSocketServer();
+          wsServer.emitJobUpdated(job.id, {
+            status: 'products-saved',
+            progress: 60,
+            currentStage: 'products-saved',
+            message: `${results.created + results.updated} products saved to database`,
+            timestamp: new Date().toISOString(),
+          });
+        } catch (err) {
+          // WebSocket not initialized, ignore
+        }
+      } else {
+        console.log('⚠️ No products saved (all failed validation)');
       }
     } catch (error: any) {
       console.error('Failed to save products:', error);
