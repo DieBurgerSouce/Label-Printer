@@ -46,10 +46,10 @@ export default function Articles() {
           const data = await response.json();
           if (data.success && data.templates) {
             setAvailableTemplates(data.templates);
-            // Auto-select first template with print layout
-            const defaultTemplate = data.templates.find((t: any) => t.printLayoutId);
-            if (defaultTemplate && !selectedTemplateId) {
-              setSelectedTemplateId(defaultTemplate.id);
+            // Auto-select first template with print layout (only if not already set)
+            const defaultTemplate = data.templates.find((t: LabelTemplate) => t.printLayoutId);
+            if (defaultTemplate) {
+              setSelectedTemplateId((prev) => prev || defaultTemplate.id);
             }
           }
         }
@@ -72,7 +72,7 @@ export default function Articles() {
     // Reload when window gets focus
     window.addEventListener('focus', loadTemplates);
     return () => window.removeEventListener('focus', loadTemplates);
-  }, [selectedTemplateId]);
+  }, []); // Empty dependency array - run only on mount
 
   // Auto-refresh products every 5 seconds if enabled
   useEffect(() => {
@@ -302,7 +302,7 @@ export default function Articles() {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Export failed:', err);
-      alert('Export fehlgeschlagen!');
+      showToast({ type: 'error', message: 'Export fehlgeschlagen!' });
     }
   };
 

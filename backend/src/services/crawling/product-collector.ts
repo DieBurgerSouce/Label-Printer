@@ -53,18 +53,15 @@ export async function collectProductsFromCategory(
         try {
           const element = await page.$(pattern as string);
           if (element) {
-            const isDisabled = await page.evaluate(
-              (sel) => {
-                const el = document.querySelector(sel);
-                if (!el) return true;
-                return (
-                  el.classList.contains('disabled') ||
-                  el.hasAttribute('disabled') ||
-                  el.getAttribute('aria-disabled') === 'true'
-                );
-              },
-              pattern as string
-            );
+            const isDisabled = await page.evaluate((sel) => {
+              const el = document.querySelector(sel);
+              if (!el) return true;
+              return (
+                el.classList.contains('disabled') ||
+                el.hasAttribute('disabled') ||
+                el.getAttribute('aria-disabled') === 'true'
+              );
+            }, pattern as string);
 
             if (!isDisabled) {
               nextButton = element;

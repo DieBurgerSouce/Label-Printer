@@ -40,10 +40,50 @@ export class WebCrawlerService {
   private activeJobs: Map<string, CrawlJob> = new Map();
   private screenshotsDir: string;
   private preciseScreenshotService: PreciseScreenshotService;
+  private cleanupInterval: NodeJS.Timeout | null = null;
+
+  // How long to keep completed/failed jobs before cleanup (30 minutes)
+  private static readonly JOB_RETENTION_MS = 30 * 60 * 1000;
+  // How often to run cleanup (5 minutes)
+  private static readonly CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
 
   constructor(screenshotsDir: string = './data/screenshots') {
     this.screenshotsDir = screenshotsDir;
     this.preciseScreenshotService = new PreciseScreenshotService(screenshotsDir);
+    this.startCleanupScheduler();
+  }
+
+  /**
+   * Start periodic cleanup of old completed/failed jobs
+   */
+  private startCleanupScheduler(): void {
+    this.cleanupInterval = setInterval(() => {
+      this.runScheduledCleanup();
+    }, WebCrawlerService.CLEANUP_INTERVAL_MS);
+  }
+
+  /**
+   * Run scheduled cleanup - removes completed/failed jobs older than JOB_RETENTION_MS
+   */
+  private runScheduledCleanup(): void {
+    const now = Date.now();
+    let cleanedCount = 0;
+
+    for (const [jobId, job] of this.activeJobs.entries()) {
+      if (job.status === 'completed' || job.status === 'failed') {
+        const completedAt = job.completedAt?.getTime() || 0;
+        if (now - completedAt > WebCrawlerService.JOB_RETENTION_MS) {
+          this.activeJobs.delete(jobId);
+          cleanedCount++;
+        }
+      }
+    }
+
+    if (cleanedCount > 0) {
+      console.log(
+        `🧹 Cleaned up ${cleanedCount} old job(s). Active jobs remaining: ${this.activeJobs.size}`
+      );
+    }
   }
 
   /**
@@ -318,7 +358,9 @@ export class WebCrawlerService {
         if (currentPage === 1) {
           const pageUrls = await collectProductLinksFromPage(page, job, selectors);
           pageUrls.forEach((url) => uniqueUrls.add(url));
-          console.log(`✅ Page 1: Found ${pageUrls.length} links → ${uniqueUrls.size} unique total`);
+          console.log(
+            `✅ Page 1: Found ${pageUrls.length} links → ${uniqueUrls.size} unique total`
+          );
         } else {
           const hasNextPage = await this.navigateToNextPage(page, selectors, currentPage);
           if (!hasNextPage) {
@@ -382,18 +424,15 @@ export class WebCrawlerService {
       try {
         const element = await page.$(pattern as string);
         if (element) {
-          const isDisabled = await page.evaluate(
-            (sel) => {
-              const el = document.querySelector(sel);
-              if (!el) return true;
-              return (
-                el.classList.contains('disabled') ||
-                el.hasAttribute('disabled') ||
-                el.getAttribute('aria-disabled') === 'true'
-              );
-            },
-            pattern as string
-          );
+          const isDisabled = await page.evaluate((sel) => {
+            const el = document.querySelector(sel);
+            if (!el) return true;
+            return (
+              el.classList.contains('disabled') ||
+              el.hasAttribute('disabled') ||
+              el.getAttribute('aria-disabled') === 'true'
+            );
+          }, pattern as string);
 
           if (!isDisabled) {
             nextButton = element;
@@ -752,6 +791,13 @@ export class WebCrawlerService {
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down Web Crawler Service...');
 
+    // Stop cleanup scheduler
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+      console.log('   ✅ Cleanup scheduler stopped');
+    }
+
     if (this.browser) {
       try {
         await this.browser.close();
@@ -771,6 +817,8 @@ export class WebCrawlerService {
       }
     }
 
+    // Clear all jobs on shutdown
+    this.activeJobs.clear();
     console.log('✅ Web Crawler Service shut down');
   }
 

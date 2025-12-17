@@ -1,0 +1,201 @@
+# Smoke Tests Workflow
+# Post-deployment health checks and validation
+
+name: Smoke Tests
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: string
+        default: 'staging'
+      base_url:
+        description: 'Base URL to test'
+        required: false
+        type: string
+    outputs:
+      status:
+        description: 'Overall test status'
+        value: ${{ jobs.smoke-tests.outputs.status }}
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - local
+          - staging
+          - production
+      base_url:
+        description: 'Custom base URL (optional)'
+        required: false
+        type: string
+
+jobs:
+  smoke-tests:
+    name: Run Smoke Tests
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.summary.outputs.status }}
+
+    env:
+      BASE_URL: ${{ inputs.base_url || (inputs.environment == 'production' && 'https://api.example.com') || (inputs.environment == 'staging' && 'https://staging-api.example.com') || 'http://localhost:3001' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set environment variables
+        run: |
+          echo "Testing environment: ${{ inputs.environment }}"
+          echo "Base URL: ${{ env.BASE_URL }}"
+
+      - name: Wait for service
+        if: inputs.environment != 'local'
+        run: |
+          echo "Waiting for service to be ready..."
+          for i in {1..30}; do
+            if curl -s --max-time 5 "${{ env.BASE_URL }}/health" > /dev/null 2>&1; then
+              echo "Service is ready!"
+              break
+            fi
+            echo "Attempt $i/30 - waiting..."
+            sleep 10
+          done
+
+      - name: Health Check
+        id: health
+        run: |
+          echo "## Health Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          HEALTH_RESPONSE=$(curl -s --max-time 10 "${{ env.BASE_URL }}/health" || echo "FAILED")
+
+          if [ "$HEALTH_RESPONSE" != "FAILED" ]; then
+            echo "✅ Health endpoint responding" >> $GITHUB_STEP_SUMMARY
+            echo "Response: $HEALTH_RESPONSE" >> $GITHUB_STEP_SUMMARY
+            echo "health_status=pass" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Health endpoint not responding" >> $GITHUB_STEP_SUMMARY
+            echo "health_status=fail" >> $GITHUB_OUTPUT
+          fi
+
+      - name: API Status Check
+        id: api
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## API Endpoints" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          ENDPOINTS=(
+            "/health"
+            "/health/live"
+            "/health/ready"
+          )
+
+          API_PASS=0
+          API_FAIL=0
+
+          for endpoint in "${ENDPOINTS[@]}"; do
+            START=$(date +%s%N)
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "${{ env.BASE_URL }}${endpoint}" || echo "000")
+            END=$(date +%s%N)
+            DURATION=$(( (END - START) / 1000000 ))
+
+            if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 400 ]; then
+              echo "✅ ${endpoint} - ${RESPONSE} (${DURATION}ms)" >> $GITHUB_STEP_SUMMARY
+              ((API_PASS++))
+            else
+              echo "❌ ${endpoint} - ${RESPONSE} (${DURATION}ms)" >> $GITHUB_STEP_SUMMARY
+              ((API_FAIL++))
+            fi
+          done
+
+          if [ $API_FAIL -eq 0 ]; then
+            echo "api_status=pass" >> $GITHUB_OUTPUT
+          else
+            echo "api_status=fail" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Response Time Check
+        id: performance
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Response Times" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          THRESHOLD=1000  # 1 second
+
+          START=$(date +%s%N)
+          curl -s --max-time 10 "${{ env.BASE_URL }}/health" > /dev/null
+          END=$(date +%s%N)
+          HEALTH_TIME=$(( (END - START) / 1000000 ))
+
+          if [ $HEALTH_TIME -lt $THRESHOLD ]; then
+            echo "✅ Health: ${HEALTH_TIME}ms (< ${THRESHOLD}ms)" >> $GITHUB_STEP_SUMMARY
+            echo "perf_status=pass" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Health: ${HEALTH_TIME}ms (> ${THRESHOLD}ms)" >> $GITHUB_STEP_SUMMARY
+            echo "perf_status=warn" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Screenshot API Test
+        id: screenshot
+        if: inputs.environment != 'production'
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Screenshot API Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          RESPONSE=$(curl -s --max-time 30 -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"url":"https://example.com","format":"png"}' \
+            "${{ env.BASE_URL }}/api/screenshot" || echo "FAILED")
+
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"url":"https://example.com","format":"png"}' \
+            "${{ env.BASE_URL }}/api/screenshot" || echo "000")
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 500 ]; then
+            echo "✅ Screenshot API responding (HTTP $HTTP_CODE)" >> $GITHUB_STEP_SUMMARY
+            echo "screenshot_status=pass" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Screenshot API test: HTTP $HTTP_CODE" >> $GITHUB_STEP_SUMMARY
+            echo "screenshot_status=warn" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Summary
+        id: summary
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "## Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          HEALTH="${{ steps.health.outputs.health_status }}"
+          API="${{ steps.api.outputs.api_status }}"
+          PERF="${{ steps.performance.outputs.perf_status }}"
+
+          if [ "$HEALTH" = "pass" ] && [ "$API" = "pass" ]; then
+            echo "🟢 **All smoke tests passed!**" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          elif [ "$HEALTH" = "fail" ]; then
+            echo "🔴 **Critical: Health check failed**" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "🟡 **Some tests have warnings**" >> $GITHUB_STEP_SUMMARY
+            echo "status=warning" >> $GITHUB_OUTPUT
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Health | $HEALTH |" >> $GITHUB_STEP_SUMMARY
+          echo "| API | $API |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | $PERF |" >> $GITHUB_STEP_SUMMARY

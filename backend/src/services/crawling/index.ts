@@ -7,7 +7,12 @@
 export { extractArticleNumberFromUrl, cleanArticleNumber, filterProductUrls } from './url-utils';
 
 // Page analysis
-export { isProductPage, detectProductSelectors, detectGenericSelectors, getFallbackSelectors } from './page-analyzer';
+export {
+  isProductPage,
+  detectProductSelectors,
+  detectGenericSelectors,
+  getFallbackSelectors,
+} from './page-analyzer';
 
 // Cookie handling
 export { acceptCookies } from './cookie-handler';

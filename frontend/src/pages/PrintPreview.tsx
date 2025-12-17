@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import { usePrintStore } from '../store/printStore';
 import { useLabelStore } from '../store/labelStore';
+import { useUiStore } from '../store/uiStore';
 import { bulkPrintService } from '../services/bulkPrintService';
 import { Printer, Download, Settings, ArrowLeft } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -20,6 +21,7 @@ export default function PrintPreview() {
   const [searchParams] = useSearchParams();
   const { layout, setPaperFormat, setGridConfig } = usePrintStore();
   const { labels, selectedLabels: selectedLabelIds } = useLabelStore();
+  const { showToast } = useUiStore();
 
   const [articles, setArticles] = useState<Product[]>([]);
   const [availableTemplates, setAvailableTemplates] = useState<LabelTemplate[]>([]);
@@ -94,7 +96,7 @@ export default function PrintPreview() {
     const labelIds = articlesToDisplay.map((item) => item.id);
 
     if (labelIds.length === 0) {
-      alert('Keine Labels zum Drucken verfügbar');
+      showToast({ type: 'warning', message: 'Keine Labels zum Drucken verfügbar' });
       return;
     }
 
@@ -108,11 +110,11 @@ export default function PrintPreview() {
       });
 
       if (!result.success) {
-        alert(`Fehler: ${result.error}`);
+        showToast({ type: 'error', message: `Fehler: ${result.error}` });
       }
     } catch (error) {
       console.error('Print error:', error);
-      alert('Fehler beim Drucken');
+      showToast({ type: 'error', message: 'Fehler beim Drucken' });
     } finally {
       setIsPrinting(false);
     }

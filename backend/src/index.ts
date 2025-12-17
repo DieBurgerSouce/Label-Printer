@@ -18,6 +18,7 @@ import automationRouter from './api/routes/automation';
 import articlesRouter from './api/routes/articles';
 import imagesRouter from './api/routes/images';
 import lexwareRouter from './api/routes/lexware';
+import healthRouter, { markStartupComplete, markStartupFailed } from './api/routes/health';
 import { StorageService } from './services/storage-service';
 import { ocrService } from './services/ocr-service';
 import { webCrawlerService } from './services/web-crawler-service';
@@ -63,6 +64,11 @@ app.use((req, _res, next) => {
   next();
 });
 
+// Health check routes (Kubernetes-compatible probes)
+// Mount at /health for K8S probes and /api/health for backwards compatibility
+app.use('/health', healthRouter);
+app.use('/api/health', healthRouter);
+
 // API Routes
 app.use('/api/labels', labelsRouter);
 app.use('/api/excel', excelRouter);
@@ -75,35 +81,6 @@ app.use('/api/automation', automationRouter);
 app.use('/api/articles', articlesRouter);
 app.use('/api/images', imagesRouter);
 app.use('/api/lexware', lexwareRouter);
-
-// Health check
-app.get('/api/health', (_req, res) => {
-  const memUsage = process.memoryUsage();
-  const totalMemory = require('os').totalmem();
-  const freeMemory = require('os').freemem();
-  const usedMemory = totalMemory - freeMemory;
-
-  res.json({
-    success: true,
-    message: 'Server is running',
-    memory: {
-      process: {
-        rss: Math.round(memUsage.rss / 1024 / 1024), // MB
-        heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024), // MB
-        heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024), // MB
-        external: Math.round(memUsage.external / 1024 / 1024), // MB
-      },
-      system: {
-        total: Math.round(totalMemory / 1024 / 1024), // MB
-        free: Math.round(freeMemory / 1024 / 1024), // MB
-        used: Math.round(usedMemory / 1024 / 1024), // MB
-        percentage: Math.round((usedMemory / totalMemory) * 100),
-      },
-    },
-    uptime: Math.round(process.uptime()),
-    timestamp: new Date().toISOString(),
-  });
-});
 
 // Serve frontend static files in production
 // Check for Docker volume first, then fallback to local development path
@@ -163,6 +140,9 @@ async function start() {
     app.locals.wsServer = wsServer;
 
     httpServer.listen(PORT, () => {
+      // Mark startup as complete after server is listening
+      markStartupComplete();
+
       console.log(`🚀 Label Printer Backend running on http://localhost:${PORT}`);
       console.log(`🔌 WebSocket server ready for real-time updates`);
       console.log(`📋 API Endpoints:`);
@@ -175,9 +155,12 @@ async function start() {
       console.log(`   - Automation: http://localhost:${PORT}/api/automation`);
       console.log(`   - Articles:   http://localhost:${PORT}/api/articles`);
       console.log(`   - Health:     http://localhost:${PORT}/api/health`);
+      console.log(`   - K8S Probes: http://localhost:${PORT}/health/live|ready|startup`);
       console.log(`\n💡 Connect to WebSocket: ws://localhost:${PORT}`);
     });
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    markStartupFailed(errorMsg);
     console.error('Failed to start server:', error);
     process.exit(1);
   }

@@ -9,6 +9,28 @@ const router = Router();
 // Store active jobs in memory (in production, use Redis or database)
 const activeJobs = new Map<string, any>();
 
+// Cleanup old jobs every 5 minutes to prevent memory leaks
+const JOB_RETENTION_MS = 30 * 60 * 1000; // 30 minutes
+setInterval(
+  () => {
+    const now = Date.now();
+    let cleanedCount = 0;
+    for (const [jobId, job] of activeJobs.entries()) {
+      if (job.status === 'completed' || job.status === 'failed') {
+        const endTime = job.endTime?.getTime() || 0;
+        if (now - endTime > JOB_RETENTION_MS) {
+          activeJobs.delete(jobId);
+          cleanedCount++;
+        }
+      }
+    }
+    if (cleanedCount > 0) {
+      console.log(`🧹 [Lexware] Cleaned up ${cleanedCount} old job(s). Active: ${activeJobs.size}`);
+    }
+  },
+  5 * 60 * 1000
+);
+
 /**
  * Discover and list all Lexware screenshot pairs
  * GET /api/lexware/discover

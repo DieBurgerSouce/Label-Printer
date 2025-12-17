@@ -53,6 +53,9 @@ export async function acceptCookies(page: Page): Promise<void> {
       console.log('⚠️  No cookie button found');
     }
   } catch (error) {
-    console.log('⚠️  Cookie acceptance failed:', error instanceof Error ? error.message : 'Unknown');
+    console.log(
+      '⚠️  Cookie acceptance failed:',
+      error instanceof Error ? error.message : 'Unknown'
+    );
   }
 }

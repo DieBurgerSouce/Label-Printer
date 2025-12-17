@@ -2,7 +2,7 @@
  * Keyboard Shortcuts Hook
  * Provides global keyboard shortcuts for the application
  */
-import { useEffect } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUiStore } from '../store/uiStore';
 import { usePrintStore } from '../store/printStore';
@@ -23,7 +23,8 @@ export const useKeyboardShortcuts = () => {
   const { resetLayout } = usePrintStore();
   const { clearSelection } = useLabelStore();
 
-  const shortcuts: ShortcutConfig[] = [
+  // Memoize shortcuts array to prevent recreation on every render
+  const shortcuts: ShortcutConfig[] = useMemo(() => [
     // Navigation
     {
       key: 'd',
@@ -137,29 +138,30 @@ export const useKeyboardShortcuts = () => {
       },
       description: 'Show Keyboard Shortcuts Help',
     },
-  ];
+  ], [navigate, setZoom, toggleGrid, toggleRulers, showToast, resetLayout, clearSelection]);
+
+  // Memoize the key handler to prevent unnecessary re-registrations
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Find matching shortcut
+    const shortcut = shortcuts.find(s => {
+      const keyMatch = s.key.toLowerCase() === e.key.toLowerCase();
+      const ctrlMatch = s.ctrl ? e.ctrlKey || e.metaKey : !e.ctrlKey && !e.metaKey;
+      const shiftMatch = s.shift ? e.shiftKey : !e.shiftKey;
+      const altMatch = s.alt ? e.altKey : !e.altKey;
+
+      return keyMatch && ctrlMatch && shiftMatch && altMatch;
+    });
+
+    if (shortcut) {
+      e.preventDefault();
+      shortcut.action();
+    }
+  }, [shortcuts]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Find matching shortcut
-      const shortcut = shortcuts.find(s => {
-        const keyMatch = s.key.toLowerCase() === e.key.toLowerCase();
-        const ctrlMatch = s.ctrl ? e.ctrlKey || e.metaKey : !e.ctrlKey && !e.metaKey;
-        const shiftMatch = s.shift ? e.shiftKey : !e.shiftKey;
-        const altMatch = s.alt ? e.altKey : !e.altKey;
-
-        return keyMatch && ctrlMatch && shiftMatch && altMatch;
-      });
-
-      if (shortcut) {
-        e.preventDefault();
-        shortcut.action();
-      }
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [shortcuts]);
+  }, [handleKeyDown]);
 
   return {
     shortcuts,

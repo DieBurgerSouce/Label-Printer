@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import Layout from './components/common/Layout';
 import Dashboard from './pages/Dashboard';
 import LabelLibrary from './pages/LabelLibrary';
@@ -38,31 +39,33 @@ console.log('App version: 2.0.2 - Built at:', new Date().toISOString());
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="automation" element={<ShopAutomation />} />
-            <Route path="articles" element={<Articles />} />
-            <Route path="labels" element={<LabelLibrary />} />
-            <Route path="labeltemplate" element={<LabelTemplateEditor />} />
-            <Route path="excel" element={<ExcelImport />} />
-            <Route path="excel-import" element={<ExcelImportNew />} />
-            <Route path="print-setup" element={<PrintSetup />} />
-            <Route path="print" element={<PrintPreview />} />
-            <Route path="preview" element={<LivePreview />} />
-            <Route path="templates" element={<Templates />} />
-            <Route path="rendering-templates" element={<RenderingTemplates />} />
-            <Route path="rendering-template-editor" element={<RenderingTemplateEditor />} />
-            <Route path="print-templates" element={<PrintTemplates />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="jobs/:jobId" element={<JobMonitor />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="automation" element={<ShopAutomation />} />
+              <Route path="articles" element={<Articles />} />
+              <Route path="labels" element={<LabelLibrary />} />
+              <Route path="labeltemplate" element={<LabelTemplateEditor />} />
+              <Route path="excel" element={<ExcelImport />} />
+              <Route path="excel-import" element={<ExcelImportNew />} />
+              <Route path="print-setup" element={<PrintSetup />} />
+              <Route path="print" element={<PrintPreview />} />
+              <Route path="preview" element={<LivePreview />} />
+              <Route path="templates" element={<Templates />} />
+              <Route path="rendering-templates" element={<RenderingTemplates />} />
+              <Route path="rendering-template-editor" element={<RenderingTemplateEditor />} />
+              <Route path="print-templates" element={<PrintTemplates />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="jobs/:jobId" element={<JobMonitor />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

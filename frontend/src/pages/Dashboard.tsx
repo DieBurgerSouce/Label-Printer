@@ -1,29 +1,32 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
+import { FileSpreadsheet, Package, Printer, ShoppingCart, Tags, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Tags, FileSpreadsheet, Printer, TrendingUp, ShoppingCart, Package } from 'lucide-react';
-import { labelApi, excelApi } from '../services/api';
+import { excelApi, labelApi } from '../services/api';
 
 interface StatsCardProps {
   title: string;
   value: string | number;
   icon: React.ElementType;
-  color: string;
+  className?: string; // Replace color with className for flexibility
+  iconClassName?: string;
   link?: string;
 }
 
-function StatsCard({ title, value, icon: Icon, color, link }: StatsCardProps) {
+function StatsCard({ title, value, icon: Icon, className, iconClassName, link }: StatsCardProps) {
   const content = (
-    <div className={`card hover:shadow-lg transition-shadow cursor-pointer border-l-4 ${color}`}>
-      <div className="flex items-center justify-between">
+    <Card className={`hover:shadow-md transition-all cursor-pointer ${className}`}>
+      <CardContent className="p-6 flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-600 mb-1">{title}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
           <p className="text-3xl font-bold">{value}</p>
         </div>
-        <div className={`p-4 rounded-lg ${color.replace('border-', 'bg-').replace('-500', '-100')}`}>
-          <Icon className={`w-8 h-8 ${color.replace('border-', 'text-')}`} />
+        <div className={`p-3 rounded-full bg-primary/10 ${iconClassName}`}>
+          <Icon className="w-6 h-6" />
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   return link ? <Link to={link}>{content}</Link> : content;
@@ -47,28 +50,28 @@ export default function Dashboard() {
       title: 'Total Labels',
       value: (labelStats?.data as any)?.totalLabels || 0,
       icon: Tags,
-      color: 'border-primary-500',
+      iconClassName: "text-blue-500 bg-blue-50",
       link: '/labels',
     },
     {
       title: 'Products',
       value: (excelStats?.data as any)?.totalProducts || 0,
       icon: FileSpreadsheet,
-      color: 'border-green-500',
+      iconClassName: "text-green-500 bg-green-50",
       link: '/excel',
     },
     {
       title: 'Print Jobs',
       value: 0, // TODO: Implement print job tracking
       icon: Printer,
-      color: 'border-purple-500',
+      iconClassName: "text-purple-500 bg-purple-50",
       link: '/print',
     },
     {
       title: 'This Month',
       value: (labelStats?.data as any)?.thisMonth || 0,
       icon: TrendingUp,
-      color: 'border-orange-500',
+      iconClassName: "text-orange-500 bg-orange-50",
     },
   ];
 
@@ -88,67 +91,81 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="card">
-        <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link
-            to="/automation"
-            className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group"
-          >
-            <ShoppingCart className="w-8 h-8 text-blue-600 mb-2 group-hover:scale-110 transition-transform" />
-            <h3 className="font-semibold mb-1">Shop Automation</h3>
-            <p className="text-sm text-gray-600">Automatisch alle Artikel importieren</p>
-          </Link>
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>Manage your store effectively</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link to="/automation">
+              <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-blue-500 hover:bg-blue-50">
+                <ShoppingCart className="w-8 h-8 text-blue-600 mb-2" />
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-lg">Shop Automation</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Automatisch alle Artikel importieren</span>
+                </div>
+              </Button>
+            </Link>
 
-          <Link
-            to="/articles"
-            className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group"
-          >
-            <Package className="w-8 h-8 text-green-600 mb-2 group-hover:scale-110 transition-transform" />
-            <h3 className="font-semibold mb-1">Artikel Verwalten</h3>
-            <p className="text-sm text-gray-600">Gecrawlte Artikel anzeigen & bearbeiten</p>
-          </Link>
+            <Link to="/articles">
+              <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-green-500 hover:bg-green-50">
+                <Package className="w-8 h-8 text-green-600 mb-2" />
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-lg">Artikel Verwalten</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Gecrawlte Artikel anzeigen & bearbeiten</span>
+                </div>
+              </Button>
+            </Link>
 
-          <Link
-            to="/labels"
-            className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all"
-          >
-            <Tags className="w-8 h-8 text-primary-600 mb-2" />
-            <h3 className="font-semibold mb-1">Create Label</h3>
-            <p className="text-sm text-gray-600">Extract from screenshot or create manually</p>
-          </Link>
+            <Link to="/labels">
+              <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-primary hover:bg-primary/5">
+                <Tags className="w-8 h-8 text-primary mb-2" />
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-lg">Create Label</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Extract from screenshot or create manually</span>
+                </div>
+              </Button>
+            </Link>
 
-          <Link
-            to="/excel"
-            className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all"
-          >
-            <FileSpreadsheet className="w-8 h-8 text-green-600 mb-2" />
-            <h3 className="font-semibold mb-1">Import Excel</h3>
-            <p className="text-sm text-gray-600">Upload product descriptions from Excel</p>
-          </Link>
+            <Link to="/excel">
+              <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-green-500 hover:bg-green-50">
+                <FileSpreadsheet className="w-8 h-8 text-green-600 mb-2" />
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-lg">Import Excel</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Upload product descriptions from Excel</span>
+                </div>
+              </Button>
+            </Link>
 
-          <Link
-            to="/print"
-            className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all"
-          >
-            <Printer className="w-8 h-8 text-purple-600 mb-2" />
-            <h3 className="font-semibold mb-1">Print Setup</h3>
-            <p className="text-sm text-gray-600">Configure and export print layouts</p>
-          </Link>
-        </div>
-      </div>
+             <Link to="/print">
+              <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-purple-500 hover:bg-purple-50">
+                <Printer className="w-8 h-8 text-purple-600 mb-2" />
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-lg">Print Setup</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Configure and export print layouts</span>
+                </div>
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Recent Activity */}
-      <div className="card">
-        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-        <div className="space-y-3">
-          {(loadingLabels || loadingExcel) ? (
-            <p className="text-gray-500">Loading...</p>
-          ) : (
-            <p className="text-gray-500">No recent activity</p>
-          )}
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {(loadingLabels || loadingExcel) ? (
+              <p className="text-muted-foreground">Loading...</p>
+            ) : (
+              <p className="text-muted-foreground">No recent activity</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

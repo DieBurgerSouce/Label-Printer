@@ -117,7 +117,9 @@ export async function findCategoryLinks(page: Page, shopUrl: string): Promise<st
           '/widgets/cms/', // CMS widgets
         ];
 
-        if (skipPatterns.some((pattern) => pathname.toLowerCase().includes(pattern.toLowerCase()))) {
+        if (
+          skipPatterns.some((pattern) => pathname.toLowerCase().includes(pattern.toLowerCase()))
+        ) {
           return false;
         }
 

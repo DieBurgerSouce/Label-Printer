@@ -17,6 +17,7 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import { renderingTemplateApi, articlesApi, type Product } from '../services/api';
+import { useUiStore } from '../store/uiStore';
 
 interface TemplateLayer {
   id: string;
@@ -60,6 +61,7 @@ interface RenderingTemplate {
 export default function RenderingTemplateEditor() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showToast } = useUiStore();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('id');
 
@@ -107,7 +109,7 @@ export default function RenderingTemplateEditor() {
       }
     } catch (error) {
       console.error('Failed to load template:', error);
-      alert('Fehler beim Laden des Templates!');
+      showToast({ type: 'error', message: 'Fehler beim Laden des Templates!' });
     }
   };
 
@@ -182,14 +184,14 @@ export default function RenderingTemplateEditor() {
       if (editId || template.id) {
         // Update existing template
         await renderingTemplateApi.update(editId || template.id!, template);
-        alert('Template erfolgreich aktualisiert!');
+        showToast({ type: 'success', message: 'Template erfolgreich aktualisiert!' });
       } else {
         // Create new template
         const response = await renderingTemplateApi.create(template);
         if (response.success && response.data) {
           setTemplate((response.data as any).template);
         }
-        alert('Template erfolgreich erstellt!');
+        showToast({ type: 'success', message: 'Template erfolgreich erstellt!' });
       }
 
       queryClient.invalidateQueries({ queryKey: ['renderingTemplates'] });
@@ -201,7 +203,7 @@ export default function RenderingTemplateEditor() {
       if (error?.response?.data?.message) {
         errorMessage = error.response.data.message;
       }
-      alert(errorMessage);
+      showToast({ type: 'error', message: errorMessage });
     } finally {
       setSaving(false);
     }
@@ -209,7 +211,7 @@ export default function RenderingTemplateEditor() {
 
   const renderPreview = async () => {
     if (!template.id && !editId) {
-      alert('Bitte speichern Sie das Template zuerst!');
+      showToast({ type: 'warning', message: 'Bitte speichern Sie das Template zuerst!' });
       return;
     }
 
@@ -229,7 +231,7 @@ export default function RenderingTemplateEditor() {
       setPreviewImage(url);
     } catch (error) {
       console.error('Failed to render preview:', error);
-      alert('Fehler beim Rendern der Vorschau!');
+      showToast({ type: 'error', message: 'Fehler beim Rendern der Vorschau!' });
     }
   };
 

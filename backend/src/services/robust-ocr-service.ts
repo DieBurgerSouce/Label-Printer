@@ -270,7 +270,10 @@ export class RobustOCRService {
       return result;
     } catch (error: unknown) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      console.error(`[RobustOCRService] CRITICAL ERROR processing article ${articleNumber}:`, error);
+      console.error(
+        `[RobustOCRService] CRITICAL ERROR processing article ${articleNumber}:`,
+        error
+      );
 
       return {
         articleNumber,
