@@ -10,7 +10,7 @@
  *   npm run cleanup-corrupted-articles
  */
 
-import { prisma } from '../lib/supabase.js';
+import { prisma } from '../lib/prisma.js';
 import dataValidationService from '../services/data-validation-service.js';
 import puppeteer from 'puppeteer';
 import htmlExtractionService from '../services/html-extraction-service.js';

@@ -2,7 +2,7 @@
  * Product Service
  * Manages product creation and updates from crawled data
  */
-import { prisma } from '../lib/supabase';
+import { prisma } from '../lib/prisma';
 import type { OcrResult, Screenshot } from '@prisma/client';
 
 export interface CreateProductFromOcrParams {

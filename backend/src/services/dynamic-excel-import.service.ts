@@ -5,7 +5,7 @@
  */
 
 import * as XLSX from 'xlsx';
-import { prisma } from '../lib/supabase.js';
+import { prisma } from '../lib/prisma.js';
 import { z } from 'zod';
 
 // ========================================

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import lexwareImportService from '../../services/lexware-import-service';
 import batchProcessor from '../../services/lexware-batch-processor';
 import lexwareValidationService from '../../services/lexware-validation-service';
-import prisma from '../../lib/supabase';
+import prisma from '../../lib/prisma';
 
 const router = Router();
 

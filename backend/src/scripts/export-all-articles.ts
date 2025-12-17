@@ -3,7 +3,7 @@
  * This creates a complete backup of all articles with their full data
  */
 
-import { prisma } from '../lib/supabase';
+import { prisma } from '../lib/prisma';
 import * as fs from 'fs';
 import * as path from 'path';
 

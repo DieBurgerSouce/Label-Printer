@@ -3,7 +3,7 @@ import { RobustOCRService } from './robust-ocr-service';
 import lexwareImportService, { ImagePair, ImportManifest } from './lexware-import-service';
 import lexwareValidationService, { ValidationReport } from './lexware-validation-service';
 import { HybridExtractionResult } from '../types/extraction-types';
-import prisma from '../lib/supabase';
+import prisma from '../lib/prisma';
 import { Product } from '@prisma/client';
 
 /**

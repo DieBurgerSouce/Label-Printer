@@ -3,7 +3,7 @@
  * ✅ FIXED: Now uses DATABASE instead of local JSON file!
  */
 
-import { prisma } from '../lib/supabase.js';
+import { prisma } from '../lib/prisma.js';
 
 export interface Article {
   id: string;

@@ -4,7 +4,7 @@
  */
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
-import { prisma } from '../../lib/supabase';
+import { prisma } from '../../lib/prisma';
 
 const router = Router();
 

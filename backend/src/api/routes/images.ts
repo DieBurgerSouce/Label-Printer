@@ -29,6 +29,28 @@ console.log('Current __dirname:', __dirname);
 console.log('BASE_DIR:', BASE_DIR);
 
 /**
+ * Validate that a path is safely within a base directory (Path Traversal Prevention)
+ * @param baseDir - The allowed base directory
+ * @param relativePath - User-provided path segments to join
+ * @returns The safe absolute path, or null if path traversal attempted
+ */
+function getSafePath(baseDir: string, ...relativePath: string[]): string | null {
+  // Normalize the base directory
+  const normalizedBase = path.resolve(baseDir);
+
+  // Join and normalize the full path
+  const fullPath = path.resolve(normalizedBase, ...relativePath);
+
+  // Ensure the resolved path starts with the base directory
+  if (!fullPath.startsWith(normalizedBase + path.sep) && fullPath !== normalizedBase) {
+    console.warn(`Path traversal attempt blocked: ${relativePath.join('/')} resolved to ${fullPath}`);
+    return null;
+  }
+
+  return fullPath;
+}
+
+/**
  * GET /api/images/screenshots/:jobId/:articleNumber/:filename
  * Serve screenshot images
  */
@@ -36,8 +58,16 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
   try {
     const { jobId, articleNumber, filename } = req.params;
 
-    // Construct the full path
-    const imagePath = path.join(SCREENSHOTS_DIR, jobId, articleNumber, filename);
+    // Construct the full path with path traversal protection
+    const imagePath = getSafePath(SCREENSHOTS_DIR, jobId, articleNumber, filename);
+
+    // Block path traversal attempts
+    if (!imagePath) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid path'
+      });
+    }
 
     console.log('Image request:', { jobId, articleNumber, filename });
     console.log('Looking for image at:', imagePath);
@@ -48,8 +78,7 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
       console.log('Image not found at path:', imagePath);
       return res.status(404).json({
         success: false,
-        error: 'Image not found',
-        path: imagePath
+        error: 'Image not found'
       });
     }
 
@@ -88,8 +117,16 @@ router.get('/labels/:filename', (req, res) => {
   try {
     const { filename } = req.params;
 
-    // Construct the full path
-    const imagePath = path.join(LABELS_DIR, filename);
+    // Construct the full path with path traversal protection
+    const imagePath = getSafePath(LABELS_DIR, filename);
+
+    // Block path traversal attempts
+    if (!imagePath) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid path'
+      });
+    }
 
     // Check if file exists
     if (!fs.existsSync(imagePath)) {
@@ -132,8 +169,16 @@ router.get('/products/:filename', (req, res) => {
   try {
     const { filename } = req.params;
 
-    // Construct the full path
-    const imagePath = path.join(PRODUCTS_DIR, filename);
+    // Construct the full path with path traversal protection
+    const imagePath = getSafePath(PRODUCTS_DIR, filename);
+
+    // Block path traversal attempts
+    if (!imagePath) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid path'
+      });
+    }
 
     console.log('Product image request:', filename);
     console.log('Looking for image at:', imagePath);
@@ -143,8 +188,7 @@ router.get('/products/:filename', (req, res) => {
       console.log('Product image not found at path:', imagePath);
       return res.status(404).json({
         success: false,
-        error: 'Product image not found',
-        path: imagePath
+        error: 'Product image not found'
       });
     }
 
@@ -182,7 +226,17 @@ router.get('/products/:filename', (req, res) => {
 router.get('/list/:jobId/:articleNumber', (req, res) => {
   try {
     const { jobId, articleNumber } = req.params;
-    const dirPath = path.join(SCREENSHOTS_DIR, jobId, articleNumber);
+
+    // Construct the full path with path traversal protection
+    const dirPath = getSafePath(SCREENSHOTS_DIR, jobId, articleNumber);
+
+    // Block path traversal attempts
+    if (!dirPath) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid path'
+      });
+    }
 
     if (!fs.existsSync(dirPath)) {
       return res.json({
@@ -193,11 +247,14 @@ router.get('/list/:jobId/:articleNumber', (req, res) => {
 
     const files = fs.readdirSync(dirPath)
       .filter(file => ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(path.extname(file).toLowerCase()))
-      .map(file => ({
-        filename: file,
-        url: `/api/images/screenshots/${jobId}/${articleNumber}/${file}`,
-        size: fs.statSync(path.join(dirPath, file)).size
-      }));
+      .map(file => {
+        const filePath = getSafePath(dirPath, file);
+        return {
+          filename: file,
+          url: `/api/images/screenshots/${jobId}/${articleNumber}/${file}`,
+          size: filePath ? fs.statSync(filePath).size : 0
+        };
+      });
 
     res.json({
       success: true,

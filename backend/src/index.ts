@@ -15,7 +15,6 @@ import ocrRouter from './api/routes/ocr';
 import templatesRouter from './api/routes/templates';
 import labelTemplatesRouter from './api/routes/label-templates';
 import automationRouter from './api/routes/automation';
-// import testWebSocketRouter from './api/routes/test-websocket'; // Disabled - requires Supabase
 import articlesRouter from './api/routes/articles';
 import imagesRouter from './api/routes/images';
 import lexwareRouter from './api/routes/lexware';
@@ -30,10 +29,26 @@ const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
 
-// Middleware - Configure CORS to allow all origins (required for ngrok)
+// Middleware - Configure CORS with explicit origins
+const CORS_ORIGINS = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:3001', 'http://localhost:3000', 'http://127.0.0.1:3001'];
+
 app.use(cors({
-  origin: '*',
-  credentials: false,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.) in development
+    if (!origin && process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    // Check if origin is in allowed list
+    if (!origin || CORS_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -55,7 +70,6 @@ app.use('/api/ocr', ocrRouter);
 app.use('/api/templates', templatesRouter);
 app.use('/api/label-templates', labelTemplatesRouter);
 app.use('/api/automation', automationRouter);
-// app.use('/api/test-websocket', testWebSocketRouter); // Disabled - requires Supabase
 app.use('/api/articles', articlesRouter);
 app.use('/api/images', imagesRouter);
 app.use('/api/lexware', lexwareRouter);

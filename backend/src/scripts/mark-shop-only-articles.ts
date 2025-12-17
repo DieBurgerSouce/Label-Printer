@@ -3,7 +3,7 @@
  * Diese können dann beim Bulk-Drucken optional ausgeschlossen werden
  */
 
-import { prisma } from '../lib/supabase';
+import { prisma } from '../lib/prisma';
 import * as fs from 'fs';
 import * as path from 'path';
 
