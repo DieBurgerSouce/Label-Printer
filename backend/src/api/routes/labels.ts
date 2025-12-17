@@ -551,7 +551,7 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
  */
 router.post('/extract', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { url, articleNumber } = req.body;
+    const { url, articleNumber: _articleNumber } = req.body;
 
     if (!url) {
       const response: ApiResponse = {

@@ -100,7 +100,7 @@ router.get('/', async (req: Request, res: Response) => {
  * GET /api/articles/stats
  * Get statistics about articles from DATABASE
  */
-router.get('/stats', async (req: Request, res: Response) => {
+router.get('/stats', async (_req: Request, res: Response) => {
   try {
     const [
       total,
@@ -136,10 +136,10 @@ router.get('/stats', async (req: Request, res: Response) => {
       categories: categories.map(c => c.category).filter(Boolean)
     };
 
-    res.json({ success: true, data: stats });
+    return res.json({ success: true, data: stats });
   } catch (error: any) {
     console.error('Error fetching stats:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to fetch statistics',
       message: error.message
     });
@@ -168,10 +168,10 @@ router.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Article not found' });
     }
 
-    res.json(article);
+    return res.json(article);
   } catch (error: any) {
     console.error('Error fetching article:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to fetch article',
       message: error.message
     });

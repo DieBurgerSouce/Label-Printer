@@ -10,7 +10,6 @@ import {
   TextLayerProperties,
   ImageLayerProperties,
   QRCodeLayerProperties,
-  TextStyle,
   TemplateDimensions,
   FormattingOptions
 } from '../types/template-types';
@@ -155,7 +154,7 @@ export class LabelToRenderingConverter {
    */
   private static convertDimensions(
     labelTemplate: FrontendLabelTemplate,
-    targetUnit: string,
+    _targetUnit: string,
     exportDpi: number
   ): TemplateDimensions {
     // Prefer mm if available (print-oriented)

@@ -1,5 +1,4 @@
 import { HybridExtractionResult, FieldConfidenceScores } from '../types/extraction-types';
-import { Product } from '@prisma/client';
 import prisma from '../lib/prisma';
 
 /**

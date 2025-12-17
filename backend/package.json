@@ -52,6 +52,7 @@
     "string-similarity": "^4.0.4",
     "tesseract.js": "^6.0.1",
     "uuid": "^10.0.0",
+    "winston": "^3.19.0",
     "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },
@@ -63,6 +64,7 @@
     "@types/pdfkit": "^0.13.5",
     "@types/qrcode": "^1.5.6",
     "@types/uuid": "^10.0.0",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^8.5.0",
     "@typescript-eslint/parser": "^8.5.0",
     "eslint": "^9.10.0",

@@ -1,9 +1,7 @@
 import { Page } from 'puppeteer';
 import {
   HtmlExtractedData,
-  HtmlValidationResult,
-  TieredPrice,
-  FieldConfidenceScores
+  HtmlValidationResult
 } from '../types/extraction-types';
 
 /**

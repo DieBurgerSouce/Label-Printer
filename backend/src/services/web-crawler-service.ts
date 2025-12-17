@@ -12,7 +12,6 @@ import * as path from 'path';
 import sharp from 'sharp';
 import { PreciseScreenshotService } from './precise-screenshot-service';
 import htmlExtractionService from './html-extraction-service';
-import dataValidationService from './data-validation-service';
 import { ImageDownloadService } from './image-download-service';
 import {
   CrawlJob,
@@ -688,7 +687,7 @@ export class WebCrawlerService {
     page: Page,
     job: CrawlJob,
     selectors: ProductSelectors,
-    targetProducts: number
+    _targetProducts: number
   ): Promise<string[]> {
     const productUrls: string[] = [];
     let categoryPage = 1;
@@ -802,7 +801,7 @@ export class WebCrawlerService {
    */
   private async collectProductLinksFromPage(
     page: Page,
-    job: CrawlJob,
+    _job: CrawlJob,
     selectors: ProductSelectors
   ): Promise<string[]> {
     try {

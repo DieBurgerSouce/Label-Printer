@@ -65,7 +65,7 @@ router.post('/', async (req: Request, res: Response) => {
  * GET /api/label-templates
  * List all label templates
  */
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const templates = await labelTemplateService.listTemplates();
 

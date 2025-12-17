@@ -5,9 +5,8 @@
 
 import PDFDocument from 'pdfkit';
 import { PrintLayout, PriceLabel } from '../types/label-types.js';
-import LabelTemplateService from './label-template-service.js';
-import { convertLabelTemplateToRenderingTemplate } from './label-to-rendering-converter.js';
-import { templateEngine } from './template-engine.js';
+// Note: LabelTemplateService, convertLabelTemplateToRenderingTemplate, and templateEngine
+// are available for future template-based rendering but not currently used in basic PDF generation
 
 export class PrintService {
   // Paper formats in mm

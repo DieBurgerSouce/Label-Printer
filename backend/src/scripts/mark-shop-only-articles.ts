@@ -17,7 +17,7 @@ async function markShopOnlyArticles() {
     const dataPath = path.join(__dirname, '../../../mark-these-articles.json');
     const markData = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
 
-    const toMarkIds = markData.toMarkAsNotInExcel;
+    const _toMarkIds = markData.toMarkAsNotInExcel;
     const toMarkNumbers = markData.articleNumbers;
 
     console.log(`Zu markieren: ${toMarkNumbers.length} Artikel\n`);

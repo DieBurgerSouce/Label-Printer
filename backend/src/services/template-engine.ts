@@ -447,7 +447,7 @@ class TemplateEngine {
    */
   private async renderImage(
     layer: TemplateLayer,
-    props: any,
+    _props: any,
     data: Record<string, any>
   ): Promise<string> {
     console.log(`🖼️ Rendering image layer: ${layer.id}`);

@@ -25,8 +25,8 @@ class OCRService {
   private workers: Map<string, Worker> = new Map();
   private processingQueue: Map<string, OCRResult> = new Map();
   private readonly maxWorkers = 2; // Reduced for Docker stability (was 8 - caused crashes)
-  private processedCount = 0;
-  private readonly maxProcessedBeforeCleanup = 20; // Clean up workers more frequently in Docker
+  private _processedCount = 0;
+  private readonly _maxProcessedBeforeCleanup = 20; // Clean up workers more frequently in Docker
 
   /**
    * Initialize OCR workers
@@ -529,8 +529,9 @@ class OCRService {
 
   /**
    * Clean up and recreate workers to free memory
+   * @deprecated Currently unused - implement periodic cleanup if memory issues arise
    */
-  private async cleanupWorkers(): Promise<void> {
+  private async _cleanupWorkers(): Promise<void> {
     try {
       // Terminate all existing workers
       for (const [id, worker] of this.workers) {

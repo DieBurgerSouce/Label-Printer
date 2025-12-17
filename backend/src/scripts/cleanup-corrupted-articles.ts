@@ -14,8 +14,6 @@ import { prisma } from '../lib/prisma.js';
 import dataValidationService from '../services/data-validation-service.js';
 import puppeteer from 'puppeteer';
 import htmlExtractionService from '../services/html-extraction-service.js';
-import { preciseScreenshotService } from '../services/precise-screenshot-service.js';
-import * as path from 'path';
 
 interface CorruptedArticle {
   id: string;

@@ -7,14 +7,9 @@ import { createWorker, Worker, RecognizeResult } from 'tesseract.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { existsSync } from 'fs';
-import dataValidationService from './data-validation-service';
 import {
   HybridExtractionResult,
   HtmlExtractedData,
-  OcrExtractedData,
-  MergedProductData,
-  FieldSourceTracking,
-  DataSource,
   TieredPrice
 } from '../types/extraction-types';
 

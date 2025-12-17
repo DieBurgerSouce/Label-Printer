@@ -350,7 +350,7 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
  * Get articles imported from Lexware
  * GET /api/lexware/articles
  */
-router.get('/articles', async (req: Request, res: Response) => {
+router.get('/articles', async (_req: Request, res: Response) => {
   try {
     const articles = await prisma.product.findMany({
       where: {
