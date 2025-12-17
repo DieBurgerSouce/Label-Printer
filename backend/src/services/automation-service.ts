@@ -12,8 +12,17 @@ import { robustOCRService } from './robust-ocr-service';
 import { matcherService } from './matcher-service';
 import { templateEngine } from './template-engine';
 import { ProductService } from './product-service';
-import { getWebSocketServer } from '../websocket/socket-server.js';
 import { AutomationJob, AutomationConfig } from '../types/automation-types';
+
+// Import from extracted modules
+import {
+  emitJobCreated,
+  emitJobUpdated,
+  emitJobCompleted,
+  emitJobFailed,
+  emitLabelGenerated,
+  calculateOverallProgress,
+} from './automation';
 
 class AutomationService {
   private jobs: Map<string, AutomationJob> = new Map();
@@ -66,17 +75,7 @@ class AutomationService {
     this.jobs.set(jobId, job);
 
     // Emit WebSocket event: Job Created
-    try {
-      const wsServer = getWebSocketServer();
-      wsServer.emitJobCreated({
-        jobId: job.id,
-        jobType: 'automation',
-        name: job.name,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (err) {
-      // WebSocket not initialized, ignore
-    }
+    emitJobCreated(job);
 
     // Run workflow asynchronously
     this.runWorkflow(job).catch((error) => {
@@ -86,15 +85,7 @@ class AutomationService {
       job.updatedAt = new Date();
 
       // Emit WebSocket event: Job Failed
-      try {
-        const wsServer = getWebSocketServer();
-        wsServer.emitJobFailed(job.id, {
-          error: error.message,
-          stage: job.progress.currentStep,
-        });
-      } catch (err) {
-        // WebSocket not initialized, ignore
-      }
+      emitJobFailed(job, error.message, job.progress.currentStep);
     });
 
     return job;
@@ -133,15 +124,7 @@ class AutomationService {
       console.log(`   Time: ${job.results.summary.totalProcessingTime}ms`);
 
       // Emit WebSocket event: Job Completed
-      try {
-        const wsServer = getWebSocketServer();
-        wsServer.emitJobCompleted(job.id, {
-          results: job.results,
-          duration: job.results.summary.totalProcessingTime,
-        });
-      } catch (err) {
-        // WebSocket not initialized, ignore
-      }
+      emitJobCompleted(job);
     } catch (error: any) {
       job.status = 'failed';
       job.error = error.message;
@@ -161,17 +144,7 @@ class AutomationService {
     job.progress.currentStepProgress = 0;
 
     // Emit WebSocket event: Job Updated (Step Started)
-    try {
-      const wsServer = getWebSocketServer();
-      wsServer.emitJobUpdated(job.id, {
-        status: job.status,
-        progress: 25, // 25% (step 1 of 4)
-        currentStage: 'crawling',
-        timestamp: new Date().toISOString(),
-      });
-    } catch (err) {
-      // WebSocket not initialized, ignore
-    }
+    emitJobUpdated(job.id, job.status, 25, 'crawling');
 
     const crawlConfig = {
       maxProducts: job.config.crawlerConfig?.maxProducts || 2000,
@@ -197,18 +170,12 @@ class AutomationService {
       job.progress.productsFound = found;
 
       // Emit WebSocket progress update every second during crawling
-      try {
-        const wsServer = getWebSocketServer();
-        const overallProgress = Math.round(0 + job.progress.currentStepProgress / 4); // Step 1/4
-        wsServer.emitJobUpdated(job.id, {
-          status: job.status,
-          progress: overallProgress,
-          currentStage: 'crawling',
-          timestamp: new Date().toISOString(),
-        });
-      } catch (err) {
-        // WebSocket not initialized, ignore
-      }
+      emitJobUpdated(
+        job.id,
+        job.status,
+        calculateOverallProgress(1, job.progress.currentStepProgress),
+        'crawling'
+      );
 
       if (status.status === 'completed' || status.status === 'failed') {
         complete = true;
@@ -246,17 +213,7 @@ class AutomationService {
     job.progress.currentStepProgress = 0;
 
     // Emit WebSocket event: Job Updated (Step Started)
-    try {
-      const wsServer = getWebSocketServer();
-      wsServer.emitJobUpdated(job.id, {
-        status: job.status,
-        progress: 50, // 50% (step 2 of 4)
-        currentStage: 'processing-ocr',
-        timestamp: new Date().toISOString(),
-      });
-    } catch (err) {
-      // WebSocket not initialized, ignore
-    }
+    emitJobUpdated(job.id, job.status, 50, 'processing-ocr');
 
     const ocrConfig = job.config.ocrConfig || {};
 
@@ -469,22 +426,13 @@ class AutomationService {
 
           // Send progress update every 10 screenshots (or on last one)
           if (processed % 10 === 0 || processed === uniqueScreenshots.length) {
-            try {
-              const wsServer = getWebSocketServer();
-              const stepProgress = job.progress.currentStepProgress;
-              // OCR is step 2/4, so overall = 25% + (stepProgress / 4)
-              const overallProgress = 25 + Math.round(stepProgress / 4);
-
-              wsServer.emitJobUpdated(job.id, {
-                status: job.status,
-                progress: overallProgress,
-                currentStage: 'processing-ocr',
-                message: `Processing OCR: ${processed}/${uniqueScreenshots.length}`,
-                timestamp: new Date().toISOString(),
-              });
-            } catch (err) {
-              // WebSocket not initialized, ignore
-            }
+            emitJobUpdated(
+              job.id,
+              job.status,
+              calculateOverallProgress(2, job.progress.currentStepProgress),
+              'processing-ocr',
+              `Processing OCR: ${processed}/${uniqueScreenshots.length}`
+            );
           }
         } catch (error: any) {
           console.error(`Failed to process screenshot:`, error);
@@ -546,18 +494,13 @@ class AutomationService {
         );
 
         // Emit WebSocket event
-        try {
-          const wsServer = getWebSocketServer();
-          wsServer.emitJobUpdated(job.id, {
-            status: 'products-saved',
-            progress: 60,
-            currentStage: 'products-saved',
-            message: `${results.created + results.updated} products saved to database`,
-            timestamp: new Date().toISOString(),
-          });
-        } catch (err) {
-          // WebSocket not initialized, ignore
-        }
+        emitJobUpdated(
+          job.id,
+          'products-saved',
+          60,
+          'products-saved',
+          `${results.created + results.updated} products saved to database`
+        );
       } else {
         console.log('⚠️ No products saved (all failed validation)');
       }
@@ -578,17 +521,7 @@ class AutomationService {
     job.progress.currentStepProgress = 0;
 
     // Emit WebSocket event: Job Updated (Step Started)
-    try {
-      const wsServer = getWebSocketServer();
-      wsServer.emitJobUpdated(job.id, {
-        status: job.status,
-        progress: 75, // 75% (step 3 of 4)
-        currentStage: 'matching',
-        timestamp: new Date().toISOString(),
-      });
-    } catch (err) {
-      // WebSocket not initialized, ignore
-    }
+    emitJobUpdated(job.id, job.status, 75, 'matching');
 
     const excelData = job.config.excelData || [];
     const matchConfig = job.config.matcherConfig || { threshold: 0.6 };
@@ -666,17 +599,7 @@ class AutomationService {
     job.progress.currentStepProgress = 0;
 
     // Emit WebSocket event: Job Updated (Step Started)
-    try {
-      const wsServer = getWebSocketServer();
-      wsServer.emitJobUpdated(job.id, {
-        status: job.status,
-        progress: 90, // 90% (step 4 of 4)
-        currentStage: 'rendering',
-        timestamp: new Date().toISOString(),
-      });
-    } catch (err) {
-      // WebSocket not initialized, ignore
-    }
+    emitJobUpdated(job.id, job.status, 90, 'rendering');
 
     // Load template
     const template = await templateEngine.loadTemplate(job.config.templateId);
@@ -735,16 +658,12 @@ class AutomationService {
           job.results.summary.labelsGenerated++;
 
           // Emit WebSocket event: Label Generated
-          try {
-            const wsServer = getWebSocketServer();
-            wsServer.emitLabelGenerated(job.id, {
-              labelId,
-              imageUrl: renderResult.base64 || labelPath,
-              articleNumber: data.articleNumber || '',
-            });
-          } catch (err) {
-            // WebSocket not initialized, ignore
-          }
+          emitLabelGenerated(
+            job.id,
+            labelId,
+            renderResult.base64 || labelPath,
+            data.articleNumber || ''
+          );
         } else {
           job.results.labels.push({
             id: uuidv4(),
