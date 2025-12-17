@@ -16,16 +16,18 @@ interface TieredPrice {
  * Fix common OCR errors in numbers (e.g., "SO" -> "50", "O" -> "0", "l" -> "1")
  */
 function fixOCRNumberErrors(text: string): string {
-  return text
-    // "SO" -> "50" (very common in German price tables - in "AbSO", "BisSO", etc.)
-    .replace(/SO(?=\s|$|[^\w])/gi, '50')  // ⚡ FIX: Lookahead instead of \b
-    // "O" (letter) -> "0" (digit) when surrounded by digits or at end
-    .replace(/([0-9])O([0-9])/g, '$10$2')
-    .replace(/O([0-9])/g, '0$1')
-    .replace(/([0-9])O\b/g, '$10')
-    // "l" (lowercase L) or "I" (uppercase i) -> "1"
-    .replace(/\bl\b/g, '1')
-    .replace(/\bI\b/g, '1');
+  return (
+    text
+      // "SO" -> "50" (very common in German price tables - in "AbSO", "BisSO", etc.)
+      .replace(/SO(?=\s|$|[^\w])/gi, '50') // ⚡ FIX: Lookahead instead of \b
+      // "O" (letter) -> "0" (digit) when surrounded by digits or at end
+      .replace(/([0-9])O([0-9])/g, '$10$2')
+      .replace(/O([0-9])/g, '0$1')
+      .replace(/([0-9])O\b/g, '$10')
+      // "l" (lowercase L) or "I" (uppercase i) -> "1"
+      .replace(/\bl\b/g, '1')
+      .replace(/\bI\b/g, '1')
+  );
 }
 
 /**
@@ -48,7 +50,7 @@ function parseTieredPrices(text: string): TieredPrice[] {
     if (match) {
       prices.push({
         quantity: parseInt(match[1]),
-        price: match[2].replace(',', '.')
+        price: match[2].replace(',', '.'),
       });
     }
   }
@@ -63,9 +65,9 @@ async function main() {
   const articles = await prisma.product.findMany({
     where: {
       tieredPricesText: {
-        not: null
-      }
-    }
+        not: null,
+      },
+    },
   });
 
   console.log(`📦 Found ${articles.length} articles with tiered prices\n`);
@@ -93,8 +95,8 @@ async function main() {
       await prisma.product.update({
         where: { id: article.id },
         data: {
-          tieredPrices: newTieredPrices as any
-        }
+          tieredPrices: newTieredPrices as any,
+        },
       });
 
       fixedCount++;
@@ -110,8 +112,7 @@ async function main() {
   await prisma.$disconnect();
 }
 
-main()
-  .catch((error) => {
-    console.error('❌ Error:', error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error('❌ Error:', error);
+  process.exit(1);
+});

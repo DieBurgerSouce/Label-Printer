@@ -126,8 +126,8 @@ class TemplateEngine {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
+        '--disable-gpu',
+      ],
     });
 
     try {
@@ -161,8 +161,8 @@ class TemplateEngine {
           x: 0,
           y: 0,
           width,
-          height
-        }
+          height,
+        },
       });
 
       return Buffer.from(buffer);
@@ -213,7 +213,7 @@ class TemplateEngine {
     template: LabelTemplate
   ): string {
     // Get data value
-    let value = data[props.dataField];
+    const value = data[props.dataField];
 
     // 🔍 DEBUG: Log field rendering
     console.log(`   🎨 Rendering field: ${props.dataField} (${props.fieldType})`);
@@ -238,7 +238,11 @@ class TemplateEngine {
     const x = this.convertToPixels(layer.position.x, layer.position.unit, template.dimensions.dpi);
     const y = this.convertToPixels(layer.position.y, layer.position.unit, template.dimensions.dpi);
     const width = this.convertToPixels(layer.size.width, layer.size.unit, template.dimensions.dpi);
-    const height = this.convertToPixels(layer.size.height, layer.size.unit, template.dimensions.dpi);
+    const height = this.convertToPixels(
+      layer.size.height,
+      layer.size.unit,
+      template.dimensions.dpi
+    );
 
     // Apply dynamic styling based on field type
     const style = props.style;
@@ -363,7 +367,11 @@ class TemplateEngine {
   /**
    * Render QR code placeholder
    */
-  private async renderQRCode(layer: TemplateLayer, props: any, data: Record<string, any>): Promise<string> {
+  private async renderQRCode(
+    layer: TemplateLayer,
+    props: any,
+    data: Record<string, any>
+  ): Promise<string> {
     console.log(`🔲 Rendering QR code layer: ${layer.id}`);
 
     const x = this.convertToPixels(layer.position.x, layer.position.unit, 300);
@@ -409,8 +417,8 @@ class TemplateEngine {
         margin: 1,
         color: {
           dark: '#000000',
-          light: '#FFFFFF'
-        }
+          light: '#FFFFFF',
+        },
       });
 
       console.log(`   ✅ QR code generated (${qrDataUrl.length} bytes)`);
@@ -422,7 +430,7 @@ class TemplateEngine {
       console.error(`   ❌ Error generating QR code:`, error.message);
       // Fallback to placeholder
       return `<rect x="${x}" y="${y}" width="${size}" height="${size}" fill="#FFCCCC" stroke="#FF0000" stroke-width="2"/>
-              <text x="${x + size/2}" y="${y + size/2}" text-anchor="middle" font-size="10" fill="#666">QR Error</text>`;
+              <text x="${x + size / 2}" y="${y + size / 2}" text-anchor="middle" font-size="10" fill="#666">QR Error</text>`;
     }
   }
 
@@ -459,7 +467,7 @@ class TemplateEngine {
 
     // Get image URL from data
     // Check for imageUrl or productImage fields
-    let imageUrl = data.imageUrl || data.productImage;
+    const imageUrl = data.imageUrl || data.productImage;
 
     console.log(`   - imageUrl from data: ${imageUrl}`);
 
@@ -467,7 +475,7 @@ class TemplateEngine {
       console.log(`   ⚠️ No image URL found, showing placeholder`);
       // Return gray placeholder
       return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#CCCCCC" stroke="#999999" stroke-width="1"/>
-              <text x="${x + width/2}" y="${y + height/2}" text-anchor="middle" font-size="12" fill="#666666">Bild</text>`;
+              <text x="${x + width / 2}" y="${y + height / 2}" text-anchor="middle" font-size="12" fill="#666666">Bild</text>`;
     }
 
     try {
@@ -483,7 +491,7 @@ class TemplateEngine {
         // External URL - would need to fetch (not implemented for security)
         console.log(`   ⚠️ External URLs not supported yet: ${imageUrl}`);
         return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#CCCCCC" stroke="#999999" stroke-width="1"/>
-                <text x="${x + width/2}" y="${y + height/2}" text-anchor="middle" font-size="10" fill="#666666">URL</text>`;
+                <text x="${x + width / 2}" y="${y + height / 2}" text-anchor="middle" font-size="10" fill="#666666">URL</text>`;
       } else {
         // Relative path - try to load from data directory
         const imagePath = path.join('/app/data', imageUrl);
@@ -505,7 +513,7 @@ class TemplateEngine {
       console.error(`   ❌ Error loading image ${imageUrl}:`, error.message);
       // Return error placeholder
       return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#FFCCCC" stroke="#FF0000" stroke-width="1"/>
-              <text x="${x + width/2}" y="${y + height/2}" text-anchor="middle" font-size="10" fill="#CC0000">Error</text>`;
+              <text x="${x + width / 2}" y="${y + height / 2}" text-anchor="middle" font-size="10" fill="#CC0000">Error</text>`;
     }
   }
 
@@ -597,7 +605,10 @@ class TemplateEngine {
     const [intPart, decPart] = fixedValue.split('.');
 
     // Add thousands separator
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, formatting.thousandsSeparator || '');
+    const formattedInt = intPart.replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      formatting.thousandsSeparator || ''
+    );
 
     // Combine
     let formatted = formattedInt + (formatting.decimalSeparator || ',') + decPart;
@@ -718,7 +729,9 @@ class TemplateEngine {
     const avgCharWidth = fontSize * 0.65;
     const maxCharsPerLine = Math.floor(maxWidth / avgCharWidth);
 
-    console.log(`   🔤 Word wrap: maxWidth=${maxWidth}px, fontSize=${fontSize}px, avgCharWidth=${avgCharWidth}px, maxCharsPerLine=${maxCharsPerLine}`);
+    console.log(
+      `   🔤 Word wrap: maxWidth=${maxWidth}px, fontSize=${fontSize}px, avgCharWidth=${avgCharWidth}px, maxCharsPerLine=${maxCharsPerLine}`
+    );
 
     if (maxCharsPerLine < 10) {
       // Width too small, just return single line
@@ -750,7 +763,9 @@ class TemplateEngine {
     }
 
     console.log(`   ✂️  Wrapped into ${lines.length} lines`);
-    lines.forEach((line, i) => console.log(`      Line ${i+1}: ${line.substring(0, 60)}${line.length > 60 ? '...' : ''}`));
+    lines.forEach((line, i) =>
+      console.log(`      Line ${i + 1}: ${line.substring(0, 60)}${line.length > 60 ? '...' : ''}`)
+    );
 
     // Limit to reasonable number of lines to avoid overflow
     return lines.slice(0, 8);
@@ -805,9 +820,10 @@ class TemplateEngine {
 
         // Search by exact name match (case-insensitive)
         const normalizedQuery = templateId.toLowerCase().replace(/-/g, ' ');
-        const matchedTemplate = allTemplates.find(t =>
-          t.name.toLowerCase() === normalizedQuery ||
-          t.name.toLowerCase().replace(/\s+/g, '-') === templateId.toLowerCase()
+        const matchedTemplate = allTemplates.find(
+          (t) =>
+            t.name.toLowerCase() === normalizedQuery ||
+            t.name.toLowerCase().replace(/\s+/g, '-') === templateId.toLowerCase()
         );
 
         if (matchedTemplate) {

@@ -95,7 +95,7 @@ class OCRService {
         { file: 'title.png', field: 'productName', clean: false },
         { file: 'description.png', field: 'description', clean: false },
         { file: 'price.png', field: 'price', clean: true },
-        { file: 'price-table.png', field: 'tieredPrices', table: true }
+        { file: 'price-table.png', field: 'tieredPrices', table: true },
       ];
 
       let confidenceSum = 0;
@@ -116,7 +116,9 @@ class OCRService {
 
           // Check if we should use Cloud Vision as fallback
           if (cloudVisionService.shouldUseFallback(confidence / 100)) {
-            console.log(`    ☁️ Using Cloud Vision fallback for ${mapping.file} (low confidence: ${Math.round(confidence)}%)`);
+            console.log(
+              `    ☁️ Using Cloud Vision fallback for ${mapping.file} (low confidence: ${Math.round(confidence)}%)`
+            );
             const cloudData = await cloudVisionService.processImage(filePath);
             if (cloudData) {
               // Use cloud data if available
@@ -130,9 +132,9 @@ class OCRService {
                 extractedText = cloudData.price;
                 confidence = 95;
               } else if (mapping.field === 'tieredPrices' && cloudData.tieredPrices) {
-                extractedText = cloudData.tieredPrices.map(t =>
-                  `${t.quantity}: ${t.price}`
-                ).join('\n');
+                extractedText = cloudData.tieredPrices
+                  .map((t) => `${t.quantity}: ${t.price}`)
+                  .join('\n');
                 confidence = 95;
               }
             }
@@ -160,7 +162,9 @@ class OCRService {
           if (mapping.table) {
             // Save both raw text for labels AND structured data
             elementResults['tieredPricesText'] = extractedText; // Raw text for labels (e.g., "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR")
-            elementResults[mapping.field] = JSON.stringify(this.parseTieredPriceTable(extractedText)); // Structured data for calculations
+            elementResults[mapping.field] = JSON.stringify(
+              this.parseTieredPriceTable(extractedText)
+            ); // Structured data for calculations
           } else {
             elementResults[mapping.field] = extractedText;
           }
@@ -182,7 +186,6 @@ class OCRService {
 
       console.log(`✅ OCR completed for article ${articleNumber} (${result.processingTime}ms)`);
       return result;
-
     } catch (error) {
       console.error('❌ OCR processing failed:', error);
       result.status = 'failed';
@@ -234,7 +237,7 @@ class OCRService {
       }
 
       // Check if file exists and is not empty
-      const fileStats = await fs.stat(processedImagePath).catch(err => {
+      const fileStats = await fs.stat(processedImagePath).catch((err) => {
         throw new Error(`Cannot access image file: ${processedImagePath} - ${err.message}`);
       });
 
@@ -254,10 +257,7 @@ class OCRService {
       result.boundingBoxes = this.extractBoundingBoxes(data);
 
       // Extract structured data using patterns
-      result.extractedData = this.extractStructuredData(
-        data.text,
-        result.boundingBoxes
-      );
+      result.extractedData = this.extractStructuredData(data.text, result.boundingBoxes);
 
       // Calculate confidence scores
       result.confidence = this.calculateConfidence(data, result.extractedData);
@@ -364,10 +364,7 @@ class OCRService {
   /**
    * Extract structured data from raw OCR text using patterns
    */
-  private extractStructuredData(
-    text: string,
-    boundingBoxes: BoundingBox[]
-  ): ExtractedData {
+  private extractStructuredData(text: string, boundingBoxes: BoundingBox[]): ExtractedData {
     const data: ExtractedData = {};
 
     // Extract article number
@@ -403,10 +400,10 @@ class OCRService {
     data.tieredPrices = this.extractTieredPrices(text, boundingBoxes);
 
     // Extract product name (heuristic: longest capitalized line)
-    const lines = text.split('\n').filter(line => line.trim().length > 3);
-    const capitalizedLines = lines.filter(line => /^[A-ZÄÖÜ]/.test(line.trim()));
+    const lines = text.split('\n').filter((line) => line.trim().length > 3);
+    const capitalizedLines = lines.filter((line) => /^[A-ZÄÖÜ]/.test(line.trim()));
     if (capitalizedLines.length > 0) {
-      data.productName = capitalizedLines.reduce((a, b) => a.length > b.length ? a : b).trim();
+      data.productName = capitalizedLines.reduce((a, b) => (a.length > b.length ? a : b)).trim();
       this.markBoundingBoxType(boundingBoxes, data.productName, 'productName');
     }
 
@@ -456,10 +453,7 @@ class OCRService {
   /**
    * Calculate confidence scores
    */
-  private calculateConfidence(
-    tesseractData: any,
-    extractedData: ExtractedData
-  ): ConfidenceScores {
+  private calculateConfidence(tesseractData: any, extractedData: ExtractedData): ConfidenceScores {
     const scores: ConfidenceScores = {
       overall: tesseractData.confidence / 100 || 0,
     };
@@ -473,10 +467,7 @@ class OCRService {
     }
 
     if (extractedData.price) {
-      scores.price = this.calculateFieldConfidence(
-        extractedData.price,
-        FIELD_PATTERNS.price
-      );
+      scores.price = this.calculateFieldConfidence(extractedData.price, FIELD_PATTERNS.price);
     }
 
     // Product name confidence (based on length and capitalization)
@@ -553,7 +544,7 @@ class OCRService {
       }
 
       // Wait a bit for cleanup
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Re-initialize workers
       await this.initialize();
@@ -576,8 +567,8 @@ class OCRService {
     console.log(`🔍 Batch processing ${screenshotPaths.length} screenshots...`);
 
     const results = await Promise.all(
-      screenshotPaths.map(path =>
-        this.processScreenshot(path, config, jobId).catch(error => {
+      screenshotPaths.map((path) =>
+        this.processScreenshot(path, config, jobId).catch((error) => {
           console.error(`Failed to process ${path}:`, error);
           return null;
         })
@@ -601,20 +592,22 @@ class OCRService {
     const prices: TieredPrice[] = [];
 
     // First, clean the text from obvious garbage
-    const cleanedLines = text.split('\n')
-      .filter(line => {
-        const trimmed = line.trim();
-        // Filter out garbage patterns
-        if (!trimmed) return false;
-        if (trimmed.includes('©')) return false;
-        if (trimmed.includes('Service')) return false;
-        if (trimmed.includes('Hilfe')) return false;
-        if (trimmed.includes('Goooe')) return false;
-        if (trimmed.includes('eingeben')) return false;
-        if (trimmed.includes('@')) return false;
-        // Only keep lines that look like prices
-        return /\d/.test(trimmed) && (trimmed.includes('€') || trimmed.includes('EUR') || /\d+[,\.]\d+/.test(trimmed));
-      });
+    const cleanedLines = text.split('\n').filter((line) => {
+      const trimmed = line.trim();
+      // Filter out garbage patterns
+      if (!trimmed) return false;
+      if (trimmed.includes('©')) return false;
+      if (trimmed.includes('Service')) return false;
+      if (trimmed.includes('Hilfe')) return false;
+      if (trimmed.includes('Goooe')) return false;
+      if (trimmed.includes('eingeben')) return false;
+      if (trimmed.includes('@')) return false;
+      // Only keep lines that look like prices
+      return (
+        /\d/.test(trimmed) &&
+        (trimmed.includes('€') || trimmed.includes('EUR') || /\d+[,\.]\d+/.test(trimmed))
+      );
+    });
 
     // Pattern to match price table rows: "ab X Stück Y,ZZ €" or "Bis X Y,ZZ €"
     const pricePattern = /(ab|bis)\s+(\d+)\s+(?:Stück|St\.|Stk\.?)?\s*([\d,]+)\s*€/gi;
@@ -665,11 +658,13 @@ class OCRService {
     prices.sort((a, b) => a.quantity - b.quantity);
 
     // Remove duplicates with same quantity
-    const uniquePrices = prices.filter((price, index, arr) =>
-      index === 0 || price.quantity !== arr[index - 1].quantity
+    const uniquePrices = prices.filter(
+      (price, index, arr) => index === 0 || price.quantity !== arr[index - 1].quantity
     );
 
-    console.log(`    📊 Parsed ${uniquePrices.length} price tiers from ${cleanedLines.length} cleaned lines`);
+    console.log(
+      `    📊 Parsed ${uniquePrices.length} price tiers from ${cleanedLines.length} cleaned lines`
+    );
     return uniquePrices;
   }
 
@@ -722,7 +717,7 @@ class OCRService {
     if (cleaned === cleaned.toUpperCase() && cleaned.length > 15) {
       cleaned = cleaned
         .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(' ');
       console.log(`    🔧 Converted from all-caps to title case`);
     }

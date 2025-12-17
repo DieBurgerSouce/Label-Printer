@@ -44,17 +44,11 @@ export class StorageService {
       category: label.category,
     };
 
-    await fs.writeFile(
-      path.join(labelDir, 'metadata.json'),
-      JSON.stringify(metadata, null, 2)
-    );
+    await fs.writeFile(path.join(labelDir, 'metadata.json'), JSON.stringify(metadata, null, 2));
 
     // ✅ FIX: Save imageData separately as PNG (preserves Buffer!)
     if (label.imageData && Buffer.isBuffer(label.imageData)) {
-      await fs.writeFile(
-        path.join(labelDir, 'image.png'),
-        label.imageData
-      );
+      await fs.writeFile(path.join(labelDir, 'image.png'), label.imageData);
     }
 
     // Save label data WITHOUT imageData (to avoid Buffer serialization issue)
@@ -87,7 +81,7 @@ export class StorageService {
       // ✅ FIX: Load imageData as actual Buffer (not JSON serialized!)
       try {
         const imageData = await fs.readFile(imagePath);
-        label.imageData = imageData;  // ✅ Real Buffer!
+        label.imageData = imageData; // ✅ Real Buffer!
         console.log(`✅ Loaded imageData for label ${id} (${imageData.length} bytes)`);
       } catch (imageError) {
         // No image file exists
@@ -97,7 +91,9 @@ export class StorageService {
           if (bufferData.type === 'Buffer' && Array.isArray(bufferData.data)) {
             // Convert JSON-serialized Buffer back to real Buffer
             label.imageData = Buffer.from(bufferData.data);
-            console.log(`✅ Converted legacy imageData for label ${id} (${label.imageData.length} bytes)`);
+            console.log(
+              `✅ Converted legacy imageData for label ${id} (${label.imageData.length} bytes)`
+            );
 
             // Re-save in new format (migrate automatically)
             try {
@@ -149,9 +145,7 @@ export class StorageService {
       }
 
       if (filters.tags && filters.tags.length > 0) {
-        labels = labels.filter((l) =>
-          filters.tags!.some((tag) => l.tags?.includes(tag))
-        );
+        labels = labels.filter((l) => filters.tags!.some((tag) => l.tags?.includes(tag)));
       }
 
       if (filters.source) {
@@ -227,32 +221,45 @@ export class StorageService {
   static async getStats() {
     const labels = Array.from(this.labels.values());
 
-    const categoryCounts = labels.reduce((acc, label) => {
-      const cat = label.category || 'Uncategorized';
-      acc[cat] = (acc[cat] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const categoryCounts = labels.reduce(
+      (acc, label) => {
+        const cat = label.category || 'Uncategorized';
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const sourceCounts = labels.reduce((acc, label) => {
-      acc[label.source] = (acc[label.source] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const sourceCounts = labels.reduce(
+      (acc, label) => {
+        acc[label.source] = (acc[label.source] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalLabels: this.labels.size,
       categories: categoryCounts,
       sources: sourceCounts,
-      templateTypes: labels.reduce((acc, label) => {
-        acc[label.templateType] = (acc[label.templateType] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>),
+      templateTypes: labels.reduce(
+        (acc, label) => {
+          acc[label.templateType] = (acc[label.templateType] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
     };
   }
 
   /**
    * Save image data for a label
    */
-  static async saveLabelImage(labelId: string, imageBuffer: Buffer, filename: string): Promise<string> {
+  static async saveLabelImage(
+    labelId: string,
+    imageBuffer: Buffer,
+    filename: string
+  ): Promise<string> {
     const labelDir = path.join(this.dataDir, labelId);
     await fs.mkdir(labelDir, { recursive: true });
 

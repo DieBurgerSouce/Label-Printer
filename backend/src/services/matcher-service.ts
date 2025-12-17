@@ -34,11 +34,7 @@ class MatcherService {
 
     // Try exact match by article number first
     if (ocrData.articleNumber) {
-      const exactMatch = this.findExactMatch(
-        excelData,
-        'articleNumber',
-        ocrData.articleNumber
-      );
+      const exactMatch = this.findExactMatch(excelData, 'articleNumber', ocrData.articleNumber);
       if (exactMatch) {
         return {
           ocrData,
@@ -115,7 +111,7 @@ class MatcherService {
     config: Partial<FuzzyMatchConfig> = {}
   ): MatchResult[] {
     return ocrResults
-      .map(ocrData => this.matchWithExcel(ocrData, excelData, config))
+      .map((ocrData) => this.matchWithExcel(ocrData, excelData, config))
       .filter((result): result is MatchResult => result !== null);
   }
 
@@ -129,7 +125,7 @@ class MatcherService {
   ): ExcelRow | null {
     const normalized = this.normalizeString(value);
 
-    const match = excelData.find(row => {
+    const match = excelData.find((row) => {
       const rowValue = row[field];
       if (!rowValue) return false;
       return this.normalizeString(String(rowValue)) === normalized;
@@ -201,10 +197,7 @@ class MatcherService {
 
       // Compare article number
       if (ocrData.articleNumber && row.articleNumber) {
-        const score = this.calculateSimilarity(
-          ocrData.articleNumber,
-          String(row.articleNumber)
-        );
+        const score = this.calculateSimilarity(ocrData.articleNumber, String(row.articleNumber));
         if (score > bestScore) {
           bestScore = score;
           bestField = 'articleNumber';
@@ -213,10 +206,7 @@ class MatcherService {
 
       // Compare product name
       if (ocrData.productName && row.productName) {
-        const score = this.calculateSimilarity(
-          ocrData.productName,
-          String(row.productName)
-        );
+        const score = this.calculateSimilarity(ocrData.productName, String(row.productName));
         if (score > bestScore) {
           bestScore = score;
           bestField = 'productName';
@@ -238,9 +228,7 @@ class MatcherService {
     }
 
     // Sort by score and return top N
-    return matches
-      .sort((a, b) => b.score - a.score)
-      .slice(0, topN);
+    return matches.sort((a, b) => b.score - a.score).slice(0, topN);
   }
 
   /**
@@ -281,9 +269,7 @@ class MatcherService {
       const excelPrice = this.extractNumericPrice(String(match.excelData.price));
 
       if (ocrPrice && excelPrice && Math.abs(ocrPrice - excelPrice) > 0.1) {
-        warnings.push(
-          `Price mismatch: OCR=${ocrPrice}€, Excel=${excelPrice}€`
-        );
+        warnings.push(`Price mismatch: OCR=${ocrPrice}€, Excel=${excelPrice}€`);
         suggestions.push('Verify price information');
       }
     }
@@ -323,17 +309,17 @@ class MatcherService {
     lowConfidenceMatches: number;
   } {
     const exactMatches = matches.filter(
-      m => m.matchedBy === 'articleNumber' || m.matchedBy === 'ean'
+      (m) => m.matchedBy === 'articleNumber' || m.matchedBy === 'ean'
     ).length;
 
     const fuzzyMatches = matches.filter(
-      m => m.matchedBy === 'fuzzy' || m.matchedBy === 'productName'
+      (m) => m.matchedBy === 'fuzzy' || m.matchedBy === 'productName'
     ).length;
 
     const totalConfidence = matches.reduce((sum, m) => sum + m.confidence, 0);
     const averageConfidence = matches.length > 0 ? totalConfidence / matches.length : 0;
 
-    const lowConfidenceMatches = matches.filter(m => m.confidence < 0.7).length;
+    const lowConfidenceMatches = matches.filter((m) => m.confidence < 0.7).length;
 
     return {
       totalMatches: matches.length,

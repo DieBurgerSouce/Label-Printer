@@ -6,7 +6,12 @@ import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import { LabelGeneratorService } from '../../services/label-generator-service.js';
 import { StorageService } from '../../services/storage-service.js';
-import { ApiResponse, FilterParams, PaginationParams, PriceLabel } from '../../types/label-types.js';
+import {
+  ApiResponse,
+  FilterParams,
+  PaginationParams,
+  PriceLabel,
+} from '../../types/label-types.js';
 
 const router = Router();
 
@@ -431,9 +436,9 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
     }
 
     // Convert tieredPrices to staffelpreise format if available
-    const staffelpreise = article.tieredPrices?.map(tp => ({
+    const staffelpreise = article.tieredPrices?.map((tp) => ({
       quantity: tp.quantity || 0,
-      price: parseFloat(tp.price?.toString() || '0')
+      price: parseFloat(tp.price?.toString() || '0'),
     }));
 
     // OPTION A: Render label WITH image
@@ -441,15 +446,20 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
 
     if (templateId) {
       try {
-        console.log(`🎨 Rendering label for article ${article.articleNumber} with template ${templateId}`);
+        console.log(
+          `🎨 Rendering label for article ${article.articleNumber} with template ${templateId}`
+        );
 
         // Load the template from the CORRECT location (data/label-templates/)
-        const LabelTemplateService = (await import('../../services/label-template-service.js')).default;
+        const LabelTemplateService = (await import('../../services/label-template-service.js'))
+          .default;
         const template = await LabelTemplateService.getTemplate(templateId);
 
         if (template) {
           // Import rendering services
-          const { convertLabelTemplateToRenderingTemplate } = await import('../../services/label-to-rendering-converter.js');
+          const { convertLabelTemplateToRenderingTemplate } = await import(
+            '../../services/label-to-rendering-converter.js'
+          );
           const { templateEngine } = await import('../../services/template-engine.js');
 
           // Convert Label Template to Rendering Template (if needed)
@@ -490,7 +500,9 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
 
           if (renderResult.success && renderResult.buffer) {
             imageData = renderResult.buffer;
-            console.log(`✅ Label rendered successfully: ${renderResult.width}x${renderResult.height} in ${renderResult.renderTime}ms`);
+            console.log(
+              `✅ Label rendered successfully: ${renderResult.width}x${renderResult.height} in ${renderResult.renderTime}ms`
+            );
           } else {
             console.error('❌ Label rendering failed:', renderResult.error);
           }
@@ -567,7 +579,8 @@ router.post('/extract', async (req: Request, res: Response): Promise<void> => {
     const response: ApiResponse = {
       success: false,
       error: 'Not implemented - use /api/automation/start-simple instead',
-      message: 'This route is not yet fully implemented. Please use the automation API endpoint /api/automation/start-simple for screenshot + OCR + label generation.',
+      message:
+        'This route is not yet fully implemented. Please use the automation API endpoint /api/automation/start-simple for screenshot + OCR + label generation.',
     };
 
     res.status(501).json(response);

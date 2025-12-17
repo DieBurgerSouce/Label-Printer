@@ -89,9 +89,20 @@ export class ExcelParserService {
 
     // Extract custom fields (all other columns)
     const customFields: Record<string, string> = {};
-    const standardFields = ['Artikelnummer', 'Article Number', 'SKU', 'Art-Nr',
-                          'Beschreibung', 'Description', 'Produktbeschreibung', 'Name',
-                          'Additional Info', 'Zusatzinfo', 'Notes', 'Hinweise'];
+    const standardFields = [
+      'Artikelnummer',
+      'Article Number',
+      'SKU',
+      'Art-Nr',
+      'Beschreibung',
+      'Description',
+      'Produktbeschreibung',
+      'Name',
+      'Additional Info',
+      'Zusatzinfo',
+      'Notes',
+      'Hinweise',
+    ];
 
     for (const [key, value] of Object.entries(row)) {
       if (!standardFields.includes(key) && value) {
@@ -157,12 +168,14 @@ export class ExcelParserService {
    */
   static exportToExcel(): Buffer {
     const products = this.getAllProducts();
-    const worksheet = XLSX.utils.json_to_sheet(products.map(p => ({
-      'Artikelnummer': p.articleNumber,
-      'Beschreibung': p.description,
-      'Zusatzinfo': p.additionalInfo || '',
-      ...p.customFields,
-    })));
+    const worksheet = XLSX.utils.json_to_sheet(
+      products.map((p) => ({
+        Artikelnummer: p.articleNumber,
+        Beschreibung: p.description,
+        Zusatzinfo: p.additionalInfo || '',
+        ...p.customFields,
+      }))
+    );
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
@@ -176,9 +189,9 @@ export class ExcelParserService {
   static generateTemplate(): Buffer {
     const templateData = [
       {
-        'Artikelnummer': '12345',
-        'Beschreibung': 'Example Product',
-        'Zusatzinfo': 'Optional additional info',
+        Artikelnummer: '12345',
+        Beschreibung: 'Example Product',
+        Zusatzinfo: 'Optional additional info',
       },
     ];
 

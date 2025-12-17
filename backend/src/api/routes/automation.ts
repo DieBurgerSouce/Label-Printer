@@ -15,8 +15,10 @@ const router = Router();
 const upload = multer({
   dest: 'uploads/excel/',
   fileFilter: (_req, file, cb) => {
-    if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-        file.mimetype === 'application/vnd.ms-excel') {
+    if (
+      file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+      file.mimetype === 'application/vnd.ms-excel'
+    ) {
       cb(null, true);
     } else {
       cb(new Error('Only Excel files are allowed'));
@@ -79,7 +81,7 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
 
     res.json({
       success: true,
-      jobId: job.id,  // Frontend expects jobId directly
+      jobId: job.id, // Frontend expects jobId directly
       job: {
         id: job.id,
         status: job.status,
@@ -102,15 +104,8 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
  */
 router.post('/start-simple', async (req: Request, res: Response) => {
   try {
-    const {
-      shopUrl,
-      templateId,
-      name,
-      maxProducts,
-      followPagination,
-      extractFields,
-      ...rest
-    } = req.body;
+    const { shopUrl, templateId, name, maxProducts, followPagination, extractFields, ...rest } =
+      req.body;
 
     if (!shopUrl) {
       return res.status(400).json({ error: 'Shop URL is required' });
@@ -140,7 +135,7 @@ router.post('/start-simple', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      jobId: job.id,  // Frontend expects jobId directly
+      jobId: job.id, // Frontend expects jobId directly
       job: {
         id: job.id,
         status: job.status,
@@ -167,7 +162,7 @@ router.get('/jobs', (_req: Request, res: Response) => {
 
     res.json({
       success: true,
-      jobs: jobs.map(job => ({
+      jobs: jobs.map((job) => ({
         id: job.id,
         name: job.name,
         status: job.status,
@@ -367,16 +362,19 @@ router.get('/stats', (_req: Request, res: Response) => {
 
     const stats = {
       totalJobs: jobs.length,
-      activeJobs: jobs.filter(j => j.status !== 'completed' && j.status !== 'failed').length,
-      completedJobs: jobs.filter(j => j.status === 'completed').length,
-      failedJobs: jobs.filter(j => j.status === 'failed').length,
+      activeJobs: jobs.filter((j) => j.status !== 'completed' && j.status !== 'failed').length,
+      completedJobs: jobs.filter((j) => j.status === 'completed').length,
+      failedJobs: jobs.filter((j) => j.status === 'failed').length,
       totalLabelsGenerated: jobs.reduce((sum, j) => sum + j.results.summary.labelsGenerated, 0),
       averageProcessingTime: 0,
     };
 
-    const completedJobs = jobs.filter(j => j.status === 'completed');
+    const completedJobs = jobs.filter((j) => j.status === 'completed');
     if (completedJobs.length > 0) {
-      const totalTime = completedJobs.reduce((sum, j) => sum + j.results.summary.totalProcessingTime, 0);
+      const totalTime = completedJobs.reduce(
+        (sum, j) => sum + j.results.summary.totalProcessingTime,
+        0
+      );
       stats.averageProcessingTime = totalTime / completedJobs.length;
     }
 

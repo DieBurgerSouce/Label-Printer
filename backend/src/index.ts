@@ -31,27 +31,29 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware - Configure CORS with explicit origins
 const CORS_ORIGINS = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
   : ['http://localhost:3001', 'http://localhost:3000', 'http://127.0.0.1:3001'];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc.) in development
-    if (!origin && process.env.NODE_ENV !== 'production') {
-      return callback(null, true);
-    }
-    // Check if origin is in allowed list
-    if (!origin || CORS_ORIGINS.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked request from origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.) in development
+      if (!origin && process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+      // Check if origin is in allowed list
+      if (!origin || CORS_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked request from origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -95,8 +97,8 @@ app.get('/api/health', (_req, res) => {
         total: Math.round(totalMemory / 1024 / 1024), // MB
         free: Math.round(freeMemory / 1024 / 1024), // MB
         used: Math.round(usedMemory / 1024 / 1024), // MB
-        percentage: Math.round((usedMemory / totalMemory) * 100)
-      }
+        percentage: Math.round((usedMemory / totalMemory) * 100),
+      },
     },
     uptime: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),
@@ -118,7 +120,12 @@ if (fs.existsSync(frontendDistPath)) {
     res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 } else {
-  console.log('⚠️  Frontend dist folder not found at:', dockerFrontendPath, 'or', localFrontendPath);
+  console.log(
+    '⚠️  Frontend dist folder not found at:',
+    dockerFrontendPath,
+    'or',
+    localFrontendPath
+  );
   console.log('    For Docker: Ensure frontend-builder has run successfully');
   console.log('    For local dev: Run "npm run build" in frontend directory');
 
@@ -179,19 +186,13 @@ async function start() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('SIGTERM signal received: closing HTTP server');
-  await Promise.all([
-    ocrService.shutdown(),
-    webCrawlerService.shutdown()
-  ]);
+  await Promise.all([ocrService.shutdown(), webCrawlerService.shutdown()]);
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   console.log('SIGINT signal received: closing HTTP server');
-  await Promise.all([
-    ocrService.shutdown(),
-    webCrawlerService.shutdown()
-  ]);
+  await Promise.all([ocrService.shutdown(), webCrawlerService.shutdown()]);
   process.exit(0);
 });
 

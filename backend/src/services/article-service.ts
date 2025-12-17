@@ -25,11 +25,8 @@ export class ArticleService {
       // Try to find by ID first, then by articleNumber (same logic as API)
       const product = await prisma.product.findFirst({
         where: {
-          OR: [
-            { id },
-            { articleNumber: id }
-          ]
-        }
+          OR: [{ id }, { articleNumber: id }],
+        },
       });
 
       if (!product) {
@@ -49,7 +46,7 @@ export class ArticleService {
         currency: product.currency || 'EUR',
         imageUrl: product.imageUrl || undefined,
         category: product.category || undefined,
-        tieredPrices: product.tieredPrices as any || undefined,
+        tieredPrices: (product.tieredPrices as any) || undefined,
         tieredPricesText: product.tieredPricesText || undefined,
         sourceUrl: product.sourceUrl || undefined,
       };
@@ -63,11 +60,11 @@ export class ArticleService {
     try {
       const products = await prisma.product.findMany({
         where: { published: true },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
 
       // Convert Prisma Products to Article interface
-      return products.map(product => ({
+      return products.map((product) => ({
         id: product.id,
         articleNumber: product.articleNumber,
         productName: product.productName,
@@ -76,7 +73,7 @@ export class ArticleService {
         currency: product.currency || 'EUR',
         imageUrl: product.imageUrl || undefined,
         category: product.category || undefined,
-        tieredPrices: product.tieredPrices as any || undefined,
+        tieredPrices: (product.tieredPrices as any) || undefined,
         tieredPricesText: product.tieredPricesText || undefined,
         sourceUrl: product.sourceUrl || undefined,
       }));

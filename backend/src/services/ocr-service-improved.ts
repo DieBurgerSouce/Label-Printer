@@ -69,7 +69,7 @@ export class OCRServiceImproved {
             'description.png',
             'price.png',
             'price-table.png',
-            'product-image.png'
+            'product-image.png',
           ];
 
           for (const file of expectedFiles) {

@@ -18,12 +18,14 @@ export class ProductService {
   static async createOrUpdateFromOcr({
     ocrResult,
     screenshot,
-    crawlJobId
+    crawlJobId,
   }: CreateProductFromOcrParams) {
     try {
       // Skip if OCR failed or no article number found
       if (ocrResult.status !== 'completed' || !ocrResult.articleNumber) {
-        console.log(`Skipping product creation: OCR status=${ocrResult.status}, articleNumber=${ocrResult.articleNumber}`);
+        console.log(
+          `Skipping product creation: OCR status=${ocrResult.status}, articleNumber=${ocrResult.articleNumber}`
+        );
         return null;
       }
 
@@ -32,7 +34,9 @@ export class ProductService {
       const hasDescription = !!(ocrResult.fullText && ocrResult.fullText.length > 10);
 
       if (!hasProductName && !hasDescription) {
-        console.log(`❌ SKIPPING ${ocrResult.articleNumber}: No product name AND no description - failed OCR extraction`);
+        console.log(
+          `❌ SKIPPING ${ocrResult.articleNumber}: No product name AND no description - failed OCR extraction`
+        );
         return null;
       }
 
@@ -42,7 +46,7 @@ export class ProductService {
         description: ocrResult.fullText?.substring(0, 500), // First 500 chars
         price: ocrResult.price !== undefined ? ocrResult.price : 0,
         priceType: (ocrResult as any).priceType || 'normal', // auf_anfrage, normal, tiered, unknown
-        tieredPrices: ocrResult.tieredPrices as any || [],
+        tieredPrices: (ocrResult.tieredPrices as any) || [],
         tieredPricesText: (ocrResult as any).tieredPricesText || null, // Raw text from OCR (e.g., "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR")
         imageUrl: screenshot.imageUrl,
         thumbnailUrl: screenshot.thumbnailUrl,
@@ -51,12 +55,12 @@ export class ProductService {
         crawlJobId,
         ocrConfidence: ocrResult.confidence,
         verified: false,
-        published: true
+        published: true,
       };
 
       // Try to find existing product by article number
       const existing = await prisma.product.findUnique({
-        where: { articleNumber: ocrResult.articleNumber }
+        where: { articleNumber: ocrResult.articleNumber },
       });
 
       if (existing) {
@@ -67,33 +71,42 @@ export class ProductService {
         const isBroken = hasPlaceholderName || (hasNoDescription && hasNoPrice);
 
         // Update if: broken data OR higher confidence OR no confidence info
-        if (isBroken || !ocrResult.confidence || !existing.ocrConfidence || ocrResult.confidence > existing.ocrConfidence) {
+        if (
+          isBroken ||
+          !ocrResult.confidence ||
+          !existing.ocrConfidence ||
+          ocrResult.confidence > existing.ocrConfidence
+        ) {
           // CRITICAL: Preserve existing images if new data has no images
           // This prevents image loss during re-crawl when screenshots aren't regenerated
           const updateData = {
             ...productData,
             imageUrl: productData.imageUrl || existing.imageUrl,
-            thumbnailUrl: productData.thumbnailUrl || existing.thumbnailUrl
+            thumbnailUrl: productData.thumbnailUrl || existing.thumbnailUrl,
           };
 
           const updated = await prisma.product.update({
             where: { id: existing.id },
-            data: updateData
+            data: updateData,
           });
           if (isBroken) {
-            console.log(`Force-updated broken product: ${updated.articleNumber} (had placeholder/incomplete data)`);
+            console.log(
+              `Force-updated broken product: ${updated.articleNumber} (had placeholder/incomplete data)`
+            );
           } else {
             console.log(`Updated product: ${updated.articleNumber} (higher confidence)`);
           }
           return updated;
         } else {
-          console.log(`Skipped update for ${existing.articleNumber} (lower confidence, data already complete)`);
+          console.log(
+            `Skipped update for ${existing.articleNumber} (lower confidence, data already complete)`
+          );
           return existing;
         }
       } else {
         // Create new product
         const created = await prisma.product.create({
-          data: productData
+          data: productData,
         });
         console.log(`Created new product: ${created.articleNumber}`);
         return created;
@@ -115,7 +128,7 @@ export class ProductService {
       created: 0,
       updated: 0,
       skipped: 0,
-      errors: 0
+      errors: 0,
     };
 
     for (const ocrResult of ocrResults) {
@@ -123,12 +136,13 @@ export class ProductService {
         const product = await this.createOrUpdateFromOcr({
           ocrResult,
           screenshot: ocrResult.screenshot,
-          crawlJobId
+          crawlJobId,
         });
 
         if (product) {
           // Check if it was created or updated by comparing timestamps
-          const wasJustCreated = new Date(product.createdAt).getTime() === new Date(product.updatedAt).getTime();
+          const wasJustCreated =
+            new Date(product.createdAt).getTime() === new Date(product.updatedAt).getTime();
           if (wasJustCreated) {
             results.created++;
           } else {
@@ -155,14 +169,14 @@ export class ProductService {
       const ocrResults = await prisma.ocrResult.findMany({
         where: {
           screenshot: {
-            crawlJobId
+            crawlJobId,
           },
           status: 'completed',
-          articleNumber: { not: null }
+          articleNumber: { not: null },
         },
         include: {
-          screenshot: true
-        }
+          screenshot: true,
+        },
       });
 
       console.log(`Processing ${ocrResults.length} OCR results from crawl job ${crawlJobId}`);
@@ -187,18 +201,19 @@ export class ProductService {
         created: 0,
         updated: 0,
         skipped: 0,
-        errors: 0
+        errors: 0,
       };
 
       for (const ocrResult of ocrResults) {
         try {
           // DEFENSIVE: Try to get extractedData from multiple possible locations
-          let extractedData = ocrResult.extractedData || ocrResult;
+          const extractedData = ocrResult.extractedData || ocrResult;
 
           // Get article number from ANY available location
-          const articleNumber = extractedData.articleNumber ||
-                                ocrResult.articleNumber ||
-                                ocrResult?.extractedData?.articleNumber;
+          const articleNumber =
+            extractedData.articleNumber ||
+            ocrResult.articleNumber ||
+            ocrResult?.extractedData?.articleNumber;
 
           // DEBUG: Log what we received
           console.log(`🐛 DEBUG ocrResult:`, {
@@ -208,7 +223,7 @@ export class ProductService {
             hasTopLevelArticleNumber: !!ocrResult.articleNumber,
             extractedDataArticleNumber: ocrResult.extractedData?.articleNumber,
             finalArticleNumber: articleNumber,
-            ocrResultKeys: Object.keys(ocrResult).slice(0, 10) // First 10 keys
+            ocrResultKeys: Object.keys(ocrResult).slice(0, 10), // First 10 keys
           });
 
           // Skip ONLY if no article number found anywhere
@@ -217,7 +232,7 @@ export class ProductService {
               hasOcrResult: !!ocrResult,
               ocrResultType: typeof ocrResult,
               hasExtractedData: !!ocrResult?.extractedData,
-              sampleKeys: Object.keys(ocrResult || {}).slice(0, 5)
+              sampleKeys: Object.keys(ocrResult || {}).slice(0, 5),
             });
             results.skipped++;
             continue;
@@ -232,7 +247,9 @@ export class ProductService {
           // If both productName AND description are empty, this is a failed extraction
           // DO NOT save placeholder products - skip them instead
           if (!extractedData.productName && !extractedData.description) {
-            console.log(`❌ SKIPPING ${extractedData.articleNumber}: No product name AND no description - failed extraction`);
+            console.log(
+              `❌ SKIPPING ${extractedData.articleNumber}: No product name AND no description - failed extraction`
+            );
             return null; // Skip this product instead of saving garbage
           }
 
@@ -245,9 +262,10 @@ export class ProductService {
           let tieredPrices = [];
           if (extractedData.tieredPrices) {
             try {
-              tieredPrices = typeof extractedData.tieredPrices === 'string'
-                ? JSON.parse(extractedData.tieredPrices)
-                : extractedData.tieredPrices;
+              tieredPrices =
+                typeof extractedData.tieredPrices === 'string'
+                  ? JSON.parse(extractedData.tieredPrices)
+                  : extractedData.tieredPrices;
             } catch (e) {
               console.log('Failed to parse tiered prices:', e);
             }
@@ -268,7 +286,9 @@ export class ProductService {
             const pathMatch = ocrResult.screenshotPath.match(/\/screenshots\/[^\/]+\/([^\/]+)\//);
             if (pathMatch && pathMatch[1]) {
               screenshotArticleNumber = pathMatch[1];
-              console.log(`📁 Extracted screenshot folder: ${screenshotArticleNumber} from path: ${ocrResult.screenshotPath}`);
+              console.log(
+                `📁 Extracted screenshot folder: ${screenshotArticleNumber} from path: ${ocrResult.screenshotPath}`
+              );
             }
           }
 
@@ -292,11 +312,12 @@ export class ProductService {
             imageUrl: imageUrl, // Set the image URL
             thumbnailUrl: thumbnailUrl, // Set the thumbnail URL
             ean: extractedData.ean,
-            sourceUrl: ocrResult.productUrl || extractedData.sourceUrl || 'https://shop.firmenich.de', // Use product URL from OCR result
+            sourceUrl:
+              ocrResult.productUrl || extractedData.sourceUrl || 'https://shop.firmenich.de', // Use product URL from OCR result
             crawlJobId,
             ocrConfidence: ocrResult.confidence || 0,
             verified: false,
-            published: true
+            published: true,
           };
 
           // FUZZY MATCHING: Handle variant suffixes (e.g., "3556-ST" should match "3556")
@@ -311,9 +332,9 @@ export class ProductService {
                 // Base match: "3556-ST" → matches "3556"
                 { articleNumber: baseArticleNumber },
                 // Variant pattern match: "3556" in DB should match "3556-ST" from HTML
-                { articleNumber: { startsWith: baseArticleNumber + '-' } }
-              ]
-            }
+                { articleNumber: { startsWith: baseArticleNumber + '-' } },
+              ],
+            },
           });
 
           if (existing) {
@@ -322,14 +343,16 @@ export class ProductService {
             // UPDATE with NEW article number from shop (the extracted one is the correct one)
             await prisma.product.update({
               where: { id: existing.id },
-              data: productData // Use all new data including correct article number
+              data: productData, // Use all new data including correct article number
             });
-            console.log(`✅ Updated product: ${existing.articleNumber} → ${extractedData.articleNumber} (confidence: ${productData.ocrConfidence})`);
+            console.log(
+              `✅ Updated product: ${existing.articleNumber} → ${extractedData.articleNumber} (confidence: ${productData.ocrConfidence})`
+            );
             results.updated++;
           } else {
             // Create new product
             const created = await prisma.product.create({
-              data: productData
+              data: productData,
             });
             console.log(`✅ Created new product: ${created.articleNumber}`);
             results.created++;
@@ -359,18 +382,18 @@ export class ProductService {
       prisma.product.groupBy({
         by: ['category'],
         _count: true,
-        where: { category: { not: null } }
-      })
+        where: { category: { not: null } },
+      }),
     ]);
 
     return {
       total,
       withImages,
       verified,
-      categories: byCategory.map(c => ({
+      categories: byCategory.map((c) => ({
         name: c.category,
-        count: c._count
-      }))
+        count: c._count,
+      })),
     };
   }
 
@@ -383,12 +406,12 @@ export class ProductService {
         OR: [
           { articleNumber: { contains: query, mode: 'insensitive' } },
           { productName: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } }
+          { description: { contains: query, mode: 'insensitive' } },
         ],
-        published: true
+        published: true,
       },
       take: limit,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 }

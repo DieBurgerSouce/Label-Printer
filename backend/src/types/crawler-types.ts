@@ -161,7 +161,8 @@ export const DEFAULT_CRAWL_CONFIG: CrawlConfig = {
   waitForImages: true,
   timeout: 30000,
   headless: true,
-  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  userAgent:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 };
 
 export const COMMON_PRODUCT_SELECTORS: Record<string, ProductSelectors> = {
@@ -172,7 +173,7 @@ export const COMMON_PRODUCT_SELECTORS: Record<string, ProductSelectors> = {
     price: '.price',
     articleNumber: '.sku',
     productName: '.product-title',
-    nextPageButton: 'a.next'
+    nextPageButton: 'a.next',
   },
   woocommerce: {
     productContainer: '.product',
@@ -181,7 +182,7 @@ export const COMMON_PRODUCT_SELECTORS: Record<string, ProductSelectors> = {
     price: '.woocommerce-Price-amount',
     articleNumber: '.sku',
     productName: '.woocommerce-loop-product__title',
-    nextPageButton: 'a.next.page-numbers'
+    nextPageButton: 'a.next.page-numbers',
   },
   magento: {
     productContainer: '.product-item',
@@ -190,7 +191,7 @@ export const COMMON_PRODUCT_SELECTORS: Record<string, ProductSelectors> = {
     price: '.price',
     articleNumber: '.sku',
     productName: '.product-item-name',
-    nextPageButton: 'a.action.next'
+    nextPageButton: 'a.action.next',
   },
   // Add Firmenich shop specific selectors
   firmenich: {
@@ -200,6 +201,6 @@ export const COMMON_PRODUCT_SELECTORS: Record<string, ProductSelectors> = {
     price: '.price',
     articleNumber: '.sku',
     productName: '.woocommerce-loop-product__title',
-    nextPageButton: 'a.next.page-numbers'
-  }
+    nextPageButton: 'a.next.page-numbers',
+  },
 };

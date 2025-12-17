@@ -44,10 +44,7 @@ export class PrintService {
   /**
    * Generate PDF from print layout - OPTIMIZED FOR BULK
    */
-  static async generatePDF(
-    layout: PrintLayout,
-    labels: PriceLabel[]
-  ): Promise<Buffer> {
+  static async generatePDF(layout: PrintLayout, labels: PriceLabel[]): Promise<Buffer> {
     console.log(`📄 Generating PDF for ${labels.length} labels (BULK MODE)...`);
 
     // ✅ CRITICAL FIX: Skip image processing for large batches
@@ -60,7 +57,7 @@ export class PrintService {
       // Only for small batches, try to load images
       try {
         const renderedLabels = await this.ensureLabelsHaveImages(labels);
-        console.log(`✅ ${renderedLabels.filter(l => l.imageData).length} labels have images`);
+        console.log(`✅ ${renderedLabels.filter((l) => l.imageData).length} labels have images`);
         labelsToRender = renderedLabels;
       } catch (error) {
         console.error('❌ Image loading failed, using text fallback:', error);
@@ -89,7 +86,7 @@ export class PrintService {
           ],
           margin: 0,
           compress: true, // Enable compression
-          bufferPages: true // Buffer pages for better memory management
+          bufferPages: true, // Buffer pages for better memory management
         });
 
         // Collect chunks
@@ -142,10 +139,7 @@ export class PrintService {
     if (!labels || labels.length === 0) {
       console.error('❌ NO LABELS TO DRAW!');
       // Draw error message on PDF
-      doc
-        .fontSize(20)
-        .fillColor('red')
-        .text('ERROR: No labels provided!', 100, 100);
+      doc.fontSize(20).fillColor('red').text('ERROR: No labels provided!', 100, 100);
       return;
     }
 
@@ -182,7 +176,15 @@ export class PrintService {
           const x = margins.left + col * (cellWidth + spacing);
           const y = margins.top + row * (cellHeight + spacing);
 
-          this.drawLabel(doc, label, x * mmToPoints, y * mmToPoints, cellWidth * mmToPoints, cellHeight * mmToPoints, layout.settings.showBorders);
+          this.drawLabel(
+            doc,
+            label,
+            x * mmToPoints,
+            y * mmToPoints,
+            cellWidth * mmToPoints,
+            cellHeight * mmToPoints,
+            layout.settings.showBorders
+          );
 
           labelIndex++;
         }
@@ -205,9 +207,7 @@ export class PrintService {
   ): void {
     // Draw border if enabled
     if (showBorder) {
-      doc
-        .rect(x, y, width, height)
-        .stroke();
+      doc.rect(x, y, width, height).stroke();
     }
 
     // ⭐ OPTION A: If label has rendered imageData (PNG), use it!
@@ -228,14 +228,18 @@ export class PrintService {
         const bufferData = label.imageData as any;
         if (bufferData.type === 'Buffer' && Array.isArray(bufferData.data)) {
           imageBuffer = Buffer.from(bufferData.data);
-          console.log(`📄 Converted JSON imageData for label ${label.id} (${imageBuffer.length} bytes)`);
+          console.log(
+            `📄 Converted JSON imageData for label ${label.id} (${imageBuffer.length} bytes)`
+          );
         }
       }
     }
 
     if (imageBuffer) {
       try {
-        console.log(`🖼️ Embedding image for label ${label.id} at position (${x}, ${y}) with size ${width}x${height}`);
+        console.log(
+          `🖼️ Embedding image for label ${label.id} at position (${x}, ${y}) with size ${width}x${height}`
+        );
         // Use 'fit' to ensure labels fit within cells without being cut off
         doc.image(imageBuffer, x, y, {
           fit: [width, height],
@@ -265,12 +269,10 @@ export class PrintService {
 
     // Article number
     if (label.articleNumber) {
-      doc
-        .fontSize(8)
-        .text(label.articleNumber || 'No Article#', contentX, contentY, {
-          width: contentWidth,
-          align: 'left',
-        });
+      doc.fontSize(8).text(label.articleNumber || 'No Article#', contentX, contentY, {
+        width: contentWidth,
+        align: 'left',
+      });
     }
 
     // Product name
@@ -298,16 +300,17 @@ export class PrintService {
         });
     } else {
       // Minimal fallback if no price info
-      doc
-        .fontSize(12)
-        .text('Price on request', contentX, contentY + 35, {
-          width: contentWidth,
-          align: 'right',
-        });
+      doc.fontSize(12).text('Price on request', contentX, contentY + 35, {
+        width: contentWidth,
+        align: 'right',
+      });
     }
 
     // Description (if standard or extended template)
-    if (label.description && (label.templateType === 'standard' || label.templateType === 'extended')) {
+    if (
+      label.description &&
+      (label.templateType === 'standard' || label.templateType === 'extended')
+    ) {
       doc
         .fontSize(8)
         .font('Helvetica')
@@ -331,8 +334,14 @@ export class PrintService {
     doc.lineWidth(0.5);
 
     // Top-left
-    doc.moveTo(0, margins.top * mmToPoints).lineTo(markLength, margins.top * mmToPoints).stroke();
-    doc.moveTo(margins.left * mmToPoints, 0).lineTo(margins.left * mmToPoints, markLength).stroke();
+    doc
+      .moveTo(0, margins.top * mmToPoints)
+      .lineTo(markLength, margins.top * mmToPoints)
+      .stroke();
+    doc
+      .moveTo(margins.left * mmToPoints, 0)
+      .lineTo(margins.left * mmToPoints, markLength)
+      .stroke();
 
     // More cut marks would be added here for each grid cell
   }
@@ -341,9 +350,7 @@ export class PrintService {
    * Ensure all labels have imageData for printing
    * ✅ OPTIMIZED: Skip rendering if labels already have images!
    */
-  private static async ensureLabelsHaveImages(
-    labels: PriceLabel[]
-  ): Promise<PriceLabel[]> {
+  private static async ensureLabelsHaveImages(labels: PriceLabel[]): Promise<PriceLabel[]> {
     console.log(`🎨 Checking ${labels.length} labels for existing images...`);
 
     // ✅ QUICK FIX: Load images from storage if they exist
@@ -372,8 +379,12 @@ export class PrintService {
     );
 
     // Check how many have images now
-    const labelsWithImages = labelsWithImagesLoaded.filter(l => l.imageData && Buffer.isBuffer(l.imageData));
-    const labelsWithoutImages = labelsWithImagesLoaded.filter(l => !l.imageData || !Buffer.isBuffer(l.imageData));
+    const labelsWithImages = labelsWithImagesLoaded.filter(
+      (l) => l.imageData && Buffer.isBuffer(l.imageData)
+    );
+    const labelsWithoutImages = labelsWithImagesLoaded.filter(
+      (l) => !l.imageData || !Buffer.isBuffer(l.imageData)
+    );
 
     console.log(`✅ ${labelsWithImages.length} labels already have images`);
     console.log(`⚠️ ${labelsWithoutImages.length} labels need images (will use text fallback)`);
@@ -381,7 +392,9 @@ export class PrintService {
     // ✅ CRITICAL FIX: Skip ALL rendering for bulk operations
     // PDF generator will use text fallback for labels without images
     if (labelsWithImagesLoaded.length > 50) {
-      console.log(`⚡ BULK MODE: Skipping rendering for ${labelsWithImagesLoaded.length} labels - using existing images (${labelsWithImages.length}) and text fallback`);
+      console.log(
+        `⚡ BULK MODE: Skipping rendering for ${labelsWithImagesLoaded.length} labels - using existing images (${labelsWithImages.length}) and text fallback`
+      );
       return labelsWithImagesLoaded;
     }
 
@@ -408,7 +421,9 @@ export class PrintService {
       const batchStart = batchIndex * BATCH_SIZE + 1;
       const batchEnd = Math.min((batchIndex + 1) * BATCH_SIZE, labels.length);
 
-      console.log(`📦 Processing batch ${batchIndex + 1}/${batches.length} (labels ${batchStart}-${batchEnd}/${labels.length})`);
+      console.log(
+        `📦 Processing batch ${batchIndex + 1}/${batches.length} (labels ${batchStart}-${batchEnd}/${labels.length})`
+      );
 
       // Process labels in batch in parallel
       const batchResults = await Promise.all(
@@ -425,10 +440,7 @@ export class PrintService {
               setTimeout(() => reject(new Error('Rendering timeout')), 2000)
             );
 
-            const imageData = await Promise.race([
-              this.renderLabel(label),
-              timeoutPromise
-            ]);
+            const imageData = await Promise.race([this.renderLabel(label), timeoutPromise]);
 
             return { ...label, imageData };
           } catch (error: any) {
@@ -457,11 +469,13 @@ export class PrintService {
 
       // Small delay to prevent CPU overload on large batches
       if (batchIndex < batches.length - 1 && labels.length > 500) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
 
-    console.log(`✅ Rendering complete: ${rendered.filter(l => l.imageData).length}/${labels.length} labels have images`);
+    console.log(
+      `✅ Rendering complete: ${rendered.filter((l) => l.imageData).length}/${labels.length} labels have images`
+    );
     return rendered;
   }
 
@@ -490,10 +504,7 @@ export class PrintService {
   /**
    * Generate print preview (base64 encoded PNG)
    */
-  static async generatePreview(
-    layout: PrintLayout,
-    labels: PriceLabel[]
-  ): Promise<string> {
+  static async generatePreview(layout: PrintLayout, labels: PriceLabel[]): Promise<string> {
     console.log(`🖼️ Generating SIMPLE preview for ${labels.length} labels...`);
 
     // DON'T render labels for preview - too slow!
@@ -544,13 +555,13 @@ export class PrintService {
       labelBoxes.push(`
         <rect x="${xPos}" y="${yPos}" width="${labelWidth}" height="${labelHeight}"
               fill="white" stroke="#d1d5db" stroke-width="1"/>
-        <text x="${xPos + labelWidth/2}" y="${yPos + labelHeight/3}"
+        <text x="${xPos + labelWidth / 2}" y="${yPos + labelHeight / 3}"
               font-family="Arial" font-size="${fontSize * 0.7}" fill="#6b7280"
               text-anchor="middle">${label.articleNumber || 'No Art.#'}</text>
-        <text x="${xPos + labelWidth/2}" y="${yPos + labelHeight/2}"
+        <text x="${xPos + labelWidth / 2}" y="${yPos + labelHeight / 2}"
               font-family="Arial" font-size="${fontSize}" fill="#1f2937"
               text-anchor="middle" font-weight="bold">${label.productName?.substring(0, 20) || 'Product'}...</text>
-        <text x="${xPos + labelWidth/2}" y="${yPos + 2*labelHeight/3}"
+        <text x="${xPos + labelWidth / 2}" y="${yPos + (2 * labelHeight) / 3}"
               font-family="Arial" font-size="${fontSize * 1.2}" fill="#059669"
               text-anchor="middle" font-weight="bold">${priceDisplay}</text>
       `);
@@ -563,7 +574,7 @@ export class PrintService {
         ${labelBoxes.join('\n')}
 
         <!-- Info text at bottom -->
-        <text x="${pageWidth/2}" y="${pageHeight - 20}"
+        <text x="${pageWidth / 2}" y="${pageHeight - 20}"
               font-family="Arial" font-size="14" fill="#6b7280"
               text-anchor="middle">
           Preview: ${labels.length} labels on ${layout.paperFormat.type} (${columns}×${rows} grid) - Full quality in PDF export
@@ -571,9 +582,7 @@ export class PrintService {
       </svg>
     `;
 
-    const previewBuffer = await sharp(Buffer.from(svg))
-      .png()
-      .toBuffer();
+    const previewBuffer = await sharp(Buffer.from(svg)).png().toBuffer();
 
     console.log(`✅ Simple preview generated for ${labels.length} labels`);
     return `data:image/png;base64,${previewBuffer.toString('base64')}`;
@@ -605,17 +614,17 @@ export class PrintService {
     const svg = `
       <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
         <rect width="${width}" height="${height}" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
-        <text x="${width/2}" y="${height/2 - 10}"
+        <text x="${width / 2}" y="${height / 2 - 10}"
               font-family="Arial" font-size="12" fill="#6b7280"
               text-anchor="middle">
           ${label.articleNumber || 'No Article#'}
         </text>
-        <text x="${width/2}" y="${height/2 + 10}"
+        <text x="${width / 2}" y="${height / 2 + 10}"
               font-family="Arial" font-size="14" fill="#1f2937"
               text-anchor="middle" font-weight="bold">
           ${label.productName || 'Product'}
         </text>
-        <text x="${width/2}" y="${height/2 + 30}"
+        <text x="${width / 2}" y="${height / 2 + 30}"
               font-family="Arial" font-size="16" fill="#059669"
               text-anchor="middle" font-weight="bold">
           ${priceDisplay}
@@ -623,9 +632,7 @@ export class PrintService {
       </svg>
     `;
 
-    return await sharp(Buffer.from(svg))
-      .png()
-      .toBuffer();
+    return await sharp(Buffer.from(svg)).png().toBuffer();
   }
 
   /**
@@ -647,12 +654,16 @@ export class PrintService {
     // Draw grid lines
     for (let row = 0; row <= rows; row++) {
       const y = margin + row * (labelHeight + spacing);
-      lines.push(`<line x1="${margin}" y1="${y}" x2="${width - margin}" y2="${y}" stroke="#d1d5db" stroke-width="0.5"/>`);
+      lines.push(
+        `<line x1="${margin}" y1="${y}" x2="${width - margin}" y2="${y}" stroke="#d1d5db" stroke-width="0.5"/>`
+      );
     }
 
     for (let col = 0; col <= columns; col++) {
       const x = margin + col * (labelWidth + spacing);
-      lines.push(`<line x1="${x}" y1="${margin}" x2="${x}" y2="${height - margin}" stroke="#d1d5db" stroke-width="0.5"/>`);
+      lines.push(
+        `<line x1="${x}" y1="${margin}" x2="${x}" y2="${height - margin}" stroke="#d1d5db" stroke-width="0.5"/>`
+      );
     }
 
     const svg = `
@@ -661,8 +672,6 @@ export class PrintService {
       </svg>
     `;
 
-    return await sharp(Buffer.from(svg))
-      .png()
-      .toBuffer();
+    return await sharp(Buffer.from(svg)).png().toBuffer();
   }
 }

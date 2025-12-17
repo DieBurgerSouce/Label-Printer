@@ -107,12 +107,15 @@ export class LabelGeneratorService {
       id: uuidv4(),
       articleNumber: first.articleNumber,
       productName: first.productName,
-      description: labels.map(l => l.description).filter(Boolean).join(' | '),
+      description: labels
+        .map((l) => l.description)
+        .filter(Boolean)
+        .join(' | '),
       priceInfo: first.priceInfo,
       templateType: first.templateType,
       createdAt: new Date(),
       updatedAt: new Date(),
-      tags: [...new Set(labels.flatMap(l => l.tags || []))],
+      tags: [...new Set(labels.flatMap((l) => l.tags || []))],
       category: first.category,
       source: 'manual',
     };

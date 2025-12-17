@@ -8,20 +8,20 @@ async function main() {
     where: {
       productName: {
         not: {
-          startsWith: 'Product '
-        }
-      }
+          startsWith: 'Product ',
+        },
+      },
     },
     select: {
       id: true,
       articleNumber: true,
       productName: true,
       ocrConfidence: true,
-      createdAt: true
+      createdAt: true,
     },
     orderBy: {
-      createdAt: 'desc'
-    }
+      createdAt: 'desc',
+    },
   });
 
   console.log('\n✅ Latest successful article:');

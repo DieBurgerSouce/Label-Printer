@@ -17,7 +17,7 @@ const router = express.Router();
 const isDocker = process.env.NODE_ENV === 'production';
 const BASE_DIR = isDocker
   ? path.join(__dirname, '../../..') // /app/dist -> /app
-  : path.join(__dirname, '../../..');  // src/api/routes -> backend root
+  : path.join(__dirname, '../../..'); // src/api/routes -> backend root
 
 const SCREENSHOTS_DIR = path.join(BASE_DIR, 'data/screenshots');
 const LABELS_DIR = path.join(BASE_DIR, 'data/labels');
@@ -43,7 +43,9 @@ function getSafePath(baseDir: string, ...relativePath: string[]): string | null 
 
   // Ensure the resolved path starts with the base directory
   if (!fullPath.startsWith(normalizedBase + path.sep) && fullPath !== normalizedBase) {
-    console.warn(`Path traversal attempt blocked: ${relativePath.join('/')} resolved to ${fullPath}`);
+    console.warn(
+      `Path traversal attempt blocked: ${relativePath.join('/')} resolved to ${fullPath}`
+    );
     return null;
   }
 
@@ -65,7 +67,7 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
     if (!imagePath) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid path'
+        error: 'Invalid path',
       });
     }
 
@@ -78,7 +80,7 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
       console.log('Image not found at path:', imagePath);
       return res.status(404).json({
         success: false,
-        error: 'Image not found'
+        error: 'Image not found',
       });
     }
 
@@ -104,7 +106,7 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
     console.error('Error serving screenshot:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to serve image'
+      error: 'Failed to serve image',
     });
   }
 });
@@ -124,7 +126,7 @@ router.get('/labels/:filename', (req, res) => {
     if (!imagePath) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid path'
+        error: 'Invalid path',
       });
     }
 
@@ -132,7 +134,7 @@ router.get('/labels/:filename', (req, res) => {
     if (!fs.existsSync(imagePath)) {
       return res.status(404).json({
         success: false,
-        error: 'Label image not found'
+        error: 'Label image not found',
       });
     }
 
@@ -156,7 +158,7 @@ router.get('/labels/:filename', (req, res) => {
     console.error('Error serving label:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to serve label'
+      error: 'Failed to serve label',
     });
   }
 });
@@ -176,7 +178,7 @@ router.get('/products/:filename', (req, res) => {
     if (!imagePath) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid path'
+        error: 'Invalid path',
       });
     }
 
@@ -188,7 +190,7 @@ router.get('/products/:filename', (req, res) => {
       console.log('Product image not found at path:', imagePath);
       return res.status(404).json({
         success: false,
-        error: 'Product image not found'
+        error: 'Product image not found',
       });
     }
 
@@ -214,7 +216,7 @@ router.get('/products/:filename', (req, res) => {
     console.error('Error serving product image:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to serve product image'
+      error: 'Failed to serve product image',
     });
   }
 });
@@ -234,37 +236,40 @@ router.get('/list/:jobId/:articleNumber', (req, res) => {
     if (!dirPath) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid path'
+        error: 'Invalid path',
       });
     }
 
     if (!fs.existsSync(dirPath)) {
       return res.json({
         success: true,
-        images: []
+        images: [],
       });
     }
 
-    const files = fs.readdirSync(dirPath)
-      .filter(file => ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(path.extname(file).toLowerCase()))
-      .map(file => {
+    const files = fs
+      .readdirSync(dirPath)
+      .filter((file) =>
+        ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(path.extname(file).toLowerCase())
+      )
+      .map((file) => {
         const filePath = getSafePath(dirPath, file);
         return {
           filename: file,
           url: `/api/images/screenshots/${jobId}/${articleNumber}/${file}`,
-          size: filePath ? fs.statSync(filePath).size : 0
+          size: filePath ? fs.statSync(filePath).size : 0,
         };
       });
 
     res.json({
       success: true,
-      images: files
+      images: files,
     });
   } catch (error) {
     console.error('Error listing images:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to list images'
+      error: 'Failed to list images',
     });
   }
 });

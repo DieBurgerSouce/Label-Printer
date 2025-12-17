@@ -72,8 +72,8 @@ export class LexwareBatchProcessor {
     maxConcurrent: 2,
     overwriteExisting: false,
     skipLowConfidence: false,
-    autoReviewThreshold: 0.70,
-    dryRun: false
+    autoReviewThreshold: 0.7,
+    dryRun: false,
   };
 
   /**
@@ -116,7 +116,7 @@ export class LexwareBatchProcessor {
       skipped: 0,
       duplicates: 0,
       timeElapsed: 0,
-      avgTimePerArticle: 0
+      avgTimePerArticle: 0,
     };
 
     // Create import manifest
@@ -125,9 +125,9 @@ export class LexwareBatchProcessor {
     // Check for duplicates if not overwriting
     let duplicateMap = new Map<string, boolean>();
     if (!opts.overwriteExisting) {
-      const articleNumbers = pairs.map(p => p.articleNumber);
+      const articleNumbers = pairs.map((p) => p.articleNumber);
       duplicateMap = await lexwareValidationService.checkForDuplicatesBatch(articleNumbers);
-      stats.duplicates = Array.from(duplicateMap.values()).filter(isDup => isDup).length;
+      stats.duplicates = Array.from(duplicateMap.values()).filter((isDup) => isDup).length;
 
       if (stats.duplicates > 0) {
         console.log(`⚠️  Found ${stats.duplicates} existing articles in database`);
@@ -141,7 +141,7 @@ export class LexwareBatchProcessor {
       const totalBatches = Math.ceil(pairs.length / opts.batchSize!);
 
       console.log(`\n📦 Processing Batch ${batchNum}/${totalBatches}`);
-      console.log(`   Articles: ${batchPairs.map(p => p.articleNumber).join(', ')}`);
+      console.log(`   Articles: ${batchPairs.map((p) => p.articleNumber).join(', ')}`);
 
       // Process each pair in the batch
       const batchPromises = batchPairs.map(async (pair) => {
@@ -159,7 +159,7 @@ export class LexwareBatchProcessor {
               articleNumber: pair.articleNumber,
               reason: `Invalid pair status: ${pair.status}`,
               errors: [`Missing required screenshot(s)`],
-              pair
+              pair,
             });
             stats.failed++;
             return;
@@ -181,7 +181,7 @@ export class LexwareBatchProcessor {
               articleNumber: pair.articleNumber,
               reason: 'OCR extraction failed',
               errors: extractionResult.errors,
-              pair
+              pair,
             });
             stats.failed++;
             console.log(`   ❌ Failed: ${pair.articleNumber}`);
@@ -195,8 +195,13 @@ export class LexwareBatchProcessor {
           if (validationReport.requiresManualReview) {
             const confidencePercent = Math.round(validationReport.confidenceScore * 100);
 
-            if (opts.skipLowConfidence && validationReport.confidenceScore < opts.autoReviewThreshold!) {
-              console.log(`   ⏭️  Skipping ${pair.articleNumber} (confidence ${confidencePercent}% < threshold)`);
+            if (
+              opts.skipLowConfidence &&
+              validationReport.confidenceScore < opts.autoReviewThreshold!
+            ) {
+              console.log(
+                `   ⏭️  Skipping ${pair.articleNumber} (confidence ${confidencePercent}% < threshold)`
+              );
               stats.skipped++;
               return;
             }
@@ -205,10 +210,12 @@ export class LexwareBatchProcessor {
               articleNumber: pair.articleNumber,
               extractedData: extractionResult,
               validationReport,
-              reviewReasons: validationReport.reviewReasons
+              reviewReasons: validationReport.reviewReasons,
             });
             stats.reviewNeeded++;
-            console.log(`   ⚠️  Review needed: ${pair.articleNumber} (confidence: ${confidencePercent}%)`);
+            console.log(
+              `   ⚠️  Review needed: ${pair.articleNumber} (confidence: ${confidencePercent}%)`
+            );
           }
 
           if (validationReport.isValid) {
@@ -219,20 +226,19 @@ export class LexwareBatchProcessor {
             failed.push({
               articleNumber: pair.articleNumber,
               reason: 'Validation failed',
-              errors: validationReport.errors.map(e => e.message),
-              pair
+              errors: validationReport.errors.map((e) => e.message),
+              pair,
             });
             stats.failed++;
             console.log(`   ❌ Invalid: ${pair.articleNumber}`);
           }
-
         } catch (error: any) {
           console.error(`   ❌ Error processing ${pair.articleNumber}:`, error);
           failed.push({
             articleNumber: pair.articleNumber,
             reason: 'Processing error',
             errors: [error.message || 'Unknown error'],
-            pair
+            pair,
           });
           stats.failed++;
         }
@@ -269,7 +275,7 @@ export class LexwareBatchProcessor {
       failed,
       flaggedForReview,
       stats,
-      manifest
+      manifest,
     };
   }
 
@@ -291,7 +297,7 @@ export class LexwareBatchProcessor {
         updated: 0,
         failed: 0,
         products: [],
-        errors: []
+        errors: [],
       };
     }
 
@@ -312,28 +318,31 @@ export class LexwareBatchProcessor {
           articleNumber: productData.articleNumber!,
           productName: productData.productName || 'Unknown Product',
           description: productData.description || null,
-          price: typeof productData.price === 'string'
-            ? parseFloat(productData.price) || null
-            : productData.price || null,
+          price:
+            typeof productData.price === 'string'
+              ? parseFloat(productData.price) || null
+              : productData.price || null,
           priceType: productData.priceType || 'unknown',
-          tieredPrices: productData.tieredPrices ? JSON.parse(JSON.stringify(productData.tieredPrices)) : null,
+          tieredPrices: productData.tieredPrices
+            ? JSON.parse(JSON.stringify(productData.tieredPrices))
+            : null,
           tieredPricesText: productData.tieredPricesText || null,
-          imageUrl: null,  // No images for Lexware imports
+          imageUrl: null, // No images for Lexware imports
           thumbnailUrl: null,
-          ean: null,  // Not available in Lexware imports
-          category: null,  // Not available in Lexware imports
+          ean: null, // Not available in Lexware imports
+          category: null, // Not available in Lexware imports
           sourceUrl: 'lexware-import',
           crawlJobId: importJobId,
           ocrConfidence: extraction.confidence.productName || 0,
           verified: false,
-          published: false
+          published: false,
         };
 
         // Upsert to database
         const product = await prisma.product.upsert({
           where: { articleNumber: dbData.articleNumber },
           create: dbData,
-          update: opts.overwriteExisting ? dbData : {}
+          update: opts.overwriteExisting ? dbData : {},
         });
 
         if (product) {
@@ -348,13 +357,12 @@ export class LexwareBatchProcessor {
             console.log(`   ✅ Imported: ${product.articleNumber}`);
           }
         }
-
       } catch (error: any) {
         failed++;
         const errorMsg = error.message || 'Unknown database error';
         errors.push({
           articleNumber: extraction.articleNumber,
-          error: errorMsg
+          error: errorMsg,
         });
         console.error(`   ❌ Failed to import ${extraction.articleNumber}: ${errorMsg}`);
       }
@@ -371,7 +379,7 @@ export class LexwareBatchProcessor {
       updated,
       failed,
       products: importedProducts,
-      errors
+      errors,
     };
   }
 
@@ -403,9 +411,7 @@ export class LexwareBatchProcessor {
     // 3. Validate pairs
     console.log('\n✔️ Phase 2: Validation');
     const validationResults = await lexwareImportService.validateImagePairs(pairs);
-    const validPairs = validationResults
-      .filter(v => v.isValid)
-      .map(v => v.pair);
+    const validPairs = validationResults.filter((v) => v.isValid).map((v) => v.pair);
 
     console.log(`   Found ${validPairs.length} valid pairs out of ${pairs.length}`);
 
@@ -435,7 +441,7 @@ export class LexwareBatchProcessor {
 
     return {
       processingResult,
-      importResult
+      importResult,
     };
   }
 

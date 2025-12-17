@@ -10,8 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface ImagePair {
   articleNumber: string;
-  screen1Path: string;    // e.g., "1127.png"
-  screen2Path: string;    // e.g., "1127,2.png"
+  screen1Path: string; // e.g., "1127.png"
+  screen2Path: string; // e.g., "1127,2.png"
   status: 'valid' | 'missing_screen2' | 'missing_screen1' | 'invalid';
   screen1Exists: boolean;
   screen2Exists: boolean;
@@ -55,8 +55,8 @@ export class LexwareImportService {
     try {
       // Read all files in the directory
       const files = await fs.readdir(targetFolder);
-      const imageFiles = files.filter(file =>
-        this.SUPPORTED_EXTENSIONS.some(ext => file.toLowerCase().endsWith(ext))
+      const imageFiles = files.filter((file) =>
+        this.SUPPORTED_EXTENSIONS.some((ext) => file.toLowerCase().endsWith(ext))
       );
 
       console.log(`📁 Found ${imageFiles.length} total image files`);
@@ -108,7 +108,7 @@ export class LexwareImportService {
           screen2Path,
           status,
           screen1Exists,
-          screen2Exists
+          screen2Exists,
         });
       }
 
@@ -116,13 +116,16 @@ export class LexwareImportService {
       pairs.sort((a, b) => a.articleNumber.localeCompare(b.articleNumber));
 
       console.log(`✅ Discovered ${pairs.length} article pairs:`);
-      console.log(`   - Valid pairs: ${pairs.filter(p => p.status === 'valid').length}`);
-      console.log(`   - Missing screen2: ${pairs.filter(p => p.status === 'missing_screen2').length}`);
-      console.log(`   - Missing screen1: ${pairs.filter(p => p.status === 'missing_screen1').length}`);
-      console.log(`   - Invalid: ${pairs.filter(p => p.status === 'invalid').length}`);
+      console.log(`   - Valid pairs: ${pairs.filter((p) => p.status === 'valid').length}`);
+      console.log(
+        `   - Missing screen2: ${pairs.filter((p) => p.status === 'missing_screen2').length}`
+      );
+      console.log(
+        `   - Missing screen1: ${pairs.filter((p) => p.status === 'missing_screen1').length}`
+      );
+      console.log(`   - Invalid: ${pairs.filter((p) => p.status === 'invalid').length}`);
 
       return pairs;
-
     } catch (error) {
       console.error(`❌ Error discovering image pairs: ${error}`);
       throw error;
@@ -167,7 +170,8 @@ export class LexwareImportService {
       if (pair.screen1Exists) {
         try {
           const stats = await fs.stat(pair.screen1Path);
-          if (stats.size < 1000) { // Less than 1KB is suspicious
+          if (stats.size < 1000) {
+            // Less than 1KB is suspicious
             warnings.push(`Screen 1 file seems too small: ${stats.size} bytes`);
           }
         } catch (err) {
@@ -190,14 +194,14 @@ export class LexwareImportService {
         pair,
         isValid: errors.length === 0,
         errors,
-        warnings
+        warnings,
       });
     }
 
     // Summary statistics
-    const validCount = results.filter(r => r.isValid).length;
-    const withWarnings = results.filter(r => r.warnings.length > 0).length;
-    const withErrors = results.filter(r => r.errors.length > 0).length;
+    const validCount = results.filter((r) => r.isValid).length;
+    const withWarnings = results.filter((r) => r.warnings.length > 0).length;
+    const withErrors = results.filter((r) => r.errors.length > 0).length;
 
     console.log(`✅ Validation complete:`);
     console.log(`   - Valid: ${validCount}/${pairs.length}`);
@@ -222,19 +226,19 @@ export class LexwareImportService {
         return count;
       }, 0),
       totalPairs: pairs.length,
-      validPairs: pairs.filter(p => p.status === 'valid'),
-      incompletePairs: pairs.filter(p =>
-        p.status === 'missing_screen1' || p.status === 'missing_screen2'
+      validPairs: pairs.filter((p) => p.status === 'valid'),
+      incompletePairs: pairs.filter(
+        (p) => p.status === 'missing_screen1' || p.status === 'missing_screen2'
       ),
-      invalidPairs: pairs.filter(p => p.status === 'invalid'),
+      invalidPairs: pairs.filter((p) => p.status === 'invalid'),
       createdAt: new Date(),
       stats: {
-        complete: pairs.filter(p => p.status === 'valid').length,
-        incomplete: pairs.filter(p =>
-          p.status === 'missing_screen1' || p.status === 'missing_screen2'
+        complete: pairs.filter((p) => p.status === 'valid').length,
+        incomplete: pairs.filter(
+          (p) => p.status === 'missing_screen1' || p.status === 'missing_screen2'
         ).length,
-        invalid: pairs.filter(p => p.status === 'invalid').length
-      }
+        invalid: pairs.filter((p) => p.status === 'invalid').length,
+      },
     };
 
     console.log(`📋 Import Manifest Created:`);
@@ -275,12 +279,12 @@ export class LexwareImportService {
 
     try {
       const files = await fs.readdir(targetFolder);
-      const imageFiles = files.filter(file =>
-        this.SUPPORTED_EXTENSIONS.some(ext => file.toLowerCase().endsWith(ext))
+      const imageFiles = files.filter((file) =>
+        this.SUPPORTED_EXTENSIONS.some((ext) => file.toLowerCase().endsWith(ext))
       );
 
-      const screen1Files = imageFiles.filter(f => !f.includes(',2'));
-      const screen2Files = imageFiles.filter(f => f.includes(',2'));
+      const screen1Files = imageFiles.filter((f) => !f.includes(',2'));
+      const screen2Files = imageFiles.filter((f) => f.includes(',2'));
 
       const articleNumbers = new Set<string>();
       for (const file of imageFiles) {
@@ -302,9 +306,8 @@ export class LexwareImportService {
         screen1Files: screen1Files.length,
         screen2Files: screen2Files.length,
         articleNumbers: Array.from(articleNumbers).sort(),
-        filesByExtension
+        filesByExtension,
       };
-
     } catch (error) {
       console.error(`❌ Error getting folder statistics: ${error}`);
       throw error;

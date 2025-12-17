@@ -30,19 +30,19 @@ router.get('/discover', async (req: Request, res: Response) => {
         statistics: stats,
         summary: {
           total: pairs.length,
-          valid: pairs.filter(p => p.status === 'valid').length,
-          incomplete: pairs.filter(p =>
-            p.status === 'missing_screen1' || p.status === 'missing_screen2'
+          valid: pairs.filter((p) => p.status === 'valid').length,
+          incomplete: pairs.filter(
+            (p) => p.status === 'missing_screen1' || p.status === 'missing_screen2'
           ).length,
-          invalid: pairs.filter(p => p.status === 'invalid').length
-        }
-      }
+          invalid: pairs.filter((p) => p.status === 'invalid').length,
+        },
+      },
     });
   } catch (error: any) {
     console.error('Error discovering Lexware files:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to discover Lexware screenshots'
+      error: error.message || 'Failed to discover Lexware screenshots',
     });
   }
 });
@@ -58,7 +58,7 @@ router.post('/validate', async (req: Request, res: Response) => {
     if (!pairs || !Array.isArray(pairs)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid request: pairs array required'
+        error: 'Invalid request: pairs array required',
       });
     }
 
@@ -76,18 +76,18 @@ router.post('/validate', async (req: Request, res: Response) => {
         duplicates: Array.from(duplicates.entries()),
         summary: {
           total: validationResults.length,
-          valid: validationResults.filter(r => r.isValid).length,
-          withWarnings: validationResults.filter(r => r.warnings.length > 0).length,
-          withErrors: validationResults.filter(r => r.errors.length > 0).length,
-          duplicatesFound: Array.from(duplicates.values()).filter(v => v).length
-        }
-      }
+          valid: validationResults.filter((r) => r.isValid).length,
+          withWarnings: validationResults.filter((r) => r.warnings.length > 0).length,
+          withErrors: validationResults.filter((r) => r.errors.length > 0).length,
+          duplicatesFound: Array.from(duplicates.values()).filter((v) => v).length,
+        },
+      },
     });
   } catch (error: any) {
     console.error('Error validating pairs:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to validate pairs'
+      error: error.message || 'Failed to validate pairs',
     });
   }
 });
@@ -103,7 +103,7 @@ router.post('/preview', async (req: Request, res: Response) => {
     if (!pairs || !Array.isArray(pairs)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid request: pairs array required'
+        error: 'Invalid request: pairs array required',
       });
     }
 
@@ -117,8 +117,8 @@ router.post('/preview', async (req: Request, res: Response) => {
 
     // Process samples
     const result = await batchProcessor.processBatch(samplePairs, {
-      dryRun: true,  // Don't save to database
-      batchSize: samplePairs.length
+      dryRun: true, // Don't save to database
+      batchSize: samplePairs.length,
     });
 
     // Shutdown processor
@@ -127,24 +127,24 @@ router.post('/preview', async (req: Request, res: Response) => {
     res.json({
       success: true,
       data: {
-        samples: result.successful.map(s => ({
+        samples: result.successful.map((s) => ({
           articleNumber: s.articleNumber,
           productName: s.data.productName,
           description: s.data.description,
           price: s.data.price,
           priceType: s.data.priceType,
           tieredPrices: s.data.tieredPrices,
-          confidence: s.confidence
+          confidence: s.confidence,
         })),
         failed: result.failed,
-        stats: result.stats
-      }
+        stats: result.stats,
+      },
     });
   } catch (error: any) {
     console.error('Error generating preview:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to generate preview'
+      error: error.message || 'Failed to generate preview',
     });
   }
 });
@@ -155,10 +155,7 @@ router.post('/preview', async (req: Request, res: Response) => {
  */
 router.post('/process', async (req: Request, res: Response) => {
   try {
-    const {
-      folderPath,
-      options = {}
-    } = req.body;
+    const { folderPath, options = {} } = req.body;
 
     console.log('🚀 Starting Lexware import process...');
 
@@ -174,41 +171,43 @@ router.post('/process', async (req: Request, res: Response) => {
       id: jobId,
       status: 'processing',
       startTime: new Date(),
-      promise: jobPromise
+      promise: jobPromise,
     });
 
     // Handle job completion
-    jobPromise.then(result => {
-      activeJobs.set(jobId, {
-        id: jobId,
-        status: 'completed',
-        startTime: activeJobs.get(jobId).startTime,
-        endTime: new Date(),
-        result
+    jobPromise
+      .then((result) => {
+        activeJobs.set(jobId, {
+          id: jobId,
+          status: 'completed',
+          startTime: activeJobs.get(jobId).startTime,
+          endTime: new Date(),
+          result,
+        });
+      })
+      .catch((error) => {
+        activeJobs.set(jobId, {
+          id: jobId,
+          status: 'failed',
+          startTime: activeJobs.get(jobId).startTime,
+          endTime: new Date(),
+          error: error.message,
+        });
       });
-    }).catch(error => {
-      activeJobs.set(jobId, {
-        id: jobId,
-        status: 'failed',
-        startTime: activeJobs.get(jobId).startTime,
-        endTime: new Date(),
-        error: error.message
-      });
-    });
 
     res.json({
       success: true,
       data: {
         jobId,
         message: 'Import process started',
-        status: 'processing'
-      }
+        status: 'processing',
+      },
     });
   } catch (error: any) {
     console.error('Error starting import process:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to start import process'
+      error: error.message || 'Failed to start import process',
     });
   }
 });
@@ -225,7 +224,7 @@ router.get('/jobs/:id', async (req: Request, res: Response) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        error: 'Job not found'
+        error: 'Job not found',
       });
     }
 
@@ -237,8 +236,8 @@ router.get('/jobs/:id', async (req: Request, res: Response) => {
         status: job.status,
         startTime: job.startTime,
         endTime: job.endTime,
-        summary: null as any
-      }
+        summary: null as any,
+      },
     };
 
     // Add summary if job is complete
@@ -248,13 +247,13 @@ router.get('/jobs/:id', async (req: Request, res: Response) => {
           successful: job.result.processingResult.successful.length,
           failed: job.result.processingResult.failed.length,
           reviewNeeded: job.result.processingResult.flaggedForReview.length,
-          stats: job.result.processingResult.stats
+          stats: job.result.processingResult.stats,
         },
         import: {
           imported: job.result.importResult.imported,
           updated: job.result.importResult.updated,
-          failed: job.result.importResult.failed
-        }
+          failed: job.result.importResult.failed,
+        },
       };
     } else if (job.status === 'failed') {
       response.data.summary = { error: job.error };
@@ -265,7 +264,7 @@ router.get('/jobs/:id', async (req: Request, res: Response) => {
     console.error('Error getting job status:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get job status'
+      error: error.message || 'Failed to get job status',
     });
   }
 });
@@ -282,26 +281,26 @@ router.get('/jobs/:id/results', async (req: Request, res: Response) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        error: 'Job not found'
+        error: 'Job not found',
       });
     }
 
     if (job.status !== 'completed') {
       return res.status(400).json({
         success: false,
-        error: `Job is ${job.status}, results not available yet`
+        error: `Job is ${job.status}, results not available yet`,
       });
     }
 
     res.json({
       success: true,
-      data: job.result
+      data: job.result,
     });
   } catch (error: any) {
     console.error('Error getting job results:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get job results'
+      error: error.message || 'Failed to get job results',
     });
   }
 });
@@ -318,7 +317,7 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        error: 'Job not found'
+        error: 'Job not found',
       });
     }
 
@@ -326,7 +325,7 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
       activeJobs.delete(jobId);
       return res.json({
         success: true,
-        message: 'Job removed from memory'
+        message: 'Job removed from memory',
       });
     }
 
@@ -335,13 +334,13 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      message: 'Job cancelled (note: processing may continue in background)'
+      message: 'Job cancelled (note: processing may continue in background)',
     });
   } catch (error: any) {
     console.error('Error cancelling job:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to cancel job'
+      error: error.message || 'Failed to cancel job',
     });
   }
 });
@@ -354,11 +353,11 @@ router.get('/articles', async (_req: Request, res: Response) => {
   try {
     const articles = await prisma.product.findMany({
       where: {
-        sourceUrl: 'lexware-import'
+        sourceUrl: 'lexware-import',
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
 
     res.json({
@@ -367,18 +366,18 @@ router.get('/articles', async (_req: Request, res: Response) => {
         articles,
         total: articles.length,
         summary: {
-          withPrice: articles.filter(a => a.price !== null).length,
-          withTieredPrice: articles.filter(a => a.priceType === 'tiered').length,
-          aufAnfrage: articles.filter(a => a.priceType === 'auf_anfrage').length,
-          unknown: articles.filter(a => a.priceType === 'unknown').length
-        }
-      }
+          withPrice: articles.filter((a) => a.price !== null).length,
+          withTieredPrice: articles.filter((a) => a.priceType === 'tiered').length,
+          aufAnfrage: articles.filter((a) => a.priceType === 'auf_anfrage').length,
+          unknown: articles.filter((a) => a.priceType === 'unknown').length,
+        },
+      },
     });
   } catch (error: any) {
     console.error('Error fetching Lexware articles:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to fetch Lexware articles'
+      error: error.message || 'Failed to fetch Lexware articles',
     });
   }
 });
@@ -394,28 +393,28 @@ router.delete('/articles', async (req: Request, res: Response) => {
     if (confirm !== 'DELETE_ALL_LEXWARE_ARTICLES') {
       return res.status(400).json({
         success: false,
-        error: 'Confirmation required. Set confirm to "DELETE_ALL_LEXWARE_ARTICLES"'
+        error: 'Confirmation required. Set confirm to "DELETE_ALL_LEXWARE_ARTICLES"',
       });
     }
 
     const result = await prisma.product.deleteMany({
       where: {
-        sourceUrl: 'lexware-import'
-      }
+        sourceUrl: 'lexware-import',
+      },
     });
 
     res.json({
       success: true,
       data: {
         deleted: result.count,
-        message: `Deleted ${result.count} Lexware articles`
-      }
+        message: `Deleted ${result.count} Lexware articles`,
+      },
     });
   } catch (error: any) {
     console.error('Error deleting Lexware articles:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to delete Lexware articles'
+      error: error.message || 'Failed to delete Lexware articles',
     });
   }
 });

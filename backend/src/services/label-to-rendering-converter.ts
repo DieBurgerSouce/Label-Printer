@@ -11,13 +11,22 @@ import {
   ImageLayerProperties,
   QRCodeLayerProperties,
   TemplateDimensions,
-  FormattingOptions
+  FormattingOptions,
 } from '../types/template-types';
 
 // Frontend LabelElement types (simplified - matches LabelTemplateEditor.tsx)
 interface LabelElement {
   id: string;
-  type: 'text' | 'freeText' | 'image' | 'price' | 'priceTable' | 'tieredPrices' | 'articleNumber' | 'qrCode' | 'description';
+  type:
+    | 'text'
+    | 'freeText'
+    | 'image'
+    | 'price'
+    | 'priceTable'
+    | 'tieredPrices'
+    | 'articleNumber'
+    | 'qrCode'
+    | 'description';
   x: number;
   y: number;
   width: number;
@@ -121,28 +130,30 @@ export class LabelToRenderingConverter {
         backgroundColor: labelTemplate.settings.backgroundColor,
         defaultFont: labelTemplate.settings.defaultFontFamily,
         defaultFontSize: labelTemplate.settings.defaultFontSize,
-        defaultColor: labelTemplate.settings.defaultFontColor
+        defaultColor: labelTemplate.settings.defaultFontColor,
       },
       variables: [],
 
       settings: {
-        printSettings: labelTemplate.printLayoutId ? {
-          paperSize: 'A4',
-          orientation: 'portrait',
-          margins: { top: 10, right: 10, bottom: 10, left: 10 },
-          bleed: 3,
-          cropMarks: true
-        } : undefined,
+        printSettings: labelTemplate.printLayoutId
+          ? {
+              paperSize: 'A4',
+              orientation: 'portrait',
+              margins: { top: 10, right: 10, bottom: 10, left: 10 },
+              bleed: 3,
+              cropMarks: true,
+            }
+          : undefined,
         exportSettings: {
           format: 'png',
           quality: 90,
           dpi: exportDpi,
-          colorSpace: 'RGB'
-        }
+          colorSpace: 'RGB',
+        },
       },
 
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     console.log(`✅ Conversion complete: ${layers.length} layers created`);
@@ -163,7 +174,7 @@ export class LabelToRenderingConverter {
         width: labelTemplate.widthMm,
         height: labelTemplate.heightMm,
         unit: 'mm',
-        dpi: exportDpi
+        dpi: exportDpi,
       };
     }
 
@@ -172,7 +183,7 @@ export class LabelToRenderingConverter {
       width: labelTemplate.width,
       height: labelTemplate.height,
       unit: 'px',
-      dpi: exportDpi
+      dpi: exportDpi,
     };
   }
 
@@ -192,7 +203,7 @@ export class LabelToRenderingConverter {
       case 'price':
         return this.convertPriceElement(element, index);
       case 'priceTable':
-      case 'tieredPrices':  // ⚡ FIX: Support both 'priceTable' and 'tieredPrices'
+      case 'tieredPrices': // ⚡ FIX: Support both 'priceTable' and 'tieredPrices'
         return this.convertPriceTableElement(element, index);
       case 'articleNumber':
         return this.convertArticleNumberElement(element, index);
@@ -231,8 +242,8 @@ export class LabelToRenderingConverter {
           dataField: fieldName,
           fieldType,
           style: this.createTextStyle(element, fieldType),
-          formatting: undefined
-        } as DynamicTextLayerProperties
+          formatting: undefined,
+        } as DynamicTextLayerProperties,
       };
     } else {
       // Static text
@@ -265,8 +276,8 @@ export class LabelToRenderingConverter {
         type: 'image',
         source: 'imageUrl',
         fit: 'contain',
-        alignment: { horizontal: 'center', vertical: 'middle' }
-      } as ImageLayerProperties
+        alignment: { horizontal: 'center', vertical: 'middle' },
+      } as ImageLayerProperties,
     };
   }
 
@@ -297,10 +308,10 @@ export class LabelToRenderingConverter {
             decimalPlaces: 2,
             decimalSeparator: ',',
             thousandsSeparator: '.',
-            showCurrencyCode: false
-          }
-        }
-      } as DynamicTextLayerProperties
+            showCurrencyCode: false,
+          },
+        },
+      } as DynamicTextLayerProperties,
     };
     console.log(`      → dataField='price', fieldType='price'`);
     return layer;
@@ -310,7 +321,9 @@ export class LabelToRenderingConverter {
    * Convert priceTable element
    */
   private static convertPriceTableElement(element: LabelElement, index: number): TemplateLayer {
-    console.log(`   📋 Converting priceTable element: id=${element.id}, content="${element.content}"`);
+    console.log(
+      `   📋 Converting priceTable element: id=${element.id}, content="${element.content}"`
+    );
     const layer: TemplateLayer = {
       id: element.id,
       name: `tiered-price-${index}`,
@@ -334,10 +347,10 @@ export class LabelToRenderingConverter {
             quantitySuffix: ' Stk',
             pricePrefix: '',
             priceSuffix: ' €',
-            showQuantityLabel: false
-          }
-        }
-      } as DynamicTextLayerProperties
+            showQuantityLabel: false,
+          },
+        },
+      } as DynamicTextLayerProperties,
     };
     console.log(`      → dataField='tieredPrices', fieldType='tieredPrice'`);
     return layer;
@@ -366,10 +379,10 @@ export class LabelToRenderingConverter {
           articleNumber: {
             prefix: 'Artikelnummer: ',
             suffix: '',
-            casing: 'original'
-          }
-        }
-      } as DynamicTextLayerProperties
+            casing: 'original',
+          },
+        },
+      } as DynamicTextLayerProperties,
     };
   }
 
@@ -392,8 +405,8 @@ export class LabelToRenderingConverter {
         data: 'sourceUrl',
         errorCorrection: 'M',
         color: '#000000',
-        backgroundColor: '#FFFFFF'
-      } as QRCodeLayerProperties
+        backgroundColor: '#FFFFFF',
+      } as QRCodeLayerProperties,
     };
   }
 
@@ -416,8 +429,8 @@ export class LabelToRenderingConverter {
         dataField: 'description',
         fieldType: 'description',
         style: this.createTextStyle(element, 'description'),
-        formatting: undefined
-      } as DynamicTextLayerProperties
+        formatting: undefined,
+      } as DynamicTextLayerProperties,
     };
   }
 
@@ -439,8 +452,8 @@ export class LabelToRenderingConverter {
         type: 'image',
         source: labelTemplate.settings.backgroundImage!,
         fit: 'cover',
-        alignment: { horizontal: 'center', vertical: 'middle' }
-      } as ImageLayerProperties
+        alignment: { horizontal: 'center', vertical: 'middle' },
+      } as ImageLayerProperties,
     };
   }
 
@@ -470,9 +483,9 @@ export class LabelToRenderingConverter {
           textAlign: element.align || 'left',
           verticalAlign: 'top',
           lineHeight: 1.2,
-          letterSpacing: 0
-        }
-      } as TextLayerProperties
+          letterSpacing: 0,
+        },
+      } as TextLayerProperties,
     };
   }
 
@@ -490,7 +503,7 @@ export class LabelToRenderingConverter {
       verticalAlign: 'top',
       lineHeight: 1.2,
       letterSpacing: 0,
-      fieldType
+      fieldType,
     };
   }
 
@@ -499,14 +512,14 @@ export class LabelToRenderingConverter {
    */
   private static getFieldTypeFromPlaceholder(placeholder: string): string {
     const map: { [key: string]: string } = {
-      'Produktname': 'productName',
-      'productName': 'productName',
-      'Preis': 'price',
-      'price': 'price',
-      'Artikelnummer': 'articleNumber',
-      'articleNumber': 'articleNumber',
-      'Beschreibung': 'description',
-      'description': 'description'
+      Produktname: 'productName',
+      productName: 'productName',
+      Preis: 'price',
+      price: 'price',
+      Artikelnummer: 'articleNumber',
+      articleNumber: 'articleNumber',
+      Beschreibung: 'description',
+      description: 'description',
     };
 
     return map[placeholder] || 'custom';
@@ -519,14 +532,14 @@ export class LabelToRenderingConverter {
     return {
       articleNumber: {
         prefix: 'Art.Nr.: ',
-        casing: 'original'
+        casing: 'original',
       },
       price: {
         currencySymbol: '€',
         currencyPosition: 'after',
         decimalPlaces: 2,
         decimalSeparator: ',',
-        thousandsSeparator: '.'
+        thousandsSeparator: '.',
       },
       tieredPrice: {
         layout: 'vertical',
@@ -535,8 +548,8 @@ export class LabelToRenderingConverter {
         quantitySuffix: ' Stk',
         pricePrefix: '',
         priceSuffix: ' €',
-        showQuantityLabel: false
-      }
+        showQuantityLabel: false,
+      },
     };
   }
 
@@ -567,7 +580,7 @@ export class LabelToRenderingConverter {
     return {
       valid: errors.length === 0,
       errors: errors.length > 0 ? errors : undefined,
-      warnings: warnings.length > 0 ? warnings : undefined
+      warnings: warnings.length > 0 ? warnings : undefined,
     };
   }
 }

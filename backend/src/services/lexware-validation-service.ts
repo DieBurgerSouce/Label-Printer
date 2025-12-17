@@ -38,13 +38,13 @@ export interface PriceTypeResult {
 
 export class LexwareValidationService {
   // Confidence thresholds
-  private readonly CONFIDENCE_THRESHOLD_HIGH = 0.85;  // Auto-import safe
-  private readonly CONFIDENCE_THRESHOLD_MEDIUM = 0.70; // Needs review
-  private readonly CONFIDENCE_THRESHOLD_LOW = 0.50;    // Manual only
+  private readonly CONFIDENCE_THRESHOLD_HIGH = 0.85; // Auto-import safe
+  private readonly CONFIDENCE_THRESHOLD_MEDIUM = 0.7; // Needs review
+  private readonly CONFIDENCE_THRESHOLD_LOW = 0.5; // Manual only
 
   // Price sanity limits
   private readonly MIN_PRICE = 0.01;
-  private readonly MAX_PRICE = 100000.00;
+  private readonly MAX_PRICE = 100000.0;
   private readonly MAX_TIERED_TIERS = 10;
 
   /**
@@ -62,7 +62,7 @@ export class LexwareValidationService {
       errors.push({
         field: 'articleNumber',
         message: 'Article number is missing',
-        fatal: true
+        fatal: true,
       });
     }
 
@@ -70,7 +70,7 @@ export class LexwareValidationService {
       errors.push({
         field: 'productName',
         message: 'Product name is missing or too short',
-        fatal: true
+        fatal: true,
       });
     }
 
@@ -81,7 +81,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'articleNumber',
           message: 'Article number contains no digits',
-          severity: 'high'
+          severity: 'high',
         });
         reviewReasons.push('Unusual article number format');
       }
@@ -91,7 +91,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'articleNumber',
           message: `Article number length unusual: ${data.data.articleNumber.length} characters`,
-          severity: 'medium'
+          severity: 'medium',
         });
       }
     }
@@ -103,7 +103,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'productName',
           message: 'Product name contains unusual characters',
-          severity: 'low'
+          severity: 'low',
         });
       }
 
@@ -112,7 +112,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'productName',
           message: 'Product name unusually long',
-          severity: 'medium'
+          severity: 'medium',
         });
       }
     }
@@ -124,7 +124,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'description',
           message: 'Description appears truncated',
-          severity: 'low'
+          severity: 'low',
         });
       }
 
@@ -133,23 +133,26 @@ export class LexwareValidationService {
         warnings.push({
           field: 'description',
           message: 'Description very long - may need truncation',
-          severity: 'low'
+          severity: 'low',
         });
       }
     }
 
     // 5. Price validation
-    if (data.data.priceType === 'normal' && data.data.price !== null && data.data.price !== undefined) {
+    if (
+      data.data.priceType === 'normal' &&
+      data.data.price !== null &&
+      data.data.price !== undefined
+    ) {
       // Convert to number if string
-      const price = typeof data.data.price === 'string'
-        ? parseFloat(data.data.price)
-        : data.data.price;
+      const price =
+        typeof data.data.price === 'string' ? parseFloat(data.data.price) : data.data.price;
 
       if (!isNaN(price) && price < this.MIN_PRICE) {
         errors.push({
           field: 'price',
           message: `Price too low: ${price} €`,
-          fatal: false
+          fatal: false,
         });
         reviewReasons.push('Price below minimum threshold');
       }
@@ -158,7 +161,7 @@ export class LexwareValidationService {
         errors.push({
           field: 'price',
           message: `Price too high: ${price} €`,
-          fatal: false
+          fatal: false,
         });
         reviewReasons.push('Price above maximum threshold');
       }
@@ -168,7 +171,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'price',
           message: 'Price is exactly 0 - possible OCR error',
-          severity: 'high'
+          severity: 'high',
         });
         reviewReasons.push('Zero price detected');
       }
@@ -182,7 +185,7 @@ export class LexwareValidationService {
         errors.push({
           field: 'tieredPrices',
           message: 'Tiered pricing indicated but no tiers found',
-          fatal: false
+          fatal: false,
         });
       }
 
@@ -190,7 +193,7 @@ export class LexwareValidationService {
         warnings.push({
           field: 'tieredPrices',
           message: `Too many price tiers: ${tiers.length}`,
-          severity: 'medium'
+          severity: 'medium',
         });
         reviewReasons.push('Excessive number of price tiers');
       }
@@ -208,7 +211,7 @@ export class LexwareValidationService {
           warnings.push({
             field: 'tieredPrices',
             message: `Tier price out of range: ${quantity} units = ${price} €`,
-            severity: 'high'
+            severity: 'high',
           });
           reviewReasons.push('Price tier out of expected range');
         }
@@ -218,7 +221,7 @@ export class LexwareValidationService {
           errors.push({
             field: 'tieredPrices',
             message: `Tier quantities not in ascending order: ${previousQuantity} -> ${quantity}`,
-            fatal: false
+            fatal: false,
           });
           reviewReasons.push('Tier quantity order issue');
         }
@@ -228,7 +231,7 @@ export class LexwareValidationService {
           warnings.push({
             field: 'tieredPrices',
             message: `Price increases with quantity: ${previousQuantity} units = ${previousPrice} €, ${quantity} units = ${price} €`,
-            severity: 'medium'
+            severity: 'medium',
           });
         }
 
@@ -242,7 +245,7 @@ export class LexwareValidationService {
       warnings.push({
         field: 'priceType',
         message: 'Unable to determine price type',
-        severity: 'high'
+        severity: 'high',
       });
       reviewReasons.push('Unknown price type');
     }
@@ -254,37 +257,41 @@ export class LexwareValidationService {
       errors.push({
         field: 'confidence',
         message: `OCR confidence too low: ${Math.round(overallConfidence * 100)}%`,
-        fatal: false
+        fatal: false,
       });
       reviewReasons.push('Very low OCR confidence');
     } else if (overallConfidence < this.CONFIDENCE_THRESHOLD_MEDIUM) {
       warnings.push({
         field: 'confidence',
         message: `OCR confidence below optimal: ${Math.round(overallConfidence * 100)}%`,
-        severity: 'medium'
+        severity: 'medium',
       });
       reviewReasons.push('Low OCR confidence');
     }
 
     // 9. Check for "Auf Anfrage" consistency
-    if (data.data.priceType === 'auf_anfrage' && data.data.price !== null && data.data.price !== undefined) {
+    if (
+      data.data.priceType === 'auf_anfrage' &&
+      data.data.price !== null &&
+      data.data.price !== undefined
+    ) {
       warnings.push({
         field: 'price',
         message: 'Price type is "auf_anfrage" but price value exists',
-        severity: 'high'
+        severity: 'high',
       });
       data.data.price = null; // Sanitize
     }
 
     // Determine if manual review is required
     const requiresManualReview =
-      errors.filter(e => !e.fatal).length > 0 ||
-      warnings.filter(w => w.severity === 'high').length > 0 ||
+      errors.filter((e) => !e.fatal).length > 0 ||
+      warnings.filter((w) => w.severity === 'high').length > 0 ||
       overallConfidence < this.CONFIDENCE_THRESHOLD_MEDIUM ||
       reviewReasons.length > 0;
 
     // Check validity
-    const isValid = errors.filter(e => e.fatal).length === 0;
+    const isValid = errors.filter((e) => e.fatal).length === 0;
 
     // Create sanitized data
     const sanitizedData = this.sanitizeProductData(data.data);
@@ -297,7 +304,7 @@ export class LexwareValidationService {
       errors,
       requiresManualReview,
       reviewReasons: [...new Set(reviewReasons)], // Remove duplicates
-      sanitizedData
+      sanitizedData,
     };
   }
 
@@ -316,7 +323,7 @@ export class LexwareValidationService {
       return {
         type: 'auf_anfrage',
         confidence: 0.95,
-        reason: 'Found "auf anfrage" text'
+        reason: 'Found "auf anfrage" text',
       };
     }
 
@@ -333,8 +340,8 @@ export class LexwareValidationService {
       if (matches && matches.length > 0) {
         return {
           type: 'tiered',
-          confidence: 0.90,
-          reason: `Found ${matches.length} price tiers`
+          confidence: 0.9,
+          reason: `Found ${matches.length} price tiers`,
         };
       }
     }
@@ -347,7 +354,7 @@ export class LexwareValidationService {
       return {
         type: 'normal',
         confidence: 0.85,
-        reason: 'Found single price'
+        reason: 'Found single price',
       };
     }
 
@@ -355,7 +362,7 @@ export class LexwareValidationService {
     return {
       type: 'unknown',
       confidence: 0.0,
-      reason: 'No price pattern detected'
+      reason: 'No price pattern detected',
     };
   }
 
@@ -368,13 +375,12 @@ export class LexwareValidationService {
     }
 
     return tieredPrices
-      .filter(tier => tier && tier.quantity && tier.price)
-      .map(tier => ({
+      .filter((tier) => tier && tier.quantity && tier.price)
+      .map((tier) => ({
         quantity: parseInt(tier.quantity.toString()),
-        price: parseFloat(tier.price.toString().replace(',', '.'))
-          .toFixed(2)
+        price: parseFloat(tier.price.toString().replace(',', '.')).toFixed(2),
       }))
-      .filter(tier => !isNaN(tier.quantity) && !isNaN(parseFloat(tier.price)))
+      .filter((tier) => !isNaN(tier.quantity) && !isNaN(parseFloat(tier.price)))
       .sort((a, b) => a.quantity - b.quantity);
   }
 
@@ -385,7 +391,7 @@ export class LexwareValidationService {
     try {
       const existing = await prisma.product.findUnique({
         where: { articleNumber },
-        select: { id: true }
+        select: { id: true },
       });
 
       return existing !== null;
@@ -402,12 +408,12 @@ export class LexwareValidationService {
     try {
       const existing = await prisma.product.findMany({
         where: {
-          articleNumber: { in: articleNumbers }
+          articleNumber: { in: articleNumbers },
         },
-        select: { articleNumber: true }
+        select: { articleNumber: true },
       });
 
-      const existingSet = new Set(existing.map(p => p.articleNumber));
+      const existingSet = new Set(existing.map((p) => p.articleNumber));
       const result = new Map<string, boolean>();
 
       for (const articleNumber of articleNumbers) {
@@ -419,7 +425,7 @@ export class LexwareValidationService {
       console.error(`Error batch checking for duplicates: ${error}`);
       // Return all as non-duplicates on error
       const result = new Map<string, boolean>();
-      articleNumbers.forEach(an => result.set(an, false));
+      articleNumbers.forEach((an) => result.set(an, false));
       return result;
     }
   }
@@ -427,13 +433,15 @@ export class LexwareValidationService {
   /**
    * Calculates overall confidence score
    */
-  private calculateOverallConfidence(confidence: FieldConfidenceScores | Record<string, number>): number {
+  private calculateOverallConfidence(
+    confidence: FieldConfidenceScores | Record<string, number>
+  ): number {
     const weights = {
-      articleNumber: 0.30,
+      articleNumber: 0.3,
       productName: 0.25,
-      price: 0.20,
+      price: 0.2,
       description: 0.15,
-      tieredPrices: 0.10
+      tieredPrices: 0.1,
     };
 
     let totalWeight = 0;
@@ -464,15 +472,12 @@ export class LexwareValidationService {
     if (sanitized.productName) {
       sanitized.productName = sanitized.productName
         .trim()
-        .replace(/\s+/g, ' ')  // Multiple spaces to single
-        .substring(0, 255);     // Max length
+        .replace(/\s+/g, ' ') // Multiple spaces to single
+        .substring(0, 255); // Max length
     }
 
     if (sanitized.description) {
-      sanitized.description = sanitized.description
-        .trim()
-        .replace(/\s+/g, ' ')
-        .substring(0, 2000);    // Max length
+      sanitized.description = sanitized.description.trim().replace(/\s+/g, ' ').substring(0, 2000); // Max length
     }
 
     // Ensure price is null for non-normal types
@@ -514,18 +519,19 @@ export class LexwareValidationService {
   } {
     const summary = {
       total: reports.length,
-      valid: reports.filter(r => r.isValid).length,
-      invalid: reports.filter(r => !r.isValid).length,
-      needsReview: reports.filter(r => r.requiresManualReview).length,
+      valid: reports.filter((r) => r.isValid).length,
+      invalid: reports.filter((r) => !r.isValid).length,
+      needsReview: reports.filter((r) => r.requiresManualReview).length,
       byConfidence: {
-        high: reports.filter(r => r.confidenceScore >= this.CONFIDENCE_THRESHOLD_HIGH).length,
-        medium: reports.filter(r =>
-          r.confidenceScore >= this.CONFIDENCE_THRESHOLD_MEDIUM &&
-          r.confidenceScore < this.CONFIDENCE_THRESHOLD_HIGH
+        high: reports.filter((r) => r.confidenceScore >= this.CONFIDENCE_THRESHOLD_HIGH).length,
+        medium: reports.filter(
+          (r) =>
+            r.confidenceScore >= this.CONFIDENCE_THRESHOLD_MEDIUM &&
+            r.confidenceScore < this.CONFIDENCE_THRESHOLD_HIGH
         ).length,
-        low: reports.filter(r => r.confidenceScore < this.CONFIDENCE_THRESHOLD_MEDIUM).length
+        low: reports.filter((r) => r.confidenceScore < this.CONFIDENCE_THRESHOLD_MEDIUM).length,
       },
-      commonIssues: new Map<string, number>()
+      commonIssues: new Map<string, number>(),
     };
 
     // Count common issues

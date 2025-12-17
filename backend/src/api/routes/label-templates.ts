@@ -136,7 +136,11 @@ router.put('/:id', async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('❌ Label template update error:', error);
 
-    if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('mismatch')) {
+    if (
+      error.message.includes('Invalid') ||
+      error.message.includes('required') ||
+      error.message.includes('mismatch')
+    ) {
       return res.status(400).json({
         error: 'Invalid template',
         message: error.message,

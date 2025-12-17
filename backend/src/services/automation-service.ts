@@ -13,10 +13,7 @@ import { matcherService } from './matcher-service';
 import { templateEngine } from './template-engine';
 import { ProductService } from './product-service';
 import { getWebSocketServer } from '../websocket/socket-server.js';
-import {
-  AutomationJob,
-  AutomationConfig,
-} from '../types/automation-types';
+import { AutomationJob, AutomationConfig } from '../types/automation-types';
 
 class AutomationService {
   private jobs: Map<string, AutomationJob> = new Map();
@@ -82,7 +79,7 @@ class AutomationService {
     }
 
     // Run workflow asynchronously
-    this.runWorkflow(job).catch(error => {
+    this.runWorkflow(job).catch((error) => {
       console.error(`❌ Automation job ${jobId} failed:`, error);
       job.status = 'failed';
       job.error = error.message;
@@ -189,7 +186,7 @@ class AutomationService {
     // Wait for crawl to complete
     let complete = false;
     while (!complete) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const status = webCrawlerService.getJob(crawlJob.id);
       if (!status) break;
@@ -202,7 +199,7 @@ class AutomationService {
       // Emit WebSocket progress update every second during crawling
       try {
         const wsServer = getWebSocketServer();
-        const overallProgress = Math.round(0 + (job.progress.currentStepProgress / 4)); // Step 1/4
+        const overallProgress = Math.round(0 + job.progress.currentStepProgress / 4); // Step 1/4
         wsServer.emitJobUpdated(job.id, {
           status: job.status,
           progress: overallProgress,
@@ -224,7 +221,7 @@ class AutomationService {
 
     job.results.screenshots = screenshots.map((s: any) => ({
       productUrl: s.url || s.productUrl || '',
-      screenshotPath: s.imagePath || s.fullPath || s.path || '',  // WebCrawler uses imagePath
+      screenshotPath: s.imagePath || s.fullPath || s.path || '', // WebCrawler uses imagePath
       thumbnailPath: s.thumbnailPath,
     }));
 
@@ -232,14 +229,18 @@ class AutomationService {
     // This raw count includes duplicates (e.g., multiple screenshots per product)
     job.progress.currentStepProgress = 100;
 
-    console.log(`✅ Crawl complete: ${screenshots.length} raw screenshots captured (deduplication happens in OCR step)`);
+    console.log(
+      `✅ Crawl complete: ${screenshots.length} raw screenshots captured (deduplication happens in OCR step)`
+    );
   }
 
   /**
    * Step 2: OCR Processing
    */
   private async stepOCR(job: AutomationJob): Promise<void> {
-    console.log(`🔍 Step 2/4: Processing ${job.results.screenshots.length} screenshots with OCR...`);
+    console.log(
+      `🔍 Step 2/4: Processing ${job.results.screenshots.length} screenshots with OCR...`
+    );
     job.status = 'processing-ocr';
     job.progress.currentStep = 'ocr';
     job.progress.currentStepProgress = 0;
@@ -265,7 +266,7 @@ class AutomationService {
 
     // Deduplicate by folder name (article number OR timestamp)
     const processedFolders = new Set<string>();
-    const uniqueScreenshots = fullScreenshots.filter(s => {
+    const uniqueScreenshots = fullScreenshots.filter((s) => {
       if (!s.imagePath) return false;
 
       const pathSeparator = s.imagePath.includes('\\') ? '\\' : '/';
@@ -284,7 +285,9 @@ class AutomationService {
       return false; // Skip if no folder name
     });
 
-    console.log(`  📊 Deduplicated: ${fullScreenshots.length} → ${uniqueScreenshots.length} screenshots`);
+    console.log(
+      `  📊 Deduplicated: ${fullScreenshots.length} → ${uniqueScreenshots.length} screenshots`
+    );
 
     // 🔧 FIX: Set totalProducts AFTER deduplication, not before!
     // This ensures the job monitor shows the correct count
@@ -294,7 +297,9 @@ class AutomationService {
     // Check if we have enough unique screenshots
     const targetProducts = (job.config as any).maxProducts || 50;
     if (uniqueScreenshots.length < targetProducts) {
-      console.log(`  ⚠️ WARNING: Only ${uniqueScreenshots.length} unique screenshots found, but ${targetProducts} were requested!`);
+      console.log(
+        `  ⚠️ WARNING: Only ${uniqueScreenshots.length} unique screenshots found, but ${targetProducts} were requested!`
+      );
       console.log(`  ℹ️ This shop may not have enough unique products. Processing what we have...`);
     }
 
@@ -303,15 +308,19 @@ class AutomationService {
     let processed = 0;
 
     // Split screenshots into batches
-    const batches: typeof uniqueScreenshots[] = [];
+    const batches: (typeof uniqueScreenshots)[] = [];
     for (let i = 0; i < uniqueScreenshots.length; i += BATCH_SIZE) {
       batches.push(uniqueScreenshots.slice(i, i + BATCH_SIZE));
     }
 
-    console.log(`  📦 Processing ${uniqueScreenshots.length} screenshots in ${batches.length} batches of ${BATCH_SIZE}...`);
+    console.log(
+      `  📦 Processing ${uniqueScreenshots.length} screenshots in ${batches.length} batches of ${BATCH_SIZE}...`
+    );
 
     for (const batch of batches) {
-      console.log(`  🔄 Processing batch ${Math.floor(processed / BATCH_SIZE) + 1}/${batches.length}...`);
+      console.log(
+        `  🔄 Processing batch ${Math.floor(processed / BATCH_SIZE) + 1}/${batches.length}...`
+      );
 
       const batchPromises = batch.map(async (screenshot) => {
         try {
@@ -334,13 +343,17 @@ class AutomationService {
           const fileName = pathParts[pathParts.length - 1]; // e.g., "product-image.png"
           const folderName = pathParts[pathParts.length - 2]; // e.g., "8803" or "product-1729123456"
 
-          console.log(`  🐛 DEBUG: fileName="${fileName}", folderName="${folderName}", imagePath="${screenshot.imagePath}"`);
+          console.log(
+            `  🐛 DEBUG: fileName="${fileName}", folderName="${folderName}", imagePath="${screenshot.imagePath}"`
+          );
 
           // Check if it's an article number (with optional suffix) OR timestamp folder
-          if (folderName && fileName === 'product-image.png' && (
-            /^\d+(-[A-Z]+)?$/.test(folderName) || // Article number with optional suffix (e.g., "5020", "5020-GE", "8120-C", "7900-SH")
-            /^product-\d+$/.test(folderName) // Timestamp folder
-          )) {
+          if (
+            folderName &&
+            fileName === 'product-image.png' &&
+            (/^\d+(-[A-Z]+)?$/.test(folderName) || // Article number with optional suffix (e.g., "5020", "5020-GE", "8120-C", "7900-SH")
+              /^product-\d+$/.test(folderName)) // Timestamp folder
+          ) {
             // New precise screenshot method for element-based screenshots with HTML fusion
             const screenshotDir = pathParts.slice(0, -2).join(pathSeparator); // Get directory without folder name
 
@@ -348,16 +361,25 @@ class AutomationService {
             // This ensures variants like "7900-SH" are treated as separate articles from base "7900"
             const articleNumber = folderName; // Keep suffix! "7900-SH" stays "7900-SH"
 
-            console.log(`  🎯 Using element OCR with HTML fusion for folder ${folderName} (article ${articleNumber})`);
+            console.log(
+              `  🎯 Using element OCR with HTML fusion for folder ${folderName} (article ${articleNumber})`
+            );
 
             // Process with robust OCR service (HTML + OCR fusion)
-            const robustResult = await robustOCRService.processArticleElements(screenshotDir, articleNumber);
+            const robustResult = await robustOCRService.processArticleElements(
+              screenshotDir,
+              articleNumber
+            );
 
             // Calculate overall confidence from individual field confidences
-            const confidenceValues = Object.values(robustResult.confidence || {}).filter((v: any) => typeof v === 'number');
-            const overallConfidence = confidenceValues.length > 0
-              ? confidenceValues.reduce((sum: number, val: number) => sum + val, 0) / confidenceValues.length
-              : 0.8;
+            const confidenceValues = Object.values(robustResult.confidence || {}).filter(
+              (v: any) => typeof v === 'number'
+            );
+            const overallConfidence =
+              confidenceValues.length > 0
+                ? confidenceValues.reduce((sum: number, val: number) => sum + val, 0) /
+                  confidenceValues.length
+                : 0.8;
 
             // Convert to format expected by product-service
             result = {
@@ -367,7 +389,7 @@ class AutomationService {
               success: robustResult.success,
               productUrl: screenshot.productUrl || screenshot.url || '', // ← FIX: Use REAL crawled URL!
               confidence: {
-                overall: overallConfidence // ← FIX: Calculate average of all field confidences!
+                overall: overallConfidence, // ← FIX: Calculate average of all field confidences!
               },
               extractedData: {
                 articleNumber: robustResult.data.articleNumber || articleNumber, // ← FIX: Use data.articleNumber!
@@ -375,12 +397,16 @@ class AutomationService {
                 description: robustResult.data.description || '',
                 price: robustResult.data.price || 0,
                 tieredPrices: robustResult.data.tieredPrices || [],
-                tieredPricesText: robustResult.data.tieredPricesText || ''
+                tieredPricesText: robustResult.data.tieredPricesText || '',
               },
-              screenshot: screenshot as any
+              screenshot: screenshot as any,
             } as any;
-          } else if (fileName === 'title.png' || fileName === 'article-number.png' ||
-                     fileName === 'description.png' || fileName === 'price-table.png') {
+          } else if (
+            fileName === 'title.png' ||
+            fileName === 'article-number.png' ||
+            fileName === 'description.png' ||
+            fileName === 'price-table.png'
+          ) {
             // Skip element screenshots - they're already processed via product-image.png
             console.log(`  ⏩ Skipping element screenshot: ${fileName}`);
             processed++;
@@ -406,7 +432,7 @@ class AutomationService {
             articleNumber: result.extractedData?.articleNumber,
             productName: result.extractedData?.productName,
             priceType: result.extractedData?.priceType,
-            hasProductUrl: !!(screenshot.productUrl || screenshot.url)
+            hasProductUrl: !!(screenshot.productUrl || screenshot.url),
           });
 
           job.results.ocrResults.push({
@@ -436,7 +462,9 @@ class AutomationService {
           }
 
           processed++;
-          job.progress.currentStepProgress = Math.round((processed / uniqueScreenshots.length) * 100);
+          job.progress.currentStepProgress = Math.round(
+            (processed / uniqueScreenshots.length) * 100
+          );
           job.progress.productsProcessed = processed;
 
           // Send progress update every 10 screenshots (or on last one)
@@ -469,15 +497,20 @@ class AutomationService {
       try {
         await Promise.all(batchPromises);
       } catch (batchError: any) {
-        console.error(`⚠️ Batch ${Math.floor(processed / BATCH_SIZE)} had errors but continuing:`, batchError.message);
+        console.error(
+          `⚠️ Batch ${Math.floor(processed / BATCH_SIZE)} had errors but continuing:`,
+          batchError.message
+        );
         // Continue processing - don't stop everything!
       }
 
       // Add delay between batches to let workers breathe
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
-    console.log(`✅ OCR complete: ${job.results.summary.successfulOCR}/${uniqueScreenshots.length} successful`);
+    console.log(
+      `✅ OCR complete: ${job.results.summary.successfulOCR}/${uniqueScreenshots.length} successful`
+    );
   }
 
   /**
@@ -508,7 +541,9 @@ class AutomationService {
       );
 
       if (results) {
-        console.log(`✅ Products saved: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`);
+        console.log(
+          `✅ Products saved: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`
+        );
 
         // Emit WebSocket event
         try {
@@ -603,7 +638,9 @@ class AutomationService {
         }
 
         processed++;
-        job.progress.currentStepProgress = Math.round((processed / job.results.ocrResults.length) * 100);
+        job.progress.currentStepProgress = Math.round(
+          (processed / job.results.ocrResults.length) * 100
+        );
       } catch (error: any) {
         console.error(`Matching failed for ${ocrResult.ocrResultId}:`, error);
         job.results.summary.failedMatches++;
@@ -655,7 +692,9 @@ class AutomationService {
 
     // Combine OCR and matched data
     const dataToRender = job.results.ocrResults.map((ocrResult, _index) => {
-      const matchResult = job.results.matchResults.find(m => m.ocrResultId === ocrResult.ocrResultId);
+      const matchResult = job.results.matchResults.find(
+        (m) => m.ocrResultId === ocrResult.ocrResultId
+      );
 
       return {
         ...ocrResult.extractedData,

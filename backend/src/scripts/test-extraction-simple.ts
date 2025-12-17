@@ -8,7 +8,7 @@ async function testProduct(url: string, expectedArticleNumber: string, expectedP
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   try {
@@ -19,7 +19,7 @@ async function testProduct(url: string, expectedArticleNumber: string, expectedP
     console.log('🌐 Navigating to page...');
     await page.goto(url, {
       waitUntil: 'networkidle0',
-      timeout: 30000
+      timeout: 30000,
     });
     console.log('✓ Page loaded\n');
 
@@ -69,7 +69,9 @@ async function testProduct(url: string, expectedArticleNumber: string, expectedP
       } else {
         console.log(`⚠️ "Auf Anfrage" fields: Some issues`);
         console.log(`   price: ${result.price} (expected: null)`);
-        console.log(`   tieredPricesText: ${result.tieredPricesText} (expected: "Preis auf Anfrage")`);
+        console.log(
+          `   tieredPricesText: ${result.tieredPricesText} (expected: "Preis auf Anfrage")`
+        );
         allCorrect = false;
       }
     } else if (expectedPriceType === 'normal') {
@@ -82,12 +84,14 @@ async function testProduct(url: string, expectedArticleNumber: string, expectedP
       }
     }
 
-    if (result.articleNumber && (result.articleNumber.includes('-') || result.articleNumber.includes('.'))) {
+    if (
+      result.articleNumber &&
+      (result.articleNumber.includes('-') || result.articleNumber.includes('.'))
+    ) {
       console.log(`✅ Special chars in article number: "${result.articleNumber}"`);
     }
 
     return allCorrect;
-
   } finally {
     await browser.close();
   }
@@ -131,7 +135,6 @@ async function main() {
       console.log('❌ SOME TESTS FAILED!');
     }
     console.log('='.repeat(80) + '\n');
-
   } catch (error) {
     console.error('\n❌ Test failed:', error);
     process.exit(1);

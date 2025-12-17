@@ -13,34 +13,38 @@ const upload = multer({ storage: multer.memoryStorage() });
 /**
  * POST /api/excel/upload - Upload and parse Excel file
  */
-router.post('/upload', upload.single('file'), async (req: Request, res: Response): Promise<void> => {
-  try {
-    if (!req.file) {
+router.post(
+  '/upload',
+  upload.single('file'),
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      if (!req.file) {
+        const response: ApiResponse = {
+          success: false,
+          error: 'No file uploaded',
+        };
+        res.status(400).json(response);
+        return;
+      }
+
+      const result = await ExcelParserService.parseExcel(req.file.buffer);
+
+      const response: ApiResponse = {
+        success: true,
+        data: result,
+        message: `Parsed ${result.validRows} products successfully`,
+      };
+
+      res.json(response);
+    } catch (error) {
       const response: ApiResponse = {
         success: false,
-        error: 'No file uploaded',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
-      res.status(400).json(response);
-      return;
+      res.status(500).json(response);
     }
-
-    const result = await ExcelParserService.parseExcel(req.file.buffer);
-
-    const response: ApiResponse = {
-      success: true,
-      data: result,
-      message: `Parsed ${result.validRows} products successfully`,
-    };
-
-    res.json(response);
-  } catch (error) {
-    const response: ApiResponse = {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-    res.status(500).json(response);
   }
-});
+);
 
 /**
  * GET /api/excel/products - Get all products
@@ -240,7 +244,10 @@ router.get('/template', (_req: Request, res: Response) => {
   try {
     const buffer = ExcelParserService.generateTemplate();
 
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
     res.setHeader('Content-Disposition', 'attachment; filename=template.xlsx');
     res.send(buffer);
   } catch (error) {
@@ -259,7 +266,10 @@ router.get('/export', (_req: Request, res: Response) => {
   try {
     const buffer = ExcelParserService.exportToExcel();
 
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
     res.setHeader('Content-Disposition', 'attachment; filename=products.xlsx');
     res.send(buffer);
   } catch (error) {

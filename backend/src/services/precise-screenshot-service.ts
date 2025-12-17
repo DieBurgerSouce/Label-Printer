@@ -51,7 +51,7 @@ export const PRECISE_SELECTORS = {
 export enum LayoutType {
   SINGLE_PRICE = 'single_price',
   TIERED_PRICE = 'tiered_price',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
 }
 
 /**
@@ -99,15 +99,16 @@ export class PreciseScreenshotService {
    */
   async detectLayoutType(page: Page): Promise<LayoutType> {
     // Check for tiered price table first (more specific)
-    const hasTieredPrice = await page.$('table.product-block-prices-grid') !== null;
+    const hasTieredPrice = (await page.$('table.product-block-prices-grid')) !== null;
     if (hasTieredPrice) {
       console.log('✅ Detected: TIERED PRICE layout');
       return LayoutType.TIERED_PRICE;
     }
 
     // Check for single price - try multiple selectors
-    const hasSinglePrice = await page.$('.product-detail-price-container') !== null ||
-                           await page.$('.product-detail-price') !== null;
+    const hasSinglePrice =
+      (await page.$('.product-detail-price-container')) !== null ||
+      (await page.$('.product-detail-price')) !== null;
     if (hasSinglePrice) {
       console.log('✅ Detected: SINGLE PRICE layout');
       return LayoutType.SINGLE_PRICE;
@@ -136,8 +137,8 @@ export class PreciseScreenshotService {
       variantInfo: {
         label: 'Base Product',
         type: 'base',
-        isBaseProduct: true
-      }
+        isBaseProduct: true,
+      },
     };
 
     try {
@@ -147,11 +148,11 @@ export class PreciseScreenshotService {
         console.log(`📱 Navigating to: ${productUrl}`);
         await page.goto(productUrl, {
           waitUntil: 'domcontentloaded', // More reliable in Docker than networkidle2
-          timeout: 60000 // Increased timeout for Docker
+          timeout: 60000, // Increased timeout for Docker
         });
 
         // Wait for dynamic content to load
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } else {
         console.log(`✓ Already on product page: ${productUrl}`);
       }
@@ -160,11 +161,11 @@ export class PreciseScreenshotService {
       await this.acceptCookieBanner(page);
 
       // Wait for page to stabilize
-      await new Promise(r => setTimeout(r, 2000));
+      await new Promise((r) => setTimeout(r, 2000));
 
       // Scroll to load lazy images
       await this.scrollPage(page);
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
 
       // First, extract article number
       let extractedArticleNumber = articleNumber;
@@ -178,18 +179,20 @@ export class PreciseScreenshotService {
             '[class*="sku"]',
             '[itemprop="sku"]',
             '.product-sku',
-            '.product-code'
+            '.product-code',
           ];
 
           for (const selector of selectors) {
             const element = await page.$(selector);
             if (element) {
-              const fullText = await element.evaluate(el => el.textContent?.trim() || '');
+              const fullText = await element.evaluate((el) => el.textContent?.trim() || '');
               // Extract just the number part
               const numbers = fullText.match(/\d{3,}/); // Look for 3+ digit numbers
               if (numbers && numbers[0]) {
                 extractedArticleNumber = numbers[0];
-                console.log(`📦 Extracted article number: ${extractedArticleNumber} from ${selector}`);
+                console.log(
+                  `📦 Extracted article number: ${extractedArticleNumber} from ${selector}`
+                );
                 break;
               }
             }
@@ -232,7 +235,9 @@ export class PreciseScreenshotService {
         result.screenshots.push(screenshot);
       }
 
-      console.log(`✅ Captured ${result.screenshots.filter(s => s.success).length} screenshots for base product`);
+      console.log(
+        `✅ Captured ${result.screenshots.filter((s) => s.success).length} screenshots for base product`
+      );
 
       // NEW: DETECT AND CAPTURE ALL VARIANTS
       console.log('\n🔍 Checking for product variants...');
@@ -250,7 +255,9 @@ export class PreciseScreenshotService {
 
         // 🔧 NEW: Generate ALL combinations of variants (cartesian product)
         const combinations = this.generateVariantCombinations(variantGroups);
-        console.log(`\n🎯 FOUND ${combinations.length} VARIANT COMBINATIONS (from ${variantGroups.length} groups)!`);
+        console.log(
+          `\n🎯 FOUND ${combinations.length} VARIANT COMBINATIONS (from ${variantGroups.length} groups)!`
+        );
 
         // Store all variant results
         const allVariantResults: ProductScreenshots[] = [result]; // Include base product
@@ -261,12 +268,14 @@ export class PreciseScreenshotService {
           const combination = combinations[i];
 
           // Create a unique key for this combination
-          const combinationKey = combination.map(v => v.value).join('|');
+          const combinationKey = combination.map((v) => v.value).join('|');
 
           // Check if this is the initially loaded combination (all selected variants)
-          const isInitialCombination = combination.every(v => v.isSelected);
+          const isInitialCombination = combination.every((v) => v.isSelected);
           if (isInitialCombination) {
-            console.log(`\n   ⏩ Skipping combination ${i + 1}/${combinations.length} (already captured as base product)`);
+            console.log(
+              `\n   ⏩ Skipping combination ${i + 1}/${combinations.length} (already captured as base product)`
+            );
             processedCombinations.add(combinationKey);
             continue;
           }
@@ -279,14 +288,18 @@ export class PreciseScreenshotService {
 
           console.log(`\n📦 Processing combination ${i + 1}/${combinations.length}:`);
           for (const variant of combination) {
-            const groupLabel = variantGroups.find(g => g.variants.some(v => v.value === variant.value))?.label || 'Unknown';
+            const groupLabel =
+              variantGroups.find((g) => g.variants.some((v) => v.value === variant.value))?.label ||
+              'Unknown';
             console.log(`   • ${groupLabel}: ${variant.label}`);
           }
 
           // Select ALL variants in this combination
           let selectionFailed = false;
           for (const variant of combination) {
-            const group = variantGroups.find(g => g.variants.some(v => v.value === variant.value));
+            const group = variantGroups.find((g) =>
+              g.variants.some((v) => v.value === variant.value)
+            );
             if (!group) {
               console.log(`   ❌ Could not find group for variant ${variant.label}`);
               selectionFailed = true;
@@ -302,7 +315,7 @@ export class PreciseScreenshotService {
             }
 
             // Wait for page to update after each selection
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise((r) => setTimeout(r, 1200));
           }
 
           if (selectionFailed) {
@@ -314,7 +327,7 @@ export class PreciseScreenshotService {
           processedCombinations.add(combinationKey);
 
           // Wait a bit longer after all selections
-          await new Promise(r => setTimeout(r, 800));
+          await new Promise((r) => setTimeout(r, 800));
 
           // Extract the article number for this COMBINATION
           let combinationArticleNumber: string | null = null;
@@ -325,18 +338,20 @@ export class PreciseScreenshotService {
             '.product-detail-ordernumber-container',
             '[class*="article-number"]',
             '[class*="product-number"]',
-            '[class*="sku"]'
+            '[class*="sku"]',
           ];
 
           for (const selector of selectors) {
             const element = await page.$(selector);
             if (element) {
-              const text = await element.evaluate(el => el.textContent?.trim() || '');
+              const text = await element.evaluate((el) => el.textContent?.trim() || '');
               console.log(`   🔍 Found element "${selector}" with text: "${text}"`);
               const match = text.match(/\d{3,}(?:-[A-Z]+)?/);
               if (match) {
                 combinationArticleNumber = match[0];
-                console.log(`   ✅ Extracted article number from page: ${combinationArticleNumber}`);
+                console.log(
+                  `   ✅ Extracted article number from page: ${combinationArticleNumber}`
+                );
                 break;
               }
             }
@@ -346,7 +361,7 @@ export class PreciseScreenshotService {
             // Generate article number based on base number and combination labels
             if (extractedArticleNumber) {
               // Create suffix from all variant labels in combination
-              const suffixes = combination.map(v => {
+              const suffixes = combination.map((v) => {
                 // Try to extract meaningful suffix
                 const words = v.label.split(/[\s-]+/);
                 return words[0].substring(0, 2).toUpperCase();
@@ -355,7 +370,7 @@ export class PreciseScreenshotService {
               console.log(`   🔧 Generated article number from base: ${combinationArticleNumber}`);
             } else {
               // Use combination labels
-              const labels = combination.map(v => v.label.replace(/\s+/g, '-')).join('_');
+              const labels = combination.map((v) => v.label.replace(/\s+/g, '-')).join('_');
               combinationArticleNumber = `variant-${labels}`;
               console.log(`   🔧 Generated generic variant ID: ${combinationArticleNumber}`);
             }
@@ -365,8 +380,13 @@ export class PreciseScreenshotService {
 
           // Extract HTML data for this COMBINATION (after all selections)
           console.log(`   📄 Extracting HTML data for combination ${combinationArticleNumber}...`);
-          const combinationHtmlData = await this.extractVariantHtmlData(page, combinationArticleNumber);
-          console.log(`   ✅ Combination HTML extracted: articleNumber=${combinationHtmlData.articleNumber}, name=${combinationHtmlData.productName}`);
+          const combinationHtmlData = await this.extractVariantHtmlData(
+            page,
+            combinationArticleNumber
+          );
+          console.log(
+            `   ✅ Combination HTML extracted: articleNumber=${combinationHtmlData.articleNumber}, name=${combinationHtmlData.productName}`
+          );
 
           // Save HTML data to combination folder
           const combinationFolder = combinationArticleNumber || `combination-${Date.now()}`;
@@ -380,11 +400,11 @@ export class PreciseScreenshotService {
             timestamp: new Date(),
             articleNumber: combinationArticleNumber,
             variantInfo: {
-              label: combination.map(v => v.label).join(' + '),
+              label: combination.map((v) => v.label).join(' + '),
               type: 'combination',
               isBaseProduct: false,
-              parentUrl: productUrl
-            }
+              parentUrl: productUrl,
+            },
           };
 
           // Capture screenshots for this combination
@@ -401,21 +421,24 @@ export class PreciseScreenshotService {
             combinationResult.screenshots.push(screenshot);
           }
 
-          const combinationLabel = combination.map(v => v.label).join(' + ');
-          console.log(`   ✅ Captured ${combinationResult.screenshots.filter(s => s.success).length} screenshots for combination: ${combinationLabel} (${combinationArticleNumber})`);
+          const combinationLabel = combination.map((v) => v.label).join(' + ');
+          console.log(
+            `   ✅ Captured ${combinationResult.screenshots.filter((s) => s.success).length} screenshots for combination: ${combinationLabel} (${combinationArticleNumber})`
+          );
 
           // Store combination result
           allVariantResults.push(combinationResult);
         }
 
-        console.log(`\n🎉 TOTAL: Captured ${allVariantResults.length} product variants (including base product)`);
+        console.log(
+          `\n🎉 TOTAL: Captured ${allVariantResults.length} product variants (including base product)`
+        );
 
         // FIXED: Now returning ALL variant results instead of just the base product
         return allVariantResults;
       } else {
         console.log('   ℹ️ No variants found for this product');
       }
-
     } catch (error) {
       console.error('❌ Error capturing product screenshots:', error);
     }
@@ -427,13 +450,13 @@ export class PreciseScreenshotService {
   /**
    * Get elements to capture based on layout type
    */
-  private getElementsToCapture(layoutType: LayoutType): Array<{type: string; selector: string}> {
+  private getElementsToCapture(layoutType: LayoutType): Array<{ type: string; selector: string }> {
     const elements = [
       { type: 'product-image', selector: PRECISE_SELECTORS.productImage },
       { type: 'title', selector: PRECISE_SELECTORS.title },
       { type: 'article-number', selector: PRECISE_SELECTORS.articleNumber },
       // Capture complete description container (title + text)
-      { type: 'description', selector: PRECISE_SELECTORS.description }
+      { type: 'description', selector: PRECISE_SELECTORS.description },
     ];
 
     // Add price based on layout type
@@ -464,7 +487,7 @@ export class PreciseScreenshotService {
       type,
       selector,
       path: '',
-      success: false
+      success: false,
     };
 
     try {
@@ -480,9 +503,12 @@ export class PreciseScreenshotService {
             const isValid = await specificElement.evaluate((el: any) => {
               const rect = el.getBoundingClientRect();
               const style = window.getComputedStyle(el);
-              return rect.width >= 200 && rect.height >= 200 &&
-                     style.display !== 'none' &&
-                     style.visibility !== 'hidden';
+              return (
+                rect.width >= 200 &&
+                rect.height >= 200 &&
+                style.display !== 'none' &&
+                style.visibility !== 'hidden'
+              );
             });
 
             if (isValid) {
@@ -509,12 +535,14 @@ export class PreciseScreenshotService {
           let maxArea = 0;
 
           for (const img of allImages) {
-            const imgData = await img.evaluate((el: any) => {
+            const imgData = (await img.evaluate((el: any) => {
               const rect = el.getBoundingClientRect();
               const style = window.getComputedStyle(el);
-              const isVisible = rect.width > 0 && rect.height > 0 &&
-                              style.display !== 'none' &&
-                              style.visibility !== 'hidden';
+              const isVisible =
+                rect.width > 0 &&
+                rect.height > 0 &&
+                style.display !== 'none' &&
+                style.visibility !== 'hidden';
 
               // CRITICAL FIX: Use DISPLAYED size (getBoundingClientRect),
               // not naturalWidth/Height (which is the same for thumbnails!)
@@ -526,9 +554,9 @@ export class PreciseScreenshotService {
                 isVisible,
                 width,
                 height,
-                src: el.src
+                src: el.src,
               };
-            }) as any;
+            })) as any;
 
             // Only consider visible images with minimum displayed size of 200px
             if (imgData.isVisible && imgData.area > maxArea && imgData.width >= 200) {
@@ -538,7 +566,9 @@ export class PreciseScreenshotService {
           }
 
           element = largestImage;
-          console.log(`  ✅ Found ${allImages.length} images, selected largest displayed (${Math.sqrt(maxArea).toFixed(0)}px area)`);
+          console.log(
+            `  ✅ Found ${allImages.length} images, selected largest displayed (${Math.sqrt(maxArea).toFixed(0)}px area)`
+          );
         }
       } else {
         element = await page.$(selector);
@@ -587,38 +617,41 @@ export class PreciseScreenshotService {
 
               // Wait for load event
               const timeout = setTimeout(() => resolve(), 5000); // Max 5s wait
-              img.addEventListener('load', () => {
-                clearTimeout(timeout);
-                resolve();
-              }, { once: true });
+              img.addEventListener(
+                'load',
+                () => {
+                  clearTimeout(timeout);
+                  resolve();
+                },
+                { once: true }
+              );
 
-              img.addEventListener('error', () => {
-                clearTimeout(timeout);
-                resolve();
-              }, { once: true });
+              img.addEventListener(
+                'error',
+                () => {
+                  clearTimeout(timeout);
+                  resolve();
+                },
+                { once: true }
+              );
             });
           }, selector);
           console.log(`  ⏳ Waited for image to load: ${selector}`);
 
           // CRITICAL: Wait for page to stabilize after lazy-loading
           // (prevents screenshot from being shifted due to layout changes)
-          await new Promise(r => setTimeout(r, 1500));
+          await new Promise((r) => setTimeout(r, 1500));
           console.log(`  ⏳ Page stabilized after lazy-load (1500ms)`);
         } catch (e) {
           console.log(`  ⚠️ Image load timeout, proceeding anyway`);
         }
       } else {
         // For other elements, shorter wait is fine
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
       }
 
       // Create screenshot path using article number as folder name
-      const screenshotPath = path.join(
-        this.screenshotDir,
-        jobId,
-        folderName,
-        `${type}.png`
-      );
+      const screenshotPath = path.join(this.screenshotDir, jobId, folderName, `${type}.png`);
 
       // Ensure directory exists
       await fs.mkdir(path.dirname(screenshotPath), { recursive: true });
@@ -626,7 +659,7 @@ export class PreciseScreenshotService {
       // CRITICAL FIX: For product images, download the image directly from src URL instead of screenshot
       // This avoids ALL UI elements (gallery controls, arrows, thumbnails, overlays, containers, etc.)
       let buffer;
-      let box = await element.boundingBox(); // Get dimensions first (needed for dimension reporting)
+      const box = await element.boundingBox(); // Get dimensions first (needed for dimension reporting)
 
       if (!box) {
         throw new Error('Could not get element bounding box');
@@ -654,7 +687,9 @@ export class PreciseScreenshotService {
 
         const arrayBuffer = await response.arrayBuffer();
         buffer = Buffer.from(arrayBuffer);
-        console.log(`  ✅ Downloaded pure product image (${(buffer.length / 1024).toFixed(1)} KB) - no UI elements!`);
+        console.log(
+          `  ✅ Downloaded pure product image (${(buffer.length / 1024).toFixed(1)} KB) - no UI elements!`
+        );
       } else {
         // For other elements, element.screenshot() is fine
         buffer = await element.screenshot();
@@ -671,12 +706,13 @@ export class PreciseScreenshotService {
       if (box) {
         result.dimensions = {
           width: Math.round(box.width),
-          height: Math.round(box.height)
+          height: Math.round(box.height),
         };
       }
 
-      console.log(`✅ ${type}: Captured (${(result.fileSize / 1024).toFixed(1)} KB) - ${result.dimensions?.width}x${result.dimensions?.height}px`);
-
+      console.log(
+        `✅ ${type}: Captured (${(result.fileSize / 1024).toFixed(1)} KB) - ${result.dimensions?.width}x${result.dimensions?.height}px`
+      );
     } catch (error) {
       result.error = error instanceof Error ? error.message : 'Unknown error';
       console.log(`❌ ${type}: Failed - ${result.error}`);
@@ -691,14 +727,16 @@ export class PreciseScreenshotService {
   private async acceptCookieBanner(page: Page): Promise<void> {
     try {
       // Wait a moment for cookie banner to appear
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
 
       // First try Shopware 6 specific cookie selector
-      const shopwareCookieButton = await page.$('button.js-cookie-configuration-button.cookie-permission--accept-button');
+      const shopwareCookieButton = await page.$(
+        'button.js-cookie-configuration-button.cookie-permission--accept-button'
+      );
       if (shopwareCookieButton) {
         await shopwareCookieButton.click();
         console.log('   ✅ Accepted cookies (Shopware 6 specific button)');
-        await new Promise(r => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 1500));
         return;
       }
 
@@ -708,11 +746,13 @@ export class PreciseScreenshotService {
         const buttons = Array.from(document.querySelectorAll('button'));
 
         // Look for accept button
-        const acceptButton = buttons.find(btn => {
+        const acceptButton = buttons.find((btn) => {
           const text = btn.textContent?.toLowerCase() || '';
-          return text.includes('alle cookies akzeptieren') ||
-                 text.includes('akzeptieren') ||
-                 text.includes('accept all');
+          return (
+            text.includes('alle cookies akzeptieren') ||
+            text.includes('akzeptieren') ||
+            text.includes('accept all')
+          );
         });
 
         if (acceptButton) {
@@ -722,10 +762,9 @@ export class PreciseScreenshotService {
 
         // Also check for links
         const links = Array.from(document.querySelectorAll('a'));
-        const acceptLink = links.find(link => {
+        const acceptLink = links.find((link) => {
           const text = link.textContent?.toLowerCase() || '';
-          return text.includes('alle cookies akzeptieren') ||
-                 text.includes('akzeptieren');
+          return text.includes('alle cookies akzeptieren') || text.includes('akzeptieren');
         });
 
         if (acceptLink) {
@@ -738,7 +777,7 @@ export class PreciseScreenshotService {
 
       if (accepted) {
         console.log('✅ Cookie banner accepted');
-        await new Promise(r => setTimeout(r, 1500)); // Wait for overlay to disappear
+        await new Promise((r) => setTimeout(r, 1500)); // Wait for overlay to disappear
       } else {
         console.log('⚠️ No cookie banner found or could not accept');
       }
@@ -776,7 +815,7 @@ export class PreciseScreenshotService {
   async compareWithReference(
     capturedPath: string,
     referencePath: string
-  ): Promise<{match: boolean; difference?: number}> {
+  ): Promise<{ match: boolean; difference?: number }> {
     try {
       const captured = await fs.readFile(capturedPath);
       const reference = await fs.readFile(referencePath);
@@ -787,7 +826,7 @@ export class PreciseScreenshotService {
 
       return {
         match: percentDiff < 10, // Allow 10% size difference
-        difference: percentDiff
+        difference: percentDiff,
       };
     } catch (error) {
       console.error('Error comparing screenshots:', error);
@@ -806,7 +845,9 @@ export class PreciseScreenshotService {
       // Override article number with variant-specific one if it differs
       // This ensures variants get their correct article number (e.g., "7900-SH" instead of just "7900")
       if (variantArticleNumber && variantArticleNumber !== htmlData.articleNumber) {
-        console.log(`   🔧 Overriding HTML articleNumber "${htmlData.articleNumber}" with variant number "${variantArticleNumber}"`);
+        console.log(
+          `   🔧 Overriding HTML articleNumber "${htmlData.articleNumber}" with variant number "${variantArticleNumber}"`
+        );
         htmlData.articleNumber = variantArticleNumber;
       }
 
@@ -821,7 +862,7 @@ export class PreciseScreenshotService {
         priceType: 'unknown',
         description: '',
         tieredPrices: [],
-        tieredPricesText: ''
+        tieredPricesText: '',
       };
     }
   }
@@ -829,7 +870,11 @@ export class PreciseScreenshotService {
   /**
    * 🔧 NEW: Save HTML data to variant folder
    */
-  private async saveVariantHtmlData(jobId: string, variantFolder: string, htmlData: any): Promise<void> {
+  private async saveVariantHtmlData(
+    jobId: string,
+    variantFolder: string,
+    htmlData: any
+  ): Promise<void> {
     try {
       const jobDir = path.join(this.screenshotDir, jobId);
       const variantDir = path.join(jobDir, variantFolder);
@@ -858,7 +903,7 @@ export class PreciseScreenshotService {
     if (variantGroups.length === 0) return [];
     if (variantGroups.length === 1) {
       // Single group: return each variant as a single-element array
-      return variantGroups[0].variants.map(v => [v]);
+      return variantGroups[0].variants.map((v) => [v]);
     }
 
     // Recursive cartesian product

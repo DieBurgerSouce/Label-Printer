@@ -9,11 +9,10 @@ import {
   ProductValidationResult,
   FieldValidationResult,
   FieldConfidenceScores,
-  TieredPrice
+  TieredPrice,
 } from '../types/extraction-types';
 
 export class DataValidationService {
-
   /**
    * OPTIMIZED: Comprehensive validation of ALL product data at once
    *
@@ -105,7 +104,10 @@ export class DataValidationService {
               nameConfidence = Math.min(nameConfidence, 0.6);
             }
           } catch (regexError) {
-            console.warn('[DataValidationService] Regex error in productName validation:', regexError);
+            console.warn(
+              '[DataValidationService] Regex error in productName validation:',
+              regexError
+            );
           }
 
           // All uppercase check (OCR artifact)
@@ -156,7 +158,10 @@ export class DataValidationService {
               }
             }
           } catch (regexError) {
-            console.warn('[DataValidationService] Regex error in description validation:', regexError);
+            console.warn(
+              '[DataValidationService] Regex error in description validation:',
+              regexError
+            );
           }
 
           confidence.description = descConfidence;
@@ -187,7 +192,10 @@ export class DataValidationService {
               articleConfidence = 0.8;
             }
           } catch (regexError) {
-            console.warn('[DataValidationService] Regex error in articleNumber validation:', regexError);
+            console.warn(
+              '[DataValidationService] Regex error in articleNumber validation:',
+              regexError
+            );
           }
 
           // Length check
@@ -241,7 +249,11 @@ export class DataValidationService {
             }
 
             // Missing decimal point check (OCR error: "2545" instead of "25.45")
-            if (typeof data.price === 'string' && !priceStr.includes('.') && !priceStr.includes(',')) {
+            if (
+              typeof data.price === 'string' &&
+              !priceStr.includes('.') &&
+              !priceStr.includes(',')
+            ) {
               if (priceNum > 100) {
                 warnings.push('Price may be missing decimal point');
                 priceConfidence = Math.min(priceConfidence, 0.6);
@@ -261,7 +273,11 @@ export class DataValidationService {
 
       // ===== TIERED PRICES VALIDATION =====
       try {
-        if (!data.tieredPrices || !Array.isArray(data.tieredPrices) || data.tieredPrices.length === 0) {
+        if (
+          !data.tieredPrices ||
+          !Array.isArray(data.tieredPrices) ||
+          data.tieredPrices.length === 0
+        ) {
           // Tiered prices are optional
           confidence.tieredPrices = 0;
           fieldValidation.tieredPrices = true;
@@ -360,7 +376,6 @@ export class DataValidationService {
         warnings,
         fieldValidation,
       };
-
     } catch (error: any) {
       // Catastrophic error in validation - return safe defaults
       console.error('[DataValidationService] CRITICAL ERROR in validateProductData:', error);
@@ -414,10 +429,13 @@ export class DataValidationService {
           fixed.productName = fixed.productName.replace(/Fir\s/g, 'Für ');
 
           // Convert all-caps to title case if very long
-          if (fixed.productName === fixed.productName.toUpperCase() && fixed.productName.length > 15) {
+          if (
+            fixed.productName === fixed.productName.toUpperCase() &&
+            fixed.productName.length > 15
+          ) {
             fixed.productName = fixed.productName
               .split(' ')
-              .map(word => {
+              .map((word) => {
                 if (word.length <= 2) return word; // Keep short words as-is (like "FÜR")
                 return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
               })
@@ -450,7 +468,8 @@ export class DataValidationService {
       try {
         if (fixed.price !== undefined && fixed.price !== null) {
           const priceStr = String(fixed.price);
-          let priceNum = typeof fixed.price === 'string' ? parseFloat(priceStr.replace(',', '.')) : fixed.price;
+          const priceNum =
+            typeof fixed.price === 'string' ? parseFloat(priceStr.replace(',', '.')) : fixed.price;
 
           // Fix missing decimal point (OCR error: "2545" → "25.45")
           if (!priceStr.includes('.') && !priceStr.includes(',') && priceNum > 100) {
@@ -469,7 +488,11 @@ export class DataValidationService {
 
       // ===== FIX TIERED PRICES =====
       try {
-        if (fixed.tieredPrices && Array.isArray(fixed.tieredPrices) && fixed.tieredPrices.length > 0) {
+        if (
+          fixed.tieredPrices &&
+          Array.isArray(fixed.tieredPrices) &&
+          fixed.tieredPrices.length > 0
+        ) {
           // Sort by quantity
           fixed.tieredPrices.sort((a, b) => a.quantity - b.quantity);
 
@@ -495,7 +518,6 @@ export class DataValidationService {
       }
 
       return fixed;
-
     } catch (error: any) {
       // Catastrophic error - return original data
       console.error('[DataValidationService] CRITICAL ERROR in autoFixData:', error);
@@ -520,16 +542,24 @@ export class DataValidationService {
       const encodingErrorPatterns = [
         { pattern: /[©®™]/g, name: 'OCR encoding artifacts (©, ®, ™)', weight: 0.3 },
         { pattern: /é/g, name: 'Character encoding error (é → ö)', weight: 0.2 },
-        { pattern: /servicerHilfe|egriff eingeben|Goooe/gi, name: 'Cookie banner contamination', weight: 0.5 },
-        { pattern: /zur suche springen|zum hauptinhalt/gi, name: 'Navigation contamination', weight: 0.4 },
-        { pattern: /Ã[¶¼¤ŸÃ]/g, name: 'UTF-8 encoding corruption', weight: 0.3 }
+        {
+          pattern: /servicerHilfe|egriff eingeben|Goooe/gi,
+          name: 'Cookie banner contamination',
+          weight: 0.5,
+        },
+        {
+          pattern: /zur suche springen|zum hauptinhalt/gi,
+          name: 'Navigation contamination',
+          weight: 0.4,
+        },
+        { pattern: /Ã[¶¼¤ŸÃ]/g, name: 'UTF-8 encoding corruption', weight: 0.3 },
       ];
 
       // Check all text fields
       const textFields = [
         { field: 'productName', value: data.productName },
         { field: 'description', value: data.description },
-        { field: 'tieredPricesText', value: data.tieredPricesText }
+        { field: 'tieredPricesText', value: data.tieredPricesText },
       ];
 
       for (const { field, value } of textFields) {
@@ -538,7 +568,9 @@ export class DataValidationService {
         for (const { pattern, name, weight } of encodingErrorPatterns) {
           const matches = value.match(pattern);
           if (matches && matches.length > 0) {
-            issues.push(`${field}: ${name} (${matches.length} occurrence${matches.length > 1 ? 's' : ''})`);
+            issues.push(
+              `${field}: ${name} (${matches.length} occurrence${matches.length > 1 ? 's' : ''})`
+            );
             corruptionScore += weight * Math.min(matches.length / 5, 1); // Cap at 5 occurrences
           }
         }
@@ -550,15 +582,14 @@ export class DataValidationService {
       return {
         isCorrupted: corruptionScore > 0.2, // Threshold: 20%
         corruptionScore,
-        issues
+        issues,
       };
-
     } catch (error: any) {
       console.error('[DataValidationService] Error detecting corruption:', error);
       return {
         isCorrupted: false,
         corruptionScore: 0,
-        issues: ['Error detecting corruption']
+        issues: ['Error detecting corruption'],
       };
     }
   }
@@ -586,7 +617,7 @@ export class DataValidationService {
     try {
       // Create a minimal object with just this field
       const tempData: MergedProductData = {
-        [fieldName]: value
+        [fieldName]: value,
       };
 
       const fullResult = this.validateProductData(tempData);

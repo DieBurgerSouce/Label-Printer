@@ -23,7 +23,12 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
 
     console.log('📋 Debugging request structure:');
     console.log('  - layout:', layout ? 'present' : 'missing');
-    console.log('  - labelIds:', labelIds ? `present (${Array.isArray(labelIds) ? labelIds.length : 'not array'} items)` : 'missing');
+    console.log(
+      '  - labelIds:',
+      labelIds
+        ? `present (${Array.isArray(labelIds) ? labelIds.length : 'not array'} items)`
+        : 'missing'
+    );
     console.log('  - labelIds value:', labelIds);
     console.log('  - format:', format || 'missing');
     console.log('  - gridConfig:', gridConfig ? 'present' : 'missing');
@@ -56,8 +61,14 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
       printLayout = {
         paperFormat: {
           type: paperFormat,
-          width: customWidth || formatDimensions[paperFormat as keyof typeof formatDimensions]?.width || 210,
-          height: customHeight || formatDimensions[paperFormat as keyof typeof formatDimensions]?.height || 297,
+          width:
+            customWidth ||
+            formatDimensions[paperFormat as keyof typeof formatDimensions]?.width ||
+            210,
+          height:
+            customHeight ||
+            formatDimensions[paperFormat as keyof typeof formatDimensions]?.height ||
+            297,
         },
         gridLayout: {
           columns: gridConfig?.columns || 2,
@@ -105,9 +116,7 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
 
     for (let i = 0; i < labelIdArray.length; i += LOAD_BATCH_SIZE) {
       const batchIds = labelIdArray.slice(i, i + LOAD_BATCH_SIZE);
-      const batch = await Promise.all(
-        batchIds.map((id: string) => StorageService.getLabel(id))
-      );
+      const batch = await Promise.all(batchIds.map((id: string) => StorageService.getLabel(id)));
       labels.push(...batch);
 
       const progress = Math.min(i + LOAD_BATCH_SIZE, labelIdArray.length);
@@ -150,7 +159,8 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
  */
 router.post('/export', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { layout, labelIds, format, gridConfig, customWidth, customHeight, outputFormat } = req.body;
+    const { layout, labelIds, format, gridConfig, customWidth, customHeight, outputFormat } =
+      req.body;
 
     // Support both old format (layout + labelIds) and new format (flat structure)
     let printLayout;
@@ -178,8 +188,14 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
       printLayout = {
         paperFormat: {
           type: paperFormat,
-          width: customWidth || formatDimensions[paperFormat as keyof typeof formatDimensions]?.width || 210,
-          height: customHeight || formatDimensions[paperFormat as keyof typeof formatDimensions]?.height || 297,
+          width:
+            customWidth ||
+            formatDimensions[paperFormat as keyof typeof formatDimensions]?.width ||
+            210,
+          height:
+            customHeight ||
+            formatDimensions[paperFormat as keyof typeof formatDimensions]?.height ||
+            297,
         },
         gridLayout: {
           columns: gridConfig?.columns || 2,
@@ -213,9 +229,7 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
 
     for (let i = 0; i < labelIdArray.length; i += LOAD_BATCH_SIZE) {
       const batchIds = labelIdArray.slice(i, i + LOAD_BATCH_SIZE);
-      const batch = await Promise.all(
-        batchIds.map((id: string) => StorageService.getLabel(id))
-      );
+      const batch = await Promise.all(batchIds.map((id: string) => StorageService.getLabel(id)));
       labels.push(...batch);
 
       const progress = Math.min(i + LOAD_BATCH_SIZE, labelIdArray.length);
@@ -327,7 +341,7 @@ router.get('/templates', async (_req: Request, res: Response): Promise<void> => 
 
     // Read all template files
     const files = await fs.readdir(PRINT_TEMPLATES_DIR);
-    const jsonFiles = files.filter(f => f.endsWith('.json'));
+    const jsonFiles = files.filter((f) => f.endsWith('.json'));
 
     const templates = await Promise.all(
       jsonFiles.map(async (file) => {

@@ -3,7 +3,13 @@
  * Handles all image upload, retrieval, and deletion operations
  */
 
-import { imagekit, uploadImage, deleteImage, getImageUrl, bulkDeleteImages } from '../lib/imagekit.js';
+import {
+  imagekit,
+  uploadImage,
+  deleteImage,
+  getImageUrl,
+  bulkDeleteImages,
+} from '../lib/imagekit.js';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 

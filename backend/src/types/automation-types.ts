@@ -6,7 +6,14 @@
 export interface AutomationJob {
   id: string;
   name: string;
-  status: 'pending' | 'crawling' | 'processing-ocr' | 'matching' | 'rendering' | 'completed' | 'failed';
+  status:
+    | 'pending'
+    | 'crawling'
+    | 'processing-ocr'
+    | 'matching'
+    | 'rendering'
+    | 'completed'
+    | 'failed';
   config: AutomationConfig;
   progress: AutomationProgress;
   results: AutomationResults;

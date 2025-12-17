@@ -20,7 +20,7 @@ router.post('/start', async (req: Request, res: Response) => {
     if (!shopUrl) {
       return res.status(400).json({
         success: false,
-        error: 'Shop URL is required'
+        error: 'Shop URL is required',
       });
     }
 
@@ -30,7 +30,7 @@ router.post('/start', async (req: Request, res: Response) => {
     } catch (error) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid URL format'
+        error: 'Invalid URL format',
       });
     }
 
@@ -42,15 +42,14 @@ router.post('/start', async (req: Request, res: Response) => {
         jobId: job.id,
         status: job.status,
         shopUrl: job.shopUrl,
-        config: job.config
-      }
+        config: job.config,
+      },
     });
-
   } catch (error) {
     console.error('Start crawl error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to start crawl'
+      error: error instanceof Error ? error.message : 'Failed to start crawl',
     });
   }
 });
@@ -67,21 +66,21 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        error: 'Job not found'
+        error: 'Job not found',
       });
     }
 
     // Calculate variant statistics
     const baseProducts = job.results.screenshots.filter(
-      s => !s.metadata?.variantInfo || s.metadata.variantInfo.isBaseProduct
+      (s) => !s.metadata?.variantInfo || s.metadata.variantInfo.isBaseProduct
     );
     const variants = job.results.screenshots.filter(
-      s => s.metadata?.variantInfo && !s.metadata.variantInfo.isBaseProduct
+      (s) => s.metadata?.variantInfo && !s.metadata.variantInfo.isBaseProduct
     );
 
     // Group variants by parent URL
     const variantsByProduct = new Map<string, any[]>();
-    variants.forEach(variant => {
+    variants.forEach((variant) => {
       const parentUrl = variant.metadata?.variantInfo?.parentUrl || variant.productUrl;
       if (!variantsByProduct.has(parentUrl)) {
         variantsByProduct.set(parentUrl, []);
@@ -100,20 +99,19 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
           variantsByProduct: Array.from(variantsByProduct.entries()).map(([url, variants]) => ({
             productUrl: url,
             variantCount: variants.length,
-            variants: variants.map(v => ({
+            variants: variants.map((v) => ({
               label: v.metadata?.variantInfo?.label,
-              articleNumber: v.metadata?.articleNumber
-            }))
-          }))
-        }
-      }
+              articleNumber: v.metadata?.articleNumber,
+            })),
+          })),
+        },
+      },
     });
-
   } catch (error) {
     console.error('Get job error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to get job'
+      error: error instanceof Error ? error.message : 'Failed to get job',
     });
   }
 });
@@ -130,7 +128,7 @@ router.get('/jobs', (_req: Request, res: Response) => {
       success: true,
       data: {
         total: jobs.length,
-        jobs: jobs.map(job => ({
+        jobs: jobs.map((job) => ({
           id: job.id,
           shopUrl: job.shopUrl,
           status: job.status,
@@ -138,16 +136,15 @@ router.get('/jobs', (_req: Request, res: Response) => {
           createdAt: job.createdAt,
           completedAt: job.completedAt,
           duration: job.results.duration,
-          error: job.error
-        }))
-      }
+          error: job.error,
+        })),
+      },
     });
-
   } catch (error) {
     console.error('Get jobs error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to get jobs'
+      error: error instanceof Error ? error.message : 'Failed to get jobs',
     });
   }
 });
@@ -164,20 +161,19 @@ router.post('/stop/:id', async (req: Request, res: Response) => {
     if (!stopped) {
       return res.status(400).json({
         success: false,
-        error: 'Job not found or not running'
+        error: 'Job not found or not running',
       });
     }
 
     res.json({
       success: true,
-      message: 'Job stopped successfully'
+      message: 'Job stopped successfully',
     });
-
   } catch (error) {
     console.error('Stop job error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to stop job'
+      error: error instanceof Error ? error.message : 'Failed to stop job',
     });
   }
 });
@@ -194,7 +190,7 @@ router.get('/screenshots/:jobId', (req: Request, res: Response) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        error: 'Job not found'
+        error: 'Job not found',
       });
     }
 
@@ -202,22 +198,21 @@ router.get('/screenshots/:jobId', (req: Request, res: Response) => {
       success: true,
       data: {
         total: job.results.screenshots.length,
-        screenshots: job.results.screenshots.map(screenshot => ({
+        screenshots: job.results.screenshots.map((screenshot) => ({
           id: screenshot.id,
           url: screenshot.url,
           imagePath: screenshot.imagePath,
           thumbnailPath: screenshot.thumbnailPath,
           metadata: screenshot.metadata,
-          extractedElements: screenshot.extractedElements
-        }))
-      }
+          extractedElements: screenshot.extractedElements,
+        })),
+      },
     });
-
   } catch (error) {
     console.error('Get screenshots error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to get screenshots'
+      error: error instanceof Error ? error.message : 'Failed to get screenshots',
     });
   }
 });
@@ -233,7 +228,7 @@ router.post('/detect', async (req: Request, res: Response) => {
     if (!url) {
       return res.status(400).json({
         success: false,
-        error: 'URL is required'
+        error: 'URL is required',
       });
     }
 
@@ -241,14 +236,13 @@ router.post('/detect', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'Product detection endpoint - implementation pending',
-      data: null
+      data: null,
     });
-
   } catch (error) {
     console.error('Detect error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to detect products'
+      error: error instanceof Error ? error.message : 'Failed to detect products',
     });
   }
 });
@@ -260,20 +254,21 @@ router.post('/detect', async (req: Request, res: Response) => {
 router.delete('/cleanup', (req: Request, res: Response) => {
   try {
     const { maxAgeHours } = req.query;
-    const maxAge = maxAgeHours ? parseInt(maxAgeHours as string) * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+    const maxAge = maxAgeHours
+      ? parseInt(maxAgeHours as string) * 60 * 60 * 1000
+      : 24 * 60 * 60 * 1000;
 
     webCrawlerService.cleanupOldJobs(maxAge);
 
     res.json({
       success: true,
-      message: 'Old jobs cleaned up successfully'
+      message: 'Old jobs cleaned up successfully',
     });
-
   } catch (error) {
     console.error('Cleanup error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to cleanup jobs'
+      error: error instanceof Error ? error.message : 'Failed to cleanup jobs',
     });
   }
 });

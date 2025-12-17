@@ -262,7 +262,7 @@ class LabelTemplateService {
       throw error;
     }
 
-    const jsonFiles = files.filter(f => f.endsWith('.json'));
+    const jsonFiles = files.filter((f) => f.endsWith('.json'));
 
     const templates: (TemplateSummary | null)[] = await Promise.all(
       jsonFiles.map(async (file): Promise<TemplateSummary | null> => {

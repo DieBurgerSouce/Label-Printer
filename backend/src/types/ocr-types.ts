@@ -128,11 +128,7 @@ export const FIELD_PATTERNS = {
     /Staffel:?\s*(\d+)\s*-\s*(\d+[,\.]\d{2})/gi,
     /(ab|bis)\s+(\d+)\s*:?\s*(\d+[,\.]\d{2})\s*€/gi,
   ],
-  ean: [
-    /EAN:?\s*(\d{13})/i,
-    /GTIN:?\s*(\d{13})/i,
-    /\b(\d{13})\b/,
-  ],
+  ean: [/EAN:?\s*(\d{13})/i, /GTIN:?\s*(\d{13})/i, /\b(\d{13})\b/],
 };
 
 // Preprocessing settings for Sharp

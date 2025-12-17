@@ -50,7 +50,9 @@ async function importArticlesFresh() {
 
     console.log(`Found ${articles.length} articles to import`);
     console.log(`Export date: ${metadata.exportDate}`);
-    console.log(`Categories: FROM_EXCEL=${metadata.categories.FROM_EXCEL}, SHOP_ONLY=${metadata.categories.SHOP_ONLY}`);
+    console.log(
+      `Categories: FROM_EXCEL=${metadata.categories.FROM_EXCEL}, SHOP_ONLY=${metadata.categories.SHOP_ONLY}`
+    );
     console.log(`Needs tier quantities: ${metadata.categories.NEEDS_TIER_QUANTITIES}\n`);
 
     // Import in batches
@@ -70,7 +72,7 @@ async function importArticlesFresh() {
         try {
           // Check if article already exists
           const existing = await prisma.product.findUnique({
-            where: { articleNumber: article.articleNumber }
+            where: { articleNumber: article.articleNumber },
           });
 
           if (existing) {
@@ -98,8 +100,8 @@ async function importArticlesFresh() {
               crawlJobId: article.crawlJobId || null,
               ocrConfidence: article.ocrConfidence || null,
               verified: article.verified || false,
-              published: article.published !== false
-            }
+              published: article.published !== false,
+            },
           });
 
           imported++;
@@ -125,13 +127,13 @@ async function importArticlesFresh() {
 
     // Verify categories
     const fromExcel = await prisma.product.count({
-      where: { category: 'FROM_EXCEL' }
+      where: { category: 'FROM_EXCEL' },
     });
     const shopOnly = await prisma.product.count({
-      where: { category: 'SHOP_ONLY' }
+      where: { category: 'SHOP_ONLY' },
     });
     const needsTier = await prisma.product.count({
-      where: { manufacturer: 'NEEDS_TIER_QUANTITIES' }
+      where: { manufacturer: 'NEEDS_TIER_QUANTITIES' },
     });
 
     console.log('\nCategory verification:');
@@ -143,7 +145,6 @@ async function importArticlesFresh() {
       console.log('\n✓ Articles imported successfully!');
       console.log('The system is ready to use.');
     }
-
   } catch (error) {
     console.error('Fatal error during import:', error);
     process.exit(1);

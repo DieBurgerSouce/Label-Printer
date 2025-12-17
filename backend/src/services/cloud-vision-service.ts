@@ -19,7 +19,7 @@ class CloudVisionService {
   private config: CloudVisionConfig = {
     apiKey: process.env.GOOGLE_CLOUD_VISION_API_KEY,
     enabled: false, // Disabled by default
-    confidenceThreshold: 0.7 // Use cloud OCR if Tesseract confidence < 70%
+    confidenceThreshold: 0.7, // Use cloud OCR if Tesseract confidence < 70%
   };
 
   constructor() {
@@ -53,24 +53,26 @@ class CloudVisionService {
 
       // Prepare request
       const request = {
-        requests: [{
-          image: {
-            content: base64Image
-          },
-          features: [
-            {
-              type: 'TEXT_DETECTION',
-              maxResults: 1
+        requests: [
+          {
+            image: {
+              content: base64Image,
             },
-            {
-              type: 'DOCUMENT_TEXT_DETECTION',
-              maxResults: 1
-            }
-          ],
-          imageContext: {
-            languageHints: ['de', 'en']
-          }
-        }]
+            features: [
+              {
+                type: 'TEXT_DETECTION',
+                maxResults: 1,
+              },
+              {
+                type: 'DOCUMENT_TEXT_DETECTION',
+                maxResults: 1,
+              },
+            ],
+            imageContext: {
+              languageHints: ['de', 'en'],
+            },
+          },
+        ],
       };
 
       // Call Cloud Vision API
@@ -81,7 +83,7 @@ class CloudVisionService {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(request)
+          body: JSON.stringify(request),
         }
       );
 
@@ -99,7 +101,6 @@ class CloudVisionService {
 
       // Parse the clean text from Cloud Vision
       return this.parseCloudVisionText(textAnnotation.text);
-
     } catch (error) {
       console.error('Cloud Vision processing failed:', error);
       return null;
@@ -113,7 +114,10 @@ class CloudVisionService {
     const data: ExtractedData = {};
 
     // Clean text lines (Cloud Vision usually returns cleaner text)
-    const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+    const lines = text
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
 
     // Extract article number
     for (const line of lines) {
@@ -124,8 +128,8 @@ class CloudVisionService {
     }
 
     // Extract prices
-    const priceLines = lines.filter(line =>
-      line.includes('€') || line.includes('EUR') || /\d+[,\.]\d{2}/.test(line)
+    const priceLines = lines.filter(
+      (line) => line.includes('€') || line.includes('EUR') || /\d+[,\.]\d{2}/.test(line)
     );
 
     // Parse tiered prices
@@ -136,7 +140,7 @@ class CloudVisionService {
       if (tierMatch) {
         tieredPrices.push({
           quantity: parseInt(tierMatch[2]),
-          price: tierMatch[3].replace(',', '.')
+          price: tierMatch[3].replace(',', '.'),
         });
       }
     }
@@ -154,14 +158,15 @@ class CloudVisionService {
     }
 
     // Extract product name (first substantial line that's not a price)
-    const nameLines = lines.filter(line =>
-      line.length > 10 &&
-      !line.includes('€') &&
-      !line.includes('EUR') &&
-      !line.match(/^\d+$/) &&
-      !line.includes('©') &&
-      !line.includes('Service') &&
-      !line.includes('Hilfe')
+    const nameLines = lines.filter(
+      (line) =>
+        line.length > 10 &&
+        !line.includes('€') &&
+        !line.includes('EUR') &&
+        !line.match(/^\d+$/) &&
+        !line.includes('©') &&
+        !line.includes('Service') &&
+        !line.includes('Hilfe')
     );
 
     if (nameLines.length > 0) {

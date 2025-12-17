@@ -32,15 +32,17 @@ export class ImageDownloadService {
     }
 
     try {
-      console.log(`[ImageDownloadService] Downloading image for ${articleNumber} from: ${imageUrl}`);
+      console.log(
+        `[ImageDownloadService] Downloading image for ${articleNumber} from: ${imageUrl}`
+      );
 
       // Download image
       const response = await axios.get(imageUrl, {
         responseType: 'arraybuffer',
         timeout: 30000,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        },
       });
 
       // Get file extension from content-type or URL
@@ -72,9 +74,11 @@ export class ImageDownloadService {
       console.log(`[ImageDownloadService] ✅ Image saved: ${localUrl}`);
 
       return localUrl;
-
     } catch (error: any) {
-      console.error(`[ImageDownloadService] ❌ Failed to download image for ${articleNumber}:`, error.message);
+      console.error(
+        `[ImageDownloadService] ❌ Failed to download image for ${articleNumber}:`,
+        error.message
+      );
       return null;
     }
   }
@@ -91,7 +95,7 @@ export class ImageDownloadService {
   ): Promise<{ productImage: string | null; thumbnail: string | null }> {
     const result = {
       productImage: null as string | null,
-      thumbnail: null as string | null
+      thumbnail: null as string | null,
     };
 
     for (const image of images) {
@@ -121,7 +125,7 @@ export class ImageDownloadService {
   async cleanupOldImages(articleNumber: string): Promise<void> {
     try {
       const files = fs.readdirSync(this.uploadDir);
-      const articleFiles = files.filter(f => f.startsWith(`${articleNumber}-`));
+      const articleFiles = files.filter((f) => f.startsWith(`${articleNumber}-`));
 
       for (const file of articleFiles) {
         const filepath = path.join(this.uploadDir, file);

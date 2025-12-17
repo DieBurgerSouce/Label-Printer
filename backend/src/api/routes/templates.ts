@@ -153,7 +153,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     // Merge updates with updatedAt
     const updatedTemplate: LabelTemplate = {
-      ...updates as LabelTemplate,
+      ...(updates as LabelTemplate),
       id, // Preserve ID from URL
       updatedAt: new Date(),
     };
@@ -167,7 +167,11 @@ router.put('/:id', async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('❌ Template update error:', error);
 
-    if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('mismatch')) {
+    if (
+      error.message.includes('Invalid') ||
+      error.message.includes('required') ||
+      error.message.includes('mismatch')
+    ) {
       return res.status(400).json({
         error: 'Invalid template',
         message: error.message,
@@ -390,8 +394,8 @@ const renderBatchHandler = async (req: Request, res: Response) => {
       })
     );
 
-    const successful = results.filter(r => r.success).length;
-    const failed = results.filter(r => !r.success).length;
+    const successful = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
 
     res.json({
       success: true,

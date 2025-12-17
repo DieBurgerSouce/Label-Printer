@@ -40,9 +40,7 @@ export interface UploadImageResult {
 /**
  * Upload image to ImageKit
  */
-export async function uploadImage(
-  options: UploadImageOptions
-): Promise<UploadImageResult> {
+export async function uploadImage(options: UploadImageOptions): Promise<UploadImageResult> {
   try {
     const response = await imagekit.upload({
       file: options.file,
@@ -121,9 +119,7 @@ export function getImageUrl(
     transformArray.push(`q-${transformations.quality}`);
   }
 
-  const transformString = transformArray.length > 0
-    ? `tr:${transformArray.join(',')}/`
-    : '';
+  const transformString = transformArray.length > 0 ? `tr:${transformArray.join(',')}/` : '';
 
   return `${urlEndpoint}/${transformString}${filePath}`;
 }

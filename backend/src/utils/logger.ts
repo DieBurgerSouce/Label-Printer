@@ -113,11 +113,25 @@ const logger = winston.createLogger({
 });
 
 // Export helper methods for common logging patterns
-export const logRequest = (method: string, path: string, statusCode?: number, duration?: number) => {
-  logger.http('Request', { method, path, statusCode, duration: duration ? `${duration}ms` : undefined });
+export const logRequest = (
+  method: string,
+  path: string,
+  statusCode?: number,
+  duration?: number
+) => {
+  logger.http('Request', {
+    method,
+    path,
+    statusCode,
+    duration: duration ? `${duration}ms` : undefined,
+  });
 };
 
-export const logError = (message: string, error: Error | unknown, context?: Record<string, unknown>) => {
+export const logError = (
+  message: string,
+  error: Error | unknown,
+  context?: Record<string, unknown>
+) => {
   if (error instanceof Error) {
     logger.error(message, { error: error.message, stack: error.stack, ...context });
   } else {
@@ -134,7 +148,11 @@ export const logServiceStop = (serviceName: string) => {
 };
 
 export const logDatabaseQuery = (operation: string, table: string, duration?: number) => {
-  logger.debug('Database query', { operation, table, duration: duration ? `${duration}ms` : undefined });
+  logger.debug('Database query', {
+    operation,
+    table,
+    duration: duration ? `${duration}ms` : undefined,
+  });
 };
 
 export default logger;

@@ -54,19 +54,19 @@ export interface ImportResult {
 
 const matchColumnConfigSchema = z.object({
   type: z.enum(['index', 'header', 'auto']),
-  value: z.string()
+  value: z.string(),
 });
 
 const fieldMappingSchema = z.object({
   excelColumn: z.string(),
   dbField: z.string(),
-  type: z.enum(['index', 'header']).optional()
+  type: z.enum(['index', 'header']).optional(),
 });
 
 const importConfigSchema = z.object({
   matchColumn: matchColumnConfigSchema,
   fieldMappings: z.array(fieldMappingSchema),
-  startRow: z.number().int().positive().optional()
+  startRow: z.number().int().positive().optional(),
 });
 
 // ========================================
@@ -109,12 +109,12 @@ function autoDetectArticleNumberColumn(headers: string[]): number {
     'sku',
     'item number',
     'product number',
-    'produktnummer'
+    'produktnummer',
   ];
 
   for (let i = 0; i < headers.length; i++) {
     const header = headers[i].toLowerCase().trim();
-    if (patterns.some(pattern => header.includes(pattern))) {
+    if (patterns.some((pattern) => header.includes(pattern))) {
       return i;
     }
   }
@@ -136,8 +136,8 @@ function getColumnIndex(
     return columnLetterToIndex(config.excelColumn);
   } else {
     // Header name
-    const index = headers.findIndex(h =>
-      h.toLowerCase().trim() === config.excelColumn.toLowerCase().trim()
+    const index = headers.findIndex(
+      (h) => h.toLowerCase().trim() === config.excelColumn.toLowerCase().trim()
     );
 
     if (index === -1) {
@@ -170,7 +170,9 @@ function convertValue(value: any, dbField: string): any {
     case 'published':
       // Convert to boolean
       const lowerValue = strValue.toLowerCase();
-      return lowerValue === 'true' || lowerValue === '1' || lowerValue === 'yes' || lowerValue === 'ja';
+      return (
+        lowerValue === 'true' || lowerValue === '1' || lowerValue === 'yes' || lowerValue === 'ja'
+      );
 
     case 'tieredPrices':
       // Parse JSON if string
@@ -208,7 +210,7 @@ function isValidDbField(field: string): boolean {
     'sourceUrl',
     'ocrConfidence',
     'verified',
-    'published'
+    'published',
   ];
 
   return validFields.includes(field);
@@ -230,7 +232,7 @@ export class DynamicExcelImportService {
     const allRows: any[][] = XLSX.utils.sheet_to_json(firstSheet, {
       header: 1,
       defval: '',
-      blankrows: false
+      blankrows: false,
     });
 
     if (allRows.length === 0) {
@@ -248,7 +250,7 @@ export class DynamicExcelImportService {
       headers,
       rows: dataRows,
       totalRows,
-      columnIndices
+      columnIndices,
     };
   }
 
@@ -267,7 +269,7 @@ export class DynamicExcelImportService {
     const allRows: any[][] = XLSX.utils.sheet_to_json(firstSheet, {
       header: 1,
       defval: '',
-      blankrows: false
+      blankrows: false,
     });
 
     if (allRows.length < 2) {
@@ -287,8 +289,8 @@ export class DynamicExcelImportService {
       matchColumnIndex = columnLetterToIndex(validatedConfig.matchColumn.value);
     } else {
       // header
-      matchColumnIndex = headers.findIndex(h =>
-        h.toLowerCase().trim() === validatedConfig.matchColumn.value.toLowerCase().trim()
+      matchColumnIndex = headers.findIndex(
+        (h) => h.toLowerCase().trim() === validatedConfig.matchColumn.value.toLowerCase().trim()
       );
 
       if (matchColumnIndex === -1) {
@@ -297,7 +299,7 @@ export class DynamicExcelImportService {
     }
 
     // Validate field mappings
-    const mappings = validatedConfig.fieldMappings.map(mapping => {
+    const mappings = validatedConfig.fieldMappings.map((mapping) => {
       if (!isValidDbField(mapping.dbField)) {
         throw new Error(`Invalid database field: ${mapping.dbField}`);
       }
@@ -309,7 +311,7 @@ export class DynamicExcelImportService {
 
       return {
         columnIndex,
-        dbField: mapping.dbField
+        dbField: mapping.dbField,
       };
     });
 
@@ -332,14 +334,14 @@ export class DynamicExcelImportService {
           errors.push({
             row: rowNumber,
             articleNumber: '',
-            message: 'Article number is empty'
+            message: 'Article number is empty',
           });
           continue;
         }
 
         // Find article in database
         const article = await prisma.product.findUnique({
-          where: { articleNumber }
+          where: { articleNumber },
         });
 
         if (!article) {
@@ -358,7 +360,10 @@ export class DynamicExcelImportService {
           const convertedValue = convertValue(value, mapping.dbField);
 
           // Only update if value is different
-          if (convertedValue !== null && convertedValue !== article[mapping.dbField as keyof typeof article]) {
+          if (
+            convertedValue !== null &&
+            convertedValue !== article[mapping.dbField as keyof typeof article]
+          ) {
             updateData[mapping.dbField] = convertedValue;
             hasChanges = true;
           }
@@ -368,17 +373,16 @@ export class DynamicExcelImportService {
         if (hasChanges) {
           const updated = await prisma.product.update({
             where: { id: article.id },
-            data: updateData
+            data: updateData,
           });
 
           updatedArticles.push(updated);
         }
-
       } catch (error) {
         errors.push({
           row: rowNumber,
           articleNumber: row[matchColumnIndex] || 'N/A',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          message: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
@@ -388,7 +392,7 @@ export class DynamicExcelImportService {
       matchedArticles,
       updatedArticles: updatedArticles.length,
       skippedArticles,
-      errors
+      errors,
     };
   }
 
@@ -415,12 +419,12 @@ export class DynamicExcelImportService {
 
       return {
         valid: errors.length === 0,
-        errors
+        errors,
       };
     } catch (error) {
       return {
         valid: false,
-        errors: [error instanceof Error ? error.message : 'Invalid configuration']
+        errors: [error instanceof Error ? error.message : 'Invalid configuration'],
       };
     }
   }
@@ -443,7 +447,7 @@ export class DynamicExcelImportService {
       { field: 'thumbnailUrl', description: 'Thumbnail-URL', type: 'string' },
       { field: 'verified', description: 'Verifiziert', type: 'boolean' },
       { field: 'published', description: 'Veröffentlicht', type: 'boolean' },
-      { field: 'ocrConfidence', description: 'OCR-Konfidenz', type: 'number' }
+      { field: 'ocrConfidence', description: 'OCR-Konfidenz', type: 'number' },
     ];
   }
 }

@@ -42,11 +42,7 @@ router.post('/process', upload.single('screenshot'), async (req: Request, res: R
     const config: Partial<OCRConfig> = req.body.config ? JSON.parse(req.body.config) : {};
     const jobId = req.body.jobId;
 
-    const result = await ocrService.processScreenshot(
-      req.file.path,
-      config,
-      jobId
-    );
+    const result = await ocrService.processScreenshot(req.file.path, config, jobId);
 
     res.json({
       success: true,
@@ -65,37 +61,37 @@ router.post('/process', upload.single('screenshot'), async (req: Request, res: R
  * POST /api/ocr/batch-process
  * Process multiple screenshots in batch
  */
-router.post('/batch-process', upload.array('screenshots', 50), async (req: Request, res: Response) => {
-  try {
-    if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
-      return res.status(400).json({ error: 'No screenshots provided' });
+router.post(
+  '/batch-process',
+  upload.array('screenshots', 50),
+  async (req: Request, res: Response) => {
+    try {
+      if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+        return res.status(400).json({ error: 'No screenshots provided' });
+      }
+
+      const config: Partial<OCRConfig> = req.body.config ? JSON.parse(req.body.config) : {};
+      const jobId = req.body.jobId;
+
+      const screenshotPaths = req.files.map((f) => f.path);
+
+      const results = await ocrService.processScreenshots(screenshotPaths, config, jobId);
+
+      res.json({
+        success: true,
+        processed: results.length,
+        total: screenshotPaths.length,
+        results,
+      });
+    } catch (error: any) {
+      console.error('Batch OCR processing error:', error);
+      res.status(500).json({
+        error: 'Batch OCR processing failed',
+        message: error.message,
+      });
     }
-
-    const config: Partial<OCRConfig> = req.body.config ? JSON.parse(req.body.config) : {};
-    const jobId = req.body.jobId;
-
-    const screenshotPaths = req.files.map(f => f.path);
-
-    const results = await ocrService.processScreenshots(
-      screenshotPaths,
-      config,
-      jobId
-    );
-
-    res.json({
-      success: true,
-      processed: results.length,
-      total: screenshotPaths.length,
-      results,
-    });
-  } catch (error: any) {
-    console.error('Batch OCR processing error:', error);
-    res.status(500).json({
-      error: 'Batch OCR processing failed',
-      message: error.message,
-    });
   }
-});
+);
 
 /**
  * POST /api/ocr/process-job
@@ -117,18 +113,14 @@ router.post('/process-job/:jobId', async (req: Request, res: Response) => {
 
     const files = await fs.readdir(screenshotsDir);
     const screenshotPaths = files
-      .filter(f => /\.(png|jpg|jpeg)$/i.test(f) && !f.includes('_thumb'))
-      .map(f => path.join(screenshotsDir, f));
+      .filter((f) => /\.(png|jpg|jpeg)$/i.test(f) && !f.includes('_thumb'))
+      .map((f) => path.join(screenshotsDir, f));
 
     if (screenshotPaths.length === 0) {
       return res.status(404).json({ error: 'No screenshots found for job' });
     }
 
-    const results = await ocrService.processScreenshots(
-      screenshotPaths,
-      config,
-      jobId
-    );
+    const results = await ocrService.processScreenshots(screenshotPaths, config, jobId);
 
     res.json({
       success: true,

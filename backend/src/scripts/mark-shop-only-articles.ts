@@ -27,12 +27,12 @@ async function markShopOnlyArticles() {
     const markedResult = await prisma.product.updateMany({
       where: {
         articleNumber: {
-          in: toMarkNumbers
-        }
+          in: toMarkNumbers,
+        },
       },
       data: {
-        category: 'SHOP_ONLY'  // Diese sind NUR vom Shop, NICHT in Excel
-      }
+        category: 'SHOP_ONLY', // Diese sind NUR vom Shop, NICHT in Excel
+      },
     });
     console.log(`   --> ${markedResult.count} als SHOP_ONLY markiert`);
 
@@ -41,22 +41,22 @@ async function markShopOnlyArticles() {
     const excelResult = await prisma.product.updateMany({
       where: {
         articleNumber: {
-          notIn: toMarkNumbers
-        }
+          notIn: toMarkNumbers,
+        },
       },
       data: {
-        category: 'FROM_EXCEL'  // Diese sind in der Excel
-      }
+        category: 'FROM_EXCEL', // Diese sind in der Excel
+      },
     });
     console.log(`   --> ${excelResult.count} als FROM_EXCEL markiert`);
 
     // 3. Verifizierung
     console.log('\n3. Verifiziere Markierungen...');
     const shopOnlyCount = await prisma.product.count({
-      where: { category: 'SHOP_ONLY' }
+      where: { category: 'SHOP_ONLY' },
     });
     const fromExcelCount = await prisma.product.count({
-      where: { category: 'FROM_EXCEL' }
+      where: { category: 'FROM_EXCEL' },
     });
     const totalCount = await prisma.product.count();
 
@@ -72,12 +72,12 @@ async function markShopOnlyArticles() {
       select: {
         articleNumber: true,
         productName: true,
-        category: true
-      }
+        category: true,
+      },
     });
 
     console.log('\n   Shop-Only Artikel (erste 5):');
-    shopOnlyExamples.forEach(a => {
+    shopOnlyExamples.forEach((a) => {
       console.log(`   - ${a.articleNumber}: ${a.productName?.substring(0, 40)}`);
     });
 
@@ -90,7 +90,6 @@ async function markShopOnlyArticles() {
     console.log('\nBeim Bulk-Drucken kann jetzt gefiltert werden:');
     console.log('- Nur Excel-Artikel: WHERE category = "FROM_EXCEL"');
     console.log('- Alle Artikel: Kein Filter');
-
   } catch (error) {
     console.error('Fehler:', error);
   } finally {

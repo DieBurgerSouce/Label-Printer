@@ -19,8 +19,10 @@ const querySchema = z.object({
   category: z.string().optional(),
   verified: z.coerce.boolean().optional(),
   published: z.coerce.boolean().optional(),
-  sortBy: z.enum(['createdAt', 'updatedAt', 'articleNumber', 'productName', 'price']).default('createdAt'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc')
+  sortBy: z
+    .enum(['createdAt', 'updatedAt', 'articleNumber', 'productName', 'price'])
+    .default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 // ========================================
@@ -55,7 +57,7 @@ router.get('/', async (req: Request, res: Response) => {
       where.OR = [
         { articleNumber: { contains: search, mode: 'insensitive' } },
         { productName: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } }
+        { description: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -68,7 +70,7 @@ router.get('/', async (req: Request, res: Response) => {
       where,
       skip,
       take: limit,
-      orderBy: { [sortBy]: sortOrder }
+      orderBy: { [sortBy]: sortOrder },
     });
 
     console.log(`✅ Loaded ${articles.length} articles from DATABASE (total: ${total})`);
@@ -84,14 +86,14 @@ router.get('/', async (req: Request, res: Response) => {
         limit,
         total,
         totalPages,
-        hasMore: page < totalPages
-      }
+        hasMore: page < totalPages,
+      },
     });
   } catch (error: any) {
     console.error('Error fetching articles:', error);
     res.status(500).json({
       error: 'Failed to fetch articles',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -102,29 +104,20 @@ router.get('/', async (req: Request, res: Response) => {
  */
 router.get('/stats', async (_req: Request, res: Response) => {
   try {
-    const [
-      total,
-      published,
-      withImages,
-      withPrices,
-      categories
-    ] = await Promise.all([
+    const [total, published, withImages, withPrices, categories] = await Promise.all([
       prisma.product.count(),
       prisma.product.count({ where: { published: true } }),
       prisma.product.count({ where: { imageUrl: { not: null } } }),
       prisma.product.count({
         where: {
-          OR: [
-            { price: { gt: 0 } },
-            { tieredPrices: { not: { equals: [] } } }
-          ]
-        }
+          OR: [{ price: { gt: 0 } }, { tieredPrices: { not: { equals: [] } } }],
+        },
       }),
       prisma.product.findMany({
         where: { category: { not: null } },
         select: { category: true },
-        distinct: ['category']
-      })
+        distinct: ['category'],
+      }),
     ]);
 
     const stats = {
@@ -133,7 +126,7 @@ router.get('/stats', async (_req: Request, res: Response) => {
       withImages,
       withPrices,
       verified: await prisma.product.count({ where: { verified: true } }),
-      categories: categories.map(c => c.category).filter(Boolean)
+      categories: categories.map((c) => c.category).filter(Boolean),
     };
 
     return res.json({ success: true, data: stats });
@@ -141,7 +134,7 @@ router.get('/stats', async (_req: Request, res: Response) => {
     console.error('Error fetching stats:', error);
     return res.status(500).json({
       error: 'Failed to fetch statistics',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -157,11 +150,8 @@ router.get('/:id', async (req: Request, res: Response) => {
     // Try to find by ID first, then by articleNumber
     const article = await prisma.product.findFirst({
       where: {
-        OR: [
-          { id },
-          { articleNumber: id }
-        ]
-      }
+        OR: [{ id }, { articleNumber: id }],
+      },
     });
 
     if (!article) {
@@ -173,7 +163,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     console.error('Error fetching article:', error);
     return res.status(500).json({
       error: 'Failed to fetch article',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -190,11 +180,8 @@ router.put('/:id', async (req: Request, res: Response) => {
     // Find article
     const existing = await prisma.product.findFirst({
       where: {
-        OR: [
-          { id },
-          { articleNumber: id }
-        ]
-      }
+        OR: [{ id }, { articleNumber: id }],
+      },
     });
 
     if (!existing) {
@@ -206,8 +193,8 @@ router.put('/:id', async (req: Request, res: Response) => {
       where: { id: existing.id },
       data: {
         ...updates,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     res.json(updated);
@@ -215,7 +202,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     console.error('Error updating article:', error);
     res.status(500).json({
       error: 'Failed to update article',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -231,11 +218,8 @@ router.delete('/:id', async (req: Request, res: Response) => {
     // Find article
     const existing = await prisma.product.findFirst({
       where: {
-        OR: [
-          { id },
-          { articleNumber: id }
-        ]
-      }
+        OR: [{ id }, { articleNumber: id }],
+      },
     });
 
     if (!existing) {
@@ -244,7 +228,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     // Delete article
     await prisma.product.delete({
-      where: { id: existing.id }
+      where: { id: existing.id },
     });
 
     res.status(204).send();
@@ -252,7 +236,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     console.error('Error deleting article:', error);
     res.status(500).json({
       error: 'Failed to delete article',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -270,8 +254,8 @@ router.post('/', async (req: Request, res: Response) => {
       data: {
         ...articleData,
         createdAt: articleData.createdAt ? new Date(articleData.createdAt) : new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     res.status(201).json(created);
@@ -279,7 +263,7 @@ router.post('/', async (req: Request, res: Response) => {
     console.error('Error creating article:', error);
     res.status(500).json({
       error: 'Failed to create article',
-      message: error.message
+      message: error.message,
     });
   }
 });

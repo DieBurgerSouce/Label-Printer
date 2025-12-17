@@ -50,7 +50,7 @@ export interface ClientToServerEvents {
   'automation:unsubscribe': (automationId: string) => void;
 
   // System
-  'ping': () => void;
+  ping: () => void;
 }
 
 // ============================================
@@ -237,7 +237,9 @@ export class WebSocketServer {
 
       socket.on('automation:unsubscribe', (automationId: string) => {
         socket.leave(`automation:${automationId}`);
-        console.log(`[WebSocket] Client ${socket.id} unsubscribed from automation: ${automationId}`);
+        console.log(
+          `[WebSocket] Client ${socket.id} unsubscribed from automation: ${automationId}`
+        );
       });
 
       // Ping/Pong
@@ -307,7 +309,10 @@ export class WebSocketServer {
   // SCREENSHOT EVENTS
   // ============================================
 
-  emitScreenshotCaptured(jobId: string, data: Omit<ScreenshotCapturedEvent, 'jobId' | 'timestamp'>) {
+  emitScreenshotCaptured(
+    jobId: string,
+    data: Omit<ScreenshotCapturedEvent, 'jobId' | 'timestamp'>
+  ) {
     const event: ScreenshotCapturedEvent = {
       jobId,
       ...data,
@@ -317,7 +322,10 @@ export class WebSocketServer {
     this.io.to(`automation:${jobId}`).emit('screenshot:captured', event);
   }
 
-  emitScreenshotUploaded(jobId: string, data: Omit<ScreenshotUploadedEvent, 'jobId' | 'timestamp'>) {
+  emitScreenshotUploaded(
+    jobId: string,
+    data: Omit<ScreenshotUploadedEvent, 'jobId' | 'timestamp'>
+  ) {
     const event: ScreenshotUploadedEvent = {
       jobId,
       ...data,

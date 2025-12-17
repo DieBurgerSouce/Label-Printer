@@ -37,8 +37,8 @@ async function exportAllArticles() {
         verified: true,
         published: true,
         createdAt: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
 
     console.log(`Found ${allArticles.length} articles`);
@@ -48,10 +48,10 @@ async function exportAllArticles() {
       FROM_EXCEL: 0,
       SHOP_ONLY: 0,
       NEEDS_TIER_QUANTITIES: 0,
-      OTHER: 0
+      OTHER: 0,
     };
 
-    allArticles.forEach(article => {
+    allArticles.forEach((article) => {
       if (article.category === 'FROM_EXCEL') categories.FROM_EXCEL++;
       else if (article.category === 'SHOP_ONLY') categories.SHOP_ONLY++;
       else if (article.manufacturer === 'NEEDS_TIER_QUANTITIES') categories.NEEDS_TIER_QUANTITIES++;
@@ -71,9 +71,9 @@ async function exportAllArticles() {
         totalArticles: allArticles.length,
         categories: categories,
         version: '1.0.0',
-        exportedFrom: 'Screenshot_Algo System'
+        exportedFrom: 'Screenshot_Algo System',
       },
-      articles: allArticles
+      articles: allArticles,
     };
 
     // Save to file
@@ -108,12 +108,12 @@ async function exportAllArticles() {
         fromExcel: categories.FROM_EXCEL,
         shopOnly: categories.SHOP_ONLY,
         needsTierQuantities: categories.NEEDS_TIER_QUANTITIES,
-        other: categories.OTHER
+        other: categories.OTHER,
       },
-      sampleArticles: allArticles.slice(0, 5).map(a => ({
+      sampleArticles: allArticles.slice(0, 5).map((a) => ({
         articleNumber: a.articleNumber,
-        productName: a.productName
-      }))
+        productName: a.productName,
+      })),
     };
 
     fs.writeFileSync(
@@ -126,7 +126,6 @@ async function exportAllArticles() {
     console.log('\n========================================');
     console.log('EXPORT COMPLETE!');
     console.log('========================================');
-
   } catch (error) {
     console.error('Error exporting articles:', error);
     process.exit(1);

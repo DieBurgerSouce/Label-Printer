@@ -31,10 +31,7 @@ async function findCorruptedArticles(): Promise<CorruptedArticle[]> {
   // Find articles with OCR confidence < 100% (not from HTML extraction)
   const articles = await prisma.product.findMany({
     where: {
-      OR: [
-        { ocrConfidence: { lt: 100 } },
-        { ocrConfidence: null }
-      ]
+      OR: [{ ocrConfidence: { lt: 100 } }, { ocrConfidence: null }],
     },
     select: {
       id: true,
@@ -46,8 +43,8 @@ async function findCorruptedArticles(): Promise<CorruptedArticle[]> {
       tieredPricesText: true,
       price: true,
       tieredPrices: true,
-      priceType: true
-    }
+      priceType: true,
+    },
   });
 
   console.log(`📊 Found ${articles.length} articles with ocrConfidence < 100%`);
@@ -66,7 +63,7 @@ async function findCorruptedArticles(): Promise<CorruptedArticle[]> {
         sourceUrl: article.sourceUrl,
         ocrConfidence: article.ocrConfidence || 0,
         corruptionScore: corruptionCheck.corruptionScore,
-        issues: corruptionCheck.issues
+        issues: corruptionCheck.issues,
       });
     }
   }
@@ -103,11 +100,11 @@ async function recrawlArticle(article: CorruptedArticle, browser: any): Promise<
     // Navigate to product page
     await page.goto(article.sourceUrl, {
       waitUntil: 'domcontentloaded',
-      timeout: 60000
+      timeout: 60000,
     });
 
     // Wait for page to stabilize
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
 
     // Extract clean HTML data
     const htmlData = await htmlExtractionService.extractProductData(page);
@@ -139,15 +136,14 @@ async function recrawlArticle(article: CorruptedArticle, browser: any): Promise<
         tieredPrices: (htmlData.tieredPrices || []) as any, // Cast to any for Prisma Json type
         tieredPricesText: htmlData.tieredPricesText || null,
         ocrConfidence: 100, // Mark as HTML-extracted (100% confidence)
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     console.log(`   ✅ Updated article ${article.articleNumber} in database`);
 
     await page.close();
     return true;
-
   } catch (error: any) {
     console.log(`   ❌ Failed to re-crawl ${article.articleNumber}: ${error.message}`);
     return false;
@@ -171,13 +167,13 @@ async function main() {
     // Ask for confirmation (in production, you'd want user input here)
     console.log(`⚠️ Found ${corrupted.length} corrupted articles.\n`);
     console.log('Press Ctrl+C to cancel, or wait 5 seconds to continue...\n');
-    await new Promise(r => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, 5000));
 
     // Step 2: Launch browser for re-crawling
     console.log('🌐 Launching browser...\n');
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     // Step 3: Re-crawl each article
@@ -197,7 +193,7 @@ async function main() {
 
       // Wait between requests to be polite
       if (i < corrupted.length - 1) {
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise((r) => setTimeout(r, 2000));
       }
     }
 
@@ -210,7 +206,6 @@ async function main() {
     console.log(`✅ Successfully cleaned: ${successCount} articles`);
     console.log(`❌ Failed: ${failCount} articles`);
     console.log(`📊 Total processed: ${corrupted.length} articles\n`);
-
   } catch (error: any) {
     console.error('\n❌ Cleanup failed:', error);
     process.exit(1);
@@ -221,7 +216,7 @@ async function main() {
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('Fatal error:', error);
     process.exit(1);
   });

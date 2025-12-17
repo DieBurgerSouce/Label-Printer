@@ -58,14 +58,14 @@ export interface PrintLayout {
   name: string;
   paperFormat: {
     type: 'A3' | 'A4' | 'A5' | 'Letter' | 'Custom';
-    width: number;  // in mm
+    width: number; // in mm
     height: number; // in mm
     orientation: 'portrait' | 'landscape';
   };
   gridLayout: {
     columns: number;
     rows: number;
-    spacing: number;    // in mm
+    spacing: number; // in mm
     margins: {
       top: number;
       right: number;
