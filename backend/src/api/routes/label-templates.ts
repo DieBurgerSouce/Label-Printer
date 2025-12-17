@@ -6,8 +6,22 @@
 
 import { Router, Request, Response } from 'express';
 import labelTemplateService from '../../services/label-template-service';
+import {
+  sendSuccess,
+  sendCreated,
+  sendNotFound,
+  sendBadRequest,
+  sendConflict,
+  sendInternalError,
+  handleError,
+} from '../../utils/api-response';
 
 const router = Router();
+
+// Type guard for Node.js errors with code property
+interface NodeError extends Error {
+  code?: string;
+}
 
 /**
  * POST /api/label-templates
@@ -16,48 +30,31 @@ const router = Router();
 router.post('/', async (req: Request, res: Response) => {
   try {
     const template = await labelTemplateService.createTemplate(req.body);
-
-    res.json({
-      success: true,
-      message: 'Template saved successfully',
-      template,
-    });
-  } catch (error: any) {
+    return sendCreated(res, { template }, 'Template saved successfully');
+  } catch (error: unknown) {
     console.error('❌ Label template save error:', error);
 
+    const err = error as NodeError;
+    const message = err.message || 'Unknown error';
+
     // Handle specific error cases
-    if (error.message.includes('already exists')) {
-      return res.status(409).json({
-        error: 'Template already exists',
-        message: error.message,
-      });
+    if (message.includes('already exists')) {
+      return sendConflict(res, message);
     }
 
-    if (error.message.includes('Invalid') || error.message.includes('required')) {
-      return res.status(400).json({
-        error: 'Invalid template',
-        message: error.message,
-      });
+    if (message.includes('Invalid') || message.includes('required')) {
+      return sendBadRequest(res, message);
     }
 
-    if (error.code === 'EACCES') {
-      return res.status(500).json({
-        error: 'Permission denied',
-        message: 'Server does not have permission to write template files',
-      });
+    if (err.code === 'EACCES') {
+      return sendInternalError(res, 'Server does not have permission to write template files');
     }
 
-    if (error.code === 'ENOSPC') {
-      return res.status(500).json({
-        error: 'No space left',
-        message: 'Server disk is full',
-      });
+    if (err.code === 'ENOSPC') {
+      return sendInternalError(res, 'Server disk is full');
     }
 
-    res.status(500).json({
-      error: 'Label template save failed',
-      message: error.message,
-    });
+    return handleError(res, error, 'Label template save failed');
   }
 });
 
@@ -68,17 +65,10 @@ router.post('/', async (req: Request, res: Response) => {
 router.get('/', async (_req: Request, res: Response) => {
   try {
     const templates = await labelTemplateService.listTemplates();
-
-    res.json({
-      success: true,
-      templates,
-    });
-  } catch (error: any) {
+    return sendSuccess(res, { templates });
+  } catch (error: unknown) {
     console.error('❌ Label templates listing error:', error);
-    res.status(500).json({
-      error: 'Label templates listing failed',
-      message: error.message,
-    });
+    return handleError(res, error, 'Label templates listing failed');
   }
 });
 
@@ -90,32 +80,22 @@ router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const template = await labelTemplateService.getTemplate(id);
-
-    res.json({
-      success: true,
-      template,
-    });
-  } catch (error: any) {
+    return sendSuccess(res, { template });
+  } catch (error: unknown) {
     console.error('❌ Label template fetch error:', error);
 
-    if (error.message.includes('Invalid template ID')) {
-      return res.status(400).json({
-        error: 'Invalid template ID',
-        message: error.message,
-      });
+    const err = error as NodeError;
+    const message = err.message || 'Unknown error';
+
+    if (message.includes('Invalid template ID')) {
+      return sendBadRequest(res, message);
     }
 
-    if (error.message.includes('not found')) {
-      return res.status(404).json({
-        error: 'Label template not found',
-        message: error.message,
-      });
+    if (message.includes('not found')) {
+      return sendNotFound(res, 'Label template');
     }
 
-    res.status(500).json({
-      error: 'Label template fetch failed',
-      message: error.message,
-    });
+    return handleError(res, error, 'Label template fetch failed');
   }
 });
 
@@ -127,44 +107,26 @@ router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const template = await labelTemplateService.updateTemplate(id, req.body);
-
-    res.json({
-      success: true,
-      message: 'Template updated successfully',
-      template,
-    });
-  } catch (error: any) {
+    return sendSuccess(res, { template }, 'Template updated successfully');
+  } catch (error: unknown) {
     console.error('❌ Label template update error:', error);
 
-    if (
-      error.message.includes('Invalid') ||
-      error.message.includes('required') ||
-      error.message.includes('mismatch')
-    ) {
-      return res.status(400).json({
-        error: 'Invalid template',
-        message: error.message,
-      });
+    const err = error as NodeError;
+    const message = err.message || 'Unknown error';
+
+    if (message.includes('Invalid') || message.includes('required') || message.includes('mismatch')) {
+      return sendBadRequest(res, message);
     }
 
-    if (error.code === 'EACCES') {
-      return res.status(500).json({
-        error: 'Permission denied',
-        message: 'Server does not have permission to write template files',
-      });
+    if (err.code === 'EACCES') {
+      return sendInternalError(res, 'Server does not have permission to write template files');
     }
 
-    if (error.code === 'ENOSPC') {
-      return res.status(500).json({
-        error: 'No space left',
-        message: 'Server disk is full',
-      });
+    if (err.code === 'ENOSPC') {
+      return sendInternalError(res, 'Server disk is full');
     }
 
-    res.status(500).json({
-      error: 'Label template update failed',
-      message: error.message,
-    });
+    return handleError(res, error, 'Label template update failed');
   }
 });
 
@@ -176,39 +138,26 @@ router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await labelTemplateService.deleteTemplate(id);
-
-    res.json({
-      success: true,
-      message: 'Template deleted successfully',
-    });
-  } catch (error: any) {
+    return sendSuccess(res, undefined, 'Template deleted successfully');
+  } catch (error: unknown) {
     console.error('❌ Label template deletion error:', error);
 
-    if (error.message.includes('Invalid template ID')) {
-      return res.status(400).json({
-        error: 'Invalid template ID',
-        message: error.message,
-      });
+    const err = error as NodeError;
+    const message = err.message || 'Unknown error';
+
+    if (message.includes('Invalid template ID')) {
+      return sendBadRequest(res, message);
     }
 
-    if (error.message.includes('not found')) {
-      return res.status(404).json({
-        error: 'Label template not found',
-        message: error.message,
-      });
+    if (message.includes('not found')) {
+      return sendNotFound(res, 'Label template');
     }
 
-    if (error.code === 'EACCES') {
-      return res.status(500).json({
-        error: 'Permission denied',
-        message: 'Server does not have permission to delete template files',
-      });
+    if (err.code === 'EACCES') {
+      return sendInternalError(res, 'Server does not have permission to delete template files');
     }
 
-    res.status(500).json({
-      error: 'Label template deletion failed',
-      message: error.message,
-    });
+    return handleError(res, error, 'Label template deletion failed');
   }
 });
 

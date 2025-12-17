@@ -8,6 +8,12 @@ import { automationService } from '../../services/automation-service';
 import { AutomationConfig } from '../../types/automation-types';
 import multer from 'multer';
 import * as XLSX from 'xlsx';
+import {
+  sendSuccess,
+  sendBadRequest,
+  sendNotFound,
+  handleError,
+} from '../../utils/api-response';
 
 const router = Router();
 
@@ -36,15 +42,15 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
     const { shopUrl, templateId, config } = req.body;
 
     if (!shopUrl) {
-      return res.status(400).json({ error: 'Shop URL is required' });
+      return sendBadRequest(res, 'Shop URL is required');
     }
 
     if (!templateId) {
-      return res.status(400).json({ error: 'Template ID is required' });
+      return sendBadRequest(res, 'Template ID is required');
     }
 
     // Parse Excel file if provided
-    let excelData: any[] = [];
+    let excelData: unknown[] = [];
     if (req.file) {
       try {
         const workbook = XLSX.readFile(req.file.path);
@@ -52,11 +58,9 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
         const worksheet = workbook.Sheets[sheetName];
         excelData = XLSX.utils.sheet_to_json(worksheet);
         console.log(`📊 Loaded ${excelData.length} rows from Excel`);
-      } catch (error: any) {
-        return res.status(400).json({
-          error: 'Failed to parse Excel file',
-          message: error.message,
-        });
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return sendBadRequest(res, 'Failed to parse Excel file', { message });
       }
     }
 
@@ -65,8 +69,8 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
     if (config) {
       try {
         parsedConfig = typeof config === 'string' ? JSON.parse(config) : config;
-      } catch (error) {
-        return res.status(400).json({ error: 'Invalid config JSON' });
+      } catch {
+        return sendBadRequest(res, 'Invalid config JSON');
       }
     }
 
@@ -79,22 +83,17 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
 
     const job = await automationService.startAutomation(automationConfig);
 
-    res.json({
-      success: true,
-      jobId: job.id, // Frontend expects jobId directly
+    return sendSuccess(res, {
+      jobId: job.id,
       job: {
         id: job.id,
         status: job.status,
         progress: job.progress,
       },
-      message: 'Automation job started successfully',
-    });
-  } catch (error: any) {
+    }, 'Automation job started successfully');
+  } catch (error: unknown) {
     console.error('Automation start error:', error);
-    res.status(500).json({
-      error: 'Failed to start automation',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to start automation');
   }
 });
 
@@ -108,11 +107,11 @@ router.post('/start-simple', async (req: Request, res: Response) => {
       req.body;
 
     if (!shopUrl) {
-      return res.status(400).json({ error: 'Shop URL is required' });
+      return sendBadRequest(res, 'Shop URL is required');
     }
 
     if (!templateId) {
-      return res.status(400).json({ error: 'Template ID is required' });
+      return sendBadRequest(res, 'Template ID is required');
     }
 
     // Build config with support for both flat and nested formats
@@ -133,22 +132,17 @@ router.post('/start-simple', async (req: Request, res: Response) => {
 
     const job = await automationService.startAutomation(config);
 
-    res.json({
-      success: true,
-      jobId: job.id, // Frontend expects jobId directly
+    return sendSuccess(res, {
+      jobId: job.id,
       job: {
         id: job.id,
         status: job.status,
         progress: job.progress,
       },
-      message: 'Automation job started successfully',
-    });
-  } catch (error: any) {
+    }, 'Automation job started successfully');
+  } catch (error: unknown) {
     console.error('Automation start error:', error);
-    res.status(500).json({
-      error: 'Failed to start automation',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to start automation');
   }
 });
 
@@ -160,8 +154,7 @@ router.get('/jobs', (_req: Request, res: Response) => {
   try {
     const jobs = automationService.getAllJobs();
 
-    res.json({
-      success: true,
+    return sendSuccess(res, {
       jobs: jobs.map((job) => ({
         id: job.id,
         name: job.name,
@@ -173,12 +166,9 @@ router.get('/jobs', (_req: Request, res: Response) => {
       })),
       count: jobs.length,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Jobs listing error:', error);
-    res.status(500).json({
-      error: 'Failed to list jobs',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to list jobs');
   }
 });
 
@@ -192,19 +182,13 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
     const job = automationService.getJob(id);
 
     if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
+      return sendNotFound(res, 'Job');
     }
 
-    res.json({
-      success: true,
-      job,
-    });
-  } catch (error: any) {
+    return sendSuccess(res, { job });
+  } catch (error: unknown) {
     console.error('Job fetch error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch job',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch job');
   }
 });
 
@@ -218,21 +202,17 @@ router.get('/jobs/:id/progress', (req: Request, res: Response) => {
     const job = automationService.getJob(id);
 
     if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
+      return sendNotFound(res, 'Job');
     }
 
-    res.json({
-      success: true,
+    return sendSuccess(res, {
       status: job.status,
       progress: job.progress,
       summary: job.results.summary,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Progress fetch error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch progress',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch progress');
   }
 });
 
@@ -246,20 +226,16 @@ router.get('/jobs/:id/labels', (req: Request, res: Response) => {
     const job = automationService.getJob(id);
 
     if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
+      return sendNotFound(res, 'Job');
     }
 
-    res.json({
-      success: true,
+    return sendSuccess(res, {
       labels: job.results.labels,
       count: job.results.labels.length,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Labels fetch error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch labels',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch labels');
   }
 });
 
@@ -273,30 +249,27 @@ router.get('/jobs/:id/labels/:labelIndex', (req: Request, res: Response) => {
     const job = automationService.getJob(id);
 
     if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
+      return sendNotFound(res, 'Job');
     }
 
     const index = parseInt(labelIndex, 10);
     const label = job.results.labels[index];
 
     if (!label) {
-      return res.status(404).json({ error: 'Label not found' });
+      return sendNotFound(res, 'Label');
     }
 
     if (!label.success || !label.labelBase64) {
-      return res.status(404).json({ error: 'Label generation failed' });
+      return sendNotFound(res, 'Label generation');
     }
 
     // Return base64 image
     const buffer = Buffer.from(label.labelBase64, 'base64');
     res.set('Content-Type', 'image/png');
-    res.send(buffer);
-  } catch (error: any) {
+    return res.send(buffer);
+  } catch (error: unknown) {
     console.error('Label fetch error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch label',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch label');
   }
 });
 
@@ -310,19 +283,13 @@ router.post('/jobs/:id/cancel', async (req: Request, res: Response) => {
     const success = await automationService.cancelJob(id);
 
     if (!success) {
-      return res.status(404).json({ error: 'Job not found or already completed' });
+      return sendNotFound(res, 'Job (or already completed)');
     }
 
-    res.json({
-      success: true,
-      message: 'Job cancelled successfully',
-    });
-  } catch (error: any) {
+    return sendSuccess(res, undefined, 'Job cancelled successfully');
+  } catch (error: unknown) {
     console.error('Job cancellation error:', error);
-    res.status(500).json({
-      error: 'Failed to cancel job',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to cancel job');
   }
 });
 
@@ -336,19 +303,13 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
     const success = await automationService.deleteJob(id);
 
     if (!success) {
-      return res.status(404).json({ error: 'Job not found' });
+      return sendNotFound(res, 'Job');
     }
 
-    res.json({
-      success: true,
-      message: 'Job deleted successfully',
-    });
-  } catch (error: any) {
+    return sendSuccess(res, undefined, 'Job deleted successfully');
+  } catch (error: unknown) {
     console.error('Job deletion error:', error);
-    res.status(500).json({
-      error: 'Failed to delete job',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to delete job');
   }
 });
 
@@ -378,16 +339,10 @@ router.get('/stats', (_req: Request, res: Response) => {
       stats.averageProcessingTime = totalTime / completedJobs.length;
     }
 
-    res.json({
-      success: true,
-      stats,
-    });
-  } catch (error: any) {
+    return sendSuccess(res, { stats });
+  } catch (error: unknown) {
     console.error('Stats fetch error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch stats',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch stats');
   }
 });
 

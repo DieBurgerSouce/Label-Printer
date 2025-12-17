@@ -5,6 +5,7 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma';
+import { sendSuccess, sendNotFound, handleError } from '../../utils/api-response';
 
 const router = Router();
 
@@ -79,8 +80,8 @@ router.get('/', async (req: Request, res: Response) => {
     const totalPages = Math.ceil(total / limit);
 
     // Return paginated response
-    res.json({
-      data: articles,
+    return sendSuccess(res, {
+      articles,
       pagination: {
         page,
         limit,
@@ -89,12 +90,9 @@ router.get('/', async (req: Request, res: Response) => {
         hasMore: page < totalPages,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching articles:', error);
-    res.status(500).json({
-      error: 'Failed to fetch articles',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch articles');
   }
 });
 
@@ -129,13 +127,10 @@ router.get('/stats', async (_req: Request, res: Response) => {
       categories: categories.map((c) => c.category).filter(Boolean),
     };
 
-    return res.json({ success: true, data: stats });
-  } catch (error: any) {
+    return sendSuccess(res, stats);
+  } catch (error: unknown) {
     console.error('Error fetching stats:', error);
-    return res.status(500).json({
-      error: 'Failed to fetch statistics',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch statistics');
   }
 });
 
@@ -155,16 +150,13 @@ router.get('/:id', async (req: Request, res: Response) => {
     });
 
     if (!article) {
-      return res.status(404).json({ error: 'Article not found' });
+      return sendNotFound(res, 'Article');
     }
 
-    return res.json(article);
-  } catch (error: any) {
+    return sendSuccess(res, article);
+  } catch (error: unknown) {
     console.error('Error fetching article:', error);
-    return res.status(500).json({
-      error: 'Failed to fetch article',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to fetch article');
   }
 });
 
@@ -185,7 +177,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     });
 
     if (!existing) {
-      return res.status(404).json({ error: 'Article not found' });
+      return sendNotFound(res, 'Article');
     }
 
     // Update article
@@ -197,13 +189,10 @@ router.put('/:id', async (req: Request, res: Response) => {
       },
     });
 
-    res.json(updated);
-  } catch (error: any) {
+    return sendSuccess(res, updated);
+  } catch (error: unknown) {
     console.error('Error updating article:', error);
-    res.status(500).json({
-      error: 'Failed to update article',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to update article');
   }
 });
 
@@ -223,7 +212,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     });
 
     if (!existing) {
-      return res.status(404).json({ error: 'Article not found' });
+      return sendNotFound(res, 'Article');
     }
 
     // Delete article
@@ -231,13 +220,10 @@ router.delete('/:id', async (req: Request, res: Response) => {
       where: { id: existing.id },
     });
 
-    res.status(204).send();
-  } catch (error: any) {
+    return res.status(204).send();
+  } catch (error: unknown) {
     console.error('Error deleting article:', error);
-    res.status(500).json({
-      error: 'Failed to delete article',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to delete article');
   }
 });
 
@@ -258,13 +244,10 @@ router.post('/', async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json(created);
-  } catch (error: any) {
+    return sendSuccess(res, created, 'Article created', 201);
+  } catch (error: unknown) {
     console.error('Error creating article:', error);
-    res.status(500).json({
-      error: 'Failed to create article',
-      message: error.message,
-    });
+    return handleError(res, error, 'Failed to create article');
   }
 });
 
