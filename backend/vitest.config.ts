@@ -8,6 +8,12 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules', 'dist'],
+    // Enable proper ESM mocking by inlining dependencies
+    server: {
+      deps: {
+        inline: [/\.js$/],
+      },
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

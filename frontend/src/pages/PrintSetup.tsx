@@ -1,15 +1,16 @@
-import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { RotateCcw } from 'lucide-react';
-import { usePrintStore } from '../store/printStore';
-import { useUiStore } from '../store/uiStore';
-import { printApi } from '../services/api';
+import { useState } from 'react';
 import FormatSelector, {
-  type PaperFormat,
+    type PaperFormat,
 } from '../components/PrintConfigurator/FormatSelector';
 import GridConfigurator from '../components/PrintConfigurator/GridConfigurator';
 import PrintPreview from '../components/PrintConfigurator/PrintPreview';
 import PrintTemplateSelector from '../components/PrintConfigurator/PrintTemplateSelector';
+import ConfirmDialog from '../components/common/ConfirmDialog';
+import { printApi } from '../services/api';
+import { usePrintStore } from '../store/printStore';
+import { useUiStore } from '../store/uiStore';
 
 export default function PrintSetup() {
   const { layout, setPaperFormat, setGridConfig } = usePrintStore();
@@ -18,6 +19,17 @@ export default function PrintSetup() {
   const [previewUrl, setPreviewUrl] = useState<string>();
   const [customWidth, setCustomWidth] = useState(210);
   const [customHeight, setCustomHeight] = useState(297);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
 
   // Generate Preview Mutation
   const generatePreviewMutation = useMutation({
@@ -39,8 +51,8 @@ export default function PrintSetup() {
         customHeight: layout.paperFormat.type === 'Custom' ? customHeight : undefined,
       };
 
-      console.log('📤 Sending preview request:', requestData);
-      console.log('📊 Current layout state:', layout);
+      // console.log('📤 Sending preview request:', requestData);
+      // console.log('📊 Current layout state:', layout);
 
       const response = await printApi.preview(requestData);
       return response.data;
@@ -60,13 +72,13 @@ export default function PrintSetup() {
       }
       showToast({
         type: 'success',
-        message: 'Preview generated successfully',
+        message: 'Vorschau erfolgreich erstellt',
       });
     },
     onError: (error: any) => {
       showToast({
         type: 'error',
-        message: error.response?.data?.error || 'Failed to generate preview',
+        message: error.response?.data?.error || 'Fehler bei der Vorschau',
       });
     },
   });
@@ -102,7 +114,7 @@ export default function PrintSetup() {
       document.body.removeChild(a);
       showToast({
         type: 'success',
-        message: 'PDF downloaded successfully',
+        message: 'PDF erfolgreich heruntergeladen',
       });
     },
     onError: (error: any) => {
@@ -163,7 +175,7 @@ export default function PrintSetup() {
     if (layout.labelIds.length === 0) {
       showToast({
         type: 'warning',
-        message: 'Please select labels from the Label Library first',
+        message: 'Bitte wählen Sie zuerst Labels aus der Bibliothek',
       });
       return;
     }
@@ -173,21 +185,19 @@ export default function PrintSetup() {
   const handleDownloadPdf = () => {
     // ⚠️ Warning for large batches
     if (layout.labelIds.length > 100) {
-      const confirmed = window.confirm(
-        `⚠️ You are about to generate a PDF with ${layout.labelIds.length} labels.\n\n` +
-        `This may take several minutes and could use significant memory.\n\n` +
-        `Estimated time: ${Math.ceil(layout.labelIds.length / 20)} minutes\n\n` +
-        `Continue?`
-      );
-
-      if (!confirmed) {
-        return;
-      }
-
-      showToast({
-        type: 'info',
-        message: `Generating large PDF (${layout.labelIds.length} labels). Please be patient...`,
+      setConfirmDialog({
+        isOpen: true,
+        title: 'Großes PDF generieren?',
+        description: `Sie sind dabei ein PDF mit ${layout.labelIds.length} Labels zu generieren. Dies kann einige Minuten dauern. Geschätzte Zeit: ${Math.ceil(layout.labelIds.length / 20)} Minuten. Fortfahren?`,
+        onConfirm: () => {
+             showToast({
+                type: 'info',
+                message: `Generiere großes PDF (${layout.labelIds.length} Labels). Bitte warten...`,
+              });
+             downloadPdfMutation.mutate();
+        },
       });
+      return;
     }
 
     downloadPdfMutation.mutate();
@@ -198,24 +208,26 @@ export default function PrintSetup() {
     if (layout.labelIds.length === 0) {
       showToast({
         type: 'warning',
-        message: 'No labels selected for printing',
+        message: 'Keine Labels zum Drucken ausgewählt',
       });
       return;
     }
 
     // ⚠️ Warning for large batches
     if (layout.labelIds.length > 100) {
-      const confirmed = window.confirm(
-        `⚠️ You are about to print ${layout.labelIds.length} labels.\n\n` +
-        `Generating the PDF may take several minutes.\n\n` +
-        `Estimated time: ${Math.ceil(layout.labelIds.length / 20)} minutes\n\n` +
-        `Continue?`
-      );
-
-      if (!confirmed) {
-        return;
-      }
+      setConfirmDialog({
+        isOpen: true,
+        title: 'Drucken starten?',
+        description: `Sie drucken ${layout.labelIds.length} Labels. Das Generieren kann einige Minuten dauern. Geschätzte Zeit: ${Math.ceil(layout.labelIds.length / 20)} Minuten. Fortfahren?`,
+        onConfirm: () => executePrint(),
+      });
+      return;
     }
+
+    executePrint();
+  };
+
+  const executePrint = async () => {
 
     try {
       const estimatedTime = layout.labelIds.length > 100
@@ -224,7 +236,7 @@ export default function PrintSetup() {
 
       showToast({
         type: 'info',
-        message: `Generating PDF for ${layout.labelIds.length} labels...${estimatedTime}`,
+        message: `Generiere PDF für ${layout.labelIds.length} Labels...${estimatedTime}`,
       });
 
       // Generate full PDF
@@ -264,7 +276,7 @@ export default function PrintSetup() {
             // Show success message
             showToast({
               type: 'success',
-              message: 'Print dialog opened. PDF ready for printing.',
+              message: 'Druck-Dialog geöffnet',
             });
           } catch (error) {
             console.error('Print failed:', error);
@@ -272,7 +284,7 @@ export default function PrintSetup() {
             window.open(url, '_blank');
             showToast({
               type: 'info',
-              message: 'PDF opened in new tab. Use Ctrl+P to print.',
+              message: 'PDF in neuem Tab geöffnet. Benutzen Sie Strg+P zum Drucken.',
             });
           }
 
@@ -327,7 +339,7 @@ export default function PrintSetup() {
     setPreviewUrl(undefined);
     showToast({
       type: 'info',
-      message: 'Configuration reset to defaults',
+      message: 'Einstellungen zurückgesetzt',
     });
   };
 
@@ -347,9 +359,9 @@ export default function PrintSetup() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Print Setup</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Druck-Einstellungen</h1>
           <p className="text-gray-600 mt-1">
-            Configure your print layout and generate PDFs
+            Druck-Layout konfigurieren und PDF generieren
           </p>
         </div>
 
@@ -359,7 +371,7 @@ export default function PrintSetup() {
             className="btn-secondary flex items-center gap-2"
           >
             <RotateCcw className="w-5 h-5" />
-            Reset to Defaults
+            Zurücksetzen
           </button>
         </div>
       </div>
@@ -368,14 +380,14 @@ export default function PrintSetup() {
       <div className="card bg-primary-50 border-2 border-primary-200">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-primary-900">Selected Labels</h3>
+            <h3 className="font-semibold text-primary-900">Ausgewählte Labels</h3>
             <p className="text-sm text-primary-700 mt-1">
               {layout.labelIds.length === 0 ? (
-                <>No labels selected. Go to Label Library to select labels.</>
+                <>Keine Labels ausgewählt. Gehen Sie zur Label-Bibliothek.</>
               ) : (
                 <>
-                  {layout.labelIds.length} label{layout.labelIds.length !== 1 ? 's' : ''}{' '}
-                  ready to print
+                  {layout.labelIds.length} Label{layout.labelIds.length !== 1 ? 's' : ''}{' '}
+                  bereit zum Drucken
                 </>
               )}
             </p>
@@ -439,7 +451,7 @@ export default function PrintSetup() {
 
       {/* Configuration Summary */}
       <div className="card bg-gray-50">
-        <h3 className="font-semibold text-gray-900 mb-3">Configuration Summary</h3>
+        <h3 className="font-semibold text-gray-900 mb-3">Zusammenfassung</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
             <span className="text-gray-600">Format:</span>
@@ -455,13 +467,13 @@ export default function PrintSetup() {
             </span>
           </div>
           <div>
-            <span className="text-gray-600">Labels/Page:</span>
+            <span className="text-gray-600">Labels/Seite:</span>
             <span className="ml-2 font-medium text-gray-900">
               {layout.gridLayout.columns * layout.gridLayout.rows}
             </span>
           </div>
           <div>
-            <span className="text-gray-600">Total Pages:</span>
+            <span className="text-gray-600">Seiten Gesamt:</span>
             <span className="ml-2 font-medium text-gray-900">
               {Math.ceil(
                 layout.labelIds.length / (layout.gridLayout.columns * layout.gridLayout.rows)
@@ -470,6 +482,13 @@ export default function PrintSetup() {
           </div>
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+      />
     </div>
   );
 }

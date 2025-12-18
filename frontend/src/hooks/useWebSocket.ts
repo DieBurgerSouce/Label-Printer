@@ -3,7 +3,7 @@
  * Connects to Socket.IO server and provides job updates
  */
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 const WS_URL = import.meta.env.VITE_WS_URL ||
@@ -143,7 +143,7 @@ export function useWebSocket(jobId?: string) {
               const totalSteps = data.job.progress?.totalSteps || 4;
               const overallProgress = calculateOverallProgress(currentStep, currentStepProgress, totalSteps);
 
-              console.log(`[Progress] Step: ${currentStep}, StepProgress: ${currentStepProgress}%, Overall: ${overallProgress}%`);
+              // console.log(`[Progress] Step: ${currentStep}, StepProgress: ${currentStepProgress}%, Overall: ${overallProgress}%`);
 
               setState(prev => ({
                 ...prev,
@@ -158,7 +158,7 @@ export function useWebSocket(jobId?: string) {
             }
           })
           .catch(err => {
-            console.error('[WebSocket] Failed to fetch job data:', err);
+            // console.error('[WebSocket] Failed to fetch job data:', err);
             setState(prev => ({ ...prev, error: err.message }));
           });
       }
@@ -173,7 +173,7 @@ export function useWebSocket(jobId?: string) {
     }, 2000);
 
     // Create socket connection
-    console.log('[WebSocket] Connecting to:', WS_URL);
+    // console.log('[WebSocket] Connecting to:', WS_URL);
     const socket = io(WS_URL, {
       reconnection: true,
       reconnectionDelay: 1000,
@@ -184,33 +184,33 @@ export function useWebSocket(jobId?: string) {
 
     // Connection events
     socket.on('connect', () => {
-      console.log('[WebSocket] Connected:', socket.id);
+      // console.log('[WebSocket] Connected:', socket.id);
       setState(prev => ({ ...prev, isConnected: true }));
 
       // Subscribe to job if jobId provided
       if (jobId) {
-        console.log('[WebSocket] Subscribing to job:', jobId);
+        // console.log('[WebSocket] Subscribing to job:', jobId);
         socket.emit('job:subscribe', jobId);
       }
     });
 
     socket.on('disconnect', () => {
-      console.log('[WebSocket] Disconnected');
+      // console.log('[WebSocket] Disconnected');
       setState(prev => ({ ...prev, isConnected: false }));
     });
 
     socket.on('connect_error', (error) => {
-      console.error('[WebSocket] Connection error:', error);
+      // console.error('[WebSocket] Connection error:', error);
       setState(prev => ({ ...prev, error: error.message, isConnected: false }));
     });
 
     // Job events
-    socket.on('job:created', (data: JobCreatedEvent) => {
-      console.log('[WebSocket] Job created:', data);
+    socket.on('job:created', (_data: JobCreatedEvent) => {
+      // console.log('[WebSocket] Job created:', data);
     });
 
     socket.on('job:updated', (data: JobUpdatedEvent) => {
-      console.log('[WebSocket] Job updated:', data);
+      // console.log('[WebSocket] Job updated:', data);
       setState(prev => ({
         ...prev,
         status: data.status,
@@ -220,7 +220,7 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:completed', (data: JobCompletedEvent) => {
-      console.log('[WebSocket] Job completed:', data);
+      // console.log('[WebSocket] Job completed:', data);
       setState(prev => ({
         ...prev,
         status: 'completed',
@@ -230,7 +230,7 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:failed', (data: JobFailedEvent) => {
-      console.log('[WebSocket] Job failed:', data);
+      // console.log('[WebSocket] Job failed:', data);
       setState(prev => ({
         ...prev,
         status: 'failed',
@@ -240,7 +240,7 @@ export function useWebSocket(jobId?: string) {
 
     // Screenshot events
     socket.on('screenshot:captured', (data: ScreenshotCapturedEvent) => {
-      console.log('[WebSocket] Screenshot captured:', data);
+      // console.log('[WebSocket] Screenshot captured:', data);
       setState(prev => ({
         ...prev,
         screenshots: [...prev.screenshots, data],
@@ -249,7 +249,7 @@ export function useWebSocket(jobId?: string) {
 
     // OCR events
     socket.on('ocr:completed', (data: OCRCompletedEvent) => {
-      console.log('[WebSocket] OCR completed:', data);
+      // console.log('[WebSocket] OCR completed:', data);
       setState(prev => ({
         ...prev,
         ocrResults: [...prev.ocrResults, data],
@@ -258,7 +258,7 @@ export function useWebSocket(jobId?: string) {
 
     // Label events
     socket.on('label:generated', (data: LabelGeneratedEvent) => {
-      console.log('[WebSocket] Label generated:', data);
+      // console.log('[WebSocket] Label generated:', data);
       setState(prev => ({
         ...prev,
         labels: [...prev.labels, data],
@@ -283,7 +283,7 @@ export function useWebSocket(jobId?: string) {
         socketRef.current.emit('job:unsubscribe', jobId);
       }
       // Subscribe to new job
-      console.log('[WebSocket] Subscribing to new job:', newJobId);
+      // console.log('[WebSocket] Subscribing to new job:', newJobId);
       socketRef.current.emit('job:subscribe', newJobId);
     }
   };
@@ -307,12 +307,12 @@ export function useWebSocketGlobal() {
     socketRef.current = socket;
 
     socket.on('connect', () => {
-      console.log('[WebSocket Global] Connected:', socket.id);
+      // console.log('[WebSocket Global] Connected:', socket.id);
       setIsConnected(true);
     });
 
     socket.on('disconnect', () => {
-      console.log('[WebSocket Global] Disconnected');
+      // console.log('[WebSocket Global] Disconnected');
       setIsConnected(false);
     });
 

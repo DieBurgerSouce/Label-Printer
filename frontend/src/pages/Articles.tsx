@@ -2,17 +2,18 @@
  * Articles Page
  * Display and manage crawled products before generating labels
  */
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Package, Download, Tag, Search, Filter, Edit, Trash2, CheckSquare, Square, QrCode, ExternalLink, RefreshCw, FileText } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CheckSquare, Download, Edit, ExternalLink, FileText, Filter, Package, QrCode, RefreshCw, Search, Square, Tag, Trash2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { articlesApi, labelApi, type Product, getImageUrl } from '../services/api';
-import { useUiStore } from '../store/uiStore';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ArticleEditModal from '../components/ArticleEditModal';
 import MatchPreviewModal from '../components/MatchPreviewModal';
+import ConfirmDialog from '../components/common/ConfirmDialog';
+import { articlesApi, getImageUrl, labelApi, type Product } from '../services/api';
+import { useUiStore } from '../store/uiStore';
+import type { LabelTemplate, MatchResult } from '../types/template.types';
 import { matchArticlesWithTemplates } from '../utils/templateMatcher';
-import type { MatchResult, LabelTemplate } from '../types/template.types';
 
 export default function Articles() {
   const navigate = useNavigate();
@@ -27,6 +28,18 @@ export default function Articles() {
   const [showQrCodes, setShowQrCodes] = useState(true);
   const [editingArticle, setEditingArticle] = useState<Product | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    confirmUnsafe?: boolean;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
 
   // Label Generation States
   const [availableTemplates, setAvailableTemplates] = useState<LabelTemplate[]>([]);
@@ -137,7 +150,7 @@ export default function Articles() {
   // Label generation mutation (manual template selection)
   const generateLabelsMutation = useMutation({
     mutationFn: async ({ articleIds, templateId }: { articleIds: string[]; templateId: string }) => {
-      // ✅ FIX: Process in batches to avoid overwhelming the server
+      // Process in batches to avoid overwhelming the server
       const BATCH_SIZE = 50; // Process 50 articles at a time
       const results: PromiseSettledResult<any>[] = [];
 
@@ -247,7 +260,7 @@ export default function Articles() {
     }
   };
 
-  // ✅ NEW: Select ALL articles from database (not just current page)
+  // Select ALL articles from database (not just current page)
   const selectAllArticlesFromDB = async () => {
     try {
       showToast({
@@ -358,18 +371,31 @@ export default function Articles() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Möchten Sie diesen Artikel wirklich löschen?')) {
-      deleteMutation.mutate(id);
-      selectedArticles.delete(id);
-      setSelectedArticles(new Set(selectedArticles));
-    }
+    setConfirmDialog({
+        isOpen: true,
+        title: 'Artikel löschen?',
+        description: 'Möchten Sie diesen Artikel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+        confirmUnsafe: true,
+        onConfirm: () => {
+             deleteMutation.mutate(id);
+             selectedArticles.delete(id);
+             setSelectedArticles(new Set(selectedArticles));
+        },
+    });
   };
 
   const handleBulkDelete = () => {
     if (selectedArticles.size === 0) return;
-    if (confirm(`Möchten Sie ${selectedArticles.size} Artikel wirklich löschen?`)) {
-      bulkDeleteMutation.mutate(Array.from(selectedArticles));
-    }
+
+    setConfirmDialog({
+        isOpen: true,
+        title: `${selectedArticles.size} Artikel löschen?`,
+        description: `Möchten Sie wirklich ${selectedArticles.size} Artikel löschen? Diese Aktion kann nicht rückgängig gemacht werden.`,
+        confirmUnsafe: true,
+        onConfirm: () => {
+            bulkDeleteMutation.mutate(Array.from(selectedArticles));
+        },
+    });
   };
 
   return (
@@ -976,6 +1002,15 @@ export default function Articles() {
           setEditingArticle(null);
         }}
         onSave={(updatedArticle) => updateMutation.mutate(updatedArticle)}
+      />
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmUnsafe={confirmDialog.confirmUnsafe}
       />
     </div>
   );

@@ -4,7 +4,7 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Trash2, FileText } from 'lucide-react';
+import { Edit, FileText, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { renderingTemplateApi } from '../services/api';
 import { useUiStore } from '../store/uiStore';

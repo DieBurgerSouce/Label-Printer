@@ -3,10 +3,28 @@
  * Manages product creation and updates from crawled data
  */
 import { prisma } from '../lib/prisma';
-import type { OcrResult, Screenshot } from '@prisma/client';
+import type { OcrResult, Screenshot, Prisma } from '@prisma/client';
+import logger from '../utils/logger';
+
+/**
+ * Extended OcrResult with additional fields from the database
+ * Note: tieredPricesText already exists in OcrResult Prisma model
+ */
+interface ExtendedOcrResult extends OcrResult {
+  priceType?: string;
+}
+
+/**
+ * Type for tiered price entries in JSON
+ */
+interface TieredPriceEntry {
+  quantity: number;
+  price: string | number;
+  [key: string]: string | number; // Index signature for Prisma JsonValue compatibility
+}
 
 export interface CreateProductFromOcrParams {
-  ocrResult: OcrResult;
+  ocrResult: ExtendedOcrResult;
   screenshot: Screenshot;
   crawlJobId?: string;
 }
@@ -23,9 +41,10 @@ export class ProductService {
     try {
       // Skip if OCR failed or no article number found
       if (ocrResult.status !== 'completed' || !ocrResult.articleNumber) {
-        console.log(
-          `Skipping product creation: OCR status=${ocrResult.status}, articleNumber=${ocrResult.articleNumber}`
-        );
+        logger.debug('Skipping product creation', {
+          ocrStatus: ocrResult.status,
+          articleNumber: ocrResult.articleNumber,
+        });
         return null;
       }
 
@@ -34,20 +53,24 @@ export class ProductService {
       const hasDescription = !!(ocrResult.fullText && ocrResult.fullText.length > 10);
 
       if (!hasProductName && !hasDescription) {
-        console.log(
-          `❌ SKIPPING ${ocrResult.articleNumber}: No product name AND no description - failed OCR extraction`
-        );
+        logger.warn('Skipping product: failed OCR extraction', {
+          articleNumber: ocrResult.articleNumber,
+          reason: 'No product name AND no description',
+        });
         return null;
       }
+
+      // Parse tiered prices from JSON field - cast to Prisma.InputJsonValue for database compatibility
+      const tieredPrices = (ocrResult.tieredPrices ?? []) as Prisma.InputJsonValue;
 
       const productData = {
         articleNumber: ocrResult.articleNumber,
         productName: ocrResult.productName || screenshot.productName || 'Unknown Product',
         description: ocrResult.fullText?.substring(0, 500), // First 500 chars
         price: ocrResult.price !== undefined ? ocrResult.price : 0,
-        priceType: (ocrResult as any).priceType || 'normal', // auf_anfrage, normal, tiered, unknown
-        tieredPrices: (ocrResult.tieredPrices as any) || [],
-        tieredPricesText: (ocrResult as any).tieredPricesText || null, // Raw text from OCR (e.g., "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR")
+        priceType: ocrResult.priceType || 'normal', // auf_anfrage, normal, tiered, unknown
+        tieredPrices,
+        tieredPricesText: ocrResult.tieredPricesText ?? null, // Raw text from OCR (e.g., "ab 7 Stück: 190,92 EUR\nab 24 Stück: 180,60 EUR")
         imageUrl: screenshot.imageUrl,
         thumbnailUrl: screenshot.thumbnailUrl,
         ean: ocrResult.ean,
@@ -90,17 +113,22 @@ export class ProductService {
             data: updateData,
           });
           if (isBroken) {
-            console.log(
-              `Force-updated broken product: ${updated.articleNumber} (had placeholder/incomplete data)`
-            );
+            logger.info('Force-updated broken product', {
+              articleNumber: updated.articleNumber,
+              reason: 'had placeholder/incomplete data',
+            });
           } else {
-            console.log(`Updated product: ${updated.articleNumber} (higher confidence)`);
+            logger.info('Updated product', {
+              articleNumber: updated.articleNumber,
+              reason: 'higher confidence',
+            });
           }
           return updated;
         } else {
-          console.log(
-            `Skipped update for ${existing.articleNumber} (lower confidence, data already complete)`
-          );
+          logger.debug('Skipped product update', {
+            articleNumber: existing.articleNumber,
+            reason: 'lower confidence, data already complete',
+          });
           return existing;
         }
       } else {
@@ -108,11 +136,11 @@ export class ProductService {
         const created = await prisma.product.create({
           data: productData,
         });
-        console.log(`Created new product: ${created.articleNumber}`);
+        logger.info('Created new product', { articleNumber: created.articleNumber });
         return created;
       }
     } catch (error) {
-      console.error('Error creating/updating product from OCR:', error);
+      logger.error('Error creating/updating product from OCR', { error });
       return null;
     }
   }
@@ -152,7 +180,7 @@ export class ProductService {
           results.skipped++;
         }
       } catch (error) {
-        console.error('Error processing OCR result:', error);
+        logger.error('Error processing OCR result', { error });
         results.errors++;
       }
     }
@@ -179,15 +207,18 @@ export class ProductService {
         },
       });
 
-      console.log(`Processing ${ocrResults.length} OCR results from crawl job ${crawlJobId}`);
+      logger.info('Processing OCR results from crawl job', {
+        crawlJobId,
+        count: ocrResults.length,
+      });
 
       const results = await this.batchCreateFromOcr(ocrResults, crawlJobId);
 
-      console.log(`Product processing complete:`, results);
+      logger.info('Product processing complete', { results });
 
       return results;
     } catch (error) {
-      console.error('Error processing OCR results from crawl job:', error);
+      logger.error('Error processing OCR results from crawl job', { crawlJobId, error });
       throw error;
     }
   }
@@ -216,23 +247,21 @@ export class ProductService {
             ocrResult?.extractedData?.articleNumber;
 
           // DEBUG: Log what we received
-          console.log(`🐛 DEBUG ocrResult:`, {
+          logger.debug('Processing OCR result', {
             success: ocrResult.success,
             status: ocrResult.status,
             hasExtractedData: !!ocrResult.extractedData,
             hasTopLevelArticleNumber: !!ocrResult.articleNumber,
             extractedDataArticleNumber: ocrResult.extractedData?.articleNumber,
             finalArticleNumber: articleNumber,
-            ocrResultKeys: Object.keys(ocrResult).slice(0, 10), // First 10 keys
           });
 
           // Skip ONLY if no article number found anywhere
           if (!articleNumber) {
-            console.log(`⚠️ Skipping product: No article number found in any location`, {
+            logger.warn('Skipping product: No article number found', {
               hasOcrResult: !!ocrResult,
               ocrResultType: typeof ocrResult,
               hasExtractedData: !!ocrResult?.extractedData,
-              sampleKeys: Object.keys(ocrResult || {}).slice(0, 5),
             });
             results.skipped++;
             continue;
@@ -247,10 +276,12 @@ export class ProductService {
           // If both productName AND description are empty, this is a failed extraction
           // DO NOT save placeholder products - skip them instead
           if (!extractedData.productName && !extractedData.description) {
-            console.log(
-              `❌ SKIPPING ${extractedData.articleNumber}: No product name AND no description - failed extraction`
-            );
-            return null; // Skip this product instead of saving garbage
+            logger.warn('Skipping product: failed extraction', {
+              articleNumber: extractedData.articleNumber,
+              reason: 'No product name AND no description',
+            });
+            results.skipped++;
+            continue; // Skip this product instead of saving garbage
           }
 
           // Add fallback for missing product name (only if we have a description)
@@ -267,7 +298,7 @@ export class ProductService {
                   ? JSON.parse(extractedData.tieredPrices)
                   : extractedData.tieredPrices;
             } catch (e) {
-              console.log('Failed to parse tiered prices:', e);
+              logger.warn('Failed to parse tiered prices', { error: e });
             }
           }
 
@@ -286,9 +317,10 @@ export class ProductService {
             const pathMatch = ocrResult.screenshotPath.match(/\/screenshots\/[^/]+\/([^/]+)\//);
             if (pathMatch && pathMatch[1]) {
               screenshotArticleNumber = pathMatch[1];
-              console.log(
-                `📁 Extracted screenshot folder: ${screenshotArticleNumber} from path: ${ocrResult.screenshotPath}`
-              );
+              logger.debug('Extracted screenshot folder', {
+                screenshotArticleNumber,
+                screenshotPath: ocrResult.screenshotPath,
+              });
             }
           }
 
@@ -345,28 +377,30 @@ export class ProductService {
               where: { id: existing.id },
               data: productData, // Use all new data including correct article number
             });
-            console.log(
-              `✅ Updated product: ${existing.articleNumber} → ${extractedData.articleNumber} (confidence: ${productData.ocrConfidence})`
-            );
+            logger.info('Updated product', {
+              oldArticleNumber: existing.articleNumber,
+              newArticleNumber: extractedData.articleNumber,
+              ocrConfidence: productData.ocrConfidence,
+            });
             results.updated++;
           } else {
             // Create new product
             const created = await prisma.product.create({
               data: productData,
             });
-            console.log(`✅ Created new product: ${created.articleNumber}`);
+            logger.info('Created new product', { articleNumber: created.articleNumber });
             results.created++;
           }
         } catch (error) {
-          console.error('Error processing OCR result:', error);
+          logger.error('Error processing OCR result', { error });
           results.errors++;
         }
       }
 
-      console.log(`Product processing complete:`, results);
+      logger.info('Product processing complete', { results });
       return results;
     } catch (error) {
-      console.error('Error processing OCR results from automation:', error);
+      logger.error('Error processing OCR results from automation', { error });
       throw error;
     }
   }

@@ -3,14 +3,14 @@
  * Manages print layout templates (separate from label templates)
  */
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Download, Plus, Star, Upload } from 'lucide-react';
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Download, Upload, Star } from 'lucide-react';
+import { type Template } from '../components/TemplateManager/TemplateCard';
+import TemplateEditor from '../components/TemplateManager/TemplateEditor';
+import TemplateGrid from '../components/TemplateManager/TemplateGrid';
 import { printApi } from '../services/api';
 import { useUiStore } from '../store/uiStore';
-import TemplateGrid from '../components/TemplateManager/TemplateGrid';
-import TemplateEditor from '../components/TemplateManager/TemplateEditor';
-import { type Template } from '../components/TemplateManager/TemplateCard';
 
 export default function PrintTemplates() {
   const { showToast } = useUiStore();

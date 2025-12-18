@@ -8,6 +8,12 @@ import { PrintLayout, PriceLabel } from '../types/label-types.js';
 // Note: LabelTemplateService, convertLabelTemplateToRenderingTemplate, and templateEngine
 // are available for future template-based rendering but not currently used in basic PDF generation
 
+/** JSON-serialized Buffer format from older storage versions */
+interface SerializedBufferData {
+  type: 'Buffer';
+  data: number[];
+}
+
 export class PrintService {
   // Paper formats in mm
   private static PAPER_FORMATS = {
@@ -225,7 +231,7 @@ export class PrintService {
         console.log(`✅ Label ${label.id}: Using Buffer imageData (${imageBuffer.length} bytes)`);
       } else if (label.imageData && typeof label.imageData === 'object') {
         // Handle JSON-serialized Buffer {"type": "Buffer", "data": [...]}
-        const bufferData = label.imageData as any;
+        const bufferData = label.imageData as unknown as SerializedBufferData;
         if (bufferData.type === 'Buffer' && Array.isArray(bufferData.data)) {
           imageBuffer = Buffer.from(bufferData.data);
           console.log(

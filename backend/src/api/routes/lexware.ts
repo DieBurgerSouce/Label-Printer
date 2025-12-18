@@ -252,14 +252,23 @@ router.get('/jobs/:id', async (req: Request, res: Response) => {
     }
 
     // Return job status without full result data
-    const response = {
+    const response: {
+      success: boolean;
+      data: {
+        id: string;
+        status: string;
+        startTime: Date;
+        endTime?: Date;
+        summary: Record<string, unknown> | null;
+      };
+    } = {
       success: true,
       data: {
         id: job.id,
         status: job.status,
         startTime: job.startTime,
         endTime: job.endTime,
-        summary: null as any,
+        summary: null,
       },
     };
 

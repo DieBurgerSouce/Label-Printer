@@ -30,9 +30,13 @@ export interface AutomationConfig {
   templateId: string;
   name?: string; // Optional job name
 
+  // Max products (shorthand for crawlerConfig.maxProducts)
+  maxProducts?: number;
+
   // Crawler settings
   crawlerConfig?: {
     maxProducts?: number;
+    fullShopScan?: boolean;
     followPagination?: boolean;
     screenshotQuality?: number;
   };
@@ -85,11 +89,29 @@ export interface ScreenshotResult {
 export interface OCRProcessResult {
   screenshotId: string;
   ocrResultId: string;
-  extractedData: any;
+  extractedData: {
+    articleNumber?: string;
+    productName?: string;
+    description?: string;
+    price?: string | number;
+    priceType?: string;
+    tieredPrices?: Array<{ quantity: number; price: string | number }>;
+    tieredPricesText?: string;
+  };
   confidence: number;
   success: boolean;
+  status?: 'completed' | 'failed' | 'pending' | 'processing';
   error?: string;
   productUrl?: string | null;
+  screenshotPath?: string;
+  // Top-level convenience fields (mirrored from extractedData)
+  articleNumber?: string;
+  productName?: string;
+  price?: string | number;
+  priceType?: string;
+  tieredPrices?: Array<{ quantity: number; price: string | number }>;
+  tieredPricesText?: string;
+  fullText?: string;
 }
 
 export interface MatchProcessResult {

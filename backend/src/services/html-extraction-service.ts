@@ -393,7 +393,8 @@ export class HtmlExtractionService {
           for (const selector of productNameSelectors) {
             const element = document.querySelector(selector);
             if (element) {
-              const text = (element as any).innerText || element.textContent;
+              // Cast to HTMLElement to access innerText property
+              const text = (element as HTMLElement).innerText || element.textContent;
               if (text) {
                 data.productName = cleanText(text);
                 data.confidence.productName = 1.0;
@@ -420,7 +421,8 @@ export class HtmlExtractionService {
             if (element) {
               // FIX: Use innerText to preserve <br> tags as newlines!
               // This ensures "Gusseisen<br>2" becomes "Gusseisen 2" (not "Gusseisen2")
-              let descText = (element as any).innerText || element.textContent || '';
+              // Cast to HTMLElement to access innerText property
+              let descText = (element as HTMLElement).innerText || element.textContent || '';
               descText = cleanText(descText);
               descText = cleanDescription(descText, data.productName || ''); // Remove "Produktinformationen" prefix
 
@@ -449,7 +451,8 @@ export class HtmlExtractionService {
           for (const selector of articleNumberSelectors) {
             const element = document.querySelector(selector);
             if (element) {
-              const text = (element as any).innerText || element.textContent;
+              // Cast to HTMLElement to access innerText property
+              const text = (element as HTMLElement).innerText || element.textContent;
               if (text) {
                 const articleText = cleanText(text);
                 // Extract just the number (remove "Produktnummer:" prefix)

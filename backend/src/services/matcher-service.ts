@@ -265,7 +265,7 @@ class MatcherService {
 
     // Check if prices match (if available)
     if (match.ocrData.price && match.excelData.price) {
-      const ocrPrice = this.extractNumericPrice(match.ocrData.price);
+      const ocrPrice = this.extractNumericPrice(String(match.ocrData.price));
       const excelPrice = this.extractNumericPrice(String(match.excelData.price));
 
       if (ocrPrice && excelPrice && Math.abs(ocrPrice - excelPrice) > 0.1) {

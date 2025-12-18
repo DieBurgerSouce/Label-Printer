@@ -14,6 +14,32 @@ import { templateEngine } from './template-engine';
 import { ProductService } from './product-service';
 import { AutomationJob, AutomationConfig } from '../types/automation-types';
 
+/** Internal result type for OCR processing */
+interface InternalOcrResult {
+  id: string;
+  screenshotId?: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  success?: boolean;
+  productUrl?: string;
+  confidence: {
+    overall: number;
+    articleNumber?: number;
+    price?: number;
+    productName?: number;
+    description?: number;
+  };
+  extractedData: {
+    articleNumber?: string;
+    productName?: string;
+    description?: string;
+    price?: string | number;
+    priceType?: string;
+    tieredPrices?: Array<{ quantity: number; price: string | number }>;
+    tieredPricesText?: string;
+  };
+  screenshot?: unknown;
+}
+
 // Import from extracted modules
 import {
   emitJobCreated,
@@ -148,7 +174,7 @@ class AutomationService {
 
     const crawlConfig = {
       maxProducts: job.config.crawlerConfig?.maxProducts || 2000,
-      fullShopScan: (job.config.crawlerConfig as any)?.fullShopScan ?? true,
+      fullShopScan: job.config.crawlerConfig?.fullShopScan ?? true,
       followPagination: job.config.crawlerConfig?.followPagination ?? true,
       screenshotQuality: job.config.crawlerConfig?.screenshotQuality || 90,
     };
@@ -252,7 +278,7 @@ class AutomationService {
     console.log(`  ✅ Total unique products to process: ${uniqueScreenshots.length}`);
 
     // Check if we have enough unique screenshots
-    const targetProducts = (job.config as any).maxProducts || 50;
+    const targetProducts = job.config.maxProducts || job.config.crawlerConfig?.maxProducts || 50;
     if (uniqueScreenshots.length < targetProducts) {
       console.log(
         `  ⚠️ WARNING: Only ${uniqueScreenshots.length} unique screenshots found, but ${targetProducts} were requested!`
@@ -288,7 +314,7 @@ class AutomationService {
             return;
           }
 
-          let result;
+          let result: InternalOcrResult | undefined;
 
           // Extract folder name from path (works on both Windows and Unix)
           // Windows: C:\path\jobId\8803\product-image.png OR C:\path\jobId\product-1729123456\product-image.png
@@ -342,22 +368,22 @@ class AutomationService {
             result = {
               id: uuidv4(),
               screenshotId: screenshot.id,
-              status: robustResult.success ? 'completed' : 'failed', // ← FIX: Add status field!
+              status: robustResult.success ? 'completed' : 'failed',
               success: robustResult.success,
-              productUrl: screenshot.productUrl || screenshot.url || '', // ← FIX: Use REAL crawled URL!
+              productUrl: screenshot.productUrl || screenshot.url || '',
               confidence: {
-                overall: overallConfidence, // ← FIX: Calculate average of all field confidences!
+                overall: overallConfidence,
               },
               extractedData: {
-                articleNumber: robustResult.data.articleNumber || articleNumber, // ← FIX: Use data.articleNumber!
+                articleNumber: robustResult.data.articleNumber || articleNumber,
                 productName: robustResult.data.productName || '',
                 description: robustResult.data.description || '',
                 price: robustResult.data.price || 0,
                 tieredPrices: robustResult.data.tieredPrices || [],
                 tieredPricesText: robustResult.data.tieredPricesText || '',
               },
-              screenshot: screenshot as any,
-            } as any;
+              screenshot,
+            };
           } else if (
             fileName === 'title.png' ||
             fileName === 'article-number.png' ||
@@ -372,7 +398,19 @@ class AutomationService {
             // Fallback to old OCR method (no HTML fusion available)
             console.log(`  📄 Using standard OCR for ${screenshot.imagePath}`);
             const { ocrService } = await import('./ocr-service');
-            result = await ocrService.processScreenshot(screenshot.imagePath, ocrConfig, job.id);
+            const ocrResult = await ocrService.processScreenshot(
+              screenshot.imagePath,
+              ocrConfig,
+              job.id
+            );
+            // Convert OCRResult to InternalOcrResult format
+            result = {
+              id: ocrResult.id,
+              screenshotId: ocrResult.screenshotId,
+              status: ocrResult.status,
+              confidence: ocrResult.confidence,
+              extractedData: ocrResult.extractedData,
+            };
           }
 
           // SAFETY CHECK: Ensure result exists before pushing
@@ -393,24 +431,24 @@ class AutomationService {
           });
 
           job.results.ocrResults.push({
-            screenshotId: result.screenshotId,
+            screenshotId: result.screenshotId || screenshot.id,
             ocrResultId: result.id,
             extractedData: result.extractedData,
-            // FIX: Map extractedData fields to top-level for product-service compatibility
+            // Map extractedData fields to top-level for product-service compatibility
             articleNumber: result.extractedData?.articleNumber,
             productName: result.extractedData?.productName,
             price: result.extractedData?.price,
-            priceType: result.extractedData?.priceType, // auf_anfrage, normal, tiered, unknown
+            priceType: result.extractedData?.priceType,
             tieredPrices: result.extractedData?.tieredPrices,
             tieredPricesText: result.extractedData?.tieredPricesText,
-            fullText: result.extractedData?.description, // Map description to fullText
+            fullText: result.extractedData?.description,
             confidence: result.confidence?.overall || 0.5,
             success: result.status === 'completed',
-            status: result.status, // Add status field
+            status: result.status,
             error: result.status === 'failed' ? 'OCR processing failed' : undefined,
-            productUrl: screenshot.productUrl || screenshot.url || null, // Add product URL
-            screenshotPath: screenshot.imagePath, // CRITICAL: Add screenshotPath for product-service to extract folder name
-          } as any);
+            productUrl: screenshot.productUrl || screenshot.url || null,
+            screenshotPath: screenshot.imagePath,
+          });
 
           if (result.status === 'completed') {
             job.results.summary.successfulOCR++;

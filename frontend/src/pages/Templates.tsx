@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Printer, Trash2 } from 'lucide-react';
+import { Edit, Plus, Printer, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUiStore } from '../store/uiStore';
 
@@ -29,7 +29,7 @@ export default function Templates() {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to delete template');
+          throw new Error('Fehler beim Löschen des Templates');
         }
 
         // Invalidate query to reload templates

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { FileText, Check } from 'lucide-react';
+import { Check, FileText } from 'lucide-react';
 import { printApi } from '../../services/api';
-import { usePrintStore } from '../../store/printStore';
 import type { PrintLayout } from '../../store/printStore';
+import { usePrintStore } from '../../store/printStore';
 
 interface PrintTemplate {
   id: string;
@@ -25,7 +25,7 @@ export default function PrintTemplateSelector() {
   const templates: PrintTemplate[] = response?.data || [];
 
   const handleSelectTemplate = (template: PrintTemplate) => {
-    console.log('📋 Applying print template:', template.name);
+    // console.log('📋 Applying print template:', template.name);
     setLayout({
       paperFormat: template.paperFormat,
       gridLayout: template.gridLayout,
@@ -45,8 +45,8 @@ export default function PrintTemplateSelector() {
   if (isLoading) {
     return (
       <div className="card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Print Templates</h3>
-        <div className="text-center py-8 text-gray-500">Loading templates...</div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Druckvorlagen</h3>
+        <div className="text-center py-8 text-gray-500">Lade Vorlagen...</div>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function PrintTemplateSelector() {
     <div className="card">
       <div className="flex items-center gap-2 mb-4">
         <FileText className="w-5 h-5 text-primary-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Print Templates</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Druckvorlagen</h3>
       </div>
 
       <p className="text-sm text-gray-600 mb-4">

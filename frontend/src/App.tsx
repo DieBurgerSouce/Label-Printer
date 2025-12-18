@@ -35,7 +35,7 @@ const queryClient = new QueryClient({
 queryClient.clear();
 
 // Force cache bust - build timestamp
-console.log('App version: 2.0.2 - Built at:', new Date().toISOString());
+// console.log('App version: 2.0.2 - Built at:', new Date().toISOString());
 
 function App() {
   return (

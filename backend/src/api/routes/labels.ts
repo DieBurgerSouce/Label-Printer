@@ -45,11 +45,23 @@ router.post('/', async (req: Request, res: Response) => {
  */
 router.get('/', async (req: Request, res: Response) => {
   try {
+    // Validate source parameter
+    const sourceParam = req.query.source as string | undefined;
+    const validSources: Array<'screenshot' | 'manual' | 'import'> = [
+      'screenshot',
+      'manual',
+      'import',
+    ];
+    const source =
+      sourceParam && validSources.includes(sourceParam as 'screenshot' | 'manual' | 'import')
+        ? (sourceParam as 'screenshot' | 'manual' | 'import')
+        : undefined;
+
     const filters: FilterParams = {
       search: req.query.search as string | undefined,
       category: req.query.category as string | undefined,
       tags: req.query.tags ? (req.query.tags as string).split(',') : undefined,
-      source: req.query.source as any,
+      source,
     };
 
     const pagination: PaginationParams = {

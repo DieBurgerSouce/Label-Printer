@@ -127,7 +127,7 @@ class OCRService {
                 extractedText = cloudData.productName;
                 confidence = 95;
               } else if (mapping.field === 'price' && cloudData.price) {
-                extractedText = cloudData.price;
+                extractedText = String(cloudData.price);
                 confidence = 95;
               } else if (mapping.field === 'tieredPrices' && cloudData.tieredPrices) {
                 extractedText = cloudData.tieredPrices
@@ -465,7 +465,7 @@ class OCRService {
     }
 
     if (extractedData.price) {
-      scores.price = this.calculateFieldConfidence(extractedData.price, FIELD_PATTERNS.price);
+      scores.price = this.calculateFieldConfidence(String(extractedData.price), FIELD_PATTERNS.price);
     }
 
     // Product name confidence (based on length and capitalization)

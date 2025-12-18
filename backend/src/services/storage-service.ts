@@ -7,6 +7,12 @@ import fs from 'fs/promises';
 import path from 'path';
 import { PriceLabel, LabelMetadata, FilterParams, PaginationParams } from '../types/label-types.js';
 
+/** JSON-serialized Buffer format from older storage versions */
+interface SerializedBufferData {
+  type: 'Buffer';
+  data: number[];
+}
+
 export class StorageService {
   private static labels: Map<string, PriceLabel> = new Map();
   private static dataDir = path.join(process.cwd(), 'data', 'labels');
@@ -88,7 +94,7 @@ export class StorageService {
         // No image file exists
         // ⚠️ COMPATIBILITY: Check if imageData was stored as JSON Object (old format)
         if (label.imageData && !Buffer.isBuffer(label.imageData)) {
-          const bufferData = label.imageData as any;
+          const bufferData = label.imageData as unknown as SerializedBufferData;
           if (bufferData.type === 'Buffer' && Array.isArray(bufferData.data)) {
             // Convert JSON-serialized Buffer back to real Buffer
             label.imageData = Buffer.from(bufferData.data);
@@ -168,15 +174,16 @@ export class StorageService {
     if (pagination) {
       const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc' } = pagination;
 
-      // Sort
+      // Sort - use type assertion for dynamic property access
       labels.sort((a, b) => {
-        const aVal = (a as any)[sortBy];
-        const bVal = (b as any)[sortBy];
+        const sortKey = sortBy as keyof PriceLabel;
+        const aVal = a[sortKey];
+        const bVal = b[sortKey];
 
         if (sortOrder === 'asc') {
-          return aVal > bVal ? 1 : -1;
+          return aVal !== undefined && bVal !== undefined && aVal > bVal ? 1 : -1;
         } else {
-          return aVal < bVal ? 1 : -1;
+          return aVal !== undefined && bVal !== undefined && aVal < bVal ? 1 : -1;
         }
       });
 

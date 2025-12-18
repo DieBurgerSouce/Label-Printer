@@ -1,27 +1,27 @@
-import { NavLink } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Tags,
-  Package,
-  FileSpreadsheet,
-  Printer,
-  Layout as LayoutIcon,
-  Settings,
-  X,
-  Eye,
+    Eye,
+    FileSpreadsheet,
+    LayoutDashboard,
+    Layout as LayoutIcon,
+    Package,
+    Printer,
+    Settings,
+    Tags,
+    X,
 } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { useUiStore } from '../../store/uiStore';
 
 const navigation = [
   { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { name: 'Labels', to: '/labels', icon: Tags },
-  { name: 'Articles', to: '/articles', icon: Package },
-  { name: 'Excel Import (Dynamisch)', to: '/excel-import', icon: FileSpreadsheet },
-  { name: 'Print Setup', to: '/print-setup', icon: Printer },
-  { name: 'Live Preview', to: '/preview', icon: Eye },
+  { name: 'Label Bibliothek', to: '/labels', icon: Tags },
+  { name: 'Artikel Verwaltung', to: '/articles', icon: Package },
+  { name: 'Excel Import', to: '/excel-import', icon: FileSpreadsheet },
+  { name: 'Druck Setup', to: '/print-setup', icon: Printer },
+  { name: 'Live Vorschau', to: '/preview', icon: Eye },
   { name: 'Label Templates', to: '/templates', icon: LayoutIcon },
   { name: 'Druck Templates', to: '/print-templates', icon: Printer },
-  { name: 'Settings', to: '/settings', icon: Settings },
+  { name: 'Einstellungen', to: '/settings', icon: Settings },
 ];
 
 export default function Sidebar() {

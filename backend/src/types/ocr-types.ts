@@ -19,18 +19,20 @@ export interface OCRResult {
 
 export interface ExtractedData {
   articleNumber?: string;
-  price?: string;
+  price?: string | number;
+  priceType?: string;
   productName?: string;
   description?: string;
   tieredPrices?: TieredPrice[];
+  tieredPricesText?: string;
   ean?: string;
   specifications?: Record<string, string>;
-  custom?: Record<string, any>;
+  custom?: Record<string, unknown>;
 }
 
 export interface TieredPrice {
   quantity: number;
-  price: string;
+  price: string | number;
   unit?: string;
 }
 

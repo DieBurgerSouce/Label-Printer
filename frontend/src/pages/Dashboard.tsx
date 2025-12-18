@@ -47,28 +47,21 @@ export default function Dashboard() {
 
   const stats = [
     {
-      title: 'Total Labels',
-      value: (labelStats?.data as any)?.totalLabels || 0,
-      icon: Tags,
-      iconClassName: "text-blue-500 bg-blue-50",
-      link: '/labels',
-    },
-    {
-      title: 'Products',
+      title: 'Produkte',
       value: (excelStats?.data as any)?.totalProducts || 0,
       icon: FileSpreadsheet,
       iconClassName: "text-green-500 bg-green-50",
       link: '/excel',
     },
     {
-      title: 'Print Jobs',
-      value: 0, // TODO: Implement print job tracking
-      icon: Printer,
-      iconClassName: "text-purple-500 bg-purple-50",
-      link: '/print',
+      title: 'Gespeicherte Labels',
+      value: (labelStats?.data as any)?.totalLabels || 0,
+      icon: Tags,
+      iconClassName: "text-blue-500 bg-blue-50",
+      link: '/labels',
     },
     {
-      title: 'This Month',
+      title: 'Dieser Monat',
       value: (labelStats?.data as any)?.thisMonth || 0,
       icon: TrendingUp,
       iconClassName: "text-orange-500 bg-orange-50",
@@ -80,7 +73,7 @@ export default function Dashboard() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Welcome to your label management system</p>
+        <p className="text-gray-600 mt-1">Willkommen im Label Management System</p>
       </div>
 
       {/* Stats Grid */}
@@ -93,8 +86,8 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Manage your store effectively</CardDescription>
+          <CardTitle>Schnellzugriff</CardTitle>
+          <CardDescription>Verwalten Sie Ihren Shop effizient</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -122,8 +115,8 @@ export default function Dashboard() {
               <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-primary hover:bg-primary/5">
                 <Tags className="w-8 h-8 text-primary mb-2" />
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold text-lg">Create Label</span>
-                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Extract from screenshot or create manually</span>
+                  <span className="font-semibold text-lg">Neues Label</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Manuell erstellen oder aus Screenshot</span>
                 </div>
               </Button>
             </Link>
@@ -132,8 +125,8 @@ export default function Dashboard() {
               <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-green-500 hover:bg-green-50">
                 <FileSpreadsheet className="w-8 h-8 text-green-600 mb-2" />
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold text-lg">Import Excel</span>
-                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Upload product descriptions from Excel</span>
+                  <span className="font-semibold text-lg">Excel Import</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Produktdaten aus Excel hochladen</span>
                 </div>
               </Button>
             </Link>
@@ -142,8 +135,8 @@ export default function Dashboard() {
               <Button variant="outline" className="h-auto w-full flex-col p-6 items-start gap-2 hover:border-purple-500 hover:bg-purple-50">
                 <Printer className="w-8 h-8 text-purple-600 mb-2" />
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold text-lg">Print Setup</span>
-                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Configure and export print layouts</span>
+                  <span className="font-semibold text-lg">Druck-Setup</span>
+                  <span className="text-xs text-muted-foreground whitespace-normal text-left">Druck-Layout konfigurieren und PDF exportieren</span>
                 </div>
               </Button>
             </Link>
@@ -154,14 +147,14 @@ export default function Dashboard() {
       {/* Recent Activity */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Letzte Aktivitäten</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {(loadingLabels || loadingExcel) ? (
-              <p className="text-muted-foreground">Loading...</p>
+              <p className="text-muted-foreground">Laden...</p>
             ) : (
-              <p className="text-muted-foreground">No recent activity</p>
+              <p className="text-muted-foreground">Keine letzten Aktivitäten</p>
             )}
           </div>
         </CardContent>

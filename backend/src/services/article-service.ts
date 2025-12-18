@@ -4,6 +4,20 @@
  */
 
 import { prisma } from '../lib/prisma.js';
+import type { JsonValue } from '@prisma/client/runtime/library';
+import logger from '../utils/logger.js';
+
+/** Tiered price entry structure */
+interface TieredPriceEntry {
+  quantity: number;
+  price: number | string;
+}
+
+/** Helper to safely parse tiered prices from Prisma JsonValue */
+function parseTieredPrices(json: JsonValue | null): TieredPriceEntry[] | undefined {
+  if (!json || !Array.isArray(json)) return undefined;
+  return json as unknown as TieredPriceEntry[];
+}
 
 export interface Article {
   id: string;
@@ -14,7 +28,7 @@ export interface Article {
   currency?: string;
   imageUrl?: string;
   category?: string;
-  tieredPrices?: Array<{ quantity: number; price: number | string }>;
+  tieredPrices?: TieredPriceEntry[];
   tieredPricesText?: string;
   sourceUrl?: string;
 }
@@ -30,11 +44,11 @@ export class ArticleService {
       });
 
       if (!product) {
-        console.log(`Article not found with id: ${id}`);
+        logger.debug('Article not found', { id });
         return null;
       }
 
-      console.log(`✅ Found article ${product.articleNumber} from DATABASE`);
+      logger.debug('Found article from database', { articleNumber: product.articleNumber });
 
       // Convert Prisma Product to Article interface
       return {
@@ -46,12 +60,12 @@ export class ArticleService {
         currency: product.currency || 'EUR',
         imageUrl: product.imageUrl || undefined,
         category: product.category || undefined,
-        tieredPrices: (product.tieredPrices as any) || undefined,
+        tieredPrices: parseTieredPrices(product.tieredPrices),
         tieredPricesText: product.tieredPricesText || undefined,
         sourceUrl: product.sourceUrl || undefined,
       };
     } catch (error) {
-      console.error(`Error fetching article ${id} from DATABASE:`, error);
+      logger.error('Error fetching article from database', { id, error });
       return null;
     }
   }
@@ -73,12 +87,12 @@ export class ArticleService {
         currency: product.currency || 'EUR',
         imageUrl: product.imageUrl || undefined,
         category: product.category || undefined,
-        tieredPrices: (product.tieredPrices as any) || undefined,
+        tieredPrices: parseTieredPrices(product.tieredPrices),
         tieredPricesText: product.tieredPricesText || undefined,
         sourceUrl: product.sourceUrl || undefined,
       }));
     } catch (error) {
-      console.error('Error reading articles from DATABASE:', error);
+      logger.error('Error reading articles from database', { error });
       return [];
     }
   }

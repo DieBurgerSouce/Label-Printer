@@ -3,10 +3,11 @@
  * Start automation jobs by entering a shop URL
  */
 
+import axios from 'axios';
+import { Package, Play, Settings, ShoppingCart, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Play, Settings, Package, Zap } from 'lucide-react';
-import axios from 'axios';
+import { useUiStore } from '../store/uiStore';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -21,6 +22,7 @@ interface AutomationConfig {
 
 export default function ShopAutomation() {
   const navigate = useNavigate();
+  const { showToast } = useUiStore();
   const [config, setConfig] = useState<AutomationConfig>({
     shopUrl: '',
     name: '',
@@ -44,7 +46,7 @@ export default function ShopAutomation() {
         normalizedUrl = `https://${normalizedUrl}`;
       }
 
-      console.log('🚀 Starting automation for:', normalizedUrl);
+      // console.log('🚀 Starting automation for:', normalizedUrl);
 
       const response = await axios.post(`${API_URL}/api/automation/start-simple`, {
         shopUrl: normalizedUrl,
@@ -56,13 +58,15 @@ export default function ShopAutomation() {
       });
 
       const jobId = response.data.jobId;
-      console.log('✅ Automation job started:', jobId);
+      // console.log('✅ Automation job started:', jobId);
+      showToast({ type: 'success', message: 'Automation-Job erfolgreich gestartet!' });
 
       // Redirect to JobMonitor
       navigate(`/jobs/${jobId}`);
     } catch (err: any) {
       console.error('❌ Failed to start automation:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to start automation');
+      showToast({ type: 'error', message: err.response?.data?.error || err.message || 'Fehler beim Starten der Automation' });
+      setError(err.response?.data?.error || err.message || 'Fehler beim Starten der Automation');
     } finally {
       setLoading(false);
     }

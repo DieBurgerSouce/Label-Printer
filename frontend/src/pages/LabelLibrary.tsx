@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Grid3x3, List, Plus, Trash2, CheckSquare } from 'lucide-react';
-import { useLabelStore } from '../store/labelStore';
-import { usePrintStore } from '../store/printStore';
-import { useUiStore } from '../store/uiStore';
-import { labelApi, type Product } from '../services/api';
+import { CheckSquare, Grid3x3, List, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import LabelGenerationModal from '../components/LabelGenerationModal';
+import LabelFilter from '../components/LabelManager/LabelFilter';
 import LabelGrid from '../components/LabelManager/LabelGrid';
 import LabelList from '../components/LabelManager/LabelList';
-import LabelFilter from '../components/LabelManager/LabelFilter';
-import LabelGenerationModal from '../components/LabelGenerationModal';
+import ConfirmDialog from '../components/common/ConfirmDialog';
+import { labelApi, type Product } from '../services/api';
+import { useLabelStore, type PriceLabel } from '../store/labelStore';
+import { usePrintStore } from '../store/printStore';
+import { useUiStore } from '../store/uiStore';
+
+
 
 export default function LabelLibrary() {
   const navigate = useNavigate();
@@ -34,6 +37,17 @@ export default function LabelLibrary() {
   // Label generation modal state
   const [showGenerationModal, setShowGenerationModal] = useState(false);
   const [articlesToGenerate, setArticlesToGenerate] = useState<Product[]>([]);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
 
   // Check if we have articles from the Articles page
   useEffect(() => {
@@ -61,7 +75,18 @@ export default function LabelLibrary() {
 
   // Ensure labels is always an array - API returns { data: { labels: [], total, page, limit, pages } }
   const labelsResponse: any = labelsData?.data || {};
-  const labels = Array.isArray(labelsResponse.labels) ? labelsResponse.labels : [];
+  const rawLabels = Array.isArray(labelsResponse.labels) ? labelsResponse.labels : [];
+
+  // Map API response to PriceLabel interface (handling dates)
+  const labels: PriceLabel[] = rawLabels.map((l: any) => ({
+    ...l,
+    createdAt: new Date(l.createdAt),
+    updatedAt: l.updatedAt ? new Date(l.updatedAt) : undefined,
+    // Ensure priceInfo exists with defaults if missing
+    priceInfo: l.priceInfo || { price: 0, currency: 'EUR' },
+    templateType: l.templateType || 'standard',
+  }));
+
   const pagination = {
     total: labelsResponse.total || 0,
     page: labelsResponse.page || 1,
@@ -72,43 +97,48 @@ export default function LabelLibrary() {
 
   // Extract unique categories and tags from labels
   const categories = Array.from(
-    new Set(labels.map((l: any) => l.category).filter(Boolean))
+    new Set(labels.map((l) => l.category).filter(Boolean))
   );
   const tags = Array.from(
-    new Set(labels.flatMap((l: any) => l.tags || []))
+    new Set(labels.flatMap((l) => l.tags || []))
   );
 
   const handleSelectLabel = (id: string) => {
     selectLabel(id);
   };
 
-  const handleEditLabel = (label: any) => {
+  const handleEditLabel = (label: PriceLabel) => {
     // TODO: Open edit modal
     showToast({
       type: 'info',
-      message: `Edit functionality coming soon for ${label.productName}`,
+      message: `Bearbeiten-Funktion kommt bald für ${label.productName}`,
     });
   };
 
   const handleDeleteLabel = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this label?')) return;
-
-    try {
-      await labelApi.delete(id);
-      showToast({
-        type: 'success',
-        message: 'Label deleted successfully',
-      });
-      refetch();
-    } catch (error) {
-      showToast({
-        type: 'error',
-        message: 'Failed to delete label',
-      });
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Label löschen?',
+      description: 'Möchten Sie dieses Label wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+      onConfirm: async () => {
+        try {
+          await labelApi.delete(id);
+          showToast({
+            type: 'success',
+            message: 'Label erfolgreich gelöscht',
+          });
+          refetch();
+        } catch (error) {
+          showToast({
+            type: 'error',
+            message: 'Fehler beim Löschen des Labels',
+          });
+        }
+      },
+    });
   };
 
-  const handleViewLabel = (label: any) => {
+  const handleViewLabel = (label: PriceLabel) => {
     // TODO: Open view modal
     showToast({
       type: 'info',
@@ -116,39 +146,45 @@ export default function LabelLibrary() {
     });
   };
 
-  const handlePrintLabel = (label: any) => {
+  const handlePrintLabel = (label: PriceLabel) => {
     addLabelToLayout(label.id);
     showToast({
       type: 'success',
-      message: `${label.productName} added to print layout. Go to Print Setup to configure.`,
+      message: `${label.productName} zum Drucken hinzugefügt.`,
     });
   };
 
   const handleBatchDelete = async () => {
     if (selectedLabels.length === 0) return;
-    if (!confirm(`Delete ${selectedLabels.length} selected labels?`)) return;
 
-    try {
-      await labelApi.batch(selectedLabels, 'delete');
-      showToast({
-        type: 'success',
-        message: `${selectedLabels.length} labels deleted`,
-      });
-      clearSelection();
-      refetch();
-    } catch (error) {
-      showToast({
-        type: 'error',
-        message: 'Failed to delete labels',
-      });
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: `${selectedLabels.length} Labels löschen?`,
+      description: `Möchten Sie wirklich ${selectedLabels.length} Labels löschen? Diese Aktion kann nicht rückgängig gemacht werden.`,
+      onConfirm: async () => {
+        try {
+          await labelApi.batch(selectedLabels, 'delete');
+          showToast({
+            type: 'success',
+            message: `${selectedLabels.length} Labels gelöscht`,
+          });
+          clearSelection();
+          refetch();
+        } catch (error) {
+          showToast({
+            type: 'error',
+            message: 'Fehler beim Löschen der Labels',
+          });
+        }
+      },
+    });
   };
 
   const handleAddToPrint = () => {
     selectedLabels.forEach((id) => addLabelToLayout(id));
     showToast({
       type: 'success',
-      message: `${selectedLabels.length} labels added to print layout. Go to Print Setup to configure.`,
+      message: `${selectedLabels.length} Labels zum Drucken hinzugefügt.`,
     });
     clearSelection();
     // Navigate to print setup after a short delay
@@ -165,9 +201,9 @@ export default function LabelLibrary() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Label Library</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Label Bibliothek</h1>
           <p className="text-gray-600 mt-1">
-            {pagination?.total || 0} labels total
+            {pagination?.total || 0} Labels gesamt
           </p>
         </div>
 
@@ -177,7 +213,7 @@ export default function LabelLibrary() {
             className="btn-primary flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            New Label
+            Neues Label
           </button>
         </div>
       </div>
@@ -208,7 +244,7 @@ export default function LabelLibrary() {
               }`}
             >
               <Grid3x3 className="w-4 h-4" />
-              Grid
+              Raster
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -219,7 +255,7 @@ export default function LabelLibrary() {
               }`}
             >
               <List className="w-4 h-4" />
-              List
+              Liste
             </button>
           </div>
 
@@ -228,27 +264,27 @@ export default function LabelLibrary() {
             <div className="flex items-center gap-2 px-4 py-2 bg-primary-50 border border-primary-200 rounded-lg">
               <CheckSquare className="w-5 h-5 text-primary-700" />
               <span className="text-sm font-medium text-primary-900">
-                {selectedLabels.length} selected
+                {selectedLabels.length} ausgewählt
               </span>
               <div className="h-4 w-px bg-primary-300 mx-2" />
               <button
                 onClick={handleAddToPrint}
                 className="text-sm text-primary-700 hover:text-primary-900 font-medium"
               >
-                Add to Print
+                Drucken
               </button>
               <button
                 onClick={handleBatchDelete}
                 className="text-sm text-red-700 hover:text-red-900 font-medium flex items-center gap-1"
               >
                 <Trash2 className="w-4 h-4" />
-                Delete
+                Löschen
               </button>
               <button
                 onClick={clearSelection}
                 className="text-sm text-gray-700 hover:text-gray-900 font-medium"
               >
-                Clear
+                Leeren
               </button>
             </div>
           )}
@@ -258,11 +294,11 @@ export default function LabelLibrary() {
           <button
             onClick={() => {
               // Select all labels on current page
-              labels.forEach((label: any) => selectLabel(label.id));
+              labels.forEach((label) => selectLabel(label.id));
             }}
             className="text-sm text-gray-700 hover:text-gray-900 font-medium"
           >
-            Select All
+            Alle auswählen
           </button>
         </div>
       </div>
@@ -271,7 +307,7 @@ export default function LabelLibrary() {
       {isLoading ? (
         <div className="card text-center py-12">
           <div className="inline-block w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-500 mt-4">Loading labels...</p>
+          <p className="text-gray-500 mt-4">Lade Labels...</p>
         </div>
       ) : viewMode === 'grid' ? (
         <LabelGrid
@@ -299,9 +335,9 @@ export default function LabelLibrary() {
       {pagination && pagination.totalPages > 1 && (
         <div className="flex items-center justify-between card">
           <div className="text-sm text-gray-600">
-            Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
-            {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
-            {pagination.total} labels
+            Zeige {((pagination.page - 1) * pagination.limit) + 1} bis{' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} von{' '}
+            {pagination.total} Labels
           </div>
           <div className="flex gap-2">
             <button
@@ -309,7 +345,7 @@ export default function LabelLibrary() {
               disabled={page === 1}
               className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Previous
+              Zurück
             </button>
             <div className="flex items-center gap-1">
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
@@ -342,7 +378,7 @@ export default function LabelLibrary() {
               disabled={page === pagination.totalPages}
               className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Next
+              Weiter
             </button>
           </div>
         </div>
@@ -360,6 +396,14 @@ export default function LabelLibrary() {
           showToast({ message: 'Labels erfolgreich generiert!', type: 'success' });
           refetch(); // Refresh the labels list
         }}
+      />
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmUnsafe={true}
       />
     </div>
   );
