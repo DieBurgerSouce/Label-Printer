@@ -99,7 +99,7 @@ export class LexwareValidationService {
     // 3. Product name validation
     if (data.data.productName) {
       // Check for OCR artifacts
-      if (/[^\w\s\-äöüÄÖÜß.,()\/&+]/.test(data.data.productName)) {
+      if (/[^\w\s\-äöüÄÖÜß.,()/&+]/.test(data.data.productName)) {
         warnings.push({
           field: 'productName',
           message: 'Product name contains unusual characters',

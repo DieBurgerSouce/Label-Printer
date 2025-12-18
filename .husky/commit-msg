@@ -1,0 +1,20 @@
+#!/bin/bash
+# Screenshot_Algo Commit Message Hook
+# Validates commit messages against conventional commits format (lightweight check)
+
+# Only validate if commit message is provided
+if [ -z "$1" ]; then
+  exit 0
+fi
+
+# Read the commit message
+COMMIT_MSG=$(cat "$1")
+
+# Simple validation - must start with a conventional type
+if echo "$COMMIT_MSG" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?:"; then
+  echo "✅ Commit message follows conventional format"
+  exit 0
+else
+  echo "⚠️ Commit message may not follow conventional format (proceeding anyway)"
+  exit 0
+fi

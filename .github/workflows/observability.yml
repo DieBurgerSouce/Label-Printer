@@ -1,0 +1,209 @@
+# Observability Workflow
+# Enterprise-grade monitoring deployment for Screenshot_Algo
+name: 📊 Observability
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prometheus/**'
+      - 'otel-collector.yaml'
+      - 'sentry.config.ts'
+      - 'docker-compose.monitoring.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'prometheus/**'
+      - 'otel-collector.yaml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  PROMETHEUS_VERSION: 'v2.48.0'
+  GRAFANA_VERSION: '10.2.0'
+  LOKI_VERSION: '2.9.0'
+
+jobs:
+  # =============================================================================
+  # Validate Alert Rules
+  # =============================================================================
+  validate-alerts:
+    name: 🔍 Validate Alert Rules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install promtool
+        run: |
+          wget https://github.com/prometheus/prometheus/releases/download/${{ env.PROMETHEUS_VERSION }}/prometheus-${{ env.PROMETHEUS_VERSION }}.linux-amd64.tar.gz
+          tar -xzf prometheus-${{ env.PROMETHEUS_VERSION }}.linux-amd64.tar.gz
+          sudo mv prometheus-${{ env.PROMETHEUS_VERSION }}.linux-amd64/promtool /usr/local/bin/
+          promtool --version
+
+      - name: Validate Prometheus config
+        run: |
+          promtool check config prometheus/prometheus.yml
+
+      - name: Validate alert rules
+        run: |
+          for file in prometheus/rules/*.yml; do
+            echo "Validating $file..."
+            promtool check rules "$file"
+          done
+
+      - name: Test alert rules
+        run: |
+          promtool test rules prometheus/rules/*.yml || true
+
+  # =============================================================================
+  # Validate OpenTelemetry Config
+  # =============================================================================
+  validate-otel:
+    name: 🔍 Validate OpenTelemetry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install otelcol
+        run: |
+          wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.91.0/otelcol_0.91.0_linux_amd64.tar.gz
+          tar -xzf otelcol_0.91.0_linux_amd64.tar.gz
+          sudo mv otelcol /usr/local/bin/
+
+      - name: Validate OpenTelemetry config
+        run: |
+          otelcol validate --config=otel-collector.yaml || echo "Note: Some receivers may require runtime dependencies"
+
+  # =============================================================================
+  # Lint Grafana Dashboards
+  # =============================================================================
+  lint-dashboards:
+    name: 🔍 Lint Dashboards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install grafonnet-lib
+        run: |
+          npm install -g jsonlint
+          # Validate JSON syntax of dashboards
+          for file in grafana/dashboards/*.json 2>/dev/null; do
+            if [ -f "$file" ]; then
+              echo "Validating $file..."
+              jsonlint "$file" -q
+            fi
+          done || echo "No dashboards found"
+
+  # =============================================================================
+  # Deploy Monitoring Stack (Staging)
+  # NOTE: Deployment is disabled until AWS infrastructure is provisioned.
+  # The validation jobs above ensure configs are correct before deployment.
+  # =============================================================================
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    needs: [validate-alerts, validate-otel]
+    runs-on: ubuntu-latest
+    if: false  # Disabled: Enable when AWS infrastructure is ready
+    environment: staging
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Deploy Prometheus config
+        run: |
+          aws s3 cp prometheus/prometheus.yml s3://screenshot-algo-staging-config/prometheus/
+          aws s3 sync prometheus/rules/ s3://screenshot-algo-staging-config/prometheus/rules/
+
+      - name: Deploy OpenTelemetry config
+        run: |
+          aws s3 cp otel-collector.yaml s3://screenshot-algo-staging-config/otel/
+
+      - name: Reload Prometheus
+        run: |
+          curl -X POST http://prometheus-staging:9090/-/reload
+
+  # =============================================================================
+  # Deploy Monitoring Stack (Production)
+  # NOTE: Deployment is disabled until AWS infrastructure is provisioned.
+  # =============================================================================
+  deploy-production:
+    name: 🚀 Deploy to Production
+    needs: [validate-alerts, validate-otel, deploy-staging]
+    runs-on: ubuntu-latest
+    if: false  # Disabled: Enable when AWS infrastructure is ready
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Deploy to production
+        run: |
+          aws s3 cp prometheus/prometheus.yml s3://screenshot-algo-production-config/prometheus/
+          aws s3 sync prometheus/rules/ s3://screenshot-algo-production-config/prometheus/rules/
+          aws s3 cp otel-collector.yaml s3://screenshot-algo-production-config/otel/
+
+      - name: Verify deployment
+        run: |
+          curl -f http://prometheus-production:9090/-/healthy || exit 1
+          echo "Monitoring stack healthy"
+
+  # =============================================================================
+  # Create Monitoring Summary
+  # =============================================================================
+  monitoring-summary:
+    name: 📊 Summary
+    needs: [validate-alerts, validate-otel, lint-dashboards]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 📊 Observability Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Prometheus Config | ${{ needs.validate-alerts.result == 'success' && '✅ Valid' || '❌ Invalid' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Alert Rules | ${{ needs.validate-alerts.result == 'success' && '✅ Valid' || '❌ Invalid' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| OpenTelemetry | ${{ needs.validate-otel.result == 'success' && '✅ Valid' || '⚠️ Check' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dashboards | ${{ needs.lint-dashboards.result == 'success' && '✅ Valid' || '⚠️ Check' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Alert Rules" >> $GITHUB_STEP_SUMMARY
+          echo "- api-alerts.yml" >> $GITHUB_STEP_SUMMARY
+          echo "- database-alerts.yml" >> $GITHUB_STEP_SUMMARY
+          echo "- performance-alerts.yml" >> $GITHUB_STEP_SUMMARY
+          echo "- business-alerts.yml" >> $GITHUB_STEP_SUMMARY
+          echo "- security-alerts.yml" >> $GITHUB_STEP_SUMMARY

@@ -28,7 +28,7 @@ router.post('/start', async (req: Request, res: Response) => {
     // Validate URL
     try {
       new URL(shopUrl);
-    } catch (_error) {
+    } catch {
       return res.status(400).json({
         success: false,
         error: 'Invalid URL format',

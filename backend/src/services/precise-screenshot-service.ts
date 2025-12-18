@@ -206,7 +206,7 @@ export class PreciseScreenshotService {
               console.log(`📦 Extracted article number from URL: ${extractedArticleNumber}`);
             }
           }
-        } catch (e) {
+        } catch {
           console.log('⚠️ Could not extract article number from page');
         }
       }
@@ -642,7 +642,7 @@ export class PreciseScreenshotService {
           // (prevents screenshot from being shifted due to layout changes)
           await new Promise((r) => setTimeout(r, 1500));
           console.log(`  ⏳ Page stabilized after lazy-load (1500ms)`);
-        } catch (e) {
+        } catch {
           console.log(`  ⚠️ Image load timeout, proceeding anyway`);
         }
       } else {

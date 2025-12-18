@@ -1,0 +1,249 @@
+# Dependency Updates - Screenshot_Algo
+# Automated dependency scanning and update PRs for Node.js
+
+name: Dependencies
+
+on:
+  schedule:
+    # Run every Monday at 9:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  # Check for Node.js dependency updates (Backend)
+  backend-dependencies:
+    name: Backend Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Check for Updates
+        id: check_updates
+        working-directory: backend
+        run: |
+          npm install -g npm-check-updates
+
+          # Check for updates
+          echo "## Backend Dependency Updates" > ../update-report.md
+          echo "" >> ../update-report.md
+
+          UPDATES=$(ncu --format lines 2>/dev/null || true)
+
+          if [ -n "$UPDATES" ]; then
+            echo "updates_available=true" >> $GITHUB_OUTPUT
+            echo "\`\`\`" >> ../update-report.md
+            echo "$UPDATES" >> ../update-report.md
+            echo "\`\`\`" >> ../update-report.md
+            echo "✅ Updates available"
+          else
+            echo "updates_available=false" >> $GITHUB_OUTPUT
+            echo "No updates available" >> ../update-report.md
+            echo "✅ All dependencies up to date"
+          fi
+
+      - name: Create Pull Request
+        if: steps.check_updates.outputs.updates_available == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): update backend dependencies"
+          title: "chore(deps): Update backend Node.js dependencies"
+          body-path: update-report.md
+          branch: deps/backend-updates
+          delete-branch: true
+          labels: dependencies,backend
+
+  # Check for Node.js dependency updates (Frontend)
+  frontend-dependencies:
+    name: Frontend Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Check for Updates
+        id: check_updates
+        working-directory: frontend
+        run: |
+          npm install -g npm-check-updates
+
+          # Check for updates
+          echo "## Frontend Dependency Updates" > ../frontend-update-report.md
+          echo "" >> ../frontend-update-report.md
+
+          UPDATES=$(ncu --format lines 2>/dev/null || true)
+
+          if [ -n "$UPDATES" ]; then
+            echo "updates_available=true" >> $GITHUB_OUTPUT
+            echo "\`\`\`" >> ../frontend-update-report.md
+            echo "$UPDATES" >> ../frontend-update-report.md
+            echo "\`\`\`" >> ../frontend-update-report.md
+            echo "✅ Updates available"
+          else
+            echo "updates_available=false" >> $GITHUB_OUTPUT
+            echo "No updates available" >> ../frontend-update-report.md
+            echo "✅ All dependencies up to date"
+          fi
+
+      - name: Create Pull Request
+        if: steps.check_updates.outputs.updates_available == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): update frontend dependencies"
+          title: "chore(deps): Update frontend Node.js dependencies"
+          body-path: frontend-update-report.md
+          branch: deps/frontend-updates
+          delete-branch: true
+          labels: dependencies,frontend
+
+  # Security audit for npm packages
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Backend Security Audit
+        id: backend_audit
+        working-directory: backend
+        continue-on-error: true
+        run: |
+          npm ci
+          npm audit --json > ../backend-audit.json || true
+          npm audit --audit-level=high 2>&1 | tee ../backend-audit.txt || true
+
+          # Count vulnerabilities
+          VULN_COUNT=$(jq '.metadata.vulnerabilities.high + .metadata.vulnerabilities.critical' ../backend-audit.json 2>/dev/null || echo "0")
+          echo "backend_vulnerabilities=$VULN_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Frontend Security Audit
+        id: frontend_audit
+        working-directory: frontend
+        continue-on-error: true
+        run: |
+          npm ci
+          npm audit --json > ../frontend-audit.json || true
+          npm audit --audit-level=high 2>&1 | tee ../frontend-audit.txt || true
+
+          # Count vulnerabilities
+          VULN_COUNT=$(jq '.metadata.vulnerabilities.high + .metadata.vulnerabilities.critical' ../frontend-audit.json 2>/dev/null || echo "0")
+          echo "frontend_vulnerabilities=$VULN_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Upload Audit Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-reports
+          path: |
+            backend-audit.json
+            frontend-audit.json
+          retention-days: 30
+
+      - name: Create Security Issue
+        if: steps.backend_audit.outputs.backend_vulnerabilities > 0 || steps.frontend_audit.outputs.frontend_vulnerabilities > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const backendVulns = '${{ steps.backend_audit.outputs.backend_vulnerabilities }}' || '0';
+            const frontendVulns = '${{ steps.frontend_audit.outputs.frontend_vulnerabilities }}' || '0';
+
+            const body = `## 🔒 Security Vulnerabilities Detected
+
+            | Component | High/Critical Vulnerabilities |
+            |-----------|------------------------------|
+            | Backend | ${backendVulns} |
+            | Frontend | ${frontendVulns} |
+
+            Please run \`npm audit fix\` or review the audit reports for details.
+
+            **Actions:**
+            1. Review the security audit artifacts
+            2. Run \`npm audit fix\` in affected directories
+            3. For breaking changes, manually update packages
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔒 Security: npm audit found vulnerabilities',
+              body: body,
+              labels: ['security', 'dependencies']
+            });
+
+  # Check Docker base images
+  docker-updates:
+    name: Docker Base Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Check Backend Dockerfile
+        run: |
+          if [ -f "backend/Dockerfile" ]; then
+            BASE_IMAGE=$(grep "^FROM" backend/Dockerfile | head -1 | awk '{print $2}')
+            echo "Backend base image: $BASE_IMAGE"
+            docker pull "$BASE_IMAGE" || true
+          fi
+
+      - name: Check Frontend Dockerfile
+        run: |
+          if [ -f "frontend/Dockerfile" ]; then
+            BASE_IMAGE=$(grep "^FROM" frontend/Dockerfile | head -1 | awk '{print $2}')
+            echo "Frontend base image: $BASE_IMAGE"
+            docker pull "$BASE_IMAGE" || true
+          fi
+
+      - name: Generate Summary
+        run: |
+          echo "## Docker Base Image Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Base images checked for updates" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> **Note:** For automated Docker image updates, consider using Renovate or Dependabot" >> $GITHUB_STEP_SUMMARY
+
+  # Dependency summary
+  dependency-summary:
+    name: Dependency Summary
+    runs-on: ubuntu-latest
+    needs: [backend-dependencies, frontend-dependencies, security-audit, docker-updates]
+    if: always()
+
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## Dependency Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Dependencies | ${{ needs.backend-dependencies.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Dependencies | ${{ needs.frontend-dependencies.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Audit | ${{ needs.security-audit.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Images | ${{ needs.docker-updates.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Last Run:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY

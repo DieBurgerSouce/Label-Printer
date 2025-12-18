@@ -52,7 +52,8 @@ export class StorageService {
     }
 
     // Save label data WITHOUT imageData (to avoid Buffer serialization issue)
-    const { imageData, ...labelWithoutImage } = label;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { imageData: _, ...labelWithoutImage } = label;
     await fs.writeFile(
       path.join(labelDir, 'label.json'),
       JSON.stringify(labelWithoutImage, null, 2)
@@ -83,7 +84,7 @@ export class StorageService {
         const imageData = await fs.readFile(imagePath);
         label.imageData = imageData; // ✅ Real Buffer!
         console.log(`✅ Loaded imageData for label ${id} (${imageData.length} bytes)`);
-      } catch (imageError) {
+      } catch {
         // No image file exists
         // ⚠️ COMPATIBILITY: Check if imageData was stored as JSON Object (old format)
         if (label.imageData && !Buffer.isBuffer(label.imageData)) {
@@ -99,7 +100,7 @@ export class StorageService {
             try {
               await fs.writeFile(imagePath, label.imageData);
               console.log(`✅ Migrated imageData to new format for label ${id}`);
-            } catch (migrationError) {
+            } catch {
               console.warn(`⚠️ Could not migrate imageData for label ${id}`);
             }
           } else {
@@ -114,7 +115,7 @@ export class StorageService {
       // Cache it
       this.labels.set(id, label);
       return label;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -198,7 +199,7 @@ export class StorageService {
       const labelDir = path.join(this.dataDir, id);
       await fs.rm(labelDir, { recursive: true, force: true });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -276,7 +277,7 @@ export class StorageService {
     try {
       const imagePath = path.join(this.dataDir, labelId, filename);
       return await fs.readFile(imagePath);
-    } catch (error) {
+    } catch {
       return null;
     }
   }

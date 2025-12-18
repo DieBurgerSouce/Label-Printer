@@ -1,0 +1,12 @@
+#!/bin/bash
+# Git Pre-Commit Hook - Screenshot_Algo
+# Runs lint-staged to check only staged files
+
+set -e
+
+echo "🔍 Running pre-commit checks on staged files..."
+
+# Run lint-staged (only checks staged files)
+npx lint-staged
+
+echo "✅ All pre-commit checks passed!"

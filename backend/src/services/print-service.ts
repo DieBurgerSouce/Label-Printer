@@ -370,7 +370,7 @@ export class PrintService {
             console.log(`✅ Loaded image for label ${label.id} from storage`);
             return { ...label, imageData: storedLabel.imageData };
           }
-        } catch (error) {
+        } catch {
           // Ignore, will render or use text fallback
         }
 

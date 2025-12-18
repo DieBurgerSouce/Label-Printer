@@ -129,7 +129,7 @@ class CloudVisionService {
 
     // Extract prices
     const priceLines = lines.filter(
-      (line) => line.includes('€') || line.includes('EUR') || /\d+[,\.]\d{2}/.test(line)
+      (line) => line.includes('€') || line.includes('EUR') || /\d+[,.]\d{2}/.test(line)
     );
 
     // Parse tiered prices
@@ -151,7 +151,7 @@ class CloudVisionService {
 
     // Extract single price if no tiered prices
     if (!data.tieredPrices || data.tieredPrices.length === 0) {
-      const priceMatch = text.match(/(\d+[,\.]\d{2})\s*€/);
+      const priceMatch = text.match(/(\d+[,.]\d{2})\s*€/);
       if (priceMatch) {
         data.price = priceMatch[1].replace(',', '.');
       }

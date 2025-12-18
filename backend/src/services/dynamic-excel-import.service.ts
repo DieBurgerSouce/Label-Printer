@@ -160,19 +160,21 @@ function convertValue(value: any, dbField: string): any {
   const strValue = String(value).trim();
 
   switch (dbField) {
-    case 'price':
+    case 'price': {
       // Parse price (handle both . and , as decimal separator)
       const priceStr = strValue.replace(',', '.');
       const price = parseFloat(priceStr);
       return isNaN(price) ? null : price;
+    }
 
     case 'verified':
-    case 'published':
+    case 'published': {
       // Convert to boolean
       const lowerValue = strValue.toLowerCase();
       return (
         lowerValue === 'true' || lowerValue === '1' || lowerValue === 'yes' || lowerValue === 'ja'
       );
+    }
 
     case 'tieredPrices':
       // Parse JSON if string

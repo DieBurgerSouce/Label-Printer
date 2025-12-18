@@ -95,12 +95,21 @@ COPY prisma ./prisma/
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
 
+# Create non-root user for security
+# Use UID/GID 1000 to match Kubernetes podSecurityContext
+RUN groupadd --gid 1000 nodejs && \
+    useradd --uid 1000 --gid nodejs --shell /bin/bash --create-home nodejs
+
 # Create data directory for screenshots and uploads
-RUN mkdir -p /app/data/screenshots /app/data/uploads /app/data/labels /app/data/cache /app/data/exports /app/data/templates
+RUN mkdir -p /app/data/screenshots /app/data/uploads /app/data/labels /app/data/cache /app/data/exports /app/data/templates && \
+    chown -R nodejs:nodejs /app
 
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=3001
+
+# Switch to non-root user
+USER nodejs
 # Let Puppeteer use its bundled Chromium (no system install needed)
 # ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium

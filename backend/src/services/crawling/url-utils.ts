@@ -9,7 +9,7 @@
 export function extractArticleNumberFromUrl(url: string): string {
   try {
     // Try to extract from URL path (common patterns)
-    const match = url.match(/\/produkt\/([^\/\?#]+)|\/product\/([^\/\?#]+)|\/p\/([^\/\?#]+)/i);
+    const match = url.match(/\/produkt\/([^/?#]+)|\/product\/([^/?#]+)|\/p\/([^/?#]+)/i);
     if (match) {
       const slug = match[1] || match[2] || match[3];
       // Extract numbers from slug

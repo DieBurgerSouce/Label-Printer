@@ -590,153 +590,149 @@ export class WebCrawlerService {
   ): Promise<void> {
     const loadStart = Date.now();
 
-    try {
-      // STEP 1: Extract HTML data (primary source, 100% accurate)
-      console.log('📄 Extracting HTML data...');
-      const htmlData = await htmlExtractionService.extractProductData(page);
-      const htmlValidation = htmlExtractionService.validateExtractedData(htmlData);
-      const htmlConfidence = htmlExtractionService.getOverallConfidence(htmlData);
+    // STEP 1: Extract HTML data (primary source, 100% accurate)
+    console.log('📄 Extracting HTML data...');
+    const htmlData = await htmlExtractionService.extractProductData(page);
+    const htmlValidation = htmlExtractionService.validateExtractedData(htmlData);
+    const htmlConfidence = htmlExtractionService.getOverallConfidence(htmlData);
 
-      console.log(
-        `   HTML Extraction: ${htmlValidation.isValid ? '✅' : '⚠️'} Confidence: ${(htmlConfidence * 100).toFixed(0)}%`
-      );
-      if (htmlValidation.warnings.length > 0) {
-        console.log(`   Warnings: ${htmlValidation.warnings.join(', ')}`);
+    console.log(
+      `   HTML Extraction: ${htmlValidation.isValid ? '✅' : '⚠️'} Confidence: ${(htmlConfidence * 100).toFixed(0)}%`
+    );
+    if (htmlValidation.warnings.length > 0) {
+      console.log(`   Warnings: ${htmlValidation.warnings.join(', ')}`);
+    }
+
+    // Save HTML data to file for later use
+    const jobDir = path.join(this.screenshotsDir, job.id);
+    await this.ensureDirectory(jobDir);
+
+    // Use articleNumber from HTML or generate from URL
+    const articleNumber = htmlData.articleNumber || extractArticleNumberFromUrl(productUrl);
+    const articleDir = path.join(jobDir, articleNumber);
+    await this.ensureDirectory(articleDir);
+
+    // STEP 1.5: Download product image if URL was extracted
+    if (htmlData.imageUrl && htmlData.imageUrl.trim() !== '') {
+      console.log('📥 Downloading product image...');
+      const imageDownloadService = new ImageDownloadService();
+
+      try {
+        const localImageUrl = await imageDownloadService.downloadImage(
+          htmlData.imageUrl,
+          articleNumber
+        );
+
+        if (localImageUrl) {
+          htmlData.imageUrl = localImageUrl;
+          console.log(`   ✅ Image downloaded: ${localImageUrl}`);
+        } else {
+          console.log(`   ⚠️ Image download failed, keeping original URL`);
+        }
+      } catch (error: unknown) {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        console.error(`   ❌ Image download error:`, errorMsg);
+      }
+    } else {
+      console.log('   ⚠️ No image URL found in HTML data');
+    }
+
+    // Save HTML extracted data (with downloaded local image URL)
+    const htmlDataPath = path.join(articleDir, 'html-data.json');
+    await fs.writeFile(htmlDataPath, JSON.stringify(htmlData, null, 2));
+    console.log(`   💾 HTML data saved: ${htmlDataPath}`);
+
+    // STEP 2: Take screenshots (for OCR fallback and image extraction)
+    console.log('📸 Capturing element screenshots...');
+    const results = await this.preciseScreenshotService.captureProductScreenshots(
+      page,
+      productUrl,
+      job.id
+    );
+
+    const loadTime = Date.now() - loadStart;
+
+    // Process each result (base product + variants)
+    for (const result of results) {
+      const isVariant = result.variantInfo && !result.variantInfo.isBaseProduct;
+
+      // Calculate total file size for this product/variant
+      let totalFileSize = 0;
+      const successfulScreenshots = result.screenshots.filter((s) => s.success);
+
+      for (const screenshot of successfulScreenshots) {
+        if (screenshot.fileSize) {
+          totalFileSize += screenshot.fileSize;
+        }
       }
 
-      // Save HTML data to file for later use
-      const jobDir = path.join(this.screenshotsDir, job.id);
-      await this.ensureDirectory(jobDir);
+      // Use first successful screenshot as main
+      let mainScreenshotPath = '';
+      let thumbnailPath = '';
 
-      // Use articleNumber from HTML or generate from URL
-      const articleNumber = htmlData.articleNumber || extractArticleNumberFromUrl(productUrl);
-      const articleDir = path.join(jobDir, articleNumber);
-      await this.ensureDirectory(articleDir);
+      if (successfulScreenshots.length > 0) {
+        mainScreenshotPath = successfulScreenshots[0].path;
 
-      // STEP 1.5: Download product image if URL was extracted
-      if (htmlData.imageUrl && htmlData.imageUrl.trim() !== '') {
-        console.log('📥 Downloading product image...');
-        const imageDownloadService = new ImageDownloadService();
-
-        try {
-          const localImageUrl = await imageDownloadService.downloadImage(
-            htmlData.imageUrl,
-            articleNumber
-          );
-
-          if (localImageUrl) {
-            htmlData.imageUrl = localImageUrl;
-            console.log(`   ✅ Image downloaded: ${localImageUrl}`);
-          } else {
-            console.log(`   ⚠️ Image download failed, keeping original URL`);
-          }
-        } catch (error: unknown) {
-          const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-          console.error(`   ❌ Image download error:`, errorMsg);
+        // Find the product-image screenshot to use as thumbnail
+        const productImageScreenshot = successfulScreenshots.find(
+          (s) => s.type === 'product-image'
+        );
+        if (productImageScreenshot) {
+          thumbnailPath = productImageScreenshot.path;
+        } else {
+          thumbnailPath = mainScreenshotPath;
         }
-      } else {
-        console.log('   ⚠️ No image URL found in HTML data');
       }
 
-      // Save HTML extracted data (with downloaded local image URL)
-      const htmlDataPath = path.join(articleDir, 'html-data.json');
-      await fs.writeFile(htmlDataPath, JSON.stringify(htmlData, null, 2));
-      console.log(`   💾 HTML data saved: ${htmlDataPath}`);
+      // Create screenshot record for each product/variant
+      const screenshotId = uuidv4();
+      const screenshot: Screenshot = {
+        id: screenshotId,
+        url: result.url,
+        productUrl: result.url,
+        imagePath: mainScreenshotPath,
+        thumbnailPath: thumbnailPath,
+        metadata: {
+          width: 1920,
+          height: 0,
+          timestamp: new Date(),
+          pageTitle: await page.title(),
+          fileSize: totalFileSize,
+          format: 'png',
+          targetedScreenshots: successfulScreenshots,
+          layoutType: result.layoutType,
+        },
+        extractedElements: {},
+      };
 
-      // STEP 2: Take screenshots (for OCR fallback and image extraction)
-      console.log('📸 Capturing element screenshots...');
-      const results = await this.preciseScreenshotService.captureProductScreenshots(
-        page,
-        productUrl,
-        job.id
-      );
-
-      const loadTime = Date.now() - loadStart;
-
-      // Process each result (base product + variants)
-      for (const result of results) {
-        const isVariant = result.variantInfo && !result.variantInfo.isBaseProduct;
-
-        // Calculate total file size for this product/variant
-        let totalFileSize = 0;
-        const successfulScreenshots = result.screenshots.filter((s) => s.success);
-
-        for (const screenshot of successfulScreenshots) {
-          if (screenshot.fileSize) {
-            totalFileSize += screenshot.fileSize;
-          }
-        }
-
-        // Use first successful screenshot as main
-        let mainScreenshotPath = '';
-        let thumbnailPath = '';
-
-        if (successfulScreenshots.length > 0) {
-          mainScreenshotPath = successfulScreenshots[0].path;
-
-          // Find the product-image screenshot to use as thumbnail
-          const productImageScreenshot = successfulScreenshots.find(
-            (s) => s.type === 'product-image'
-          );
-          if (productImageScreenshot) {
-            thumbnailPath = productImageScreenshot.path;
-          } else {
-            thumbnailPath = mainScreenshotPath;
-          }
-        }
-
-        // Create screenshot record for each product/variant
-        const screenshotId = uuidv4();
-        const screenshot: Screenshot = {
-          id: screenshotId,
-          url: result.url,
-          productUrl: result.url,
-          imagePath: mainScreenshotPath,
-          thumbnailPath: thumbnailPath,
-          metadata: {
-            width: 1920,
-            height: 0,
-            timestamp: new Date(),
-            pageTitle: await page.title(),
-            fileSize: totalFileSize,
-            format: 'png',
-            targetedScreenshots: successfulScreenshots,
-            layoutType: result.layoutType,
-          },
-          extractedElements: {},
-        };
-
-        // Add variant info to metadata if present
-        if (result.variantInfo) {
-          screenshot.metadata = {
-            ...screenshot.metadata,
-            variantInfo: result.variantInfo,
-            articleNumber: result.articleNumber,
-          };
-        }
-
-        // Add HTML extracted data to metadata for hybrid approach
+      // Add variant info to metadata if present
+      if (result.variantInfo) {
         screenshot.metadata = {
           ...screenshot.metadata,
-          htmlData: htmlData,
-          htmlConfidence: htmlConfidence,
-          htmlValidation: htmlValidation,
+          variantInfo: result.variantInfo,
+          articleNumber: result.articleNumber,
         };
-
-        job.results.screenshots.push(screenshot);
-        job.results.stats.totalDataTransferred += totalFileSize;
-
-        // Log with variant info
-        const variantLabel = isVariant ? ` [Variant: ${result.variantInfo?.label}]` : '';
-        console.log(`✓ Captured: ${result.url}${variantLabel} (${loadTime}ms per variant)`);
       }
 
-      // Update products found count to reflect all variants
-      job.results.productsFound = results.length;
-      console.log(`📊 Total products/variants captured: ${results.length}`);
-    } catch (error) {
-      throw error;
+      // Add HTML extracted data to metadata for hybrid approach
+      screenshot.metadata = {
+        ...screenshot.metadata,
+        htmlData: htmlData,
+        htmlConfidence: htmlConfidence,
+        htmlValidation: htmlValidation,
+      };
+
+      job.results.screenshots.push(screenshot);
+      job.results.stats.totalDataTransferred += totalFileSize;
+
+      // Log with variant info
+      const variantLabel = isVariant ? ` [Variant: ${result.variantInfo?.label}]` : '';
+      console.log(`✓ Captured: ${result.url}${variantLabel} (${loadTime}ms per variant)`);
     }
+
+    // Update products found count to reflect all variants
+    job.results.productsFound = results.length;
+    console.log(`📊 Total products/variants captured: ${results.length}`);
   }
 
   /**

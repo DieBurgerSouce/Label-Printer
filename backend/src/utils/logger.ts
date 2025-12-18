@@ -26,8 +26,15 @@ const colors = {
 
 winston.addColors(colors);
 
-// Define the log format
-const logFormat = winston.format.combine(
+// JSON format for production (structured logging for log aggregation)
+const jsonFormat = winston.format.combine(
+  winston.format.timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }),
+  winston.format.errors({ stack: true }),
+  winston.format.json()
+);
+
+// Text format for development/file logging
+const textFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
   winston.format.printf(({ timestamp, level, message, ...metadata }) => {
@@ -41,6 +48,9 @@ const logFormat = winston.format.combine(
     return msg;
   })
 );
+
+// Use JSON format in production, text format otherwise
+const logFormat = process.env.NODE_ENV === 'production' ? jsonFormat : textFormat;
 
 // Console format with colors
 const consoleFormat = winston.format.combine(
@@ -74,9 +84,9 @@ const getLogLevel = (): string => {
 
 // Create transports array
 const transports: winston.transport[] = [
-  // Console transport (always active)
+  // Console transport - use JSON in production for log aggregation (ELK, Loki, etc.)
   new winston.transports.Console({
-    format: consoleFormat,
+    format: process.env.NODE_ENV === 'production' ? jsonFormat : consoleFormat,
   }),
 ];
 

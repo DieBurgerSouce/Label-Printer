@@ -144,7 +144,7 @@ export class VariantDetectionService {
           }
         }
       }
-    } catch (error) {
+    } catch {
       console.log('   ℹ️ No Karton options found');
     }
 
@@ -429,7 +429,7 @@ export class VariantDetectionService {
               await new Promise((r) => setTimeout(r, 500)); // Wait for UI update
             }
           }
-        } catch (e) {
+        } catch {
           // Continue with fallback methods
         }
 
@@ -526,7 +526,7 @@ export class VariantDetectionService {
 
       // Additional small wait for stabilization
       await new Promise((resolve) => setTimeout(resolve, 500));
-    } catch (error) {
+    } catch {
       // Ignore timeout errors, just continue
     }
   }
@@ -585,7 +585,7 @@ export class VariantDetectionService {
           (el: HTMLElement | null) => el?.textContent?.trim() || 'Selection'
         );
       }
-    } catch (error) {
+    } catch {
       // Ignore errors
     }
 

@@ -283,7 +283,7 @@ export class ProductService {
           // We MUST extract the folder name from screenshotPath!
           if (ocrResult.screenshotPath) {
             // Extract article folder from path like "data/screenshots/{jobId}/3556/product-image.png"
-            const pathMatch = ocrResult.screenshotPath.match(/\/screenshots\/[^\/]+\/([^\/]+)\//);
+            const pathMatch = ocrResult.screenshotPath.match(/\/screenshots\/[^/]+\/([^/]+)\//);
             if (pathMatch && pathMatch[1]) {
               screenshotArticleNumber = pathMatch[1];
               console.log(

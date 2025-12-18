@@ -7,6 +7,7 @@ import { createServer } from 'http';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
+import * as Sentry from '@sentry/node';
 import labelsRouter from './api/routes/labels';
 import excelRouter from './api/routes/excel';
 import printRouter from './api/routes/print';
@@ -23,6 +24,34 @@ import { StorageService } from './services/storage-service';
 import { ocrService } from './services/ocr-service';
 import { webCrawlerService } from './services/web-crawler-service';
 import { initializeWebSocketServer } from './websocket/socket-server';
+import { getMetrics, getContentType, healthStatus } from './utils/metrics';
+import { metricsMiddleware } from './middleware/metricsMiddleware';
+import logger from './utils/logger';
+
+// Initialize Sentry for error tracking (must be first)
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    release: `screenshot-algo@${process.env.npm_package_version || '1.0.0'}`,
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+    integrations: [Sentry.httpIntegration(), Sentry.expressIntegration()],
+    beforeSend: (event) => {
+      // Skip in development unless explicitly testing
+      if (process.env.NODE_ENV === 'development' && !process.env.SENTRY_TEST) {
+        return null;
+      }
+      // Sanitize sensitive headers
+      if (event.request?.headers) {
+        delete event.request.headers['authorization'];
+        delete event.request.headers['cookie'];
+      }
+      return event;
+    },
+    ignoreErrors: ['ECONNREFUSED', 'ETIMEDOUT', 'AbortError'],
+  });
+  logger.info('Sentry initialized for error tracking');
+}
 
 // __filename and __dirname are available globally in CommonJS
 
@@ -58,10 +87,30 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging
+// Prometheus metrics middleware (tracks request duration and counts)
+app.use(metricsMiddleware);
+
+// Request logging with structured logger
 app.use((req, _res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  logger.http(`${req.method} ${req.path}`, {
+    method: req.method,
+    path: req.path,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+  });
   next();
+});
+
+// Prometheus metrics endpoint
+app.get('/metrics', async (_req, res) => {
+  try {
+    const metrics = await getMetrics();
+    res.set('Content-Type', getContentType());
+    res.end(metrics);
+  } catch (error) {
+    logger.error('Failed to generate metrics', error);
+    res.status(500).end('Error generating metrics');
+  }
 });
 
 // Health check routes (Kubernetes-compatible probes)
@@ -115,25 +164,37 @@ if (fs.existsSync(frontendDistPath)) {
   });
 }
 
+// Sentry error handler (must be before other error handlers)
+if (process.env.SENTRY_DSN) {
+  Sentry.setupExpressErrorHandler(app);
+}
+
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error('Server error:', err);
+  logger.error('Server error', err);
+
+  // Update health metric
+  healthStatus.set({ component: 'api' }, 0);
+
   res.status(500).json({
     success: false,
-    error: err.message || 'Internal server error',
+    error:
+      process.env.NODE_ENV === 'production'
+        ? 'Internal server error'
+        : err.message || 'Internal server error',
   });
 });
 
 // Initialize storage and start server
 async function start() {
   try {
-    console.log('Initializing storage...');
+    logger.info('Initializing storage...');
     await StorageService.init();
 
-    console.log('Initializing OCR service...');
+    logger.info('Initializing OCR service...');
     await ocrService.initialize();
 
-    console.log('Initializing WebSocket server...');
+    logger.info('Initializing WebSocket server...');
     const wsServer = initializeWebSocketServer(httpServer);
 
     // Make WebSocket server available to routes/services
@@ -143,39 +204,60 @@ async function start() {
       // Mark startup as complete after server is listening
       markStartupComplete();
 
-      console.log(`🚀 Label Printer Backend running on http://localhost:${PORT}`);
-      console.log(`🔌 WebSocket server ready for real-time updates`);
-      console.log(`📋 API Endpoints:`);
-      console.log(`   - Labels:     http://localhost:${PORT}/api/labels`);
-      console.log(`   - Excel:      http://localhost:${PORT}/api/excel`);
-      console.log(`   - Print:      http://localhost:${PORT}/api/print`);
-      console.log(`   - Crawler:    http://localhost:${PORT}/api/crawler`);
-      console.log(`   - OCR:        http://localhost:${PORT}/api/ocr`);
-      console.log(`   - Templates:  http://localhost:${PORT}/api/templates`);
-      console.log(`   - Automation: http://localhost:${PORT}/api/automation`);
-      console.log(`   - Articles:   http://localhost:${PORT}/api/articles`);
-      console.log(`   - Health:     http://localhost:${PORT}/api/health`);
-      console.log(`   - K8S Probes: http://localhost:${PORT}/health/live|ready|startup`);
-      console.log(`\n💡 Connect to WebSocket: ws://localhost:${PORT}`);
+      // Update health metrics
+      healthStatus.set({ component: 'api' }, 1);
+      healthStatus.set({ component: 'storage' }, 1);
+      healthStatus.set({ component: 'ocr' }, 1);
+      healthStatus.set({ component: 'websocket' }, 1);
+
+      logger.info(`Label Printer Backend running on http://localhost:${PORT}`);
+      logger.info(`WebSocket server ready for real-time updates`);
+      logger.info('API Endpoints available', {
+        labels: `/api/labels`,
+        excel: `/api/excel`,
+        print: `/api/print`,
+        crawler: `/api/crawler`,
+        ocr: `/api/ocr`,
+        templates: `/api/templates`,
+        automation: `/api/automation`,
+        articles: `/api/articles`,
+        health: `/api/health`,
+        metrics: `/metrics`,
+        k8sProbes: `/health/live|ready|startup`,
+      });
     });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
     markStartupFailed(errorMsg);
-    console.error('Failed to start server:', error);
+    healthStatus.set({ component: 'api' }, 0);
+    logger.error('Failed to start server', error);
+
+    // Report to Sentry before exit
+    if (process.env.SENTRY_DSN) {
+      Sentry.captureException(error);
+      await Sentry.flush(2000);
+    }
+
     process.exit(1);
   }
 }
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  console.log('SIGTERM signal received: closing HTTP server');
+  logger.info('SIGTERM signal received: closing HTTP server');
   await Promise.all([ocrService.shutdown(), webCrawlerService.shutdown()]);
+  if (process.env.SENTRY_DSN) {
+    await Sentry.flush(2000);
+  }
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
-  console.log('SIGINT signal received: closing HTTP server');
+  logger.info('SIGINT signal received: closing HTTP server');
   await Promise.all([ocrService.shutdown(), webCrawlerService.shutdown()]);
+  if (process.env.SENTRY_DSN) {
+    await Sentry.flush(2000);
+  }
   process.exit(0);
 });
 

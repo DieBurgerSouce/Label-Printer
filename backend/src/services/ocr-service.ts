@@ -171,7 +171,7 @@ class OCRService {
           confidenceCount++;
 
           console.log(`    ✅ ${mapping.field}: ${extractedText.substring(0, 50)}...`);
-        } catch (error) {
+        } catch {
           console.log(`    ⚠️ ${mapping.file} not found or could not be processed`);
         }
       }
@@ -565,7 +565,7 @@ class OCRService {
       // Only keep lines that look like prices
       return (
         /\d/.test(trimmed) &&
-        (trimmed.includes('€') || trimmed.includes('EUR') || /\d+[,\.]\d+/.test(trimmed))
+        (trimmed.includes('€') || trimmed.includes('EUR') || /\d+[,.]\d+/.test(trimmed))
       );
     });
 

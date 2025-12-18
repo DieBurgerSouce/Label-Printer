@@ -5,8 +5,33 @@
 
 import { Router, Request, Response } from 'express';
 import os from 'os';
+import { PrismaClient } from '@prisma/client';
+import Redis from 'ioredis';
+import { healthStatus } from '../../utils/metrics';
 
 const router = Router();
+
+// Lazy-loaded database client for health checks
+let prisma: PrismaClient | null = null;
+let redis: Redis | null = null;
+
+function getPrismaClient(): PrismaClient {
+  if (!prisma) {
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
+
+function getRedisClient(): Redis | null {
+  if (!redis && process.env.REDIS_URL) {
+    redis = new Redis(process.env.REDIS_URL, {
+      maxRetriesPerRequest: 1,
+      connectTimeout: 3000,
+      commandTimeout: 3000,
+    });
+  }
+  return redis;
+}
 
 // Track application startup state
 let isStartupComplete = false;
@@ -47,6 +72,35 @@ async function checkDependencies(): Promise<{
   const memUsage = process.memoryUsage();
   const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
   details.memory = heapUsedPercent < 95; // Unhealthy if heap is > 95% used
+
+  // Check database connection
+  try {
+    const client = getPrismaClient();
+    await client.$queryRaw`SELECT 1`;
+    details.database = true;
+    healthStatus.set({ component: 'database' }, 1);
+  } catch {
+    details.database = false;
+    healthStatus.set({ component: 'database' }, 0);
+  }
+
+  // Check Redis connection (if configured)
+  if (process.env.REDIS_URL) {
+    try {
+      const redisClient = getRedisClient();
+      if (redisClient) {
+        await redisClient.ping();
+        details.redis = true;
+        healthStatus.set({ component: 'redis' }, 1);
+      } else {
+        details.redis = false;
+        healthStatus.set({ component: 'redis' }, 0);
+      }
+    } catch {
+      details.redis = false;
+      healthStatus.set({ component: 'redis' }, 0);
+    }
+  }
 
   const healthy = Object.values(details).every(Boolean);
   return { healthy, details };
