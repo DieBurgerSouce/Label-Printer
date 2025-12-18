@@ -335,3 +335,33 @@ model ExcelData {
   @@index([fileName])
   @@index([uploadedAt])
 }
+
+// ========================================
+// USER AUTHENTICATION
+// ========================================
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String   // bcrypt hashed
+  name        String?
+  role        Role     @default(USER)
+
+  // Account status
+  isActive    Boolean  @default(true)
+  emailVerified Boolean @default(false)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastLoginAt DateTime?
+
+  @@map("users")
+  @@index([email])
+  @@index([role])
+}
+
+enum Role {
+  USER
+  ADMIN
+}

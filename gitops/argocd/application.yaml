@@ -1,0 +1,101 @@
+# ArgoCD Application
+# Enterprise GitOps for Screenshot_Algo
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: screenshot-algo
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/part-of: screenshot-algo-platform
+  annotations:
+    # Notifications
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: deployments
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: alerts-critical
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: screenshot-algo
+
+  source:
+    # Git repository
+    repoURL: https://github.com/screenshot-algo/screenshot-algo.git
+    targetRevision: main
+    path: k8s/overlays/production
+
+    # Kustomize configuration
+    # Image tag is controlled via targetRevision (git tag) or CI/CD pipeline
+    # For production: use semantic version tags (v1.0.0, v1.1.0)
+    # For staging: use develop branch HEAD
+    kustomize:
+      # Image will be updated by ArgoCD Image Updater or CI/CD
+      # DO NOT use :latest in production!
+      namePrefix: ""
+      # commonAnnotations:
+      #   app.kubernetes.io/version: "${ARGOCD_APP_REVISION}"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: screenshot-algo
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+      - ApplyOutOfSyncOnly=true
+      - Validate=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Ignore differences
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+      jsonPointers:
+        - /spec/minReplicas
+        - /spec/maxReplicas
+
+  # Health checks
+  revisionHistoryLimit: 10
+---
+# ArgoCD Application for Staging
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: screenshot-algo-staging
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/instance: staging
+spec:
+  project: screenshot-algo
+
+  source:
+    repoURL: https://github.com/screenshot-algo/screenshot-algo.git
+    targetRevision: develop
+    path: k8s/overlays/staging
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: screenshot-algo-staging
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

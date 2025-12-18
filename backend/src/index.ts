@@ -5,20 +5,12 @@
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
 import * as Sentry from '@sentry/node';
-import labelsRouter from './api/routes/labels';
-import excelRouter from './api/routes/excel';
-import printRouter from './api/routes/print';
-import crawlerRouter from './api/routes/crawler';
-import ocrRouter from './api/routes/ocr';
-import templatesRouter from './api/routes/templates';
-import labelTemplatesRouter from './api/routes/label-templates';
-import automationRouter from './api/routes/automation';
-import articlesRouter from './api/routes/articles';
-import imagesRouter from './api/routes/images';
-import lexwareRouter from './api/routes/lexware';
+import v1Router from './api/routes/v1';
 import healthRouter, { markStartupComplete, markStartupFailed } from './api/routes/health';
 import { StorageService } from './services/storage-service';
 import { ocrService } from './services/ocr-service';
@@ -26,6 +18,8 @@ import { webCrawlerService } from './services/web-crawler-service';
 import { initializeWebSocketServer } from './websocket/socket-server';
 import { getMetrics, getContentType, healthStatus } from './utils/metrics';
 import { metricsMiddleware } from './middleware/metricsMiddleware';
+import { errorHandler } from './middleware/errorHandler';
+import { createSessionMiddleware } from './middleware/auth';
 import logger from './utils/logger';
 
 // Initialize Sentry for error tracking (must be first)
@@ -59,6 +53,44 @@ const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
 
+// Security Middleware - Helmet for HTTP security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", 'ws:', 'wss:'],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Allow loading external resources
+    crossOriginResourcePolicy: { policy: 'cross-origin' }, // Allow CORS
+  })
+);
+
+// Rate Limiting - Protect against brute force and DoS attacks
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Limit requests per window
+  standardHeaders: true, // Return rate limit info in headers
+  legacyHeaders: false, // Disable X-RateLimit-* headers
+  skip: (req) => {
+    // Skip rate limiting for health checks and metrics
+    return req.path === '/metrics' || req.path.startsWith('/health');
+  },
+  message: {
+    success: false,
+    error: 'Too many requests, please try again later.',
+  },
+});
+app.use(limiter);
+
 // Middleware - Configure CORS with explicit origins
 const CORS_ORIGINS = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
@@ -87,6 +119,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Session middleware (Redis-backed sessions)
+app.use(createSessionMiddleware());
+
 // Prometheus metrics middleware (tracks request duration and counts)
 app.use(metricsMiddleware);
 
@@ -114,22 +149,15 @@ app.get('/metrics', async (_req, res) => {
 });
 
 // Health check routes (Kubernetes-compatible probes)
-// Mount at /health for K8S probes and /api/health for backwards compatibility
+// Mount at /health for K8S probes
 app.use('/health', healthRouter);
-app.use('/api/health', healthRouter);
 
-// API Routes
-app.use('/api/labels', labelsRouter);
-app.use('/api/excel', excelRouter);
-app.use('/api/print', printRouter);
-app.use('/api/crawler', crawlerRouter);
-app.use('/api/ocr', ocrRouter);
-app.use('/api/templates', templatesRouter);
-app.use('/api/label-templates', labelTemplatesRouter);
-app.use('/api/automation', automationRouter);
-app.use('/api/articles', articlesRouter);
-app.use('/api/images', imagesRouter);
-app.use('/api/lexware', lexwareRouter);
+// API v1 Routes (versioned API)
+app.use('/api/v1', v1Router);
+
+// Backwards compatibility: /api/* redirects to /api/v1/*
+// This allows existing clients to continue working
+app.use('/api', v1Router);
 
 // Serve frontend static files in production
 // Check for Docker volume first, then fallback to local development path
@@ -169,21 +197,8 @@ if (process.env.SENTRY_DSN) {
   Sentry.setupExpressErrorHandler(app);
 }
 
-// Error handler
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  logger.error('Server error', err);
-
-  // Update health metric
-  healthStatus.set({ component: 'api' }, 0);
-
-  res.status(500).json({
-    success: false,
-    error:
-      process.env.NODE_ENV === 'production'
-        ? 'Internal server error'
-        : err.message || 'Internal server error',
-  });
-});
+// Global error handler - handles all errors with proper responses
+app.use(errorHandler);
 
 // Initialize storage and start server
 async function start() {
@@ -212,18 +227,20 @@ async function start() {
 
       logger.info(`Label Printer Backend running on http://localhost:${PORT}`);
       logger.info(`WebSocket server ready for real-time updates`);
-      logger.info('API Endpoints available', {
-        labels: `/api/labels`,
-        excel: `/api/excel`,
-        print: `/api/print`,
-        crawler: `/api/crawler`,
-        ocr: `/api/ocr`,
-        templates: `/api/templates`,
-        automation: `/api/automation`,
-        articles: `/api/articles`,
-        health: `/api/health`,
+      logger.info('API Endpoints available (v1)', {
+        apiVersion: `/api/v1`,
+        auth: `/api/v1/auth`,
+        labels: `/api/v1/labels`,
+        articles: `/api/v1/articles`,
+        templates: `/api/v1/templates`,
+        excel: `/api/v1/excel`,
+        crawler: `/api/v1/crawler`,
+        ocr: `/api/v1/ocr`,
+        automation: `/api/v1/automation`,
+        health: `/health`,
         metrics: `/metrics`,
         k8sProbes: `/health/live|ready|startup`,
+        deprecatedNotice: 'Legacy /api/* routes are forwards-compatible but deprecated',
       });
     });
   } catch (error) {

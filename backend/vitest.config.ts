@@ -8,15 +8,23 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules', 'dist'],
-    // Enable proper ESM mocking by inlining dependencies
-    server: {
-      deps: {
-        inline: [/\.js$/],
-      },
+    // ESM Mocking configuration
+    deps: {
+      // Inline modules for proper ESM mocking with .js extensions
+      inline: [
+        /\.js$/,
+        // Inline problematic ESM modules
+        '@prisma/client',
+        'ioredis',
+      ],
+    },
+    // Mock resolution for .js extensions in TypeScript
+    alias: {
+      // Map .js imports to .ts files for proper mocking
     },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/',
         'dist/',
@@ -24,19 +32,27 @@ export default defineConfig({
         '**/*.config.*',
         '**/types/**',
         'src/scripts/**', // Exclude standalone scripts
+        'tests/**', // Exclude test files from coverage
       ],
       thresholds: {
-        // Start with realistic thresholds, increase over time
-        lines: 10,
-        functions: 10,
-        branches: 10,
-        statements: 10,
+        // Enterprise-grade coverage thresholds
+        lines: 50,
+        functions: 50,
+        branches: 40,
+        statements: 50,
       },
     },
     // Setup file for test utilities
     setupFiles: ['./tests/setup.ts'],
     // Test timeout
     testTimeout: 30000,
+    // Pool configuration for better isolation
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true, // Better for mocking
+      },
+    },
   },
   resolve: {
     alias: {

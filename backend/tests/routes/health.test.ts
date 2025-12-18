@@ -8,6 +8,49 @@ import express from 'express';
 import request from 'supertest';
 import healthRouter, { markStartupComplete, markStartupFailed } from '../../src/api/routes/health';
 
+// Mock Winston logger to avoid ESM issues with vi.resetModules()
+vi.mock('winston', () => {
+  const mockFormat = {
+    combine: vi.fn(() => mockFormat),
+    timestamp: vi.fn(() => mockFormat),
+    colorize: vi.fn(() => mockFormat),
+    printf: vi.fn(() => mockFormat),
+    json: vi.fn(() => mockFormat),
+    errors: vi.fn(() => mockFormat),
+  };
+
+  const mockTransport = vi.fn();
+
+  return {
+    default: {
+      format: mockFormat,
+      transports: {
+        Console: mockTransport,
+        File: mockTransport,
+      },
+      createLogger: vi.fn(() => ({
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
+      })),
+      addColors: vi.fn(),
+    },
+    format: mockFormat,
+    transports: {
+      Console: mockTransport,
+      File: mockTransport,
+    },
+    createLogger: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+    addColors: vi.fn(),
+  };
+});
+
 // Mock Prisma
 vi.mock('@prisma/client', () => ({
   PrismaClient: vi.fn().mockImplementation(() => ({
