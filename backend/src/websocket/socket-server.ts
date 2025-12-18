@@ -5,6 +5,7 @@
 
 import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
+import logger from '../utils/logger';
 
 // ============================================
 // EVENT TYPES
@@ -215,31 +216,35 @@ export class WebSocketServer {
    */
   private setupEventHandlers() {
     this.io.on('connection', (socket) => {
-      console.log(`[WebSocket] Client connected: ${socket.id}`);
+      logger.debug('WebSocket client connected', { socketId: socket.id });
       this.connectedClients.set(socket.id, socket);
 
       // Handle job subscriptions
       socket.on('job:subscribe', (jobId: string) => {
         socket.join(`job:${jobId}`);
-        console.log(`[WebSocket] Client ${socket.id} subscribed to job: ${jobId}`);
+        logger.debug('WebSocket client subscribed to job', { socketId: socket.id, jobId });
       });
 
       socket.on('job:unsubscribe', (jobId: string) => {
         socket.leave(`job:${jobId}`);
-        console.log(`[WebSocket] Client ${socket.id} unsubscribed from job: ${jobId}`);
+        logger.debug('WebSocket client unsubscribed from job', { socketId: socket.id, jobId });
       });
 
       // Handle automation subscriptions
       socket.on('automation:subscribe', (automationId: string) => {
         socket.join(`automation:${automationId}`);
-        console.log(`[WebSocket] Client ${socket.id} subscribed to automation: ${automationId}`);
+        logger.debug('WebSocket client subscribed to automation', {
+          socketId: socket.id,
+          automationId,
+        });
       });
 
       socket.on('automation:unsubscribe', (automationId: string) => {
         socket.leave(`automation:${automationId}`);
-        console.log(
-          `[WebSocket] Client ${socket.id} unsubscribed from automation: ${automationId}`
-        );
+        logger.debug('WebSocket client unsubscribed from automation', {
+          socketId: socket.id,
+          automationId,
+        });
       });
 
       // Ping/Pong
@@ -253,12 +258,12 @@ export class WebSocketServer {
 
       // Handle disconnect
       socket.on('disconnect', () => {
-        console.log(`[WebSocket] Client disconnected: ${socket.id}`);
+        logger.debug('WebSocket client disconnected', { socketId: socket.id });
         this.connectedClients.delete(socket.id);
       });
     });
 
-    console.log('[WebSocket] Server initialized and ready');
+    logger.info('WebSocket server initialized and ready');
   }
 
   // ============================================
@@ -462,7 +467,7 @@ export class WebSocketServer {
    */
   close() {
     this.io.close();
-    console.log('[WebSocket] Server closed');
+    logger.info('WebSocket server closed');
   }
 }
 

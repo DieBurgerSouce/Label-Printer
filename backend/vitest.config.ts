@@ -35,11 +35,11 @@ export default defineConfig({
         'tests/**', // Exclude test files from coverage
       ],
       thresholds: {
-        // Enterprise-grade coverage thresholds
-        lines: 50,
-        functions: 50,
-        branches: 40,
-        statements: 50,
+        // Enterprise-grade coverage thresholds (enforced in CI)
+        lines: 80,
+        functions: 80,
+        branches: 70,
+        statements: 80,
       },
     },
     // Setup file for test utilities

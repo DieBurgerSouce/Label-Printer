@@ -32,9 +32,19 @@ declare module 'express-serve-static-core' {
 export function createSessionMiddleware() {
   const redisClient = getRedisClient();
 
+  // SECURITY: Enforce SESSION_SECRET in production
+  const sessionSecret = process.env.SESSION_SECRET;
+  if (!sessionSecret) {
+    if (process.env.NODE_ENV === 'production') {
+      logger.error('SESSION_SECRET environment variable is required in production');
+      process.exit(1);
+    }
+    logger.warn('SESSION_SECRET not set - using insecure default (development only)');
+  }
+
   // Session configuration
   const sessionConfig: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || 'change_this_session_secret_in_production',
+    secret: sessionSecret || 'dev_secret_change_in_production',
     name: 'session_id', // Custom cookie name (avoid default 'connect.sid')
     resave: false,
     saveUninitialized: false,

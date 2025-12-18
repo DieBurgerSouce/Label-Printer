@@ -20,6 +20,7 @@ import { getMetrics, getContentType, healthStatus } from './utils/metrics';
 import { metricsMiddleware } from './middleware/metricsMiddleware';
 import { errorHandler } from './middleware/errorHandler';
 import { createSessionMiddleware } from './middleware/auth';
+import { requestIdMiddleware } from './middleware/requestId';
 import logger from './utils/logger';
 
 // Initialize Sentry for error tracking (must be first)
@@ -71,11 +72,31 @@ app.use(
     },
     crossOriginEmbedderPolicy: false, // Allow loading external resources
     crossOriginResourcePolicy: { policy: 'cross-origin' }, // Allow CORS
+    // SECURITY: HSTS with preload for strict HTTPS enforcement
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true,
+    },
+    // SECURITY: Strict referrer policy
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   })
 );
 
+// SECURITY: Permissions-Policy header (restrict browser features)
+app.use((_req, res, next) => {
+  res.setHeader(
+    'Permissions-Policy',
+    'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
+  );
+  next();
+});
+
+// Request ID middleware for tracing (early in chain for all requests)
+app.use(requestIdMiddleware);
+
 // Rate Limiting - Protect against brute force and DoS attacks
-const limiter = rateLimit({
+const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Limit requests per window
   standardHeaders: true, // Return rate limit info in headers
@@ -89,7 +110,38 @@ const limiter = rateLimit({
     error: 'Too many requests, please try again later.',
   },
 });
-app.use(limiter);
+
+// Strict rate limiter for authentication endpoints (5 attempts per 15 min)
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Only 5 login attempts per window
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true, // Don't count successful logins
+  message: {
+    success: false,
+    error: 'Too many login attempts. Please try again in 15 minutes.',
+  },
+  keyGenerator: (req) => {
+    // Rate limit by IP + email to prevent distributed attacks
+    const email = req.body?.email || '';
+    return `${req.ip}-${email}`;
+  },
+});
+
+// Strict rate limiter for password changes (3 attempts per 15 min)
+export const passwordChangeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Too many password change attempts. Please try again later.',
+  },
+});
+
+app.use(globalLimiter);
 
 // Middleware - Configure CORS with explicit origins
 const CORS_ORIGINS = process.env.CORS_ORIGINS
@@ -107,7 +159,7 @@ app.use(
       if (!origin || CORS_ORIGINS.includes(origin)) {
         callback(null, true);
       } else {
-        console.warn(`CORS blocked request from origin: ${origin}`);
+        logger.warn('CORS blocked request', { origin: origin?.substring(0, 100) });
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -116,8 +168,9 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// SECURITY: Limit request body size to prevent DoS attacks
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Session middleware (Redis-backed sessions)
 app.use(createSessionMiddleware());
@@ -125,9 +178,10 @@ app.use(createSessionMiddleware());
 // Prometheus metrics middleware (tracks request duration and counts)
 app.use(metricsMiddleware);
 
-// Request logging with structured logger
+// Request logging with structured logger (includes request ID for tracing)
 app.use((req, _res, next) => {
   logger.http(`${req.method} ${req.path}`, {
+    requestId: req.id,
     method: req.method,
     path: req.path,
     ip: req.ip,
@@ -166,7 +220,7 @@ const localFrontendPath = path.join(__dirname, '../../frontend/dist');
 const frontendDistPath = fs.existsSync(dockerFrontendPath) ? dockerFrontendPath : localFrontendPath;
 
 if (fs.existsSync(frontendDistPath)) {
-  console.log('✅ Serving frontend static files from:', frontendDistPath);
+  logger.info('Serving frontend static files', { path: frontendDistPath });
   app.use(express.static(frontendDistPath));
 
   // SPA fallback - send index.html for all non-API routes
@@ -174,14 +228,11 @@ if (fs.existsSync(frontendDistPath)) {
     res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 } else {
-  console.log(
-    '⚠️  Frontend dist folder not found at:',
-    dockerFrontendPath,
-    'or',
-    localFrontendPath
-  );
-  console.log('    For Docker: Ensure frontend-builder has run successfully');
-  console.log('    For local dev: Run "npm run build" in frontend directory');
+  logger.warn('Frontend dist folder not found', {
+    dockerPath: dockerFrontendPath,
+    localPath: localFrontendPath,
+    hint: 'For Docker: Ensure frontend-builder has run. For local dev: Run npm run build in frontend directory',
+  });
 
   // 404 handler for API-only mode
   app.use((_req, res) => {

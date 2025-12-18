@@ -43,6 +43,7 @@ model CrawlJob {
   @@map("crawl_jobs")
   @@index([status])
   @@index([createdAt])
+  @@index([status, createdAt]) // Composite index for filtered + sorted queries
 }
 
 model Screenshot {

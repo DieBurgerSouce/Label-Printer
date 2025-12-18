@@ -21,6 +21,14 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
 
   # Redis Cache & Queue
   redis:
@@ -30,15 +38,24 @@ services:
       - '6379:6379'
     volumes:
       - redis-data:/data
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme_in_production}
+    # SECURITY: REDIS_PASSWORD must be set in .env (no default for production security)
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
     networks:
       - label-printer-network
     healthcheck:
-      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD:-changeme_in_production}', 'ping']
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
       interval: 5s
       timeout: 3s
       retries: 5
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
 
   # Backend API Server (nur API - kein Frontend mehr!)
   backend:
@@ -55,9 +72,10 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-screenshot_algo}?schema=public
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme_in_production}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:?REDIS_PASSWORD is required}
       - CORS_ORIGINS=http://localhost:3001,http://frontend:3001
-      - SESSION_SECRET=${SESSION_SECRET:-change_this_session_secret_in_production}
+      # SECURITY: SESSION_SECRET must be set in .env (no default for production security)
+      - SESSION_SECRET=${SESSION_SECRET:?SESSION_SECRET is required}
     volumes:
       - ./backend/data:/app/data
       - ./backend/uploads:/app/uploads
@@ -75,6 +93,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
 
   # Frontend (nginx) - Serves React App + Proxies API to Backend
   frontend:
@@ -96,6 +122,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   # ==========================================================================
   # Monitoring Stack
@@ -119,6 +153,14 @@ services:
     networks:
       - label-printer-network
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.2'
+          memory: 512M
 
   # AlertManager - Alert routing and notifications
   alertmanager:
@@ -143,6 +185,14 @@ services:
     networks:
       - label-printer-network
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
 
   # Grafana - Visualization
   grafana:
@@ -154,9 +204,12 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana-data:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      # SECURITY: Grafana credentials must be set in .env (no defaults)
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:?GRAFANA_USER is required}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:?GRAFANA_PASSWORD is required}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_ALLOW_ORG_CREATE=false
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
       - GF_SERVER_ROOT_URL=http://localhost:3000
     networks:
       - label-printer-network
@@ -164,6 +217,14 @@ services:
       - prometheus
       - loki
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.1'
+          memory: 256M
 
   # Loki - Log aggregation
   loki:
@@ -178,6 +239,14 @@ services:
     networks:
       - label-printer-network
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.2'
+          memory: 256M
 
   # Promtail - Log collector
   promtail:
@@ -193,6 +262,14 @@ services:
     depends_on:
       - loki
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
 
 volumes:
   postgres-data:

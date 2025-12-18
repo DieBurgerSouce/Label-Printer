@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Edit, Trash2, Eye, Printer } from 'lucide-react';
 import { type PriceLabel } from '../../store/labelStore';
 
@@ -11,7 +12,7 @@ interface LabelCardProps {
   onPrint?: () => void;
 }
 
-export default function LabelCard({
+function LabelCard({
   label,
   selected = false,
   onSelect,
@@ -103,7 +104,7 @@ export default function LabelCard({
       </div>
 
       {/* Actions */}
-      <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2">
+      <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2" role="group" aria-label="Label actions">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -111,8 +112,9 @@ export default function LabelCard({
           }}
           className="flex-1 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center justify-center gap-1"
           title="View"
+          aria-label={`View label for ${label.productName}`}
         >
-          <Eye className="w-4 h-4" />
+          <Eye className="w-4 h-4" aria-hidden="true" />
         </button>
         <button
           onClick={(e) => {
@@ -121,8 +123,9 @@ export default function LabelCard({
           }}
           className="flex-1 px-3 py-2 text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors flex items-center justify-center gap-1"
           title="Edit"
+          aria-label={`Edit label for ${label.productName}`}
         >
-          <Edit className="w-4 h-4" />
+          <Edit className="w-4 h-4" aria-hidden="true" />
         </button>
         <button
           onClick={(e) => {
@@ -131,8 +134,9 @@ export default function LabelCard({
           }}
           className="flex-1 px-3 py-2 text-sm bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg transition-colors flex items-center justify-center gap-1"
           title="Print"
+          aria-label={`Print label for ${label.productName}`}
         >
-          <Printer className="w-4 h-4" />
+          <Printer className="w-4 h-4" aria-hidden="true" />
         </button>
         <button
           onClick={(e) => {
@@ -141,8 +145,9 @@ export default function LabelCard({
           }}
           className="flex-1 px-3 py-2 text-sm bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors flex items-center justify-center gap-1"
           title="Delete"
+          aria-label={`Delete label for ${label.productName}`}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
@@ -153,3 +158,6 @@ export default function LabelCard({
     </div>
   );
 }
+
+// Memoize to prevent unnecessary re-renders in lists
+export default memo(LabelCard);
