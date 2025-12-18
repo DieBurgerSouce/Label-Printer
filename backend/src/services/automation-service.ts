@@ -514,7 +514,7 @@ class AutomationService {
   /**
    * Step 3: Match with Excel data
    */
-  private async stepMatch(job: AutomationJob): Promise<void> {
+  private async _stepMatch(job: AutomationJob): Promise<void> {
     console.log(`🔗 Step 3/4: Matching OCR results with Excel data...`);
     job.status = 'matching';
     job.progress.currentStep = 'matching';
@@ -592,7 +592,7 @@ class AutomationService {
   /**
    * Step 4: Render labels
    */
-  private async stepRender(job: AutomationJob): Promise<void> {
+  private async _stepRender(job: AutomationJob): Promise<void> {
     console.log(`🎨 Step 4/4: Generating labels...`);
     job.status = 'rendering';
     job.progress.currentStep = 'rendering';

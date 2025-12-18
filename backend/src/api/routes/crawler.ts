@@ -6,6 +6,7 @@
 import { Router, Request, Response } from 'express';
 import { webCrawlerService } from '../../services/web-crawler-service';
 import { CrawlConfig } from '../../types/crawler-types';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.post('/start', async (req: Request, res: Response) => {
     // Validate URL
     try {
       new URL(shopUrl);
-    } catch (error) {
+    } catch (_error) {
       return res.status(400).json({
         success: false,
         error: 'Invalid URL format',
@@ -46,7 +47,7 @@ router.post('/start', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('Start crawl error:', error);
+    logger.error('Start crawl error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to start crawl',
@@ -108,7 +109,7 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('Get job error:', error);
+    logger.error('Get job error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get job',
@@ -141,7 +142,7 @@ router.get('/jobs', (_req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('Get jobs error:', error);
+    logger.error('Get jobs error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get jobs',
@@ -170,7 +171,7 @@ router.post('/stop/:id', async (req: Request, res: Response) => {
       message: 'Job stopped successfully',
     });
   } catch (error) {
-    console.error('Stop job error:', error);
+    logger.error('Stop job error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to stop job',
@@ -209,7 +210,7 @@ router.get('/screenshots/:jobId', (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('Get screenshots error:', error);
+    logger.error('Get screenshots error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get screenshots',
@@ -239,7 +240,7 @@ router.post('/detect', async (req: Request, res: Response) => {
       data: null,
     });
   } catch (error) {
-    console.error('Detect error:', error);
+    logger.error('Detect error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to detect products',
@@ -265,7 +266,7 @@ router.delete('/cleanup', (req: Request, res: Response) => {
       message: 'Old jobs cleaned up successfully',
     });
   } catch (error) {
-    console.error('Cleanup error:', error);
+    logger.error('Cleanup error:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to cleanup jobs',

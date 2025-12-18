@@ -4,6 +4,7 @@
  */
 
 import { Response } from 'express';
+import logger from './logger';
 
 /**
  * Standard API response structure
@@ -135,13 +136,22 @@ export function sendConflict(res: Response, error: string): Response {
  * Send a 422 Validation error
  */
 export function sendValidationError(res: Response, error: string, details?: unknown): Response {
-  return sendError(res, error, HttpStatus.UNPROCESSABLE_ENTITY, ErrorCode.VALIDATION_ERROR, details);
+  return sendError(
+    res,
+    error,
+    HttpStatus.UNPROCESSABLE_ENTITY,
+    ErrorCode.VALIDATION_ERROR,
+    details
+  );
 }
 
 /**
  * Send a 500 Internal Server Error
  */
-export function sendInternalError(res: Response, error: string = 'Internal server error'): Response {
+export function sendInternalError(
+  res: Response,
+  error: string = 'Internal server error'
+): Response {
   return sendError(res, error, HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_ERROR);
 }
 
@@ -149,7 +159,11 @@ export function sendInternalError(res: Response, error: string = 'Internal serve
  * Handle caught errors uniformly
  * Extracts error message from various error types
  */
-export function handleError(res: Response, error: unknown, defaultMessage: string = 'An error occurred'): Response {
+export function handleError(
+  res: Response,
+  error: unknown,
+  defaultMessage: string = 'An error occurred'
+): Response {
   let message = defaultMessage;
 
   if (error instanceof Error) {
@@ -158,6 +172,6 @@ export function handleError(res: Response, error: unknown, defaultMessage: strin
     message = error;
   }
 
-  console.error(`API Error: ${message}`, error);
+  logger.error(`API Error: ${message}`, { error });
   return sendInternalError(res, message);
 }

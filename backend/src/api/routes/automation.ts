@@ -8,12 +8,8 @@ import { automationService } from '../../services/automation-service';
 import { AutomationConfig } from '../../types/automation-types';
 import multer from 'multer';
 import * as XLSX from 'xlsx';
-import {
-  sendSuccess,
-  sendBadRequest,
-  sendNotFound,
-  handleError,
-} from '../../utils/api-response';
+import { sendSuccess, sendBadRequest, sendNotFound, handleError } from '../../utils/api-response';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -57,7 +53,7 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         excelData = XLSX.utils.sheet_to_json(worksheet);
-        console.log(`📊 Loaded ${excelData.length} rows from Excel`);
+        logger.info(`Loaded ${excelData.length} rows from Excel`);
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         return sendBadRequest(res, 'Failed to parse Excel file', { message });
@@ -83,16 +79,20 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
 
     const job = await automationService.startAutomation(automationConfig);
 
-    return sendSuccess(res, {
-      jobId: job.id,
-      job: {
-        id: job.id,
-        status: job.status,
-        progress: job.progress,
+    return sendSuccess(
+      res,
+      {
+        jobId: job.id,
+        job: {
+          id: job.id,
+          status: job.status,
+          progress: job.progress,
+        },
       },
-    }, 'Automation job started successfully');
+      'Automation job started successfully'
+    );
   } catch (error: unknown) {
-    console.error('Automation start error:', error);
+    logger.error('Automation start error', { error });
     return handleError(res, error, 'Failed to start automation');
   }
 });
@@ -132,16 +132,20 @@ router.post('/start-simple', async (req: Request, res: Response) => {
 
     const job = await automationService.startAutomation(config);
 
-    return sendSuccess(res, {
-      jobId: job.id,
-      job: {
-        id: job.id,
-        status: job.status,
-        progress: job.progress,
+    return sendSuccess(
+      res,
+      {
+        jobId: job.id,
+        job: {
+          id: job.id,
+          status: job.status,
+          progress: job.progress,
+        },
       },
-    }, 'Automation job started successfully');
+      'Automation job started successfully'
+    );
   } catch (error: unknown) {
-    console.error('Automation start error:', error);
+    logger.error('Automation start error', { error });
     return handleError(res, error, 'Failed to start automation');
   }
 });
@@ -167,7 +171,7 @@ router.get('/jobs', (_req: Request, res: Response) => {
       count: jobs.length,
     });
   } catch (error: unknown) {
-    console.error('Jobs listing error:', error);
+    logger.error('Jobs listing error', { error });
     return handleError(res, error, 'Failed to list jobs');
   }
 });
@@ -187,7 +191,7 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
 
     return sendSuccess(res, { job });
   } catch (error: unknown) {
-    console.error('Job fetch error:', error);
+    logger.error('Job fetch error', { error });
     return handleError(res, error, 'Failed to fetch job');
   }
 });
@@ -211,7 +215,7 @@ router.get('/jobs/:id/progress', (req: Request, res: Response) => {
       summary: job.results.summary,
     });
   } catch (error: unknown) {
-    console.error('Progress fetch error:', error);
+    logger.error('Progress fetch error', { error });
     return handleError(res, error, 'Failed to fetch progress');
   }
 });
@@ -234,7 +238,7 @@ router.get('/jobs/:id/labels', (req: Request, res: Response) => {
       count: job.results.labels.length,
     });
   } catch (error: unknown) {
-    console.error('Labels fetch error:', error);
+    logger.error('Labels fetch error', { error });
     return handleError(res, error, 'Failed to fetch labels');
   }
 });
@@ -268,7 +272,7 @@ router.get('/jobs/:id/labels/:labelIndex', (req: Request, res: Response) => {
     res.set('Content-Type', 'image/png');
     return res.send(buffer);
   } catch (error: unknown) {
-    console.error('Label fetch error:', error);
+    logger.error('Label fetch error', { error });
     return handleError(res, error, 'Failed to fetch label');
   }
 });
@@ -288,7 +292,7 @@ router.post('/jobs/:id/cancel', async (req: Request, res: Response) => {
 
     return sendSuccess(res, undefined, 'Job cancelled successfully');
   } catch (error: unknown) {
-    console.error('Job cancellation error:', error);
+    logger.error('Job cancellation error', { error });
     return handleError(res, error, 'Failed to cancel job');
   }
 });
@@ -308,7 +312,7 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
 
     return sendSuccess(res, undefined, 'Job deleted successfully');
   } catch (error: unknown) {
-    console.error('Job deletion error:', error);
+    logger.error('Job deletion error', { error });
     return handleError(res, error, 'Failed to delete job');
   }
 });
@@ -341,7 +345,7 @@ router.get('/stats', (_req: Request, res: Response) => {
 
     return sendSuccess(res, { stats });
   } catch (error: unknown) {
-    console.error('Stats fetch error:', error);
+    logger.error('Stats fetch error', { error });
     return handleError(res, error, 'Failed to fetch stats');
   }
 });

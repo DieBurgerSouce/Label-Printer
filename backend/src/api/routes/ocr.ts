@@ -10,6 +10,7 @@ import * as fs from 'fs/promises';
 import { ocrService } from '../../services/ocr-service';
 import { matcherService } from '../../services/matcher-service';
 import { OCRConfig } from '../../types/ocr-types';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -49,7 +50,7 @@ router.post('/process', upload.single('screenshot'), async (req: Request, res: R
       result,
     });
   } catch (error: any) {
-    console.error('OCR processing error:', error);
+    logger.error('OCR processing error:', error);
     res.status(500).json({
       error: 'OCR processing failed',
       message: error.message,
@@ -84,7 +85,7 @@ router.post(
         results,
       });
     } catch (error: any) {
-      console.error('Batch OCR processing error:', error);
+      logger.error('Batch OCR processing error:', error);
       res.status(500).json({
         error: 'Batch OCR processing failed',
         message: error.message,
@@ -130,7 +131,7 @@ router.post('/process-job/:jobId', async (req: Request, res: Response) => {
       results,
     });
   } catch (error: any) {
-    console.error('Job OCR processing error:', error);
+    logger.error('Job OCR processing error:', error);
     res.status(500).json({
       error: 'Job OCR processing failed',
       message: error.message,
@@ -168,7 +169,7 @@ router.post('/match', async (req: Request, res: Response) => {
       validation,
     });
   } catch (error: any) {
-    console.error('Matching error:', error);
+    logger.error('Matching error:', error);
     res.status(500).json({
       error: 'Matching failed',
       message: error.message,
@@ -199,7 +200,7 @@ router.post('/batch-match', async (req: Request, res: Response) => {
       report,
     });
   } catch (error: any) {
-    console.error('Batch matching error:', error);
+    logger.error('Batch matching error:', error);
     res.status(500).json({
       error: 'Batch matching failed',
       message: error.message,
@@ -226,7 +227,7 @@ router.post('/find-best-matches', async (req: Request, res: Response) => {
       matches,
     });
   } catch (error: any) {
-    console.error('Find best matches error:', error);
+    logger.error('Find best matches error:', error);
     res.status(500).json({
       error: 'Finding best matches failed',
       message: error.message,
@@ -252,7 +253,7 @@ router.get('/status/:resultId', (req: Request, res: Response) => {
       status,
     });
   } catch (error: any) {
-    console.error('Status check error:', error);
+    logger.error('Status check error:', error);
     res.status(500).json({
       error: 'Status check failed',
       message: error.message,
@@ -279,7 +280,7 @@ router.post('/validate-match', (req: Request, res: Response) => {
       validation,
     });
   } catch (error: any) {
-    console.error('Validation error:', error);
+    logger.error('Validation error:', error);
     res.status(500).json({
       error: 'Validation failed',
       message: error.message,

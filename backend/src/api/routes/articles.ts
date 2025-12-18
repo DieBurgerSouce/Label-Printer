@@ -6,6 +6,7 @@ import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma';
 import { sendSuccess, sendNotFound, handleError } from '../../utils/api-response';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -74,7 +75,7 @@ router.get('/', async (req: Request, res: Response) => {
       orderBy: { [sortBy]: sortOrder },
     });
 
-    console.log(`✅ Loaded ${articles.length} articles from DATABASE (total: ${total})`);
+    logger.info(`Loaded ${articles.length} articles from DATABASE`, { total });
 
     // Calculate pagination
     const totalPages = Math.ceil(total / limit);
@@ -91,7 +92,7 @@ router.get('/', async (req: Request, res: Response) => {
       },
     });
   } catch (error: unknown) {
-    console.error('Error fetching articles:', error);
+    logger.error('Error fetching articles', { error });
     return handleError(res, error, 'Failed to fetch articles');
   }
 });
@@ -129,7 +130,7 @@ router.get('/stats', async (_req: Request, res: Response) => {
 
     return sendSuccess(res, stats);
   } catch (error: unknown) {
-    console.error('Error fetching stats:', error);
+    logger.error('Error fetching stats', { error });
     return handleError(res, error, 'Failed to fetch statistics');
   }
 });
@@ -155,7 +156,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
     return sendSuccess(res, article);
   } catch (error: unknown) {
-    console.error('Error fetching article:', error);
+    logger.error('Error fetching article', { error });
     return handleError(res, error, 'Failed to fetch article');
   }
 });
@@ -191,7 +192,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     return sendSuccess(res, updated);
   } catch (error: unknown) {
-    console.error('Error updating article:', error);
+    logger.error('Error updating article', { error });
     return handleError(res, error, 'Failed to update article');
   }
 });
@@ -222,7 +223,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     return res.status(204).send();
   } catch (error: unknown) {
-    console.error('Error deleting article:', error);
+    logger.error('Error deleting article', { error });
     return handleError(res, error, 'Failed to delete article');
   }
 });
@@ -246,7 +247,7 @@ router.post('/', async (req: Request, res: Response) => {
 
     return sendSuccess(res, created, 'Article created', 201);
   } catch (error: unknown) {
-    console.error('Error creating article:', error);
+    logger.error('Error creating article', { error });
     return handleError(res, error, 'Failed to create article');
   }
 });

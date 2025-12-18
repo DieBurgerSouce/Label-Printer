@@ -15,6 +15,7 @@ import {
   sendInternalError,
   handleError,
 } from '../../utils/api-response';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -32,7 +33,7 @@ router.post('/', async (req: Request, res: Response) => {
     const template = await labelTemplateService.createTemplate(req.body);
     return sendCreated(res, { template }, 'Template saved successfully');
   } catch (error: unknown) {
-    console.error('❌ Label template save error:', error);
+    logger.error('Label template save error', { error });
 
     const err = error as NodeError;
     const message = err.message || 'Unknown error';
@@ -67,7 +68,7 @@ router.get('/', async (_req: Request, res: Response) => {
     const templates = await labelTemplateService.listTemplates();
     return sendSuccess(res, { templates });
   } catch (error: unknown) {
-    console.error('❌ Label templates listing error:', error);
+    logger.error('Label templates listing error', { error });
     return handleError(res, error, 'Label templates listing failed');
   }
 });
@@ -82,7 +83,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const template = await labelTemplateService.getTemplate(id);
     return sendSuccess(res, { template });
   } catch (error: unknown) {
-    console.error('❌ Label template fetch error:', error);
+    logger.error('Label template fetch error', { error });
 
     const err = error as NodeError;
     const message = err.message || 'Unknown error';
@@ -109,12 +110,16 @@ router.put('/:id', async (req: Request, res: Response) => {
     const template = await labelTemplateService.updateTemplate(id, req.body);
     return sendSuccess(res, { template }, 'Template updated successfully');
   } catch (error: unknown) {
-    console.error('❌ Label template update error:', error);
+    logger.error('Label template update error', { error });
 
     const err = error as NodeError;
     const message = err.message || 'Unknown error';
 
-    if (message.includes('Invalid') || message.includes('required') || message.includes('mismatch')) {
+    if (
+      message.includes('Invalid') ||
+      message.includes('required') ||
+      message.includes('mismatch')
+    ) {
       return sendBadRequest(res, message);
     }
 
@@ -140,7 +145,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     await labelTemplateService.deleteTemplate(id);
     return sendSuccess(res, undefined, 'Template deleted successfully');
   } catch (error: unknown) {
-    console.error('❌ Label template deletion error:', error);
+    logger.error('Label template deletion error', { error });
 
     const err = error as NodeError;
     const message = err.message || 'Unknown error';

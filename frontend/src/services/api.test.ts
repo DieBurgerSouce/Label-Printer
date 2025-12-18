@@ -3,7 +3,7 @@
  * Tests helper functions and utilities
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { getImageUrl } from './api';
 
 // Mock import.meta.env

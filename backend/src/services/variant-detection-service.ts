@@ -157,7 +157,6 @@ export class VariantDetectionService {
   private async detectRadioVariants(page: Page): Promise<VariantGroup[]> {
     const groups: VariantGroup[] = [];
     const processedGroups = new Set<string>(); // Track processed groups to avoid duplicates
-    const processedElements = new WeakSet(); // Track processed DOM elements
 
     try {
       // Common selectors for radio button groups - ORDERED BY SPECIFICITY

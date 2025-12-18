@@ -12,6 +12,7 @@ import {
   PaginationParams,
   PriceLabel,
 } from '../../types/label-types.js';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -166,7 +167,7 @@ router.get('/:id/image', async (req: Request, res: Response): Promise<void> => {
     res.contentType('image/png');
     res.send(buffer);
   } catch (error) {
-    console.error('Error serving label image:', error);
+    logger.error('Error serving label image:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to serve image',
@@ -220,7 +221,7 @@ router.get('/:id/thumbnail', async (req: Request, res: Response): Promise<void> 
     res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
     res.send(thumbnail);
   } catch (error) {
-    console.error('Error generating thumbnail:', error);
+    logger.error('Error generating thumbnail:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to generate thumbnail',
@@ -324,13 +325,14 @@ router.post('/batch', async (req: Request, res: Response): Promise<void> => {
         result = await StorageService.deleteLabels(labelIds);
         break;
 
-      default:
+      default: {
         const response: ApiResponse = {
           success: false,
           error: `Unknown operation: ${operation}`,
         };
         res.status(400).json(response);
         return;
+      }
     }
 
     const response: ApiResponse = {
@@ -446,7 +448,7 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
 
     if (templateId) {
       try {
-        console.log(
+        logger.info(
           `🎨 Rendering label for article ${article.articleNumber} with template ${templateId}`
         );
 
@@ -457,9 +459,8 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
 
         if (template) {
           // Import rendering services
-          const { convertLabelTemplateToRenderingTemplate } = await import(
-            '../../services/label-to-rendering-converter.js'
-          );
+          const { convertLabelTemplateToRenderingTemplate } =
+            await import('../../services/label-to-rendering-converter.js');
           const { templateEngine } = await import('../../services/template-engine.js');
 
           // Convert Label Template to Rendering Template (if needed)
@@ -478,12 +479,12 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
           };
 
           // 🔍 DEBUG: Log render data to verify prices
-          console.log(`🔍 RENDER DATA for Article ${article.articleNumber}:`);
-          console.log(`   - Price: ${renderData.price} ${renderData.currency}`);
-          console.log(`   - Tiered Prices: ${renderData.tieredPrices.length} tiers`);
+          logger.info(`🔍 RENDER DATA for Article ${article.articleNumber}:`);
+          logger.info(`   - Price: ${renderData.price} ${renderData.currency}`);
+          logger.info(`   - Tiered Prices: ${renderData.tieredPrices.length} tiers`);
           if (renderData.tieredPrices.length > 0) {
             renderData.tieredPrices.forEach((tp: any, i: number) => {
-              console.log(`     ${i + 1}. ${tp.quantity} Stk → ${tp.price} EUR`);
+              logger.info(`     ${i + 1}. ${tp.quantity} Stk → ${tp.price} EUR`);
             });
           }
 
@@ -500,17 +501,17 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
 
           if (renderResult.success && renderResult.buffer) {
             imageData = renderResult.buffer;
-            console.log(
+            logger.info(
               `✅ Label rendered successfully: ${renderResult.width}x${renderResult.height} in ${renderResult.renderTime}ms`
             );
           } else {
-            console.error('❌ Label rendering failed:', renderResult.error);
+            logger.error('❌ Label rendering failed:', renderResult.error);
           }
         } else {
-          console.warn(`⚠️  Template ${templateId} not found, generating label without image`);
+          logger.warn(`⚠️  Template ${templateId} not found, generating label without image`);
         }
       } catch (renderError) {
-        console.error('❌ Error during label rendering:', renderError);
+        logger.error('❌ Error during label rendering:', renderError);
         // Continue without image - don't fail the whole request
       }
     }
@@ -547,7 +548,7 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
 
     res.status(201).json(response);
   } catch (error) {
-    console.error('Error generating label from article:', error);
+    logger.error('Error generating label from article:', error);
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -563,7 +564,7 @@ router.post('/generate-from-article', async (req: Request, res: Response): Promi
  */
 router.post('/extract', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { url, articleNumber: _articleNumber } = req.body;
+    const { url } = req.body;
 
     if (!url) {
       const response: ApiResponse = {
@@ -585,7 +586,7 @@ router.post('/extract', async (req: Request, res: Response): Promise<void> => {
 
     res.status(501).json(response);
   } catch (error) {
-    console.error('Error in label extraction route:', error);
+    logger.error('Error in label extraction route:', error);
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',

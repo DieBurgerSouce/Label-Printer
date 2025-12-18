@@ -6,6 +6,7 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import logger from '../../utils/logger';
 
 const router = express.Router();
 
@@ -23,10 +24,10 @@ const SCREENSHOTS_DIR = path.join(BASE_DIR, 'data/screenshots');
 const LABELS_DIR = path.join(BASE_DIR, 'data/labels');
 const PRODUCTS_DIR = path.join(BASE_DIR, 'uploads/products');
 
-console.log('Images route initialized. Screenshots dir:', SCREENSHOTS_DIR);
-console.log('Products dir:', PRODUCTS_DIR);
-console.log('Current __dirname:', __dirname);
-console.log('BASE_DIR:', BASE_DIR);
+logger.info('Images route initialized. Screenshots dir:', SCREENSHOTS_DIR);
+logger.info('Products dir:', PRODUCTS_DIR);
+logger.info('Current __dirname:', __dirname);
+logger.info('BASE_DIR:', BASE_DIR);
 
 /**
  * Validate that a path is safely within a base directory (Path Traversal Prevention)
@@ -43,7 +44,7 @@ function getSafePath(baseDir: string, ...relativePath: string[]): string | null 
 
   // Ensure the resolved path starts with the base directory
   if (!fullPath.startsWith(normalizedBase + path.sep) && fullPath !== normalizedBase) {
-    console.warn(
+    logger.warn(
       `Path traversal attempt blocked: ${relativePath.join('/')} resolved to ${fullPath}`
     );
     return null;
@@ -71,13 +72,13 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
       });
     }
 
-    console.log('Image request:', { jobId, articleNumber, filename });
-    console.log('Looking for image at:', imagePath);
-    console.log('File exists:', fs.existsSync(imagePath));
+    logger.info('Image request:', { jobId, articleNumber, filename });
+    logger.info('Looking for image at:', imagePath);
+    logger.info('File exists:', fs.existsSync(imagePath));
 
     // Check if file exists
     if (!fs.existsSync(imagePath)) {
-      console.log('Image not found at path:', imagePath);
+      logger.info('Image not found at path:', imagePath);
       return res.status(404).json({
         success: false,
         error: 'Image not found',
@@ -103,7 +104,7 @@ router.get('/screenshots/:jobId/:articleNumber/:filename', (req, res) => {
     // Send the file
     res.sendFile(imagePath);
   } catch (error) {
-    console.error('Error serving screenshot:', error);
+    logger.error('Error serving screenshot:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to serve image',
@@ -155,7 +156,7 @@ router.get('/labels/:filename', (req, res) => {
     // Send the file
     res.sendFile(imagePath);
   } catch (error) {
-    console.error('Error serving label:', error);
+    logger.error('Error serving label:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to serve label',
@@ -182,12 +183,12 @@ router.get('/products/:filename', (req, res) => {
       });
     }
 
-    console.log('Product image request:', filename);
-    console.log('Looking for image at:', imagePath);
+    logger.info('Product image request:', filename);
+    logger.info('Looking for image at:', imagePath);
 
     // Check if file exists
     if (!fs.existsSync(imagePath)) {
-      console.log('Product image not found at path:', imagePath);
+      logger.info('Product image not found at path:', imagePath);
       return res.status(404).json({
         success: false,
         error: 'Product image not found',
@@ -213,7 +214,7 @@ router.get('/products/:filename', (req, res) => {
     // Send the file
     res.sendFile(imagePath);
   } catch (error) {
-    console.error('Error serving product image:', error);
+    logger.error('Error serving product image:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to serve product image',
@@ -266,7 +267,7 @@ router.get('/list/:jobId/:articleNumber', (req, res) => {
       images: files,
     });
   } catch (error) {
-    console.error('Error listing images:', error);
+    logger.error('Error listing images:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to list images',

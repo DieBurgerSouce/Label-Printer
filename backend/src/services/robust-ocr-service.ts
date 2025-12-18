@@ -90,7 +90,7 @@ export class RobustOCRService {
   /**
    * Process single screenshot with retry mechanism
    */
-  private async processWithRetry(
+  private async _processWithRetry(
     filePath: string,
     worker: Worker,
     retries: number = 0
@@ -116,7 +116,7 @@ export class RobustOCRService {
       if (retries < this.config.maxRetries) {
         console.log(`    🔄 Retrying... (${retries + 1}/${this.config.maxRetries})`);
         await new Promise((resolve) => setTimeout(resolve, 1000 * (retries + 1)));
-        return this.processWithRetry(filePath, worker, retries + 1);
+        return this._processWithRetry(filePath, worker, retries + 1);
       }
 
       throw error;

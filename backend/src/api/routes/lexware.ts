@@ -3,6 +3,7 @@ import lexwareImportService from '../../services/lexware-import-service';
 import batchProcessor from '../../services/lexware-batch-processor';
 import lexwareValidationService from '../../services/lexware-validation-service';
 import prisma from '../../lib/prisma';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -25,7 +26,7 @@ setInterval(
       }
     }
     if (cleanedCount > 0) {
-      console.log(`🧹 [Lexware] Cleaned up ${cleanedCount} old job(s). Active: ${activeJobs.size}`);
+      logger.info(`🧹 [Lexware] Cleaned up ${cleanedCount} old job(s). Active: ${activeJobs.size}`);
     }
   },
   5 * 60 * 1000
@@ -39,7 +40,7 @@ router.get('/discover', async (req: Request, res: Response) => {
   try {
     const folderPath = req.query.folder as string | undefined;
 
-    console.log('🔍 Discovering Lexware screenshots...');
+    logger.info('🔍 Discovering Lexware screenshots...');
     const pairs = await lexwareImportService.discoverImagePairs(folderPath);
 
     // Get folder statistics
@@ -61,7 +62,7 @@ router.get('/discover', async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Error discovering Lexware files:', error);
+    logger.error('Error discovering Lexware files:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to discover Lexware screenshots',
@@ -84,7 +85,7 @@ router.post('/validate', async (req: Request, res: Response) => {
       });
     }
 
-    console.log(`🔍 Validating ${pairs.length} image pairs...`);
+    logger.info(`🔍 Validating ${pairs.length} image pairs...`);
     const validationResults = await lexwareImportService.validateImagePairs(pairs);
 
     // Check for duplicates
@@ -106,7 +107,7 @@ router.post('/validate', async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Error validating pairs:', error);
+    logger.error('Error validating pairs:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to validate pairs',
@@ -132,7 +133,7 @@ router.post('/preview', async (req: Request, res: Response) => {
     // Take only a few samples for preview
     const samplePairs = pairs.slice(0, Math.min(limit, pairs.length));
 
-    console.log(`🔍 Generating preview for ${samplePairs.length} articles...`);
+    logger.info(`🔍 Generating preview for ${samplePairs.length} articles...`);
 
     // Initialize processor
     await batchProcessor.initialize();
@@ -163,7 +164,7 @@ router.post('/preview', async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Error generating preview:', error);
+    logger.error('Error generating preview:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to generate preview',
@@ -179,7 +180,7 @@ router.post('/process', async (req: Request, res: Response) => {
   try {
     const { folderPath, options = {} } = req.body;
 
-    console.log('🚀 Starting Lexware import process...');
+    logger.info('🚀 Starting Lexware import process...');
 
     // Initialize processor
     await batchProcessor.initialize();
@@ -226,7 +227,7 @@ router.post('/process', async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Error starting import process:', error);
+    logger.error('Error starting import process:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to start import process',
@@ -283,7 +284,7 @@ router.get('/jobs/:id', async (req: Request, res: Response) => {
 
     res.json(response);
   } catch (error: any) {
-    console.error('Error getting job status:', error);
+    logger.error('Error getting job status:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to get job status',
@@ -319,7 +320,7 @@ router.get('/jobs/:id/results', async (req: Request, res: Response) => {
       data: job.result,
     });
   } catch (error: any) {
-    console.error('Error getting job results:', error);
+    logger.error('Error getting job results:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to get job results',
@@ -359,7 +360,7 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
       message: 'Job cancelled (note: processing may continue in background)',
     });
   } catch (error: any) {
-    console.error('Error cancelling job:', error);
+    logger.error('Error cancelling job:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to cancel job',
@@ -396,7 +397,7 @@ router.get('/articles', async (_req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Error fetching Lexware articles:', error);
+    logger.error('Error fetching Lexware articles:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to fetch Lexware articles',
@@ -433,7 +434,7 @@ router.delete('/articles', async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Error deleting Lexware articles:', error);
+    logger.error('Error deleting Lexware articles:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to delete Lexware articles',

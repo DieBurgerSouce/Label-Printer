@@ -9,6 +9,7 @@ import { ApiResponse, PriceLabel } from '../../types/label-types.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import logger from '../../utils/logger';
 
 const router = Router();
 const PRINT_TEMPLATES_DIR = path.join(process.cwd(), 'data', 'print-templates');
@@ -18,20 +19,20 @@ const PRINT_TEMPLATES_DIR = path.join(process.cwd(), 'data', 'print-templates');
  */
 router.post('/preview', async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log('🔍 Preview request received:', JSON.stringify(req.body, null, 2));
+    logger.info('🔍 Preview request received:', JSON.stringify(req.body, null, 2));
     const { layout, labelIds, format, gridConfig, customWidth, customHeight } = req.body;
 
-    console.log('📋 Debugging request structure:');
-    console.log('  - layout:', layout ? 'present' : 'missing');
-    console.log(
+    logger.info('📋 Debugging request structure:');
+    logger.info('  - layout:', layout ? 'present' : 'missing');
+    logger.info(
       '  - labelIds:',
       labelIds
         ? `present (${Array.isArray(labelIds) ? labelIds.length : 'not array'} items)`
         : 'missing'
     );
-    console.log('  - labelIds value:', labelIds);
-    console.log('  - format:', format || 'missing');
-    console.log('  - gridConfig:', gridConfig ? 'present' : 'missing');
+    logger.info('  - labelIds value:', labelIds);
+    logger.info('  - format:', format || 'missing');
+    logger.info('  - gridConfig:', gridConfig ? 'present' : 'missing');
 
     // Support both old format (layout + labelIds) and new format (flat structure)
     let printLayout;
@@ -39,7 +40,7 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
 
     // Check if labelIds is an empty array
     const hasLabelIds = labelIds && Array.isArray(labelIds) && labelIds.length > 0;
-    console.log('  - hasLabelIds:', hasLabelIds);
+    logger.info('  - hasLabelIds:', hasLabelIds);
 
     if (layout && labelIds) {
       // Old format
@@ -99,7 +100,7 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
         errorMsg += 'unknown validation error';
       }
 
-      console.log('❌ Validation failed:', errorMsg);
+      logger.info('❌ Validation failed:', errorMsg);
 
       const response: ApiResponse = {
         success: false,
@@ -110,7 +111,7 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
     }
 
     // Fetch labels in batches to avoid memory explosion
-    console.log(`📦 Loading ${labelIdArray.length} labels in batches...`);
+    logger.info(`📦 Loading ${labelIdArray.length} labels in batches...`);
     const labels: (PriceLabel | null)[] = [];
     const LOAD_BATCH_SIZE = 100;
 
@@ -120,7 +121,7 @@ router.post('/preview', async (req: Request, res: Response): Promise<void> => {
       labels.push(...batch);
 
       const progress = Math.min(i + LOAD_BATCH_SIZE, labelIdArray.length);
-      console.log(`✅ Loaded ${progress}/${labelIdArray.length} labels`);
+      logger.info(`✅ Loaded ${progress}/${labelIdArray.length} labels`);
     }
 
     const validLabels = labels.filter((l) => l !== null);
@@ -223,7 +224,7 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
     }
 
     // Fetch labels in batches to avoid memory explosion
-    console.log(`📦 Loading ${labelIdArray.length} labels in batches...`);
+    logger.info(`📦 Loading ${labelIdArray.length} labels in batches...`);
     const labels: (PriceLabel | null)[] = [];
     const LOAD_BATCH_SIZE = 100;
 
@@ -233,7 +234,7 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
       labels.push(...batch);
 
       const progress = Math.min(i + LOAD_BATCH_SIZE, labelIdArray.length);
-      console.log(`✅ Loaded ${progress}/${labelIdArray.length} labels`);
+      logger.info(`✅ Loaded ${progress}/${labelIdArray.length} labels`);
     }
 
     const validLabels = labels.filter((l) => l !== null);
@@ -248,7 +249,7 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
     }
 
     if (exportFormat === 'pdf') {
-      console.log(`📄 Generating PDF for ${validLabels.length} labels...`);
+      logger.info(`📄 Generating PDF for ${validLabels.length} labels...`);
       const pdfBuffer = await PrintService.generatePDF(printLayout, validLabels);
 
       res.setHeader('Content-Type', 'application/pdf');
@@ -262,7 +263,7 @@ router.post('/export', async (req: Request, res: Response): Promise<void> => {
       res.status(400).json(response);
     }
   } catch (error) {
-    console.error('❌ PDF Export Error:', error);
+    logger.error('❌ PDF Export Error:', error);
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -357,7 +358,7 @@ router.get('/templates', async (_req: Request, res: Response): Promise<void> => 
 
     res.json(response);
   } catch (error) {
-    console.error('Failed to load print templates:', error);
+    logger.error('Failed to load print templates:', error);
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -391,7 +392,7 @@ router.post('/templates', async (req: Request, res: Response): Promise<void> => 
     const filePath = path.join(PRINT_TEMPLATES_DIR, `${template.id}.json`);
     await fs.writeFile(filePath, JSON.stringify(template, null, 2));
 
-    console.log(`✅ Print template saved: ${template.name || template.id}`);
+    logger.info(`✅ Print template saved: ${template.name || template.id}`);
 
     const response: ApiResponse = {
       success: true,
@@ -401,7 +402,7 @@ router.post('/templates', async (req: Request, res: Response): Promise<void> => 
 
     res.json(response);
   } catch (error) {
-    console.error('❌ Failed to save print template:', error);
+    logger.error('❌ Failed to save print template:', error);
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -428,7 +429,7 @@ router.get('/templates/:id', async (req: Request, res: Response): Promise<void> 
 
     res.json(response);
   } catch (error) {
-    console.error(`Failed to load print template ${req.params.id}:`, error);
+    logger.error(`Failed to load print template ${req.params.id}:`, error);
     const response: ApiResponse = {
       success: false,
       error: 'Template not found',
@@ -447,7 +448,7 @@ router.delete('/templates/:id', async (req: Request, res: Response): Promise<voi
 
     await fs.unlink(filePath);
 
-    console.log(`✅ Print template deleted: ${id}`);
+    logger.info(`✅ Print template deleted: ${id}`);
 
     const response: ApiResponse = {
       success: true,
@@ -456,7 +457,7 @@ router.delete('/templates/:id', async (req: Request, res: Response): Promise<voi
 
     res.json(response);
   } catch (error) {
-    console.error(`Failed to delete print template ${req.params.id}:`, error);
+    logger.error(`Failed to delete print template ${req.params.id}:`, error);
     const response: ApiResponse = {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

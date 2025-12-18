@@ -591,7 +591,7 @@ export class PrintService {
   /**
    * Create a placeholder label for preview
    */
-  private static async createPlaceholderLabel(
+  private static async _createPlaceholderLabel(
     width: number,
     height: number,
     label: PriceLabel
@@ -638,7 +638,7 @@ export class PrintService {
   /**
    * Create grid overlay for preview
    */
-  private static async createGridOverlay(
+  private static async _createGridOverlay(
     width: number,
     height: number,
     columns: number,

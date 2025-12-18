@@ -10,6 +10,7 @@ import templateStorageService from '../../services/template-storage-service';
 import { convertLabelTemplateToRenderingTemplate } from '../../services/label-to-rendering-converter';
 import { LabelTemplate, RenderContext, RenderOptions } from '../../types/template-types';
 import { v4 as uuidv4 } from 'uuid';
+import logger from '../../utils/logger';
 
 const router = Router();
 
@@ -46,7 +47,7 @@ router.post('/', async (req: Request, res: Response) => {
       template: savedTemplate,
     });
   } catch (error: any) {
-    console.error('❌ Template creation error:', error);
+    logger.error('❌ Template creation error:', error);
 
     if (error.message.includes('already exists')) {
       return res.status(409).json({
@@ -97,7 +98,7 @@ router.get('/', async (_req: Request, res: Response) => {
       count: templates.length,
     });
   } catch (error: any) {
-    console.error('❌ Template listing error:', error);
+    logger.error('❌ Template listing error:', error);
     res.status(500).json({
       error: 'Template listing failed',
       message: error.message,
@@ -119,7 +120,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       template,
     });
   } catch (error: any) {
-    console.error('❌ Template fetch error:', error);
+    logger.error('❌ Template fetch error:', error);
 
     if (error.message.includes('Invalid template ID')) {
       return res.status(400).json({
@@ -165,7 +166,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       template: savedTemplate,
     });
   } catch (error: any) {
-    console.error('❌ Template update error:', error);
+    logger.error('❌ Template update error:', error);
 
     if (
       error.message.includes('Invalid') ||
@@ -213,7 +214,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
       message: 'Template deleted successfully',
     });
   } catch (error: any) {
-    console.error('❌ Template deletion error:', error);
+    logger.error('❌ Template deletion error:', error);
 
     if (error.message.includes('Invalid template ID')) {
       return res.status(400).json({
@@ -282,7 +283,7 @@ router.post('/:id/render', async (req: Request, res: Response) => {
     res.set('X-Render-Time', `${result.renderTime}ms`);
     res.send(result.buffer);
   } catch (error: any) {
-    console.error('❌ Template rendering error:', error);
+    logger.error('❌ Template rendering error:', error);
 
     if (error.message.includes('not found')) {
       return res.status(404).json({
@@ -340,7 +341,7 @@ router.post('/:id/render/base64', async (req: Request, res: Response) => {
       renderTime: result.renderTime,
     });
   } catch (error: any) {
-    console.error('❌ Template rendering error:', error);
+    logger.error('❌ Template rendering error:', error);
 
     if (error.message.includes('not found')) {
       return res.status(404).json({
@@ -407,7 +408,7 @@ const renderBatchHandler = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('❌ Batch rendering error:', error);
+    logger.error('❌ Batch rendering error:', error);
 
     if (error.message.includes('not found')) {
       return res.status(404).json({
@@ -477,7 +478,7 @@ router.post('/preview', async (req: Request, res: Response) => {
       renderTime: result.renderTime,
     });
   } catch (error: any) {
-    console.error('Template preview error:', error);
+    logger.error('Template preview error:', error);
     res.status(500).json({
       error: 'Template preview failed',
       message: error.message,
@@ -519,7 +520,7 @@ router.post('/convert', async (req: Request, res: Response) => {
       message: 'Template converted successfully',
     });
   } catch (error: any) {
-    console.error('❌ Template conversion error:', error);
+    logger.error('❌ Template conversion error:', error);
     res.status(500).json({
       error: 'Template conversion failed',
       message: error.message,
@@ -571,7 +572,7 @@ router.post('/:id/export-pdf', async (req: Request, res: Response) => {
       message: 'PDF generated successfully',
     });
   } catch (error: any) {
-    console.error('❌ PDF export error:', error);
+    logger.error('❌ PDF export error:', error);
 
     if (error.message.includes('not found')) {
       return res.status(404).json({

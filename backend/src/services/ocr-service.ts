@@ -25,8 +25,6 @@ class OCRService {
   private workers: Map<string, Worker> = new Map();
   private processingQueue: Map<string, OCRResult> = new Map();
   private readonly maxWorkers = 2; // Reduced for Docker stability (was 8 - caused crashes)
-  private _processedCount = 0;
-  private readonly _maxProcessedBeforeCleanup = 20; // Clean up workers more frequently in Docker
 
   /**
    * Initialize OCR workers
@@ -516,44 +514,6 @@ class OCRService {
     const workerIds = Array.from(this.workers.keys());
     const workerId = workerIds[Math.floor(Math.random() * workerIds.length)];
     return this.workers.get(workerId)!;
-  }
-
-  /**
-   * Clean up and recreate workers to free memory
-   * @deprecated Currently unused - implement periodic cleanup if memory issues arise
-   */
-  private async _cleanupWorkers(): Promise<void> {
-    try {
-      // Terminate all existing workers
-      for (const [id, worker] of this.workers) {
-        try {
-          await worker.terminate();
-          console.log(`   ✅ Terminated worker ${id}`);
-        } catch (error) {
-          console.error(`   ❌ Error terminating worker ${id}:`, error);
-        }
-      }
-
-      // Clear the workers map
-      this.workers.clear();
-
-      // Force garbage collection if available
-      if (global.gc) {
-        global.gc();
-        console.log('   🧹 Forced garbage collection');
-      }
-
-      // Wait a bit for cleanup
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Re-initialize workers
-      await this.initialize();
-      console.log('   ✅ Workers re-initialized');
-    } catch (error) {
-      console.error('❌ Error during worker cleanup:', error);
-      // Re-initialize even if cleanup failed
-      await this.initialize();
-    }
   }
 
   /**
