@@ -5,6 +5,16 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Mock logger first
+vi.mock('../../src/utils/logger', () => ({
+  default: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 // Mock all dependent services
 vi.mock('../../src/services/web-crawler-service.js', () => ({
   webCrawlerService: {
@@ -120,7 +130,9 @@ vi.mock('../../src/services/automation/index.js', () => ({
   emitJobCompleted: vi.fn(),
   emitJobFailed: vi.fn(),
   emitLabelGenerated: vi.fn(),
-  calculateOverallProgress: vi.fn().mockImplementation((step, progress) => step * 25 + progress / 4),
+  calculateOverallProgress: vi
+    .fn()
+    .mockImplementation((step, progress) => step * 25 + progress / 4),
 }));
 
 vi.mock('fs/promises', () => ({

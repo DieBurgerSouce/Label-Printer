@@ -46,14 +46,16 @@ vi.mock('../../src/lib/prisma.js', () => ({
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
       }),
-      update: vi.fn().mockImplementation((args) => Promise.resolve({
-        id: args.where.id,
-        data: args.data.data,
-        status: args.data.status || 'completed',
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date(),
-        imageUrl: null,
-      })),
+      update: vi.fn().mockImplementation((args) =>
+        Promise.resolve({
+          id: args.where.id,
+          data: args.data.data,
+          status: args.data.status || 'completed',
+          createdAt: new Date('2024-01-01'),
+          updatedAt: new Date(),
+          imageUrl: null,
+        })
+      ),
     },
   },
 }));
@@ -208,7 +210,7 @@ describe('LabelGeneratorService', () => {
       });
 
       // Wait a bit to ensure different timestamp
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       const duplicatedLabel = await LabelGeneratorService.duplicateLabel(originalLabel);
 
@@ -266,7 +268,7 @@ describe('LabelGeneratorService', () => {
 
       const merged = await LabelGeneratorService.mergeLabels([label1, label2]);
 
-      const commonCount = merged.tags?.filter(t => t === 'common').length;
+      const commonCount = merged.tags?.filter((t) => t === 'common').length;
       expect(commonCount).toBe(1);
     });
   });
@@ -288,9 +290,7 @@ describe('LabelGeneratorService', () => {
     });
 
     it('should use default price of 0 when not provided', async () => {
-      const products = [
-        { articleNumber: 'EX-003', description: 'No Price Product' },
-      ];
+      const products = [{ articleNumber: 'EX-003', description: 'No Price Product' }];
 
       const labels = await LabelGeneratorService.generateFromExcel(products);
 

@@ -58,7 +58,7 @@ describe('DataValidationService', () => {
       const data: MergedProductData = {
         productName: 'AB', // Too short
         articleNumber: '12345',
-        price: 10.00,
+        price: 10.0,
       };
 
       const result = service.validateProductData(data);
@@ -72,7 +72,7 @@ describe('DataValidationService', () => {
       const data: MergedProductData = {
         productName: 'THIS IS ALL UPPERCASE PRODUCT NAME',
         articleNumber: '12345',
-        price: 10.00,
+        price: 10.0,
       };
 
       const result = service.validateProductData(data);
@@ -85,7 +85,7 @@ describe('DataValidationService', () => {
       const data: MergedProductData = {
         productName: 'Product\nWith Line Break',
         articleNumber: '12345',
-        price: 10.00,
+        price: 10.0,
       };
 
       const result = service.validateProductData(data);
@@ -119,7 +119,7 @@ describe('DataValidationService', () => {
         const data: MergedProductData = {
           productName: 'Test Product',
           articleNumber: '12345',
-          price: -10.00,
+          price: -10.0,
         };
 
         const result = service.validateProductData(data);
@@ -226,7 +226,7 @@ describe('DataValidationService', () => {
 
         const result = service.validateProductData(data);
 
-        expect(result.errors.some(e => e.includes('Invalid quantity'))).toBe(true);
+        expect(result.errors.some((e) => e.includes('Invalid quantity'))).toBe(true);
       });
 
       it('should reject invalid tier prices', () => {
@@ -240,7 +240,7 @@ describe('DataValidationService', () => {
 
         const result = service.validateProductData(data);
 
-        expect(result.errors.some(e => e.includes('Invalid price'))).toBe(true);
+        expect(result.errors.some((e) => e.includes('Invalid price'))).toBe(true);
       });
     });
 
@@ -249,7 +249,7 @@ describe('DataValidationService', () => {
         const data: MergedProductData = {
           productName: 'Test Product',
           articleNumber: '12345678',
-          price: 10.00,
+          price: 10.0,
         };
 
         const result = service.validateProductData(data);
@@ -262,7 +262,7 @@ describe('DataValidationService', () => {
         const data: MergedProductData = {
           productName: 'Test Product',
           articleNumber: 'ABC-123',
-          price: 10.00,
+          price: 10.0,
         };
 
         const result = service.validateProductData(data);
@@ -275,7 +275,7 @@ describe('DataValidationService', () => {
         const data: MergedProductData = {
           productName: 'Test Product',
           articleNumber: '1',
-          price: 10.00,
+          price: 10.0,
         };
 
         const result = service.validateProductData(data);
@@ -416,7 +416,7 @@ describe('DataValidationService', () => {
       const result = service.detectCorruptedData(corruptedData);
 
       expect(result.corruptionScore).toBeGreaterThan(0);
-      expect(result.issues.some(i => i.includes('OCR encoding artifacts'))).toBe(true);
+      expect(result.issues.some((i) => i.includes('OCR encoding artifacts'))).toBe(true);
     });
 
     it('should detect cookie banner contamination', () => {
@@ -429,7 +429,7 @@ describe('DataValidationService', () => {
       const result = service.detectCorruptedData(corruptedData);
 
       expect(result.corruptionScore).toBeGreaterThan(0);
-      expect(result.issues.some(i => i.includes('Cookie banner contamination'))).toBe(true);
+      expect(result.issues.some((i) => i.includes('Cookie banner contamination'))).toBe(true);
     });
 
     it('should detect navigation contamination', () => {
@@ -442,7 +442,7 @@ describe('DataValidationService', () => {
       const result = service.detectCorruptedData(corruptedData);
 
       expect(result.corruptionScore).toBeGreaterThan(0);
-      expect(result.issues.some(i => i.includes('Navigation contamination'))).toBe(true);
+      expect(result.issues.some((i) => i.includes('Navigation contamination'))).toBe(true);
     });
 
     it('should cap corruption score at 1.0', () => {

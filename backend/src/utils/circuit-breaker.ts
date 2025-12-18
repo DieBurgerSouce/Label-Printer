@@ -197,6 +197,26 @@ export class CircuitBreaker {
   }
 
   /**
+   * Manually open the circuit breaker (alias for trip)
+   */
+  open(): void {
+    this.trip();
+  }
+
+  /**
+   * Manually close the circuit breaker
+   */
+  close(): void {
+    if (this.state.state !== CircuitState.CLOSED) {
+      this.transitionTo(CircuitState.CLOSED, this.state.state);
+      this.state.failures = 0;
+      this.state.successes = 0;
+      this.state.failureTimestamps = [];
+      this.state.openedAt = null;
+    }
+  }
+
+  /**
    * Handle successful call
    */
   private onSuccess(): void {
@@ -291,7 +311,7 @@ export class CircuitBreaker {
 /**
  * Circuit breaker registry for managing multiple breakers
  */
-class CircuitBreakerRegistry {
+export class CircuitBreakerRegistry {
   private breakers: Map<string, CircuitBreaker> = new Map();
 
   /**
@@ -302,6 +322,17 @@ class CircuitBreakerRegistry {
       this.breakers.set(name, new CircuitBreaker({ name, ...options }));
     }
     return this.breakers.get(name)!;
+  }
+
+  /**
+   * Get all circuit breakers
+   */
+  getAll(): Record<string, CircuitBreaker> {
+    const all: Record<string, CircuitBreaker> = {};
+    this.breakers.forEach((breaker, name) => {
+      all[name] = breaker;
+    });
+    return all;
   }
 
   /**

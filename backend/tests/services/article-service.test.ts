@@ -33,8 +33,8 @@ vi.mock('../../src/lib/prisma.js', () => {
         findFirst: vi.fn().mockImplementation(({ where }) => {
           if (where.OR) {
             const idMatch = where.OR.find((c: { id?: string }) => c.id === 'prod-123');
-            const articleMatch = where.OR.find((c: { articleNumber?: string }) =>
-              c.articleNumber === 'ART-001'
+            const articleMatch = where.OR.find(
+              (c: { articleNumber?: string }) => c.articleNumber === 'ART-001'
             );
             if (idMatch || articleMatch) {
               return Promise.resolve(mockProduct);
@@ -142,7 +142,7 @@ describe('ArticleService', () => {
     it('should handle articles without tiered prices', async () => {
       const articles = await ArticleService.getAllArticles();
 
-      const secondArticle = articles.find(a => a.articleNumber === 'ART-002');
+      const secondArticle = articles.find((a) => a.articleNumber === 'ART-002');
       expect(secondArticle?.tieredPrices).toBeUndefined();
     });
 
