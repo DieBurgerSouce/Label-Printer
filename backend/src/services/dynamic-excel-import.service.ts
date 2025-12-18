@@ -317,34 +317,49 @@ export class DynamicExcelImportService {
       };
     });
 
-    // Process rows
+    // Process rows - OPTIMIZED: Batch fetch + batch update to avoid N+1 queries
     const errors: ImportResult['errors'] = [];
     const updatedArticles: any[] = [];
     let matchedArticles = 0;
     let skippedArticles = 0;
 
+    // Step 1: Extract all article numbers from Excel rows
+    const rowArticleNumbers: Array<{ rowIndex: number; articleNumber: string }> = [];
     for (let i = 0; i < dataRows.length; i++) {
-      const row = dataRows[i];
-      const rowNumber = startRow + i;
+      const articleNumber = String(dataRows[i][matchColumnIndex] || '').trim();
+      if (articleNumber) {
+        rowArticleNumbers.push({ rowIndex: i, articleNumber });
+      } else {
+        skippedArticles++;
+        errors.push({
+          row: startRow + i,
+          articleNumber: '',
+          message: 'Article number is empty',
+        });
+      }
+    }
+
+    // Step 2: Batch fetch all matching articles (single query instead of N queries)
+    const articleNumbersToFetch = rowArticleNumbers.map((r) => r.articleNumber);
+    const existingArticles = await prisma.product.findMany({
+      where: { articleNumber: { in: articleNumbersToFetch } },
+    });
+
+    // Create lookup map for O(1) access
+    const articleMap = new Map(existingArticles.map((a) => [a.articleNumber, a]));
+
+    // Step 3: Prepare updates
+    const updateOperations: Array<{
+      id: string;
+      data: Record<string, unknown>;
+    }> = [];
+
+    for (const { rowIndex, articleNumber } of rowArticleNumbers) {
+      const row = dataRows[rowIndex];
+      const rowNumber = startRow + rowIndex;
 
       try {
-        // Get article number
-        const articleNumber = String(row[matchColumnIndex] || '').trim();
-
-        if (!articleNumber) {
-          skippedArticles++;
-          errors.push({
-            row: rowNumber,
-            articleNumber: '',
-            message: 'Article number is empty',
-          });
-          continue;
-        }
-
-        // Find article in database
-        const article = await prisma.product.findUnique({
-          where: { articleNumber },
-        });
+        const article = articleMap.get(articleNumber);
 
         if (!article) {
           skippedArticles++;
@@ -354,7 +369,7 @@ export class DynamicExcelImportService {
         matchedArticles++;
 
         // Build update data
-        const updateData: any = {};
+        const updateData: Record<string, unknown> = {};
         let hasChanges = false;
 
         for (const mapping of mappings) {
@@ -371,22 +386,30 @@ export class DynamicExcelImportService {
           }
         }
 
-        // Update article if there are changes
+        // Queue update if there are changes
         if (hasChanges) {
-          const updated = await prisma.product.update({
-            where: { id: article.id },
-            data: updateData,
-          });
-
-          updatedArticles.push(updated);
+          updateOperations.push({ id: article.id, data: updateData });
         }
       } catch (error) {
         errors.push({
           row: rowNumber,
-          articleNumber: row[matchColumnIndex] || 'N/A',
+          articleNumber: articleNumber || 'N/A',
           message: error instanceof Error ? error.message : 'Unknown error',
         });
       }
+    }
+
+    // Step 4: Execute all updates in a transaction (batch instead of N individual updates)
+    if (updateOperations.length > 0) {
+      const updateResults = await prisma.$transaction(
+        updateOperations.map((op) =>
+          prisma.product.update({
+            where: { id: op.id },
+            data: op.data,
+          })
+        )
+      );
+      updatedArticles.push(...updateResults);
     }
 
     return {

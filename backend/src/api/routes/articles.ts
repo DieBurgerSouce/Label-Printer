@@ -1,6 +1,7 @@
 /**
  * Articles API Routes
  * ✅ FIXED: Now uses PostgreSQL Database via Prisma!
+ * ✅ Cache invalidation on mutations
  */
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
@@ -8,6 +9,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma';
 import { sendSuccess, sendNotFound, handleError } from '../../utils/api-response';
 import logger from '../../utils/logger';
+import { getCache, CacheKeys } from '../../lib/cache';
 
 const router = Router();
 
@@ -191,6 +193,20 @@ router.put('/:id', async (req: Request, res: Response) => {
       },
     });
 
+    // Invalidate cache for this product and product lists
+    try {
+      const cache = await getCache();
+      await Promise.all([
+        cache.delete(CacheKeys.product(existing.id)),
+        cache.deletePattern('products:list:*'),
+        cache.delete(CacheKeys.categories()),
+      ]);
+      logger.debug('Cache invalidated for product update', { id: existing.id });
+    } catch (cacheError) {
+      // Cache errors should not fail the request
+      logger.warn('Cache invalidation failed', { error: cacheError });
+    }
+
     return sendSuccess(res, updated);
   } catch (error: unknown) {
     logger.error('Error updating article', { error });
@@ -222,6 +238,19 @@ router.delete('/:id', async (req: Request, res: Response) => {
       where: { id: existing.id },
     });
 
+    // Invalidate cache for this product and product lists
+    try {
+      const cache = await getCache();
+      await Promise.all([
+        cache.delete(CacheKeys.product(existing.id)),
+        cache.deletePattern('products:list:*'),
+        cache.delete(CacheKeys.categories()),
+      ]);
+      logger.debug('Cache invalidated for product delete', { id: existing.id });
+    } catch (cacheError) {
+      logger.warn('Cache invalidation failed', { error: cacheError });
+    }
+
     return res.status(204).send();
   } catch (error: unknown) {
     logger.error('Error deleting article', { error });
@@ -245,6 +274,18 @@ router.post('/', async (req: Request, res: Response) => {
         updatedAt: new Date(),
       },
     });
+
+    // Invalidate cache for product lists (new item added)
+    try {
+      const cache = await getCache();
+      await Promise.all([
+        cache.deletePattern('products:list:*'),
+        cache.delete(CacheKeys.categories()),
+      ]);
+      logger.debug('Cache invalidated for product create', { id: created.id });
+    } catch (cacheError) {
+      logger.warn('Cache invalidation failed', { error: cacheError });
+    }
 
     return sendSuccess(res, created, 'Article created', 201);
   } catch (error: unknown) {

@@ -1,13 +1,18 @@
 /**
  * WebSocket Hook for Real-time Updates
  * Connects to Socket.IO server and provides job updates
+ *
+ * Performance optimized: REST polling only when WebSocket disconnected
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 const WS_URL = import.meta.env.VITE_WS_URL ||
   (import.meta.env.PROD ? window.location.origin : 'http://localhost:3001');
+
+// Polling interval when WebSocket is disconnected
+const POLLING_INTERVAL_MS = 2000;
 
 interface JobCreatedEvent {
   jobId: string;
@@ -26,7 +31,7 @@ interface JobUpdatedEvent {
 
 interface JobCompletedEvent {
   jobId: string;
-  results: any;
+  results: unknown;
   duration: number;
   timestamp: string;
 }
@@ -78,7 +83,7 @@ export interface WebSocketState {
   ocrResults: OCRCompletedEvent[];
   labels: LabelGeneratedEvent[];
   error: string | null;
-  results: any | null;
+  results: unknown | null;
 }
 
 /**
@@ -106,7 +111,6 @@ function calculateOverallProgress(currentStep: string, currentStepProgress: numb
   }
 
   // Calculate: (completed steps / total) * 100 + (current step progress / total)
-  // Example: Step 2/4 at 50% = (1/4)*100 + (50/4) = 25 + 12.5 = 37.5%
   const completedStepsProgress = ((stepIndex - 1) / totalSteps) * 100;
   const currentProgress = (currentStepProgress / totalSteps);
 
@@ -115,9 +119,13 @@ function calculateOverallProgress(currentStep: string, currentStepProgress: numb
 
 /**
  * Hook to connect to WebSocket and listen to job updates
+ * Optimized: REST polling only as fallback when WebSocket is disconnected
  */
 export function useWebSocket(jobId?: string) {
   const socketRef = useRef<Socket | null>(null);
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isConnectedRef = useRef<boolean>(false);
+
   const [state, setState] = useState<WebSocketState>({
     isConnected: false,
     progress: 0,
@@ -130,50 +138,69 @@ export function useWebSocket(jobId?: string) {
     results: null,
   });
 
-  useEffect(() => {
-    // Fetch job data via REST API (and poll every 2 seconds as fallback)
-    const fetchJobData = () => {
-      if (jobId) {
-        fetch(`${WS_URL}/api/automation/jobs/${jobId}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.success && data.job) {
-              const currentStep = data.job.progress?.currentStep || 'pending';
-              const currentStepProgress = data.job.progress?.currentStepProgress || 0;
-              const totalSteps = data.job.progress?.totalSteps || 4;
-              const overallProgress = calculateOverallProgress(currentStep, currentStepProgress, totalSteps);
+  // Fetch job data via REST API - memoized
+  const fetchJobData = useCallback(async () => {
+    if (!jobId) return;
 
-              // console.log(`[Progress] Step: ${currentStep}, StepProgress: ${currentStepProgress}%, Overall: ${overallProgress}%`);
+    try {
+      const res = await fetch(`${WS_URL}/api/automation/jobs/${jobId}`);
+      const data = await res.json();
 
-              setState(prev => ({
-                ...prev,
-                status: data.job.status,
-                currentStage: currentStep,
-                progress: overallProgress,
-                screenshots: data.job.results?.screenshots || [],
-                ocrResults: data.job.results?.ocrResults || [],
-                labels: data.job.results?.labels || [],
-                error: null,
-              }));
-            }
-          })
-          .catch(err => {
-            // console.error('[WebSocket] Failed to fetch job data:', err);
-            setState(prev => ({ ...prev, error: err.message }));
-          });
+      if (data.success && data.job) {
+        const currentStep = data.job.progress?.currentStep || 'pending';
+        const currentStepProgress = data.job.progress?.currentStepProgress || 0;
+        const totalSteps = data.job.progress?.totalSteps || 4;
+        const overallProgress = calculateOverallProgress(currentStep, currentStepProgress, totalSteps);
+
+        setState(prev => ({
+          ...prev,
+          status: data.job.status,
+          currentStage: currentStep,
+          progress: overallProgress,
+          screenshots: data.job.results?.screenshots || [],
+          ocrResults: data.job.results?.ocrResults || [],
+          labels: data.job.results?.labels || [],
+          error: null,
+        }));
       }
-    };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setState(prev => ({ ...prev, error: errorMessage }));
+    }
+  }, [jobId]);
 
-    // Initial fetch
+  // Start polling (only when WebSocket disconnected)
+  const startPolling = useCallback(() => {
+    // Only start polling if WebSocket is disconnected
+    if (isConnectedRef.current) return;
+
+    // Clear any existing interval
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+    }
+
+    // Start new polling interval
+    pollIntervalRef.current = setInterval(() => {
+      // Double-check connection state before fetching
+      if (!isConnectedRef.current) {
+        fetchJobData();
+      }
+    }, POLLING_INTERVAL_MS);
+  }, [fetchJobData]);
+
+  // Stop polling (when WebSocket connects)
+  const stopPolling = useCallback(() => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initial fetch (always fetch once to get initial state)
     fetchJobData();
 
-    // Poll every 2 seconds as fallback
-    const pollInterval = setInterval(() => {
-      fetchJobData();
-    }, 2000);
-
     // Create socket connection
-    // console.log('[WebSocket] Connecting to:', WS_URL);
     const socket = io(WS_URL, {
       reconnection: true,
       reconnectionDelay: 1000,
@@ -184,33 +211,40 @@ export function useWebSocket(jobId?: string) {
 
     // Connection events
     socket.on('connect', () => {
-      // console.log('[WebSocket] Connected:', socket.id);
+      isConnectedRef.current = true;
       setState(prev => ({ ...prev, isConnected: true }));
+
+      // Stop polling when WebSocket connects
+      stopPolling();
 
       // Subscribe to job if jobId provided
       if (jobId) {
-        // console.log('[WebSocket] Subscribing to job:', jobId);
         socket.emit('job:subscribe', jobId);
       }
     });
 
     socket.on('disconnect', () => {
-      // console.log('[WebSocket] Disconnected');
+      isConnectedRef.current = false;
       setState(prev => ({ ...prev, isConnected: false }));
+
+      // Start polling as fallback when WebSocket disconnects
+      startPolling();
     });
 
     socket.on('connect_error', (error) => {
-      // console.error('[WebSocket] Connection error:', error);
+      isConnectedRef.current = false;
       setState(prev => ({ ...prev, error: error.message, isConnected: false }));
+
+      // Start polling as fallback on connection error
+      startPolling();
     });
 
     // Job events
     socket.on('job:created', (_data: JobCreatedEvent) => {
-      // console.log('[WebSocket] Job created:', data);
+      // Job created notification
     });
 
     socket.on('job:updated', (data: JobUpdatedEvent) => {
-      // console.log('[WebSocket] Job updated:', data);
       setState(prev => ({
         ...prev,
         status: data.status,
@@ -220,7 +254,6 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:completed', (data: JobCompletedEvent) => {
-      // console.log('[WebSocket] Job completed:', data);
       setState(prev => ({
         ...prev,
         status: 'completed',
@@ -230,7 +263,6 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:failed', (data: JobFailedEvent) => {
-      // console.log('[WebSocket] Job failed:', data);
       setState(prev => ({
         ...prev,
         status: 'failed',
@@ -240,7 +272,6 @@ export function useWebSocket(jobId?: string) {
 
     // Screenshot events
     socket.on('screenshot:captured', (data: ScreenshotCapturedEvent) => {
-      // console.log('[WebSocket] Screenshot captured:', data);
       setState(prev => ({
         ...prev,
         screenshots: [...prev.screenshots, data],
@@ -249,7 +280,6 @@ export function useWebSocket(jobId?: string) {
 
     // OCR events
     socket.on('ocr:completed', (data: OCRCompletedEvent) => {
-      // console.log('[WebSocket] OCR completed:', data);
       setState(prev => ({
         ...prev,
         ocrResults: [...prev.ocrResults, data],
@@ -258,7 +288,6 @@ export function useWebSocket(jobId?: string) {
 
     // Label events
     socket.on('label:generated', (data: LabelGeneratedEvent) => {
-      // console.log('[WebSocket] Label generated:', data);
       setState(prev => ({
         ...prev,
         labels: [...prev.labels, data],
@@ -267,26 +296,25 @@ export function useWebSocket(jobId?: string) {
 
     // Cleanup
     return () => {
-      clearInterval(pollInterval);
+      stopPolling();
       if (jobId) {
         socket.emit('job:unsubscribe', jobId);
       }
       socket.disconnect();
     };
-  }, [jobId]);
+  }, [jobId, fetchJobData, startPolling, stopPolling]);
 
   // Helper function to subscribe to a different job
-  const subscribeToJob = (newJobId: string) => {
+  const subscribeToJob = useCallback((newJobId: string) => {
     if (socketRef.current && socketRef.current.connected) {
       // Unsubscribe from old job if exists
       if (jobId) {
         socketRef.current.emit('job:unsubscribe', jobId);
       }
       // Subscribe to new job
-      // console.log('[WebSocket] Subscribing to new job:', newJobId);
       socketRef.current.emit('job:subscribe', newJobId);
     }
-  };
+  }, [jobId]);
 
   return {
     ...state,
@@ -300,19 +328,21 @@ export function useWebSocket(jobId?: string) {
 export function useWebSocketGlobal() {
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [latestEvents, setLatestEvents] = useState<any[]>([]);
+  const [latestEvents, setLatestEvents] = useState<Array<{
+    type: string;
+    data: JobCreatedEvent | JobUpdatedEvent | JobCompletedEvent;
+    timestamp: number;
+  }>>([]);
 
   useEffect(() => {
     const socket = io(WS_URL);
     socketRef.current = socket;
 
     socket.on('connect', () => {
-      // console.log('[WebSocket Global] Connected:', socket.id);
       setIsConnected(true);
     });
 
     socket.on('disconnect', () => {
-      // console.log('[WebSocket Global] Disconnected');
       setIsConnected(false);
     });
 

@@ -155,10 +155,10 @@ export default function PrintTemplates() {
           try {
             const importedTemplates = JSON.parse(event.target?.result as string);
             // Save each template
-            importedTemplates.forEach((template: Template) => {
+            importedTemplates.forEach((template: Template, index: number) => {
               saveTemplateMutation.mutate({
                 ...template,
-                id: `template-${Date.now()}-${Math.random()}`,
+                id: crypto.randomUUID ? crypto.randomUUID() : `template-${Date.now()}-${index}`,
               });
             });
             showToast({

@@ -35,6 +35,37 @@ import {
   type GenerateFromArticleInput,
   type ThumbnailQuery,
 } from '../../schemas/label.js';
+import { getCache } from '../../lib/cache.js';
+
+// Cache key patterns for labels
+const LabelCacheKeys = {
+  label: (id: string) => `label:${id}`,
+  labelList: () => 'labels:list:*',
+  labelStats: () => 'labels:stats',
+};
+
+/**
+ * Invalidate label-related cache entries
+ * Safe to call - errors are logged but don't fail the request
+ */
+async function invalidateLabelCache(labelId?: string): Promise<void> {
+  try {
+    const cache = await getCache();
+    const operations: Promise<unknown>[] = [
+      cache.deletePattern(LabelCacheKeys.labelList()),
+      cache.delete(LabelCacheKeys.labelStats()),
+    ];
+
+    if (labelId) {
+      operations.push(cache.delete(LabelCacheKeys.label(labelId)));
+    }
+
+    await Promise.all(operations);
+    logger.debug('Label cache invalidated', { labelId });
+  } catch (error) {
+    logger.warn('Label cache invalidation failed', { error, labelId });
+  }
+}
 
 const router = Router();
 
@@ -55,6 +86,9 @@ router.post(
       const validatedInput = req.body as CreateLabelApiInput;
       const label = await LabelGeneratorService.createLabel(validatedInput);
       await StorageService.saveLabel(label);
+
+      // Invalidate cache
+      await invalidateLabelCache();
 
       // Audit: Log label creation
       await audit.logLabelCreate(label.id, validatedInput.templateType || 'default');
@@ -324,6 +358,9 @@ router.put(
 
       await StorageService.saveLabel(updated);
 
+      // Invalidate cache
+      await invalidateLabelCache(req.params.id);
+
       // Audit: Log label update
       await audit.logLabelUpdate(req.params.id, req.body);
 
@@ -366,6 +403,9 @@ router.delete(
         return;
       }
 
+      // Invalidate cache
+      await invalidateLabelCache(req.params.id);
+
       // Audit: Log label deletion
       await audit.logLabelDelete(req.params.id);
 
@@ -402,6 +442,8 @@ router.post(
       switch (operation) {
         case 'delete':
           result = await StorageService.deleteLabels(labelIds);
+          // Invalidate cache for all deleted labels
+          await invalidateLabelCache();
           break;
 
         default: {
@@ -478,6 +520,9 @@ router.post(
 
       const duplicate = await LabelGeneratorService.duplicateLabel(source);
       await StorageService.saveLabel(duplicate);
+
+      // Invalidate cache
+      await invalidateLabelCache();
 
       // Audit: Log label creation (from duplicate)
       await audit.logLabelCreate(duplicate.id, source.templateType || 'duplicated');
@@ -627,6 +672,9 @@ router.post(
 
       // Save the label
       await StorageService.saveLabel(labelData);
+
+      // Invalidate cache
+      await invalidateLabelCache();
 
       // Audit: Log label creation with rendering result
       await audit.logLabelCreate(labelData.id, templateId || 'generated-from-article');

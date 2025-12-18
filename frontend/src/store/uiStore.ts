@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
+/**
+ * Generate a cryptographically secure unique ID
+ * Falls back to timestamp + random if crypto.randomUUID is unavailable
+ */
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for older browsers
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+}
+
 interface Toast {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
@@ -61,7 +73,7 @@ export const useUiStore = create<UiState>()(
 
         // Actions
         showToast: (toast) => {
-          const id = Math.random().toString(36).substring(7);
+          const id = generateId();
           const newToast = { ...toast, id };
 
           set((state) => ({
@@ -83,7 +95,7 @@ export const useUiStore = create<UiState>()(
           })),
 
         showModal: (modal) => {
-          const id = Math.random().toString(36).substring(7);
+          const id = generateId();
           set((state) => ({
             modals: [...state.modals, { ...modal, id }],
           }));
