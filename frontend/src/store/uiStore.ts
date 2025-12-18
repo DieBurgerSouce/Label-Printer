@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
 interface Toast {
   id: string;
@@ -48,72 +48,84 @@ interface UiState {
 
 export const useUiStore = create<UiState>()(
   devtools(
-    (set) => ({
-      // Initial state
-      toasts: [],
-      modals: [],
-      globalLoading: false,
-      sidebarOpen: true,
-      zoom: 1,
-      showGrid: true,
-      showRulers: true,
+    persist(
+      (set) => ({
+        // Initial state
+        toasts: [],
+        modals: [],
+        globalLoading: false,
+        sidebarOpen: true,
+        zoom: 1,
+        showGrid: true,
+        showRulers: true,
 
-      // Actions
-      showToast: (toast) => {
-        const id = Math.random().toString(36).substring(7);
-        const newToast = { ...toast, id };
+        // Actions
+        showToast: (toast) => {
+          const id = Math.random().toString(36).substring(7);
+          const newToast = { ...toast, id };
 
-        set((state) => ({
-          toasts: [...state.toasts, newToast],
-        }));
+          set((state) => ({
+            toasts: [...state.toasts, newToast],
+          }));
 
-        // Auto-remove after duration
-        const duration = toast.duration || 5000;
-        setTimeout(() => {
+          // Auto-remove after duration
+          const duration = toast.duration || 5000;
+          setTimeout(() => {
+            set((state) => ({
+              toasts: state.toasts.filter((t) => t.id !== id),
+            }));
+          }, duration);
+        },
+
+        removeToast: (id) =>
           set((state) => ({
             toasts: state.toasts.filter((t) => t.id !== id),
+          })),
+
+        showModal: (modal) => {
+          const id = Math.random().toString(36).substring(7);
+          set((state) => ({
+            modals: [...state.modals, { ...modal, id }],
           }));
-        }, duration);
-      },
+        },
 
-      removeToast: (id) =>
-        set((state) => ({
-          toasts: state.toasts.filter((t) => t.id !== id),
-        })),
+        closeModal: (id) =>
+          set((state) => ({
+            modals: state.modals.filter((m) => m.id !== id),
+          })),
 
-      showModal: (modal) => {
-        const id = Math.random().toString(36).substring(7);
-        set((state) => ({
-          modals: [...state.modals, { ...modal, id }],
-        }));
-      },
+        setGlobalLoading: (loading) => set({ globalLoading: loading }),
 
-      closeModal: (id) =>
-        set((state) => ({
-          modals: state.modals.filter((m) => m.id !== id),
-        })),
+        toggleSidebar: () =>
+          set((state) => ({
+            sidebarOpen: !state.sidebarOpen,
+          })),
 
-      setGlobalLoading: (loading) => set({ globalLoading: loading }),
+        setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
-      toggleSidebar: () =>
-        set((state) => ({
-          sidebarOpen: !state.sidebarOpen,
-        })),
+        setZoom: (zoom) => set({ zoom }),
 
-      setSidebarOpen: (open) => set({ sidebarOpen: open }),
+        toggleGrid: () =>
+          set((state) => ({
+            showGrid: !state.showGrid,
+          })),
 
-      setZoom: (zoom) => set({ zoom }),
-
-      toggleGrid: () =>
-        set((state) => ({
-          showGrid: !state.showGrid,
-        })),
-
-      toggleRulers: () =>
-        set((state) => ({
-          showRulers: !state.showRulers,
-        })),
-    }),
+        toggleRulers: () =>
+          set((state) => ({
+            showRulers: !state.showRulers,
+          })),
+      }),
+      {
+        name: 'ui-store-storage',
+        // Only persist user preferences, not transient state
+        partialize: (state) => ({
+          sidebarOpen: state.sidebarOpen,
+          zoom: state.zoom,
+          showGrid: state.showGrid,
+          showRulers: state.showRulers,
+        }),
+      }
+    ),
     { name: 'UiStore' }
   )
 );

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
 export interface QRCodeSettings {
   enabled: boolean;
@@ -64,68 +64,78 @@ interface LabelState {
 
 export const useLabelStore = create<LabelState>()(
   devtools(
-    (set) => ({
-      // Initial state
-      labels: [],
-      selectedLabels: [],
-      currentLabel: null,
-      viewMode: 'grid',
-      searchQuery: '',
+    persist(
+      (set) => ({
+        // Initial state
+        labels: [],
+        selectedLabels: [],
+        currentLabel: null,
+        viewMode: 'grid',
+        searchQuery: '',
 
-      // Actions
-      setLabels: (labels) => set({ labels }),
+        // Actions
+        setLabels: (labels) => set({ labels }),
 
-      addLabel: (label) =>
-        set((state) => ({
-          labels: [label, ...state.labels],
-        })),
+        addLabel: (label) =>
+          set((state) => ({
+            labels: [label, ...state.labels],
+          })),
 
-      updateLabel: (id, updates) =>
-        set((state) => ({
-          labels: state.labels.map((label) =>
-            label.id === id ? { ...label, ...updates, updatedAt: new Date() } : label
-          ),
-        })),
+        updateLabel: (id, updates) =>
+          set((state) => ({
+            labels: state.labels.map((label) =>
+              label.id === id ? { ...label, ...updates, updatedAt: new Date() } : label
+            ),
+          })),
 
-      removeLabel: (id) =>
-        set((state) => ({
-          labels: state.labels.filter((label) => label.id !== id),
-          selectedLabels: state.selectedLabels.filter((selectedId) => selectedId !== id),
-        })),
+        removeLabel: (id) =>
+          set((state) => ({
+            labels: state.labels.filter((label) => label.id !== id),
+            selectedLabels: state.selectedLabels.filter((selectedId) => selectedId !== id),
+          })),
 
-      // Selection
-      selectLabel: (id) =>
-        set((state) => ({
-          selectedLabels: state.selectedLabels.includes(id)
-            ? state.selectedLabels
-            : [...state.selectedLabels, id],
-        })),
+        // Selection
+        selectLabel: (id) =>
+          set((state) => ({
+            selectedLabels: state.selectedLabels.includes(id)
+              ? state.selectedLabels
+              : [...state.selectedLabels, id],
+          })),
 
-      deselectLabel: (id) =>
-        set((state) => ({
-          selectedLabels: state.selectedLabels.filter((selectedId) => selectedId !== id),
-        })),
+        deselectLabel: (id) =>
+          set((state) => ({
+            selectedLabels: state.selectedLabels.filter((selectedId) => selectedId !== id),
+          })),
 
-      toggleLabelSelection: (id) =>
-        set((state) => ({
-          selectedLabels: state.selectedLabels.includes(id)
-            ? state.selectedLabels.filter((selectedId) => selectedId !== id)
-            : [...state.selectedLabels, id],
-        })),
+        toggleLabelSelection: (id) =>
+          set((state) => ({
+            selectedLabels: state.selectedLabels.includes(id)
+              ? state.selectedLabels.filter((selectedId) => selectedId !== id)
+              : [...state.selectedLabels, id],
+          })),
 
-      clearSelection: () => set({ selectedLabels: [] }),
+        clearSelection: () => set({ selectedLabels: [] }),
 
-      selectAll: () =>
-        set((state) => ({
-          selectedLabels: state.labels.map((label) => label.id),
-        })),
+        selectAll: () =>
+          set((state) => ({
+            selectedLabels: state.labels.map((label) => label.id),
+          })),
 
-      // UI
-      setViewMode: (mode) => set({ viewMode: mode }),
-      setFilterCategory: (category) => set({ filterCategory: category }),
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      setCurrentLabel: (label) => set({ currentLabel: label }),
-    }),
+        // UI
+        setViewMode: (mode) => set({ viewMode: mode }),
+        setFilterCategory: (category) => set({ filterCategory: category }),
+        setSearchQuery: (query) => set({ searchQuery: query }),
+        setCurrentLabel: (label) => set({ currentLabel: label }),
+      }),
+      {
+        name: 'label-store-storage',
+        // Only persist UI preferences, not actual data (which comes from API)
+        partialize: (state) => ({
+          viewMode: state.viewMode,
+          filterCategory: state.filterCategory,
+        }),
+      }
+    ),
     { name: 'LabelStore' }
   )
 );

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import Layout from './components/common/Layout';
+import { STALE_TIMES } from './lib/queryConfig';
 
 // Loading fallback component
 const PageLoader = () => (
@@ -29,23 +30,20 @@ const LabelTemplateEditor = lazy(() => import('./pages/LabelTemplateEditor'));
 const RenderingTemplates = lazy(() => import('./pages/RenderingTemplates'));
 const RenderingTemplateEditor = lazy(() => import('./pages/RenderingTemplateEditor'));
 
-// Create React Query client - Version 2.0.2
+// Create React Query client - Version 2.1.0
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 0, // No cache - always fetch fresh data
-      gcTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes (formerly cacheTime)
+      staleTime: STALE_TIMES.LABELS, // Default to 30 seconds
+      gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes
+    },
+    mutations: {
+      retry: 0, // Don't retry failed mutations
     },
   },
 });
-
-// Clear cache on app start to prevent stale data issues
-queryClient.clear();
-
-// Force cache bust - build timestamp
-// console.log('App version: 2.0.2 - Built at:', new Date().toISOString());
 
 function App() {
   return (

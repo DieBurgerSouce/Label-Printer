@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { CheckSquare, Grid3x3, List, Plus, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LabelGenerationModal from '../components/LabelGenerationModal';
 import LabelFilter from '../components/LabelManager/LabelFilter';
@@ -77,84 +77,109 @@ export default function LabelLibrary() {
   const labelsResponse: any = labelsData?.data || {};
   const rawLabels = Array.isArray(labelsResponse.labels) ? labelsResponse.labels : [];
 
-  // Map API response to PriceLabel interface (handling dates)
-  const labels: PriceLabel[] = rawLabels.map((l: any) => ({
-    ...l,
-    createdAt: new Date(l.createdAt),
-    updatedAt: l.updatedAt ? new Date(l.updatedAt) : undefined,
-    // Ensure priceInfo exists with defaults if missing
-    priceInfo: l.priceInfo || { price: 0, currency: 'EUR' },
-    templateType: l.templateType || 'standard',
-  }));
-
-  const pagination = {
-    total: labelsResponse.total || 0,
-    page: labelsResponse.page || 1,
-    limit: labelsResponse.limit || 50,
-    pages: labelsResponse.pages || 0,
-    totalPages: labelsResponse.pages || 0
-  };
-
-  // Extract unique categories and tags from labels
-  const categories = Array.from(
-    new Set(labels.map((l) => l.category).filter(Boolean))
-  );
-  const tags = Array.from(
-    new Set(labels.flatMap((l) => l.tags || []))
+  // Map API response to PriceLabel interface (handling dates) - memoized
+  const labels: PriceLabel[] = useMemo(
+    () =>
+      rawLabels.map((l: any) => ({
+        ...l,
+        createdAt: new Date(l.createdAt),
+        updatedAt: l.updatedAt ? new Date(l.updatedAt) : undefined,
+        // Ensure priceInfo exists with defaults if missing
+        priceInfo: l.priceInfo || { price: 0, currency: 'EUR' },
+        templateType: l.templateType || 'standard',
+      })),
+    [rawLabels]
   );
 
-  const handleSelectLabel = (id: string) => {
-    selectLabel(id);
-  };
+  const pagination = useMemo(
+    () => ({
+      total: labelsResponse.total || 0,
+      page: labelsResponse.page || 1,
+      limit: labelsResponse.limit || 50,
+      pages: labelsResponse.pages || 0,
+      totalPages: labelsResponse.pages || 0,
+    }),
+    [labelsResponse.total, labelsResponse.page, labelsResponse.limit, labelsResponse.pages]
+  );
 
-  const handleEditLabel = (label: PriceLabel) => {
-    // TODO: Open edit modal
-    showToast({
-      type: 'info',
-      message: `Bearbeiten-Funktion kommt bald für ${label.productName}`,
-    });
-  };
+  // Extract unique categories and tags from labels - memoized
+  const categories = useMemo(
+    () => Array.from(new Set(labels.map((l) => l.category).filter(Boolean))),
+    [labels]
+  );
+  const tags = useMemo(
+    () => Array.from(new Set(labels.flatMap((l) => l.tags || []))),
+    [labels]
+  );
 
-  const handleDeleteLabel = async (id: string) => {
-    setConfirmDialog({
-      isOpen: true,
-      title: 'Label löschen?',
-      description: 'Möchten Sie dieses Label wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
-      onConfirm: async () => {
-        try {
-          await labelApi.delete(id);
-          showToast({
-            type: 'success',
-            message: 'Label erfolgreich gelöscht',
-          });
-          refetch();
-        } catch (error) {
-          showToast({
-            type: 'error',
-            message: 'Fehler beim Löschen des Labels',
-          });
-        }
-      },
-    });
-  };
+  const handleSelectLabel = useCallback(
+    (id: string) => {
+      selectLabel(id);
+    },
+    [selectLabel]
+  );
 
-  const handleViewLabel = (label: PriceLabel) => {
-    // TODO: Open view modal
-    showToast({
-      type: 'info',
-      message: `Viewing ${label.productName}`,
-    });
-  };
+  const handleEditLabel = useCallback(
+    (label: PriceLabel) => {
+      // TODO: Open edit modal
+      showToast({
+        type: 'info',
+        message: `Bearbeiten-Funktion kommt bald für ${label.productName}`,
+      });
+    },
+    [showToast]
+  );
 
-  const handlePrintLabel = (label: PriceLabel) => {
-    addLabelToLayout(label.id);
-    showToast({
-      type: 'success',
-      message: `${label.productName} zum Drucken hinzugefügt.`,
-    });
-  };
+  const handleDeleteLabel = useCallback(
+    async (id: string) => {
+      setConfirmDialog({
+        isOpen: true,
+        title: 'Label löschen?',
+        description:
+          'Möchten Sie dieses Label wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+        onConfirm: async () => {
+          try {
+            await labelApi.delete(id);
+            showToast({
+              type: 'success',
+              message: 'Label erfolgreich gelöscht',
+            });
+            refetch();
+          } catch (error) {
+            showToast({
+              type: 'error',
+              message: 'Fehler beim Löschen des Labels',
+            });
+          }
+        },
+      });
+    },
+    [showToast, refetch]
+  );
 
-  const handleBatchDelete = async () => {
+  const handleViewLabel = useCallback(
+    (label: PriceLabel) => {
+      // TODO: Open view modal
+      showToast({
+        type: 'info',
+        message: `Viewing ${label.productName}`,
+      });
+    },
+    [showToast]
+  );
+
+  const handlePrintLabel = useCallback(
+    (label: PriceLabel) => {
+      addLabelToLayout(label.id);
+      showToast({
+        type: 'success',
+        message: `${label.productName} zum Drucken hinzugefügt.`,
+      });
+    },
+    [addLabelToLayout, showToast]
+  );
+
+  const handleBatchDelete = useCallback(async () => {
     if (selectedLabels.length === 0) return;
 
     setConfirmDialog({
@@ -178,9 +203,9 @@ export default function LabelLibrary() {
         }
       },
     });
-  };
+  }, [selectedLabels, showToast, clearSelection, refetch]);
 
-  const handleAddToPrint = () => {
+  const handleAddToPrint = useCallback(() => {
     selectedLabels.forEach((id) => addLabelToLayout(id));
     showToast({
       type: 'success',
@@ -189,12 +214,12 @@ export default function LabelLibrary() {
     clearSelection();
     // Navigate to print setup after a short delay
     setTimeout(() => navigate('/print-setup'), 1500);
-  };
+  }, [selectedLabels, addLabelToLayout, showToast, clearSelection, navigate]);
 
-  const handleCreateLabel = () => {
+  const handleCreateLabel = useCallback(() => {
     // Navigate to label template editor to create custom label
     navigate('/labeltemplate');
-  };
+  }, [navigate]);
 
   return (
     <div className="space-y-6">

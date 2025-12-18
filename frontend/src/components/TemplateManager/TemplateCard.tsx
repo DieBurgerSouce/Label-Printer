@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Eye, Edit, Trash2, Copy, Star } from 'lucide-react';
 
 export interface Template {
@@ -37,7 +38,7 @@ interface TemplateCardProps {
   onSetDefault?: () => void;
 }
 
-export default function TemplateCard({
+function TemplateCard({
   template,
   selected,
   onSelect,
@@ -177,3 +178,6 @@ export default function TemplateCard({
     </div>
   );
 }
+
+// Memoize to prevent unnecessary re-renders in lists
+export default memo(TemplateCard);
