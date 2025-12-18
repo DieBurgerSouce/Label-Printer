@@ -366,3 +366,90 @@ enum Role {
   USER
   ADMIN
 }
+
+// ========================================
+// AUDIT LOGGING
+// ========================================
+
+model AuditLog {
+  id          String   @id @default(uuid())
+
+  // Action information
+  action      AuditAction
+  entityType  String?       // 'User', 'Label', 'Template', 'Product', etc.
+  entityId    String?       // ID of the affected entity
+
+  // Actor information
+  userId      String?       // User who performed the action (null for system actions)
+  userEmail   String?       // Denormalized for query convenience
+
+  // Request context
+  ipAddress   String?
+  userAgent   String?
+  requestId   String?       // Correlation ID for tracing
+
+  // Change details
+  oldValues   Json?         // Previous state (for updates)
+  newValues   Json?         // New state (for creates/updates)
+  metadata    Json?         // Additional context
+
+  // Result
+  success     Boolean       @default(true)
+  errorMessage String?
+
+  // Timestamp
+  createdAt   DateTime      @default(now())
+
+  @@map("audit_logs")
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action, createdAt])  // For filtered time-range queries
+}
+
+enum AuditAction {
+  // Authentication
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  REGISTER
+  PASSWORD_CHANGE
+  PASSWORD_RESET_REQUEST
+  ACCOUNT_LOCKED
+
+  // User Management
+  USER_CREATE
+  USER_UPDATE
+  USER_DELETE
+  USER_ROLE_CHANGE
+  USER_DEACTIVATE
+
+  // Label Operations
+  LABEL_CREATE
+  LABEL_UPDATE
+  LABEL_DELETE
+  LABEL_RENDER
+
+  // Template Operations
+  TEMPLATE_CREATE
+  TEMPLATE_UPDATE
+  TEMPLATE_DELETE
+
+  // Product Operations
+  PRODUCT_CREATE
+  PRODUCT_UPDATE
+  PRODUCT_DELETE
+  PRODUCT_IMPORT
+
+  // Crawl Operations
+  CRAWL_START
+  CRAWL_COMPLETE
+  CRAWL_FAILED
+  CRAWL_CANCEL
+
+  // System Events
+  SYSTEM_ERROR
+  CONFIG_CHANGE
+  DATA_EXPORT
+}

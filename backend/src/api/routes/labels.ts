@@ -3,6 +3,7 @@
  * All routes are protected with:
  * - Zod input validation
  * - Rate limiting (API, mutation, batch)
+ * - Audit logging
  */
 
 import { Router, Request, Response } from 'express';
@@ -18,6 +19,7 @@ import {
 import logger from '../../utils/logger';
 import { validateRequest, validateMultiple } from '../../middleware/validation.js';
 import { apiLimiter, mutationLimiter, batchLimiter } from '../../index.js';
+import { AuditService, createAuditContextFromRequest } from '../../services/audit-service.js';
 import {
   createLabelApiSchema,
   updateLabelApiSchema,
@@ -48,10 +50,14 @@ router.post(
   mutationLimiter,
   validateRequest(createLabelApiSchema, 'body'),
   async (req: Request, res: Response) => {
+    const audit = AuditService.withContext(createAuditContextFromRequest(req));
     try {
       const validatedInput = req.body as CreateLabelApiInput;
       const label = await LabelGeneratorService.createLabel(validatedInput);
       await StorageService.saveLabel(label);
+
+      // Audit: Log label creation
+      await audit.logLabelCreate(label.id, validatedInput.templateType || 'default');
 
       const response: ApiResponse = {
         success: true,
@@ -295,6 +301,7 @@ router.put(
     body: updateLabelApiSchema,
   }),
   async (req: Request, res: Response): Promise<void> => {
+    const audit = AuditService.withContext(createAuditContextFromRequest(req));
     try {
       const existing = await StorageService.getLabel(req.params.id);
 
@@ -316,6 +323,9 @@ router.put(
       };
 
       await StorageService.saveLabel(updated);
+
+      // Audit: Log label update
+      await audit.logLabelUpdate(req.params.id, req.body);
 
       const response: ApiResponse = {
         success: true,
@@ -343,6 +353,7 @@ router.delete(
   mutationLimiter,
   validateRequest(labelIdParamApiSchema, 'params'),
   async (req: Request, res: Response): Promise<void> => {
+    const audit = AuditService.withContext(createAuditContextFromRequest(req));
     try {
       const success = await StorageService.deleteLabel(req.params.id);
 
@@ -354,6 +365,9 @@ router.delete(
         res.status(404).json(response);
         return;
       }
+
+      // Audit: Log label deletion
+      await audit.logLabelDelete(req.params.id);
 
       const response: ApiResponse = {
         success: true,
@@ -449,6 +463,7 @@ router.post(
   mutationLimiter,
   validateRequest(labelIdParamApiSchema, 'params'),
   async (req: Request, res: Response): Promise<void> => {
+    const audit = AuditService.withContext(createAuditContextFromRequest(req));
     try {
       const source = await StorageService.getLabel(req.params.id);
 
@@ -463,6 +478,9 @@ router.post(
 
       const duplicate = await LabelGeneratorService.duplicateLabel(source);
       await StorageService.saveLabel(duplicate);
+
+      // Audit: Log label creation (from duplicate)
+      await audit.logLabelCreate(duplicate.id, source.templateType || 'duplicated');
 
       const response: ApiResponse = {
         success: true,
@@ -490,6 +508,7 @@ router.post(
   mutationLimiter,
   validateRequest(generateFromArticleSchema, 'body'),
   async (req: Request, res: Response): Promise<void> => {
+    const audit = AuditService.withContext(createAuditContextFromRequest(req));
     try {
       const { articleId, templateId } = req.body as GenerateFromArticleInput;
 
@@ -608,6 +627,12 @@ router.post(
 
       // Save the label
       await StorageService.saveLabel(labelData);
+
+      // Audit: Log label creation with rendering result
+      await audit.logLabelCreate(labelData.id, templateId || 'generated-from-article');
+      if (imageData) {
+        await audit.logLabelRender(labelData.id, true);
+      }
 
       const response: ApiResponse = {
         success: true,

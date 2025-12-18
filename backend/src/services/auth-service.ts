@@ -17,6 +17,7 @@ import {
 } from '../errors/AppError';
 import logger from '../utils/logger';
 import { getRedisClient } from '../lib/redis';
+import { AuditService, AuditContext } from './audit-service';
 
 const SALT_ROUNDS = 12;
 
@@ -157,8 +158,11 @@ function sanitizeUser(user: User): SafeUser {
 export async function registerUser(
   email: string,
   password: string,
-  name?: string
+  name?: string,
+  auditContext?: AuditContext
 ): Promise<SafeUser> {
+  const audit = AuditService.withContext(auditContext || {});
+
   // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
@@ -190,6 +194,9 @@ export async function registerUser(
 
   logger.info('User registered', { userId: user.id, email: user.email });
 
+  // Audit: Log registration
+  await audit.logRegister(user.id, user.email);
+
   return sanitizeUser(user);
 }
 
@@ -197,12 +204,22 @@ export async function registerUser(
  * Authenticate a user with email and password
  * Includes brute-force protection with account lockout
  */
-export async function loginUser(email: string, password: string): Promise<SafeUser> {
+export async function loginUser(
+  email: string,
+  password: string,
+  auditContext?: AuditContext
+): Promise<SafeUser> {
+  const audit = AuditService.withContext(auditContext || {});
+
   // Check if account is locked due to too many failed attempts
   const lockStatus = await isAccountLocked(email);
   if (lockStatus.locked) {
     const minutesRemaining = Math.ceil(lockStatus.remainingSeconds / 60);
     logger.warn('Login attempt on locked account', { email, minutesRemaining });
+
+    // Audit: Log failed login on locked account
+    await audit.logLoginFailed(email, 'Account is locked');
+
     throw new UnauthorizedError(
       `Account temporarily locked due to too many failed login attempts. Try again in ${minutesRemaining} minute(s).`
     );
@@ -216,11 +233,19 @@ export async function loginUser(email: string, password: string): Promise<SafeUs
     // Increment attempts even for non-existent users to prevent enumeration timing attacks
     await incrementLoginAttempts(email);
     logger.warn('Failed login - user not found', { email });
+
+    // Audit: Log failed login
+    await audit.logLoginFailed(email, 'User not found');
+
     throw new UnauthorizedError('Invalid email or password');
   }
 
   if (!user.isActive) {
     logger.warn('Failed login - account disabled', { email, userId: user.id });
+
+    // Audit: Log failed login
+    await audit.logLoginFailed(email, 'Account is disabled');
+
     throw new UnauthorizedError('Account is disabled');
   }
 
@@ -237,7 +262,13 @@ export async function loginUser(email: string, password: string): Promise<SafeUs
       remainingAttempts: Math.max(0, remainingAttempts),
     });
 
+    // Audit: Log failed login
+    await audit.logLoginFailed(email, 'Invalid password');
+
     if (remainingAttempts <= 0) {
+      // Audit: Log account lockout
+      await audit.logAccountLocked(email, attempts);
+
       throw new UnauthorizedError(
         `Account locked due to too many failed login attempts. Try again in ${LOCKOUT_DURATION_SECONDS / 60} minutes.`
       );
@@ -256,6 +287,9 @@ export async function loginUser(email: string, password: string): Promise<SafeUs
   });
 
   logger.info('User logged in successfully', { userId: user.id, email: user.email });
+
+  // Audit: Log successful login
+  await audit.logLoginSuccess(user.id, user.email);
 
   return sanitizeUser(user);
 }
@@ -320,8 +354,11 @@ export async function updateUser(
 export async function changePassword(
   id: string,
   currentPassword: string,
-  newPassword: string
+  newPassword: string,
+  auditContext?: AuditContext
 ): Promise<void> {
+  const audit = AuditService.withContext(auditContext || {});
+
   const user = await prisma.user.findUnique({
     where: { id },
   });
@@ -355,6 +392,9 @@ export async function changePassword(
   });
 
   logger.info('Password changed', { userId: id });
+
+  // Audit: Log password change
+  await audit.logPasswordChange(id);
 }
 
 /**
@@ -381,7 +421,17 @@ export async function getAllUsers(): Promise<SafeUser[]> {
 /**
  * Admin: Update user role
  */
-export async function updateUserRole(id: string, role: Role): Promise<SafeUser> {
+export async function updateUserRole(
+  id: string,
+  role: Role,
+  auditContext?: AuditContext
+): Promise<SafeUser> {
+  const audit = AuditService.withContext(auditContext || {});
+
+  // Get current user for old role
+  const currentUser = await prisma.user.findUnique({ where: { id } });
+  const oldRole = currentUser?.role;
+
   const user = await prisma.user.update({
     where: { id },
     data: { role },
@@ -389,17 +439,25 @@ export async function updateUserRole(id: string, role: Role): Promise<SafeUser> 
 
   logger.info('User role updated', { userId: id, newRole: role });
 
+  // Audit: Log role change
+  await audit.logUserRoleChange(id, oldRole || 'UNKNOWN', role);
+
   return sanitizeUser(user);
 }
 
 /**
  * Admin: Deactivate user
  */
-export async function deactivateUser(id: string): Promise<void> {
+export async function deactivateUser(id: string, auditContext?: AuditContext): Promise<void> {
+  const audit = AuditService.withContext(auditContext || {});
+
   await prisma.user.update({
     where: { id },
     data: { isActive: false },
   });
 
   logger.info('User deactivated', { userId: id });
+
+  // Audit: Log user deactivation
+  await audit.logUserDeactivate(id);
 }
