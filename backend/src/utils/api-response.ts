@@ -156,6 +156,20 @@ export function sendInternalError(
 }
 
 /**
+ * Extract error message from unknown error type
+ * Safe helper for catch blocks
+ */
+export function getErrorMessage(error: unknown, defaultMessage: string = 'Unknown error'): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === 'string') {
+    return error;
+  }
+  return defaultMessage;
+}
+
+/**
  * Handle caught errors uniformly
  * Extracts error message from various error types
  */
