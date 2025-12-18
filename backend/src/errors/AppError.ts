@@ -38,7 +38,10 @@ export class AppError extends Error {
   }
 
   toJSON(): { success: false; error: { code: string; message: string; details?: unknown } } {
-    const response: { success: false; error: { code: string; message: string; details?: unknown } } = {
+    const response: {
+      success: false;
+      error: { code: string; message: string; details?: unknown };
+    } = {
       success: false,
       error: {
         code: this.code,

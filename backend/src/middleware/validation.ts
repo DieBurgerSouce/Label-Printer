@@ -25,10 +25,7 @@ type ValidationTarget = 'body' | 'query' | 'params';
  * // Validate URL parameters
  * router.get('/users/:id', validateRequest(paramsSchema, 'params'), handler);
  */
-export function validateRequest<T>(
-  schema: ZodSchema<T>,
-  target: ValidationTarget = 'body'
-) {
+export function validateRequest<T>(schema: ZodSchema<T>, target: ValidationTarget = 'body') {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const data = req[target];
