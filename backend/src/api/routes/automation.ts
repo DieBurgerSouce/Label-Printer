@@ -5,7 +5,7 @@
 
 import { Router, Request, Response } from 'express';
 import { automationService } from '../../services/automation-service';
-import { AutomationConfig } from '../../types/automation-types';
+import { AutomationConfig, ExcelRowData } from '../../types/automation-types';
 import multer from 'multer';
 import * as XLSX from 'xlsx';
 import { sendSuccess, sendBadRequest, sendNotFound, handleError } from '../../utils/api-response';
@@ -46,13 +46,14 @@ router.post('/start', upload.single('excelFile'), async (req: Request, res: Resp
     }
 
     // Parse Excel file if provided
-    let excelData: unknown[] = [];
+    let excelData: ExcelRowData[] = [];
     if (req.file) {
       try {
         const workbook = XLSX.readFile(req.file.path);
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        excelData = XLSX.utils.sheet_to_json(worksheet);
+        // Excel data is parsed as Record<string, unknown>[] which matches ExcelRowData
+        excelData = XLSX.utils.sheet_to_json(worksheet) as ExcelRowData[];
         logger.info(`Loaded ${excelData.length} rows from Excel`);
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown error';

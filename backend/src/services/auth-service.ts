@@ -1,6 +1,10 @@
 /**
  * Authentication Service
  * Handles user registration, login, and session management
+ * Enhanced with:
+ * - Failed login attempt tracking (brute-force protection)
+ * - Strong password policy (production)
+ * - Audit logging
  */
 import bcrypt from 'bcrypt';
 import { prisma } from '../lib/prisma';
@@ -12,8 +16,114 @@ import {
   ValidationError,
 } from '../errors/AppError';
 import logger from '../utils/logger';
+import { getRedisClient } from '../lib/redis';
 
 const SALT_ROUNDS = 12;
+
+// Failed login attempt configuration
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION_SECONDS = 15 * 60; // 15 minutes
+const LOGIN_ATTEMPT_PREFIX = 'login_attempts:';
+
+/**
+ * Get the current failed login attempt count for an email
+ */
+async function getLoginAttempts(email: string): Promise<number> {
+  const redis = getRedisClient();
+  if (!redis) return 0;
+
+  const attempts = await redis.get(`${LOGIN_ATTEMPT_PREFIX}${email.toLowerCase()}`);
+  return attempts ? parseInt(attempts, 10) : 0;
+}
+
+/**
+ * Increment failed login attempts for an email
+ */
+async function incrementLoginAttempts(email: string): Promise<number> {
+  const redis = getRedisClient();
+  if (!redis) return 0;
+
+  const key = `${LOGIN_ATTEMPT_PREFIX}${email.toLowerCase()}`;
+  const attempts = await redis.incr(key);
+
+  // Set expiry on first attempt
+  if (attempts === 1) {
+    await redis.expire(key, LOCKOUT_DURATION_SECONDS);
+  }
+
+  return attempts;
+}
+
+/**
+ * Clear failed login attempts after successful login
+ */
+async function clearLoginAttempts(email: string): Promise<void> {
+  const redis = getRedisClient();
+  if (!redis) return;
+
+  await redis.del(`${LOGIN_ATTEMPT_PREFIX}${email.toLowerCase()}`);
+}
+
+/**
+ * Check if account is locked due to too many failed attempts
+ */
+async function isAccountLocked(
+  email: string
+): Promise<{ locked: boolean; remainingSeconds: number }> {
+  const redis = getRedisClient();
+  if (!redis) return { locked: false, remainingSeconds: 0 };
+
+  const key = `${LOGIN_ATTEMPT_PREFIX}${email.toLowerCase()}`;
+  const attempts = await getLoginAttempts(email);
+
+  if (attempts >= MAX_LOGIN_ATTEMPTS) {
+    const ttl = await redis.ttl(key);
+    return { locked: true, remainingSeconds: ttl > 0 ? ttl : 0 };
+  }
+
+  return { locked: false, remainingSeconds: 0 };
+}
+
+/**
+ * Validate password strength
+ * Production: min 12 chars, uppercase, lowercase, number, special char
+ * Development: min 8 chars
+ */
+function validatePasswordStrength(password: string): void {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (isProduction) {
+    // Strong password policy for production
+    const minLength = 12;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+=[\]{};':"\\|,.<>/?-]/.test(password);
+
+    if (password.length < minLength) {
+      throw new ValidationError(`Password must be at least ${minLength} characters in production`);
+    }
+    if (!hasUppercase) {
+      throw new ValidationError('Password must contain at least one uppercase letter');
+    }
+    if (!hasLowercase) {
+      throw new ValidationError('Password must contain at least one lowercase letter');
+    }
+    if (!hasNumber) {
+      throw new ValidationError('Password must contain at least one number');
+    }
+    if (!hasSpecial) {
+      throw new ValidationError(
+        'Password must contain at least one special character (!@#$%^&*()_+-=[]{};\':"|,.<>/?)'
+      );
+    }
+  } else {
+    // Relaxed policy for development
+    if (password.length < 8) {
+      throw new ValidationError('Password must be at least 8 characters');
+    }
+  }
+}
 
 // User data without sensitive fields
 export type SafeUser = Omit<User, 'password'>;
@@ -55,10 +165,8 @@ export async function registerUser(
     throw new ValidationError('Invalid email format');
   }
 
-  // Validate password strength
-  if (password.length < 8) {
-    throw new ValidationError('Password must be at least 8 characters');
-  }
+  // Validate password strength (uses environment-based policy)
+  validatePasswordStrength(password);
 
   // Check if user already exists
   const existingUser = await prisma.user.findUnique({
@@ -87,26 +195,59 @@ export async function registerUser(
 
 /**
  * Authenticate a user with email and password
+ * Includes brute-force protection with account lockout
  */
 export async function loginUser(email: string, password: string): Promise<SafeUser> {
+  // Check if account is locked due to too many failed attempts
+  const lockStatus = await isAccountLocked(email);
+  if (lockStatus.locked) {
+    const minutesRemaining = Math.ceil(lockStatus.remainingSeconds / 60);
+    logger.warn('Login attempt on locked account', { email, minutesRemaining });
+    throw new UnauthorizedError(
+      `Account temporarily locked due to too many failed login attempts. Try again in ${minutesRemaining} minute(s).`
+    );
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
   });
 
   if (!user) {
-    // Use generic message to prevent user enumeration
+    // Increment attempts even for non-existent users to prevent enumeration timing attacks
+    await incrementLoginAttempts(email);
+    logger.warn('Failed login - user not found', { email });
     throw new UnauthorizedError('Invalid email or password');
   }
 
   if (!user.isActive) {
+    logger.warn('Failed login - account disabled', { email, userId: user.id });
     throw new UnauthorizedError('Account is disabled');
   }
 
   const isValid = await verifyPassword(password, user.password);
 
   if (!isValid) {
+    const attempts = await incrementLoginAttempts(email);
+    const remainingAttempts = MAX_LOGIN_ATTEMPTS - attempts;
+
+    logger.warn('Failed login - invalid password', {
+      email,
+      userId: user.id,
+      failedAttempts: attempts,
+      remainingAttempts: Math.max(0, remainingAttempts),
+    });
+
+    if (remainingAttempts <= 0) {
+      throw new UnauthorizedError(
+        `Account locked due to too many failed login attempts. Try again in ${LOCKOUT_DURATION_SECONDS / 60} minutes.`
+      );
+    }
+
     throw new UnauthorizedError('Invalid email or password');
   }
+
+  // Clear failed attempts on successful login
+  await clearLoginAttempts(email);
 
   // Update last login time
   await prisma.user.update({
@@ -114,7 +255,7 @@ export async function loginUser(email: string, password: string): Promise<SafeUs
     data: { lastLoginAt: new Date() },
   });
 
-  logger.info('User logged in', { userId: user.id, email: user.email });
+  logger.info('User logged in successfully', { userId: user.id, email: user.email });
 
   return sanitizeUser(user);
 }
@@ -196,9 +337,13 @@ export async function changePassword(
     throw new UnauthorizedError('Current password is incorrect');
   }
 
-  // Validate new password
-  if (newPassword.length < 8) {
-    throw new ValidationError('New password must be at least 8 characters');
+  // Validate new password (uses environment-based policy)
+  validatePasswordStrength(newPassword);
+
+  // Ensure new password is different from current
+  const isSamePassword = await verifyPassword(newPassword, user.password);
+  if (isSamePassword) {
+    throw new ValidationError('New password must be different from current password');
   }
 
   // Hash and save new password

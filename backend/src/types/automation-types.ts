@@ -3,6 +3,45 @@
  * For end-to-end label generation workflow
  */
 
+/**
+ * Excel row data structure for matching
+ * Uses Record type to allow any column names from Excel
+ */
+export type ExcelRowData = Record<string, unknown>;
+
+/**
+ * Matched product data from Excel or database
+ */
+export interface MatchedProductData {
+  articleNumber?: string;
+  productName?: string;
+  description?: string;
+  price?: number | string;
+  ean?: string;
+  category?: string;
+  manufacturer?: string;
+  imageUrl?: string;
+  source?: 'excel' | 'database' | 'ocr';
+}
+
+/**
+ * Product data for label rendering
+ * All fields optional during construction, required fields validated at render time
+ */
+export interface LabelProductData {
+  articleNumber?: string;
+  productName?: string;
+  description?: string;
+  price?: number | string;
+  priceType?: string; // 'normal' | 'tiered' | 'auf_anfrage' | 'unknown' or custom
+  tieredPrices?: Array<{ quantity: number; price: number | string }>;
+  tieredPricesText?: string;
+  ean?: string;
+  category?: string;
+  manufacturer?: string;
+  imageUrl?: string;
+}
+
 export interface AutomationJob {
   id: string;
   name: string;
@@ -26,7 +65,7 @@ export interface AutomationJob {
 export interface AutomationConfig {
   // Input
   shopUrl: string;
-  excelData?: any[]; // Optional Excel data for matching
+  excelData?: ExcelRowData[]; // Optional Excel data for matching
   templateId: string;
   name?: string; // Optional job name
 
@@ -116,7 +155,7 @@ export interface OCRProcessResult {
 
 export interface MatchProcessResult {
   ocrResultId: string;
-  matchedData?: any;
+  matchedData?: MatchedProductData;
   matchScore: number;
   matchedBy: 'articleNumber' | 'ean' | 'productName' | 'fuzzy';
   success: boolean;
@@ -125,7 +164,7 @@ export interface MatchProcessResult {
 
 export interface GeneratedLabel {
   id: string;
-  productData: any;
+  productData: LabelProductData;
   labelPath: string;
   labelBase64?: string;
   renderTime: number;

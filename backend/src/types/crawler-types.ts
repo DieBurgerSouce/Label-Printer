@@ -2,6 +2,53 @@
  * Type definitions for Web Crawler Service
  */
 
+/**
+ * Targeted screenshot data for specific product areas
+ * Compatible with ElementScreenshot from screenshot-service
+ */
+export interface TargetedScreenshot {
+  type: string; // Element type from crawler (product-image, price, etc.)
+  path: string;
+  boundingBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  confidence?: number;
+}
+
+/**
+ * HTML extracted data structure
+ * Flexible to accommodate various extraction results
+ */
+export interface HtmlExtractedData {
+  articleNumber?: string;
+  productName?: string;
+  description?: string;
+  price?: string | number | null;
+  priceType?: string;
+  tieredPrices?: Array<{ quantity: number; price: string | number }>;
+  tieredPricesText?: string;
+  ean?: string;
+  imageUrl?: string;
+  category?: string;
+  manufacturer?: string;
+  breadcrumbs?: string[];
+  specifications?: Record<string, string>;
+}
+
+/**
+ * HTML validation result
+ */
+export interface HtmlValidationResult {
+  isValid: boolean;
+  confidence?: number;
+  missingFields?: string[];
+  warnings?: string[];
+  extractionMethod?: string;
+}
+
 export interface CrawlJob {
   id: string;
   shopUrl: string;
@@ -54,7 +101,7 @@ export interface ScreenshotMetadata {
   pageTitle: string;
   fileSize: number;
   format: 'png' | 'jpeg' | 'webp';
-  targetedScreenshots?: any[];
+  targetedScreenshots?: TargetedScreenshot[];
   layoutType?: string;
   // Variant tracking fields
   articleNumber?: string;
@@ -65,9 +112,9 @@ export interface ScreenshotMetadata {
     parentUrl?: string;
   };
   // HTML Extraction data (for hybrid approach)
-  htmlData?: any; // HtmlExtractedData from html-extraction-service
+  htmlData?: HtmlExtractedData;
   htmlConfidence?: number;
-  htmlValidation?: any; // HtmlValidationResult
+  htmlValidation?: HtmlValidationResult;
 }
 
 export interface ExtractedElements {
@@ -76,7 +123,7 @@ export interface ExtractedElements {
   productName?: string;
   productImage?: string;
   description?: string;
-  additionalData?: Record<string, any>;
+  additionalData?: Record<string, string | number | boolean | null>;
 }
 
 export interface ProductSelectors {

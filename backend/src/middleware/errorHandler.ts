@@ -4,9 +4,19 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
+import { Prisma } from '@prisma/client';
 import { isAppError, ValidationError } from '../errors/AppError';
 import logger from '../utils/logger';
 import { healthStatus } from '../utils/metrics';
+
+/**
+ * Type guard for Prisma known request errors
+ */
+function isPrismaKnownRequestError(error: unknown): error is Prisma.PrismaClientKnownRequestError {
+  return (
+    error instanceof Error && error.name === 'PrismaClientKnownRequestError' && 'code' in error
+  );
+}
 
 /**
  * Global error handler middleware
@@ -66,21 +76,23 @@ export function errorHandler(
     return;
   }
 
-  // Handle Prisma errors
-  if (err.name === 'PrismaClientKnownRequestError') {
-    const prismaError = err as any;
-
+  // Handle Prisma errors with type-safe check
+  if (isPrismaKnownRequestError(err)) {
     // Handle specific Prisma error codes
-    switch (prismaError.code) {
+    switch (err.code) {
       case 'P2002': // Unique constraint violation
-        res.status(409).json({
-          success: false,
-          error: {
-            code: 'DUPLICATE_ENTRY',
-            message: 'A record with this value already exists',
-            field: prismaError.meta?.target?.[0],
-          },
-        });
+        {
+          const target = err.meta?.target;
+          const field = Array.isArray(target) ? target[0] : undefined;
+          res.status(409).json({
+            success: false,
+            error: {
+              code: 'DUPLICATE_ENTRY',
+              message: 'A record with this value already exists',
+              field,
+            },
+          });
+        }
         return;
 
       case 'P2025': // Record not found
@@ -94,7 +106,7 @@ export function errorHandler(
         return;
 
       default:
-        logger.error('Prisma error', { error: err, ...errorContext });
+        logger.error('Prisma error', { error: err, code: err.code, ...errorContext });
     }
   }
 
@@ -154,7 +166,7 @@ export function notFoundHandler(req: Request, res: Response): void {
  * }));
  */
 export function asyncHandler(
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<void | Response>
 ) {
   return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(fn(req, res, next)).catch(next);

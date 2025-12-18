@@ -78,9 +78,23 @@ export interface OCRRegion {
   pattern?: RegExp;
 }
 
+/**
+ * Excel row data for OCR matching
+ */
+export interface ExcelMatchData {
+  articleNumber?: string;
+  productName?: string;
+  description?: string;
+  price?: string | number;
+  ean?: string;
+  category?: string;
+  manufacturer?: string;
+  [key: string]: string | number | boolean | null | undefined;
+}
+
 export interface MatchResult {
   ocrData: ExtractedData;
-  excelData: any;
+  excelData: ExcelMatchData;
   matchScore: number;
   matchedBy: 'articleNumber' | 'ean' | 'productName' | 'fuzzy';
   confidence: number;

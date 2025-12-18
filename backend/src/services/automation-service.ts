@@ -13,6 +13,7 @@ import { matcherService } from './matcher-service';
 import { templateEngine } from './template-engine';
 import { ProductService } from './product-service';
 import { AutomationJob, AutomationConfig } from '../types/automation-types';
+import logger from '../utils/logger';
 
 /** Internal result type for OCR processing */
 interface InternalOcrResult {
@@ -60,9 +61,11 @@ class AutomationService {
   async startAutomation(config: AutomationConfig): Promise<AutomationJob> {
     const jobId = uuidv4();
 
-    console.log(`🚀 Starting automation job: ${jobId}`);
-    console.log(`   Shop URL: ${config.shopUrl}`);
-    console.log(`   Template: ${config.templateId}`);
+    logger.info('Starting automation job', {
+      jobId,
+      shopUrl: config.shopUrl,
+      templateId: config.templateId,
+    });
 
     const job: AutomationJob = {
       id: jobId,

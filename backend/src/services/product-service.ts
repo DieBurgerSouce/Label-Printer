@@ -14,15 +14,6 @@ interface ExtendedOcrResult extends OcrResult {
   priceType?: string;
 }
 
-/**
- * Type for tiered price entries in JSON
- */
-interface TieredPriceEntry {
-  quantity: number;
-  price: string | number;
-  [key: string]: string | number; // Index signature for Prisma JsonValue compatibility
-}
-
 export interface CreateProductFromOcrParams {
   ocrResult: ExtendedOcrResult;
   screenshot: Screenshot;
@@ -225,6 +216,7 @@ export class ProductService {
 
   /**
    * Process OCR results directly from automation job
+   * OPTIMIZED: Uses batch query to prevent N+1 problem
    */
   static async processOcrResultsFromAutomation(ocrResults: any[], crawlJobId?: string) {
     try {
@@ -234,6 +226,48 @@ export class ProductService {
         skipped: 0,
         errors: 0,
       };
+
+      // OPTIMIZATION: Collect all article numbers first for batch lookup
+      const articleNumbers: Set<string> = new Set();
+      const baseArticleNumbers: Set<string> = new Set();
+
+      for (const ocrResult of ocrResults) {
+        const extractedData = ocrResult.extractedData || ocrResult;
+        const articleNumber =
+          extractedData.articleNumber ||
+          ocrResult.articleNumber ||
+          ocrResult?.extractedData?.articleNumber;
+
+        if (articleNumber) {
+          articleNumbers.add(articleNumber);
+          // Also add base article number for fuzzy matching
+          const baseNumber = articleNumber.split('-')[0];
+          baseArticleNumbers.add(baseNumber);
+        }
+      }
+
+      // OPTIMIZATION: Single batch query instead of N queries in loop
+      // This fixes the N+1 query problem
+      const existingProducts = await prisma.product.findMany({
+        where: {
+          OR: [
+            { articleNumber: { in: Array.from(articleNumbers) } },
+            { articleNumber: { in: Array.from(baseArticleNumbers) } },
+          ],
+        },
+      });
+
+      // Create lookup maps for O(1) access
+      const productByExactNumber = new Map(existingProducts.map((p) => [p.articleNumber, p]));
+      const productByBaseNumber = new Map(
+        existingProducts.map((p) => [p.articleNumber.split('-')[0], p])
+      );
+
+      logger.debug('Pre-loaded existing products for batch processing', {
+        ocrResultCount: ocrResults.length,
+        uniqueArticleNumbers: articleNumbers.size,
+        existingProductsFound: existingProducts.length,
+      });
 
       for (const ocrResult of ocrResults) {
         try {
@@ -356,18 +390,13 @@ export class ProductService {
           // Extract base article number (remove variant suffix after dash)
           const baseArticleNumber = extractedData.articleNumber.split('-')[0];
 
-          const existing = await prisma.product.findFirst({
-            where: {
-              OR: [
-                // Exact match: "3556-ST" = "3556-ST"
-                { articleNumber: extractedData.articleNumber },
-                // Base match: "3556-ST" → matches "3556"
-                { articleNumber: baseArticleNumber },
-                // Variant pattern match: "3556" in DB should match "3556-ST" from HTML
-                { articleNumber: { startsWith: baseArticleNumber + '-' } },
-              ],
-            },
-          });
+          // OPTIMIZED: Use pre-loaded maps instead of N+1 queries
+          // Try exact match first, then base match
+          const existing =
+            productByExactNumber.get(extractedData.articleNumber) ||
+            productByBaseNumber.get(baseArticleNumber) ||
+            // Also check if any product starts with the base number (for variant matching)
+            existingProducts.find((p) => p.articleNumber.startsWith(baseArticleNumber + '-'));
 
           if (existing) {
             // ALWAYS update existing product with new crawl data (regardless of confidence)

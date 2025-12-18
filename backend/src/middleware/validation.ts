@@ -1,10 +1,19 @@
 /**
  * Input Validation Middleware
  * Centralized Zod-based validation for Express routes
+ * Includes XSS protection via the xss library
  */
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema, ZodError } from 'zod';
+import xss, { IFilterXSSOptions } from 'xss';
 import logger from '../utils/logger';
+
+// Configure XSS filter options for strict sanitization
+const xssOptions: IFilterXSSOptions = {
+  whiteList: {}, // No HTML tags allowed
+  stripIgnoreTag: true, // Strip all non-whitelisted tags
+  stripIgnoreTagBody: ['script', 'style'], // Remove script and style tag content entirely
+};
 
 /**
  * Validation target - which part of the request to validate
@@ -127,13 +136,56 @@ export function validateMultiple(schemas: {
 }
 
 /**
- * Sanitize string input - removes potential XSS characters
+ * Sanitize string input - comprehensive XSS protection
+ * Uses the xss library for robust sanitization of:
+ * - HTML tags (script, style, iframe, etc.)
+ * - JavaScript event handlers (onclick, onerror, etc.)
+ * - JavaScript URLs (javascript:, data:, vbscript:)
+ * - HTML entities
+ *
  * Use with Zod's .transform() for custom sanitization
  */
 export function sanitizeString(value: string): string {
-  return value
-    .replace(/[<>]/g, '') // Remove < and >
-    .trim();
+  // First apply xss library for comprehensive sanitization
+  const sanitized = xss(value, xssOptions);
+
+  // Additional cleanup
+  return (
+    sanitized
+      // Remove any remaining potential dangerous patterns
+      .replace(/javascript:/gi, '')
+      .replace(/data:/gi, '')
+      .replace(/vbscript:/gi, '')
+      // Remove null bytes
+      .replace(/\0/g, '')
+      .trim()
+  );
+}
+
+/**
+ * Sanitize HTML content - allows safe HTML tags
+ * Use this for fields that intentionally contain HTML (like descriptions)
+ */
+export function sanitizeHtml(value: string): string {
+  const safeHtmlOptions: IFilterXSSOptions = {
+    whiteList: {
+      p: [],
+      br: [],
+      b: [],
+      i: [],
+      u: [],
+      strong: [],
+      em: [],
+      ul: [],
+      ol: [],
+      li: [],
+      a: ['href', 'title', 'target'],
+    },
+    stripIgnoreTag: true,
+    stripIgnoreTagBody: ['script', 'style', 'iframe', 'object', 'embed'],
+  };
+
+  return xss(value, safeHtmlOptions).trim();
 }
 
 /**
@@ -145,3 +197,13 @@ export function sanitizeString(value: string): string {
  * });
  */
 export const sanitize = (val: string) => sanitizeString(val);
+
+/**
+ * Zod transform helper for sanitizing HTML content
+ *
+ * @example
+ * const schema = z.object({
+ *   description: z.string().transform(sanitizeHtmlTransform),
+ * });
+ */
+export const sanitizeHtmlTransform = (val: string) => sanitizeHtml(val);

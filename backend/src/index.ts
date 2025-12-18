@@ -141,6 +141,70 @@ export const passwordChangeLimiter = rateLimit({
   },
 });
 
+// API rate limiter - per-user or per-IP for non-authenticated requests
+// More lenient than global, but prevents abuse of specific endpoints
+export const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV === 'production' ? 60 : 300, // 60 req/min in prod
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    // Use user ID for authenticated requests (more lenient per-user)
+    // Use IP for non-authenticated requests
+    const userId = req.session?.userId;
+    if (userId) {
+      return `user:${userId}`;
+    }
+    return `ip:${req.ip}`;
+  },
+  message: {
+    success: false,
+    error: 'Too many requests. Please slow down.',
+  },
+});
+
+// Strict rate limiter for data modification operations (POST/PUT/DELETE)
+export const mutationLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV === 'production' ? 30 : 100, // 30 mutations/min
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.session?.userId;
+    if (userId) {
+      return `mutation:user:${userId}`;
+    }
+    return `mutation:ip:${req.ip}`;
+  },
+  skip: (req) => {
+    // Only apply to mutating methods
+    return !['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method);
+  },
+  message: {
+    success: false,
+    error: 'Too many write operations. Please slow down.',
+  },
+});
+
+// Batch operation limiter - very strict to prevent abuse
+export const batchLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV === 'production' ? 5 : 20, // Only 5 batch ops/min
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.session?.userId;
+    if (userId) {
+      return `batch:user:${userId}`;
+    }
+    return `batch:ip:${req.ip}`;
+  },
+  message: {
+    success: false,
+    error: 'Too many batch operations. Please wait before trying again.',
+  },
+});
+
 app.use(globalLimiter);
 
 // Middleware - Configure CORS with explicit origins

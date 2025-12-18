@@ -4,6 +4,7 @@
  */
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma';
 import { sendSuccess, sendNotFound, handleError } from '../../utils/api-response';
 import logger from '../../utils/logger';
@@ -40,8 +41,8 @@ router.get('/', async (req: Request, res: Response) => {
     const query = querySchema.parse(req.query);
     const { page, limit, search, published, category, verified, sortBy, sortOrder } = query;
 
-    // Build where clause
-    const where: any = {};
+    // Build where clause with proper Prisma typing
+    const where: Prisma.ProductWhereInput = {};
 
     if (published !== undefined) {
       where.published = published;

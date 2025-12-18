@@ -11,11 +11,14 @@ import { UnauthorizedError, ForbiddenError } from '../errors/AppError';
 import { SafeUser } from '../services/auth-service';
 import logger from '../utils/logger';
 
-// Extend Express session with user data
+// Extend Express session with user data and security context
 declare module 'express-session' {
   interface SessionData {
     userId: string;
     user: SafeUser;
+    // Session binding for security
+    ipAddress: string;
+    userAgent: string;
   }
 }
 
@@ -72,12 +75,59 @@ export function createSessionMiddleware() {
 }
 
 /**
+ * Get client IP address from request
+ * Handles proxies via X-Forwarded-For header
+ */
+function getClientIp(req: Request): string {
+  const forwardedFor = req.headers['x-forwarded-for'];
+  if (typeof forwardedFor === 'string') {
+    return forwardedFor.split(',')[0].trim();
+  }
+  return req.ip || req.socket.remoteAddress || 'unknown';
+}
+
+/**
  * Middleware to check if user is authenticated
- * Attaches user to request if session is valid
+ * Includes session binding validation (IP + User-Agent)
  */
 export function isAuthenticated(req: Request, res: Response, next: NextFunction): void {
   if (!req.session?.userId || !req.session?.user) {
     throw new UnauthorizedError('Authentication required');
+  }
+
+  // Session binding validation (optional but recommended in production)
+  const sessionBindingEnabled = process.env.SESSION_BINDING !== 'false';
+  if (sessionBindingEnabled && process.env.NODE_ENV === 'production') {
+    const currentIp = getClientIp(req);
+    const currentUserAgent = req.headers['user-agent'] || '';
+
+    // Check IP binding (with tolerance for proxy changes)
+    if (req.session.ipAddress && req.session.ipAddress !== currentIp) {
+      logger.warn('Session IP mismatch detected', {
+        userId: req.session.userId,
+        sessionIp: req.session.ipAddress,
+        currentIp,
+      });
+      // In strict mode, destroy session
+      if (process.env.SESSION_BINDING_STRICT === 'true') {
+        req.session.destroy(() => {});
+        throw new UnauthorizedError('Session invalid - please log in again');
+      }
+    }
+
+    // Check User-Agent binding
+    if (req.session.userAgent && req.session.userAgent !== currentUserAgent) {
+      logger.warn('Session User-Agent mismatch detected', {
+        userId: req.session.userId,
+        sessionUserAgent: req.session.userAgent?.substring(0, 50),
+        currentUserAgent: currentUserAgent.substring(0, 50),
+      });
+      // In strict mode, destroy session
+      if (process.env.SESSION_BINDING_STRICT === 'true') {
+        req.session.destroy(() => {});
+        throw new UnauthorizedError('Session invalid - please log in again');
+      }
+    }
   }
 
   // Attach user to request for convenience
@@ -123,10 +173,14 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction): 
 
 /**
  * Helper to set user in session after login
+ * Includes session binding (IP + User-Agent) for security
  */
 export function setSessionUser(req: Request, user: SafeUser): void {
   req.session.userId = user.id;
   req.session.user = user;
+  // Store session binding info
+  req.session.ipAddress = getClientIp(req);
+  req.session.userAgent = req.headers['user-agent'] || '';
 }
 
 /**
