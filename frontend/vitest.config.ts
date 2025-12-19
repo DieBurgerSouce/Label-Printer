@@ -22,11 +22,11 @@ export default defineConfig({
         '**/types/**',
       ],
       thresholds: {
-        // Start with realistic thresholds, increase over time
-        lines: 10,
-        functions: 10,
-        branches: 10,
-        statements: 10,
+        // Enterprise-grade coverage requirements
+        lines: 80,
+        functions: 80,
+        branches: 70,
+        statements: 80,
       },
     },
   },

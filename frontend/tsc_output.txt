@@ -1,0 +1,8 @@
+src/features/editor/components/EditorCanvas.tsx(37,3): error TS6133: 'setZoom' is declared but its value is never read.
+src/features/editor/components/EditorSidebar.tsx(20,10): error TS1484: 'RefObject' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/components/EditorToolbar.tsx(3,10): error TS1484: 'Product' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/components/EditorToolbar.tsx(14,10): error TS1484: 'LabelTemplate' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/hooks/useLabelEditor.ts(2,10): error TS1484: 'Product' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/hooks/useLabelEditor.ts(4,10): error TS1484: 'LabelElement' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/hooks/useLabelEditor.ts(4,24): error TS1484: 'LabelTemplate' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/hooks/useLabelEditor.ts(4,39): error TS1484: 'TemplateSettings' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.

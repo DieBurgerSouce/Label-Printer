@@ -1,0 +1,35 @@
+{
+  "defaults": {
+    "timeout": 60000,
+    "wait": 1000,
+    "standard": "WCAG2AA",
+    "runners": ["axe", "htmlcs"],
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+    },
+    "hideElements": ".ignore-a11y, [data-pa11y-ignore]",
+    "threshold": 5
+  },
+  "urls": [
+    {
+      "url": "http://localhost:3001/",
+      "screenCapture": "./pa11y-reports/homepage.png"
+    },
+    {
+      "url": "http://localhost:3001/labels",
+      "screenCapture": "./pa11y-reports/labels.png"
+    },
+    {
+      "url": "http://localhost:3001/articles",
+      "screenCapture": "./pa11y-reports/articles.png"
+    },
+    {
+      "url": "http://localhost:3001/templates",
+      "screenCapture": "./pa11y-reports/templates.png"
+    },
+    {
+      "url": "http://localhost:3001/automation",
+      "screenCapture": "./pa11y-reports/automation.png"
+    }
+  ]
+}

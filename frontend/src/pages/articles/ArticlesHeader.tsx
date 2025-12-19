@@ -44,9 +44,7 @@ export default function ArticlesHeader({
         <button
           onClick={() => setShowQrCodes(!showQrCodes)}
           className={`px-4 py-2 border rounded-lg flex items-center gap-2 ${
-            showQrCodes
-              ? 'bg-blue-50 border-blue-300 text-blue-700'
-              : 'bg-white border-gray-300'
+            showQrCodes ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-gray-300'
           } hover:bg-gray-50`}
           title={showQrCodes ? 'QR-Codes ausblenden' : 'QR-Codes anzeigen'}
         >

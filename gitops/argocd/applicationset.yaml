@@ -1,0 +1,114 @@
+# ArgoCD ApplicationSet
+# Multi-environment deployment for Screenshot_Algo
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: screenshot-algo-environments
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+spec:
+  generators:
+    # List generator for environments
+    - list:
+        elements:
+          - env: dev
+            branch: develop
+            namespace: screenshot-algo-dev
+            overlay: dev
+            autoSync: true
+            prune: true
+          - env: staging
+            branch: develop
+            namespace: screenshot-algo-staging
+            overlay: staging
+            autoSync: true
+            prune: true
+          - env: production
+            branch: main
+            namespace: screenshot-algo
+            overlay: production
+            autoSync: false
+            prune: false
+
+  template:
+    metadata:
+      name: 'screenshot-algo-{{env}}'
+      namespace: argocd
+      labels:
+        app.kubernetes.io/name: screenshot-algo
+        app.kubernetes.io/instance: '{{env}}'
+        environment: '{{env}}'
+      annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.slack: deployments
+    spec:
+      project: screenshot-algo
+
+      source:
+        repoURL: https://github.com/screenshot-algo/screenshot-algo.git
+        targetRevision: '{{branch}}'
+        path: 'k8s/overlays/{{overlay}}'
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+
+      syncPolicy:
+        automated:
+          prune: '{{prune}}'
+          selfHeal: '{{autoSync}}'
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+        retry:
+          limit: 3
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+---
+# ApplicationSet for Helm releases
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: screenshot-algo-helm
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: postgresql
+            chart: postgresql
+            repo: https://charts.bitnami.com/bitnami
+            version: "13.x.x"
+            namespace: screenshot-algo
+          - name: redis
+            chart: redis
+            repo: https://charts.bitnami.com/bitnami
+            version: "18.x.x"
+            namespace: screenshot-algo
+
+  template:
+    metadata:
+      name: 'screenshot-algo-{{name}}'
+      namespace: argocd
+    spec:
+      project: screenshot-algo
+
+      source:
+        repoURL: '{{repo}}'
+        chart: '{{chart}}'
+        targetRevision: '{{version}}'
+        helm:
+          releaseName: '{{name}}'
+          valueFiles:
+            - values.yaml
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

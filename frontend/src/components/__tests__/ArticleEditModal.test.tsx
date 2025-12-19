@@ -52,12 +52,7 @@ describe('ArticleEditModal', () => {
 
     it('does not render when article is null', () => {
       render(
-        <ArticleEditModal
-          article={null}
-          isOpen={true}
-          onClose={mockOnClose}
-          onSave={mockOnSave}
-        />
+        <ArticleEditModal article={null} isOpen={true} onClose={mockOnClose} onSave={mockOnSave} />
       );
 
       expect(screen.queryByText('Artikel bearbeiten')).not.toBeInTheDocument();

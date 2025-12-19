@@ -21,9 +21,7 @@ const DEFAULT_QR_SETTINGS: QRCodeSettingsType = {
 
 export const QRCodeSettings = ({ shopUrl, qrCode, onUpdate }: QRCodeSettingsProps) => {
   const [localShopUrl, setLocalShopUrl] = useState(shopUrl || '');
-  const [settings, setSettings] = useState<QRCodeSettingsType>(
-    qrCode || DEFAULT_QR_SETTINGS
-  );
+  const [settings, setSettings] = useState<QRCodeSettingsType>(qrCode || DEFAULT_QR_SETTINGS);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
@@ -82,9 +80,7 @@ export const QRCodeSettings = ({ shopUrl, qrCode, onUpdate }: QRCodeSettingsProp
         <>
           {/* Shop URL Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Product Shop URL
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Product Shop URL</label>
             <input
               type="url"
               value={localShopUrl}
@@ -233,7 +229,8 @@ export const QRCodeSettings = ({ shopUrl, qrCode, onUpdate }: QRCodeSettingsProp
           {localShopUrl && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-xs text-blue-800">
-                <strong>Preview:</strong> QR code will link to:<br />
+                <strong>Preview:</strong> QR code will link to:
+                <br />
                 <span className="break-all">{localShopUrl}</span>
               </p>
             </div>

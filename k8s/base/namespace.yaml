@@ -1,0 +1,72 @@
+# Kubernetes Namespace
+# Enterprise namespace configuration for Screenshot_Algo
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/managed-by: kustomize
+    environment: production
+  annotations:
+    # Resource quota enforcement
+    scheduler.alpha.kubernetes.io/node-selector: ""
+    # Network policy default
+    net.beta.kubernetes.io/network-policy: '{"ingress":{"isolation":"DefaultDeny"}}'
+---
+# Resource Quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: screenshot-algo-quota
+  namespace: screenshot-algo
+spec:
+  hard:
+    # Compute resources
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    # Object counts
+    pods: "50"
+    services: "20"
+    secrets: "50"
+    configmaps: "50"
+    persistentvolumeclaims: "10"
+    # Storage
+    requests.storage: 100Gi
+---
+# Limit Range
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: screenshot-algo-limits
+  namespace: screenshot-algo
+spec:
+  limits:
+    # Container defaults
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
+      max:
+        cpu: "4"
+        memory: 8Gi
+      min:
+        cpu: 50m
+        memory: 64Mi
+    # Pod limits
+    - type: Pod
+      max:
+        cpu: "8"
+        memory: 16Gi
+    # PVC limits
+    - type: PersistentVolumeClaim
+      max:
+        storage: 50Gi
+      min:
+        storage: 1Gi

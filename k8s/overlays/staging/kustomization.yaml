@@ -1,0 +1,81 @@
+# Kustomization - Staging Overlay
+# Staging-specific Kubernetes configuration
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: screenshot-algo-staging
+
+# Reference base configuration
+resources:
+  - ../../base
+
+# Namespace override for staging
+namespace: screenshot-algo-staging
+
+# Name prefix for staging resources
+namePrefix: staging-
+
+# Common labels for staging
+commonLabels:
+  environment: staging
+  app.kubernetes.io/instance: staging
+
+# Staging-specific patches
+patches:
+  # Moderate replicas for staging
+  - target:
+      kind: Deployment
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1Gi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "1"
+
+  # Moderate HPA for staging
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 2
+      - op: replace
+        path: /spec/maxReplicas
+        value: 5
+
+  # Staging ingress
+  - target:
+      kind: Ingress
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: staging-api.screenshot-algo.com
+      - op: replace
+        path: /spec/rules/0/host
+        value: staging-api.screenshot-algo.com
+
+# Staging image
+images:
+  - name: screenshot-algo
+    newName: ghcr.io/screenshot-algo/screenshot-algo
+    newTag: staging
+
+# Staging config map
+configMapGenerator:
+  - name: screenshot-algo-config
+    behavior: merge
+    literals:
+      - NODE_ENV=staging
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+      - METRICS_ENABLED=true
+      - TRACING_ENABLED=true
+      - TRACING_SAMPLE_RATE=0.5

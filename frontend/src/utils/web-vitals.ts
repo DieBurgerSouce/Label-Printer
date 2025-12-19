@@ -150,7 +150,19 @@ export function sendToBeacon(url: string): MetricHandler {
 export function sendToSentry(): MetricHandler {
   return (metric) => {
     // Check if Sentry is available
-    const Sentry = (window as { Sentry?: { metrics?: { distribution: (name: string, value: number, options: { tags: Record<string, string> }) => void } } }).Sentry;
+    const Sentry = (
+      window as {
+        Sentry?: {
+          metrics?: {
+            distribution: (
+              name: string,
+              value: number,
+              options: { tags: Record<string, string> }
+            ) => void;
+          };
+        };
+      }
+    ).Sentry;
     if (Sentry?.metrics) {
       Sentry.metrics.distribution(`web_vitals.${metric.name.toLowerCase()}`, metric.value, {
         tags: {

@@ -1,0 +1,487 @@
+openapi: 3.1.0
+
+info:
+  title: Screenshot_Algo API
+  description: |
+    High-performance screenshot capture and processing API.
+
+    ## Features
+    - Capture full-page screenshots
+    - Support for multiple output formats (PNG, JPEG, WebP, PDF)
+    - Viewport customization
+    - Wait strategies for dynamic content
+    - Caching for improved performance
+
+    ## Authentication
+    All API requests require an API key passed in the `X-API-Key` header.
+
+    ## Rate Limits
+    - Free tier: 100 requests/hour
+    - Pro tier: 1000 requests/hour
+    - Enterprise: Unlimited
+
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:4000
+    description: Local development
+  - url: https://api.staging.example.com
+    description: Staging environment
+  - url: https://api.example.com
+    description: Production environment
+
+tags:
+  - name: Screenshots
+    description: Screenshot capture operations
+  - name: Health
+    description: Health check endpoints
+  - name: Status
+    description: System status endpoints
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Returns the health status of the API
+      operationId: getHealth
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /ready:
+    get:
+      tags:
+        - Health
+      summary: Readiness check
+      description: Returns whether the service is ready to accept requests
+      operationId: getReady
+      responses:
+        '200':
+          description: Service is ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ready:
+                    type: boolean
+                    example: true
+        '503':
+          description: Service is not ready
+
+  /api/status:
+    get:
+      tags:
+        - Status
+      summary: System status
+      description: Returns detailed system status information
+      operationId: getStatus
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: System status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/screenshot:
+    post:
+      tags:
+        - Screenshots
+      summary: Capture screenshot
+      description: |
+        Captures a screenshot of the specified URL.
+
+        ## Supported Options
+        - Full page capture
+        - Viewport customization
+        - Multiple output formats
+        - Wait strategies for dynamic content
+
+      operationId: captureScreenshot
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenshotRequest'
+            examples:
+              basic:
+                summary: Basic screenshot
+                value:
+                  url: "https://example.com"
+              fullPage:
+                summary: Full page screenshot
+                value:
+                  url: "https://example.com"
+                  fullPage: true
+                  format: "png"
+              customViewport:
+                summary: Custom viewport
+                value:
+                  url: "https://example.com"
+                  width: 1920
+                  height: 1080
+                  deviceScaleFactor: 2
+              withWait:
+                summary: Wait for element
+                value:
+                  url: "https://example.com"
+                  waitForSelector: "#content"
+                  waitTimeout: 10000
+      responses:
+        '200':
+          description: Screenshot captured successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenshotResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/screenshot/{id}:
+    get:
+      tags:
+        - Screenshots
+      summary: Get screenshot by ID
+      description: Retrieves a previously captured screenshot by its ID
+      operationId: getScreenshot
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Screenshot ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Screenshot found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenshotResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - Screenshots
+      summary: Delete screenshot
+      description: Deletes a screenshot by its ID
+      operationId: deleteScreenshot
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Screenshot ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Screenshot deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+
+  schemas:
+    ScreenshotRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL to capture
+          example: "https://example.com"
+        format:
+          type: string
+          enum: [png, jpeg, webp, pdf]
+          default: png
+          description: Output format
+        quality:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 80
+          description: Image quality (JPEG/WebP only)
+        fullPage:
+          type: boolean
+          default: false
+          description: Capture full scrollable page
+        width:
+          type: integer
+          minimum: 320
+          maximum: 3840
+          default: 1280
+          description: Viewport width
+        height:
+          type: integer
+          minimum: 200
+          maximum: 2160
+          default: 720
+          description: Viewport height
+        deviceScaleFactor:
+          type: number
+          minimum: 1
+          maximum: 3
+          default: 1
+          description: Device scale factor (DPI)
+        waitForSelector:
+          type: string
+          description: CSS selector to wait for before capture
+        waitTimeout:
+          type: integer
+          minimum: 1000
+          maximum: 30000
+          default: 5000
+          description: Maximum wait time in milliseconds
+        delay:
+          type: integer
+          minimum: 0
+          maximum: 10000
+          default: 0
+          description: Additional delay after page load
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Custom HTTP headers
+        cookies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cookie'
+          description: Cookies to set before capture
+
+    Cookie:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        domain:
+          type: string
+        path:
+          type: string
+          default: "/"
+        httpOnly:
+          type: boolean
+          default: false
+        secure:
+          type: boolean
+          default: false
+
+    ScreenshotResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique screenshot ID
+        url:
+          type: string
+          format: uri
+          description: Original URL
+        imageUrl:
+          type: string
+          format: uri
+          description: URL to the captured image
+        format:
+          type: string
+          enum: [png, jpeg, webp, pdf]
+        width:
+          type: integer
+        height:
+          type: integer
+        fileSize:
+          type: integer
+          description: File size in bytes
+        capturedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          description: When the screenshot will be deleted
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        checks:
+          type: object
+          properties:
+            database:
+              type: string
+              enum: [ok, error]
+            redis:
+              type: string
+              enum: [ok, error]
+            browser:
+              type: string
+              enum: [ok, error]
+
+    StatusResponse:
+      type: object
+      properties:
+        uptime:
+          type: number
+          description: Server uptime in seconds
+        memory:
+          type: object
+          properties:
+            used:
+              type: integer
+            total:
+              type: integer
+        queue:
+          type: object
+          properties:
+            pending:
+              type: integer
+            processing:
+              type: integer
+            completed:
+              type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          description: Additional error details
+        requestId:
+          type: string
+          description: Request ID for debugging
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "validation_error"
+            message: "Invalid URL format"
+            details:
+              field: "url"
+              reason: "Must be a valid HTTP/HTTPS URL"
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "unauthorized"
+            message: "Missing or invalid API key"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "not_found"
+            message: "Screenshot not found"
+
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Request limit per hour
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Remaining requests
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix timestamp when limit resets
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "rate_limited"
+            message: "Rate limit exceeded. Try again later."
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "internal_error"
+            message: "An unexpected error occurred"
+            requestId: "req_abc123"

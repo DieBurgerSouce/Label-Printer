@@ -65,7 +65,10 @@ export default function ShopAutomation() {
       navigate(`/jobs/${jobId}`);
     } catch (err: any) {
       console.error('❌ Failed to start automation:', err);
-      showToast({ type: 'error', message: err.response?.data?.error || err.message || 'Fehler beim Starten der Automation' });
+      showToast({
+        type: 'error',
+        message: err.response?.data?.error || err.message || 'Fehler beim Starten der Automation',
+      });
       setError(err.response?.data?.error || err.message || 'Fehler beim Starten der Automation');
     } finally {
       setLoading(false);
@@ -82,7 +85,9 @@ export default function ShopAutomation() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Shop Automation</h1>
-            <p className="text-gray-600">Automatisch alle Artikel von einem Online-Shop importieren</p>
+            <p className="text-gray-600">
+              Automatisch alle Artikel von einem Online-Shop importieren
+            </p>
           </div>
         </div>
       </div>
@@ -112,9 +117,7 @@ export default function ShopAutomation() {
 
         {/* Shop URL */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Shop URL *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Shop URL *</label>
           <input
             type="text"
             required
@@ -163,14 +166,14 @@ export default function ShopAutomation() {
                 onChange={(e) => setConfig({ ...config, maxProducts: parseInt(e.target.value) })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-              <p className="text-xs text-gray-500 mt-1">Max. Anzahl zu importierender Produkte (empfohlen: 2000 für shop.firmenich.de)</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Max. Anzahl zu importierender Produkte (empfohlen: 2000 für shop.firmenich.de)
+              </p>
             </div>
 
             {/* Template */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Label Template
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Label Template</label>
               <select
                 value={config.templateId}
                 onChange={(e) => setConfig({ ...config, templateId: e.target.value })}

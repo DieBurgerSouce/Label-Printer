@@ -1,0 +1,51 @@
+🚀 Screenshot_Algo has been deployed!
+
+{{- if .Values.ingress.enabled }}
+📡 Access the application:
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  https://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+📡 Get the application URL by running:
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "screenshot-algo.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+📡 Get the application URL by running:
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+  watch kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "screenshot-algo.fullname" . }}
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "screenshot-algo.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+📡 Access the application using port-forward:
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "screenshot-algo.fullname" . }} 8080:{{ .Values.service.port }}
+  echo "Visit http://127.0.0.1:8080"
+{{- end }}
+
+📊 Check deployment status:
+  kubectl --namespace {{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ include "screenshot-algo.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+
+📈 View metrics:
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "screenshot-algo.fullname" . }} 9090:9090
+  echo "Metrics at http://127.0.0.1:9090/metrics"
+
+📋 View logs:
+  kubectl --namespace {{ .Release.Namespace }} logs -l "app.kubernetes.io/name={{ include "screenshot-algo.name" . }}" -f
+
+{{- if .Values.autoscaling.enabled }}
+⚡ Autoscaling is enabled:
+  Min replicas: {{ .Values.autoscaling.minReplicas }}
+  Max replicas: {{ .Values.autoscaling.maxReplicas }}
+  kubectl --namespace {{ .Release.Namespace }} get hpa {{ include "screenshot-algo.fullname" . }}
+{{- end }}
+
+{{- if .Values.podDisruptionBudget.enabled }}
+🛡️ Pod Disruption Budget is enabled:
+  kubectl --namespace {{ .Release.Namespace }} get pdb {{ include "screenshot-algo.fullname" . }}
+{{- end }}
+
+📚 Documentation: https://docs.screenshot-algo.com
+🐛 Issues: https://github.com/screenshot-algo/screenshot-algo/issues

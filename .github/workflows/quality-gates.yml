@@ -1,0 +1,329 @@
+# Quality Gates Workflow
+# Enterprise-grade quality enforcement for Screenshot_Algo
+name: 🚦 Quality Gates
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  NODE_VERSION: '20'
+  COVERAGE_THRESHOLD: 70
+
+jobs:
+  # =============================================================================
+  # Code Coverage Gate
+  # =============================================================================
+  coverage:
+    name: 📊 Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage --coverageReporters=json-summary --coverageReporters=lcov
+
+      - name: Check coverage thresholds
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+          echo "Current coverage: $COVERAGE%"
+          echo "Required threshold: ${{ env.COVERAGE_THRESHOLD }}%"
+          if (( $(echo "$COVERAGE < ${{ env.COVERAGE_THRESHOLD }}" | bc -l) )); then
+            echo "❌ Coverage ($COVERAGE%) is below threshold (${{ env.COVERAGE_THRESHOLD }}%)"
+            exit 1
+          fi
+          echo "✅ Coverage meets threshold"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          flags: unittests
+          fail_ci_if_error: false
+
+      - name: Coverage Report Comment
+        uses: MishaKav/jest-coverage-comment@main
+        if: github.event_name == 'pull_request'
+        with:
+          coverage-summary-path: ./coverage/coverage-summary.json
+          title: Code Coverage Report
+          badge-title: Coverage
+          hide-comment: false
+          create-new-comment: false
+          hide-summary: false
+
+  # =============================================================================
+  # Bundle Size Gate
+  # =============================================================================
+  bundle-size:
+    name: 📦 Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build --if-present
+
+      - name: Check bundle size
+        uses: siddharthkp/bundlewatch@v1
+        with:
+          token: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
+        env:
+          CI_REPO_OWNER: ${{ github.repository_owner }}
+          CI_REPO_NAME: ${{ github.event.repository.name }}
+          CI_COMMIT_SHA: ${{ github.sha }}
+          CI_BRANCH: ${{ github.ref_name }}
+          CI_BRANCH_BASE: main
+
+  # =============================================================================
+  # License Compliance Gate
+  # =============================================================================
+  license-compliance:
+    name: 📄 License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install license-checker
+        run: npm install -g license-checker
+
+      - name: Check licenses
+        run: |
+          echo "Checking for forbidden licenses..."
+          license-checker --production --failOn 'GPL;AGPL;LGPL;SSPL;BUSL' --summary
+
+      - name: Generate license report
+        run: |
+          license-checker --production --json --out license-report.json
+          license-checker --production --csv --out license-report.csv
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: |
+            license-report.json
+            license-report.csv
+          retention-days: 90
+
+  # =============================================================================
+  # Performance Regression Gate
+  # =============================================================================
+  performance:
+    name: ⚡ Performance Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build --if-present
+
+      - name: Run performance tests
+        run: |
+          if [ -f "performance-budget.json" ]; then
+            echo "Checking performance budget..."
+            npm run perf:check --if-present || true
+          else
+            echo "No performance budget file found, skipping..."
+          fi
+
+  # =============================================================================
+  # TypeScript Strict Check
+  # =============================================================================
+  typescript:
+    name: 📝 TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Check for type errors
+        run: |
+          ERRORS=$(npx tsc --noEmit 2>&1 | grep -c "error TS" || true)
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "❌ Found $ERRORS TypeScript errors"
+            npx tsc --noEmit
+            exit 1
+          fi
+          echo "✅ No TypeScript errors found"
+
+  # =============================================================================
+  # ESLint Quality Gate
+  # =============================================================================
+  eslint:
+    name: 🔍 ESLint Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: |
+          npx eslint . --ext .js,.jsx,.ts,.tsx \
+            --format json \
+            --output-file eslint-report.json \
+            || true
+
+      - name: Check for critical issues
+        run: |
+          if [ -f "eslint-report.json" ]; then
+            ERRORS=$(cat eslint-report.json | jq '[.[].errorCount] | add // 0')
+            WARNINGS=$(cat eslint-report.json | jq '[.[].warningCount] | add // 0')
+            echo "ESLint found $ERRORS errors and $WARNINGS warnings"
+            if [ "$ERRORS" -gt 0 ]; then
+              echo "❌ ESLint errors found"
+              npx eslint . --ext .js,.jsx,.ts,.tsx
+              exit 1
+            fi
+            echo "✅ No ESLint errors"
+          fi
+
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eslint-report
+          path: eslint-report.json
+          retention-days: 30
+
+  # =============================================================================
+  # Dependency Health Check
+  # =============================================================================
+  dependencies:
+    name: 📦 Dependency Health
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for outdated packages
+        run: |
+          echo "## 📦 Outdated Packages" >> $GITHUB_STEP_SUMMARY
+          npm outdated --json > outdated.json || true
+          if [ -s outdated.json ]; then
+            echo "| Package | Current | Wanted | Latest |" >> $GITHUB_STEP_SUMMARY
+            echo "|---------|---------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+            cat outdated.json | jq -r 'to_entries[] | "| \(.key) | \(.value.current) | \(.value.wanted) | \(.value.latest) |"' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "All packages are up to date! ✅" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check for deprecated packages
+        run: |
+          npm ls --json 2>/dev/null | jq -r '
+            .. | objects | select(.deprecated) |
+            "⚠️ Deprecated: \(.name // "unknown") - \(.deprecated)"
+          ' || echo "No deprecated packages found"
+
+  # =============================================================================
+  # Quality Summary
+  # =============================================================================
+  quality-summary:
+    name: 📊 Quality Summary
+    needs: [coverage, bundle-size, license-compliance, typescript, eslint, dependencies]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 🚦 Quality Gates Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Gate | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Coverage | ${{ needs.coverage.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Bundle Size | ${{ needs.bundle-size.result == 'success' && '✅ Passed' || '⚠️ Check' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| License Compliance | ${{ needs.license-compliance.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| TypeScript | ${{ needs.typescript.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ESLint | ${{ needs.eslint.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependencies | ${{ needs.dependencies.result == 'success' && '✅ Healthy' || '⚠️ Check' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📅 Check completed at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail if required gates failed
+        if: |
+          needs.coverage.result == 'failure' ||
+          needs.license-compliance.result == 'failure' ||
+          needs.typescript.result == 'failure' ||
+          needs.eslint.result == 'failure'
+        run: |
+          echo "Required quality gates failed!"
+          exit 1

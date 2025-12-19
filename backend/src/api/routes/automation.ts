@@ -155,9 +155,9 @@ router.post('/start-simple', async (req: Request, res: Response) => {
  * GET /api/automation/jobs
  * Get all automation jobs
  */
-router.get('/jobs', (_req: Request, res: Response) => {
+router.get('/jobs', async (_req: Request, res: Response) => {
   try {
-    const jobs = automationService.getAllJobs();
+    const jobs = await automationService.getAllJobs();
 
     return sendSuccess(res, {
       jobs: jobs.map((job) => ({
@@ -181,10 +181,10 @@ router.get('/jobs', (_req: Request, res: Response) => {
  * GET /api/automation/jobs/:id
  * Get specific automation job with full details
  */
-router.get('/jobs/:id', (req: Request, res: Response) => {
+router.get('/jobs/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const job = automationService.getJob(id);
+    const job = await automationService.getJob(id);
 
     if (!job) {
       return sendNotFound(res, 'Job');
@@ -201,10 +201,10 @@ router.get('/jobs/:id', (req: Request, res: Response) => {
  * GET /api/automation/jobs/:id/progress
  * Get job progress (lightweight endpoint for polling)
  */
-router.get('/jobs/:id/progress', (req: Request, res: Response) => {
+router.get('/jobs/:id/progress', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const job = automationService.getJob(id);
+    const job = await automationService.getJob(id);
 
     if (!job) {
       return sendNotFound(res, 'Job');
@@ -225,10 +225,10 @@ router.get('/jobs/:id/progress', (req: Request, res: Response) => {
  * GET /api/automation/jobs/:id/labels
  * Get all generated labels for a job
  */
-router.get('/jobs/:id/labels', (req: Request, res: Response) => {
+router.get('/jobs/:id/labels', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const job = automationService.getJob(id);
+    const job = await automationService.getJob(id);
 
     if (!job) {
       return sendNotFound(res, 'Job');
@@ -248,10 +248,10 @@ router.get('/jobs/:id/labels', (req: Request, res: Response) => {
  * GET /api/automation/jobs/:id/labels/:labelIndex
  * Get a specific label image
  */
-router.get('/jobs/:id/labels/:labelIndex', (req: Request, res: Response) => {
+router.get('/jobs/:id/labels/:labelIndex', async (req: Request, res: Response) => {
   try {
     const { id, labelIndex } = req.params;
-    const job = automationService.getJob(id);
+    const job = await automationService.getJob(id);
 
     if (!job) {
       return sendNotFound(res, 'Job');
@@ -322,9 +322,9 @@ router.delete('/jobs/:id', async (req: Request, res: Response) => {
  * GET /api/automation/stats
  * Get overall automation statistics
  */
-router.get('/stats', (_req: Request, res: Response) => {
+router.get('/stats', async (_req: Request, res: Response) => {
   try {
-    const jobs = automationService.getAllJobs();
+    const jobs = await automationService.getAllJobs();
 
     const stats = {
       totalJobs: jobs.length,
@@ -333,6 +333,7 @@ router.get('/stats', (_req: Request, res: Response) => {
       failedJobs: jobs.filter((j) => j.status === 'failed').length,
       totalLabelsGenerated: jobs.reduce((sum, j) => sum + j.results.summary.labelsGenerated, 0),
       averageProcessingTime: 0,
+      queueStats: await automationService.getQueueStats(),
     };
 
     const completedJobs = jobs.filter((j) => j.status === 'completed');

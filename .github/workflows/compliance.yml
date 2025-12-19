@@ -1,0 +1,340 @@
+name: Compliance Checks
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      full_audit:
+        description: 'Run full compliance audit'
+        required: false
+        default: 'false'
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # ============================================
+  # License Compliance
+  # ============================================
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run license checker
+        run: |
+          npx license-checker --production --json > licenses.json
+          npx license-checker --production --onlyAllow 'MIT;ISC;BSD-2-Clause;BSD-3-Clause;Apache-2.0;CC0-1.0;CC-BY-3.0;CC-BY-4.0;Unlicense;0BSD;WTFPL;Python-2.0'
+
+      - name: Check for copyleft licenses
+        run: |
+          if grep -E '"(GPL|AGPL|LGPL|SSPL)' licenses.json; then
+            echo "::error::Found copyleft license in dependencies!"
+            exit 1
+          fi
+          echo "No copyleft licenses found"
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: licenses.json
+
+  # ============================================
+  # SBOM Generation
+  # ============================================
+  sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate CycloneDX SBOM
+        uses: CycloneDX/gh-node-module-generatebom@v1
+        with:
+          path: ./
+          output: sbom.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom.json
+
+      - name: Generate SPDX SBOM
+        run: |
+          npm install -g @cyclonedx/cdx-cli
+          npx spdx-sbom-generator -o spdx-sbom.json
+
+      - name: Upload SPDX SBOM
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sbom-spdx
+          path: spdx-sbom.json
+
+  # ============================================
+  # Security Policy Compliance
+  # ============================================
+  security-policy:
+    name: Security Policy Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check SECURITY.md exists
+        run: |
+          if [ ! -f "SECURITY.md" ]; then
+            echo "::error::SECURITY.md is required"
+            exit 1
+          fi
+
+      - name: Check security policy content
+        run: |
+          required_sections=("Reporting" "Supported Versions" "Security Update")
+          for section in "${required_sections[@]}"; do
+            if ! grep -qi "$section" SECURITY.md; then
+              echo "::warning::SECURITY.md should contain section: $section"
+            fi
+          done
+
+      - name: Check for secrets baseline
+        run: |
+          if [ ! -f ".secrets.baseline" ]; then
+            echo "::warning::.secrets.baseline not found - consider using detect-secrets"
+          fi
+
+  # ============================================
+  # Data Protection Compliance
+  # ============================================
+  data-protection:
+    name: Data Protection Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for PII patterns in code
+        run: |
+          # Check for hardcoded emails
+          if grep -rE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' \
+            --include='*.ts' --include='*.js' --include='*.json' \
+            --exclude-dir=node_modules --exclude-dir=.git \
+            --exclude='*.test.*' --exclude='*.spec.*' \
+            . | grep -v 'example.com' | grep -v 'noreply'; then
+            echo "::warning::Potential hardcoded email addresses found"
+          fi
+
+      - name: Check for sensitive data patterns
+        run: |
+          patterns=(
+            'password\s*='
+            'secret\s*='
+            'api[_-]?key\s*='
+            'private[_-]?key'
+          )
+          for pattern in "${patterns[@]}"; do
+            if grep -riE "$pattern" --include='*.ts' --include='*.js' \
+              --exclude-dir=node_modules --exclude-dir=.git \
+              --exclude='*.test.*' --exclude='*.spec.*' \
+              --exclude='*.example*' --exclude='*.md' .; then
+              echo "::warning::Potential sensitive data pattern found: $pattern"
+            fi
+          done
+
+  # ============================================
+  # Documentation Compliance
+  # ============================================
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check required documentation
+        run: |
+          required_docs=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "CODE_OF_CONDUCT.md"
+            "LICENSE"
+            "SECURITY.md"
+            "CHANGELOG.md"
+          )
+
+          missing=()
+          for doc in "${required_docs[@]}"; do
+            if [ ! -f "$doc" ]; then
+              missing+=("$doc")
+            fi
+          done
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::warning::Missing documentation: ${missing[*]}"
+          else
+            echo "All required documentation present"
+          fi
+
+      - name: Check API documentation
+        run: |
+          if [ -f "openapi.yaml" ] || [ -f "openapi.json" ] || [ -f "swagger.yaml" ]; then
+            echo "API documentation found"
+          else
+            echo "::warning::No API documentation (OpenAPI/Swagger) found"
+          fi
+
+  # ============================================
+  # Code Quality Standards
+  # ============================================
+  code-standards:
+    name: Code Standards Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for console.log in production code
+        run: |
+          if grep -r 'console\.log' --include='*.ts' --include='*.js' \
+            --exclude-dir=node_modules --exclude-dir=.git \
+            --exclude='*.test.*' --exclude='*.spec.*' \
+            --exclude='*.config.*' \
+            src/ 2>/dev/null; then
+            echo "::warning::console.log found in production code"
+          fi
+
+      - name: Check for TODO/FIXME comments
+        run: |
+          count=$(grep -rE '(TODO|FIXME|HACK|XXX)' --include='*.ts' --include='*.js' \
+            --exclude-dir=node_modules --exclude-dir=.git \
+            src/ 2>/dev/null | wc -l || echo "0")
+          echo "Found $count TODO/FIXME comments"
+          if [ "$count" -gt 20 ]; then
+            echo "::warning::High number of TODO comments ($count) - consider addressing"
+          fi
+
+      - name: Run TypeScript strict check
+        run: npx tsc --noEmit --strict || echo "::warning::TypeScript strict mode has errors"
+
+  # ============================================
+  # Accessibility Compliance
+  # ============================================
+  accessibility:
+    name: Accessibility Check
+    runs-on: ubuntu-latest
+    if: github.event.inputs.full_audit == 'true' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build --if-present
+
+      - name: Run accessibility audit
+        run: |
+          npm install -g pa11y-ci
+          pa11y-ci --config .pa11yci.json || echo "::warning::Accessibility issues found"
+        continue-on-error: true
+
+  # ============================================
+  # Generate Compliance Report
+  # ============================================
+  compliance-report:
+    name: Generate Report
+    needs: [license-check, sbom, security-policy, data-protection, documentation, code-standards]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: compliance-artifacts
+
+      - name: Generate compliance summary
+        run: |
+          echo "# Compliance Report" > compliance-report.md
+          echo "" >> compliance-report.md
+          echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> compliance-report.md
+          echo "Repository: ${{ github.repository }}" >> compliance-report.md
+          echo "Commit: ${{ github.sha }}" >> compliance-report.md
+          echo "" >> compliance-report.md
+
+          echo "## Job Results" >> compliance-report.md
+          echo "| Check | Status |" >> compliance-report.md
+          echo "|-------|--------|" >> compliance-report.md
+          echo "| License Check | ${{ needs.license-check.result }} |" >> compliance-report.md
+          echo "| SBOM Generation | ${{ needs.sbom.result }} |" >> compliance-report.md
+          echo "| Security Policy | ${{ needs.security-policy.result }} |" >> compliance-report.md
+          echo "| Data Protection | ${{ needs.data-protection.result }} |" >> compliance-report.md
+          echo "| Documentation | ${{ needs.documentation.result }} |" >> compliance-report.md
+          echo "| Code Standards | ${{ needs.code-standards.result }} |" >> compliance-report.md
+
+          cat compliance-report.md
+
+      - name: Upload compliance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-report
+          path: |
+            compliance-report.md
+            compliance-artifacts/
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('compliance-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Compliance checks failed - review required"

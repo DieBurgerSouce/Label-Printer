@@ -19,18 +19,12 @@ export default function TemplateEditor({
   const [description, setDescription] = useState(template?.description || '');
   const [type, setType] = useState<Template['type']>(template?.type || 'standard');
   const [fontSize, setFontSize] = useState(template?.settings.fontSize || 12);
-  const [fontFamily, setFontFamily] = useState(
-    template?.settings.fontFamily || 'Arial'
-  );
+  const [fontFamily, setFontFamily] = useState(template?.settings.fontFamily || 'Arial');
   const [backgroundColor, setBackgroundColor] = useState(
     template?.settings.backgroundColor || '#ffffff'
   );
-  const [borderColor, setBorderColor] = useState(
-    template?.settings.borderColor || '#000000'
-  );
-  const [borderWidth, setBorderWidth] = useState(
-    template?.settings.borderWidth || 1
-  );
+  const [borderColor, setBorderColor] = useState(template?.settings.borderColor || '#000000');
+  const [borderWidth, setBorderWidth] = useState(template?.settings.borderWidth || 1);
   const [padding, setPadding] = useState(template?.settings.padding || 10);
 
   const handleSave = () => {
@@ -90,9 +84,7 @@ export default function TemplateEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -103,9 +95,7 @@ export default function TemplateEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Template Type
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Template Type</label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as Template['type'])}
@@ -139,9 +129,7 @@ export default function TemplateEditor({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Font Family
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Font Family</label>
                 <select
                   value={fontFamily}
                   onChange={(e) => setFontFamily(e.target.value)}
@@ -176,9 +164,7 @@ export default function TemplateEditor({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Border Color
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Border Color</label>
                 <div className="flex gap-2">
                   <input
                     type="color"
@@ -210,9 +196,7 @@ export default function TemplateEditor({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Padding (mm)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Padding (mm)</label>
                 <input
                   type="number"
                   value={padding}

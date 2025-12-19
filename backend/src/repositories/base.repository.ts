@@ -54,9 +54,11 @@ export type PrismaModelDelegate = any;
  * Base repository implementation with common CRUD operations
  * Extend this class for entity-specific repositories
  */
-export abstract class BaseRepository<T, CreateInput, UpdateInput>
-  implements IBaseRepository<T, CreateInput, UpdateInput>
-{
+export abstract class BaseRepository<T, CreateInput, UpdateInput> implements IBaseRepository<
+  T,
+  CreateInput,
+  UpdateInput
+> {
   protected prisma: PrismaClient;
   protected abstract modelName: string;
   protected abstract entityName: string;

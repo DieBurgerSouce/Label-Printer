@@ -1,0 +1,213 @@
+# GitOps Sync Workflow
+# Trigger GitOps reconciliation for Screenshot_Algo
+name: 🔄 GitOps Sync
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'k8s/**'
+      - 'helm/**'
+      - 'gitops/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to sync'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      tool:
+        description: 'GitOps tool'
+        required: true
+        default: 'argocd'
+        type: choice
+        options:
+          - argocd
+          - flux
+
+permissions:
+  contents: read
+
+env:
+  ARGOCD_SERVER: argocd.screenshot-algo.com
+  FLUX_NAMESPACE: flux-system
+
+jobs:
+  # =============================================================================
+  # Validate GitOps Manifests
+  # =============================================================================
+  validate:
+    name: 🔍 Validate Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Validate Kustomizations
+        run: |
+          for overlay in k8s/overlays/*/; do
+            echo "Validating $overlay..."
+            kustomize build "$overlay" > /dev/null
+            echo "✅ $overlay valid"
+          done
+
+      - name: Validate ArgoCD manifests
+        run: |
+          for file in gitops/argocd/*.yaml; do
+            echo "Validating $file..."
+            kubectl apply --dry-run=client -f "$file" || true
+          done
+
+      - name: Validate FluxCD manifests
+        run: |
+          for file in gitops/fluxcd/*.yaml; do
+            echo "Validating $file..."
+            kubectl apply --dry-run=client -f "$file" || true
+          done
+
+  # =============================================================================
+  # ArgoCD Sync
+  # =============================================================================
+  argocd-sync:
+    name: 🔄 ArgoCD Sync
+    needs: [validate]
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.tool == 'argocd')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x argocd
+          sudo mv argocd /usr/local/bin/
+
+      - name: ArgoCD Login
+        run: |
+          argocd login ${{ env.ARGOCD_SERVER }} \
+            --username admin \
+            --password ${{ secrets.ARGOCD_PASSWORD }} \
+            --insecure
+
+      - name: Determine app name
+        id: app
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "name=screenshot-algo-${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "name=screenshot-algo" >> $GITHUB_OUTPUT
+          else
+            echo "name=screenshot-algo-staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Sync Application
+        run: |
+          echo "Syncing ${{ steps.app.outputs.name }}..."
+          argocd app sync ${{ steps.app.outputs.name }} --prune
+
+      - name: Wait for Sync
+        run: |
+          argocd app wait ${{ steps.app.outputs.name }} \
+            --timeout 300 \
+            --health \
+            --sync
+
+      - name: Get Application Status
+        run: |
+          argocd app get ${{ steps.app.outputs.name }}
+
+          echo "## 🔄 ArgoCD Sync Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Application**: ${{ steps.app.outputs.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Healthy & Synced" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+  # =============================================================================
+  # FluxCD Sync
+  # =============================================================================
+  flux-sync:
+    name: 🔄 FluxCD Sync
+    needs: [validate]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.tool == 'flux'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flux CLI
+        run: |
+          curl -s https://fluxcd.io/install.sh | sudo bash
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Determine Kustomization name
+        id: kustomization
+        run: |
+          case "${{ github.event.inputs.environment }}" in
+            dev)
+              echo "name=screenshot-algo-dev" >> $GITHUB_OUTPUT
+              ;;
+            staging)
+              echo "name=screenshot-algo-staging" >> $GITHUB_OUTPUT
+              ;;
+            production)
+              echo "name=screenshot-algo" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      - name: Force Reconciliation
+        run: |
+          echo "Reconciling ${{ steps.kustomization.outputs.name }}..."
+          flux reconcile kustomization ${{ steps.kustomization.outputs.name }} \
+            --with-source \
+            --timeout=5m
+
+      - name: Check Status
+        run: |
+          flux get kustomization ${{ steps.kustomization.outputs.name }}
+
+          echo "## 🔄 FluxCD Sync Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Kustomization**: ${{ steps.kustomization.outputs.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Reconciled" >> $GITHUB_STEP_SUMMARY
+
+  # =============================================================================
+  # Notify on Failure
+  # =============================================================================
+  notify-failure:
+    name: 📢 Notify Failure
+    needs: [argocd-sync, flux-sync]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "❌ GitOps sync failed for Screenshot_Algo",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*GitOps Sync Failed*\n\n• Repository: ${{ github.repository }}\n• Branch: ${{ github.ref_name }}\n• Actor: ${{ github.actor }}\n• <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -103,13 +103,13 @@ export default function Templates() {
         <div className="card border-l-4 border-green-500">
           <p className="text-sm text-gray-600">Mit Drucklayout</p>
           <p className="text-3xl font-bold text-gray-900">
-            {labelTemplates.filter(t => t.printLayoutId).length}
+            {labelTemplates.filter((t) => t.printLayoutId).length}
           </p>
         </div>
         <div className="card border-l-4 border-purple-500">
           <p className="text-sm text-gray-600">Mit Auto-Match</p>
           <p className="text-3xl font-bold text-gray-900">
-            {labelTemplates.filter(t => t.autoMatchEnabled).length}
+            {labelTemplates.filter((t) => t.autoMatchEnabled).length}
           </p>
         </div>
       </div>
@@ -123,20 +123,19 @@ export default function Templates() {
       ) : labelTemplates.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {labelTemplates.map((template) => (
-            <div key={template.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200">
+            <div
+              key={template.id}
+              className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200"
+            >
               <div className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg">{template.name}</h3>
                     {template.printLayoutName && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        📄 {template.printLayoutName}
-                      </p>
+                      <p className="text-sm text-gray-600 mt-1">📄 {template.printLayoutName}</p>
                     )}
                     {template.autoMatchEnabled && (
-                      <p className="text-xs text-purple-600 mt-1">
-                        🤖 Auto-Match aktiviert
-                      </p>
+                      <p className="text-xs text-purple-600 mt-1">🤖 Auto-Match aktiviert</p>
                     )}
                   </div>
                 </div>
@@ -145,12 +144,16 @@ export default function Templates() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-gray-600">Größe:</span>
-                      <p className="font-medium">{template.width} × {template.height} px</p>
+                      <p className="font-medium">
+                        {template.width} × {template.height} px
+                      </p>
                     </div>
                     {template.widthMm && template.heightMm && (
                       <div>
                         <span className="text-gray-600">Druck:</span>
-                        <p className="font-medium">{template.widthMm.toFixed(1)} × {template.heightMm.toFixed(1)} mm</p>
+                        <p className="font-medium">
+                          {template.widthMm.toFixed(1)} × {template.heightMm.toFixed(1)} mm
+                        </p>
                       </div>
                     )}
                     <div className="col-span-2">

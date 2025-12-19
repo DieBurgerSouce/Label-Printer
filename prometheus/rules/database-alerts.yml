@@ -1,0 +1,207 @@
+# Database Alert Rules
+# Enterprise-grade alerting for Screenshot_Algo database
+
+groups:
+  - name: database-alerts
+    interval: 30s
+    rules:
+      # ========================================================================
+      # Connection Alerts
+      # ========================================================================
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: database
+          component: postgresql
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL database is unreachable"
+          runbook_url: "https://docs.screenshot-algo.com/runbooks/database-down"
+
+      - alert: PostgreSQLHighConnections
+        expr: |
+          pg_stat_activity_count{state="active"}
+          /
+          pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "PostgreSQL connection pool near capacity"
+          description: "Connection usage is above 80% ({{ $value | humanizePercentage }})"
+
+      - alert: PostgreSQLConnectionPoolExhausted
+        expr: |
+          pg_stat_activity_count{state="active"}
+          >=
+          pg_settings_max_connections * 0.95
+        for: 2m
+        labels:
+          severity: critical
+          team: database
+          component: postgresql
+        annotations:
+          summary: "PostgreSQL connection pool exhausted"
+          description: "Connection pool is at 95% capacity or above"
+
+      # ========================================================================
+      # Replication Alerts
+      # ========================================================================
+      - alert: PostgreSQLReplicationLag
+        expr: pg_replication_lag > 30
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "PostgreSQL replication lag detected"
+          description: "Replication lag is {{ $value }} seconds"
+
+      - alert: PostgreSQLReplicationLagCritical
+        expr: pg_replication_lag > 120
+        for: 2m
+        labels:
+          severity: critical
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Critical PostgreSQL replication lag"
+          description: "Replication lag is {{ $value }} seconds"
+
+      # ========================================================================
+      # Performance Alerts
+      # ========================================================================
+      - alert: PostgreSQLSlowQueries
+        expr: |
+          rate(pg_stat_statements_seconds_total{job="postgres"}[5m]) > 1
+        for: 10m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Slow queries detected"
+          description: "Query execution time is elevated"
+
+      - alert: PostgreSQLLongRunningTransactions
+        expr: |
+          pg_stat_activity_max_tx_duration{state="active"} > 300
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Long-running transactions detected"
+          description: "Transactions running for more than 5 minutes"
+
+      - alert: PostgreSQLDeadlocks
+        expr: |
+          rate(pg_stat_database_deadlocks[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Database deadlocks detected"
+          description: "Deadlocks occurring in database"
+
+      # ========================================================================
+      # Storage Alerts
+      # ========================================================================
+      - alert: PostgreSQLDiskSpaceLow
+        expr: |
+          pg_database_size_bytes / (1024 * 1024 * 1024) > 50
+        for: 10m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Database size growing large"
+          description: "Database size is {{ $value | humanize1024 }}B"
+
+      - alert: PostgreSQLTableBloat
+        expr: |
+          pg_stat_user_tables_n_dead_tup > 10000
+        for: 30m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Table bloat detected"
+          description: "Table {{ $labels.relname }} has {{ $value }} dead tuples"
+
+      # ========================================================================
+      # Cache Alerts
+      # ========================================================================
+      - alert: PostgreSQLCacheHitRatioLow
+        expr: |
+          pg_stat_database_blks_hit
+          /
+          (pg_stat_database_blks_hit + pg_stat_database_blks_read) < 0.95
+        for: 15m
+        labels:
+          severity: warning
+          team: database
+          component: postgresql
+        annotations:
+          summary: "Low cache hit ratio"
+          description: "Cache hit ratio is below 95% ({{ $value | humanizePercentage }})"
+
+      # ========================================================================
+      # Redis Alerts
+      # ========================================================================
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: database
+          component: redis
+        annotations:
+          summary: "Redis is down"
+          description: "Redis cache is unreachable"
+
+      - alert: RedisMemoryHigh
+        expr: |
+          redis_memory_used_bytes / redis_memory_max_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: redis
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Redis memory usage is above 85%"
+
+      - alert: RedisConnectionsHigh
+        expr: |
+          redis_connected_clients > 1000
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: redis
+        annotations:
+          summary: "High Redis connections"
+          description: "Redis has {{ $value }} connected clients"
+
+      - alert: RedisEvictions
+        expr: |
+          rate(redis_evicted_keys_total[5m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+          component: redis
+        annotations:
+          summary: "Redis key evictions"
+          description: "Redis is evicting keys at {{ $value }}/s"

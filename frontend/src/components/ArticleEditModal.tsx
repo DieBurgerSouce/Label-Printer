@@ -15,7 +15,12 @@ interface ArticleEditModalProps {
   onSave: (article: Product) => void;
 }
 
-export default function ArticleEditModal({ article, isOpen, onClose, onSave }: ArticleEditModalProps) {
+export default function ArticleEditModal({
+  article,
+  isOpen,
+  onClose,
+  onSave,
+}: ArticleEditModalProps) {
   const [formData, setFormData] = useState<Product | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -28,9 +33,9 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
   if (!isOpen || !formData) return null;
 
   const handleChange = (field: keyof Product, value: any) => {
-    setFormData(prev => prev ? { ...prev, [field]: value } : null);
+    setFormData((prev) => (prev ? { ...prev, [field]: value } : null));
     // Clear error for this field
-    setErrors(prev => ({ ...prev, [field]: '' }));
+    setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
   const handleTieredPriceChange = (value: string) => {
@@ -38,17 +43,19 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
     handleChange('tieredPricesText', value);
 
     // Also parse to structured data for calculations (optional)
-    const lines = value.split('\n').filter(line => line.trim());
+    const lines = value.split('\n').filter((line) => line.trim());
     const tieredPrices: any[] = [];
 
-    lines.forEach(line => {
+    lines.forEach((line) => {
       // More flexible parsing for various OCR formats
       // e.g., "ab 7 Stück: 190,92 EUR", "ab 24 Stück: 180,60 EUR", "10x = €5.50", "50: 4,50€"
-      const match = line.match(/(?:ab\s*)?(\d+)\s*(?:Stück|x|Stk\.?)?.*?(\d+[,.]?\d*)\s*(?:€|EUR)?/i);
+      const match = line.match(
+        /(?:ab\s*)?(\d+)\s*(?:Stück|x|Stk\.?)?.*?(\d+[,.]?\d*)\s*(?:€|EUR)?/i
+      );
       if (match) {
         tieredPrices.push({
           quantity: parseInt(match[1]),
-          price: parseFloat(match[2].replace(',', '.'))
+          price: parseFloat(match[2].replace(',', '.')),
         });
       }
     });
@@ -72,8 +79,9 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
     }
 
     // Either regular price OR tiered prices required
-    const hasTieredPrices = (formData?.tieredPrices && formData.tieredPrices.length > 0) ||
-                             (formData?.tieredPricesText && formData.tieredPricesText.trim().length > 0);
+    const hasTieredPrices =
+      (formData?.tieredPrices && formData.tieredPrices.length > 0) ||
+      (formData?.tieredPricesText && formData.tieredPricesText.trim().length > 0);
     const hasRegularPrice = formData?.price && formData.price > 0;
 
     if (!hasTieredPrices && !hasRegularPrice) {
@@ -104,10 +112,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
             <Package className="w-6 h-6" />
             <h2 className="text-xl font-bold">Artikel bearbeiten</h2>
           </div>
-          <button
-            onClick={onClose}
-            className="hover:bg-white/20 p-2 rounded-lg transition-colors"
-          >
+          <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-lg transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -122,7 +127,8 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
                 alt={formData.productName}
                 className="max-w-full h-auto max-h-64 rounded-lg shadow-md object-contain"
                 onError={(e) => {
-                  e.currentTarget.src = 'https://via.placeholder.com/200x200?text=Bild+nicht+verfügbar';
+                  e.currentTarget.src =
+                    'https://via.placeholder.com/200x200?text=Bild+nicht+verfügbar';
                 }}
               />
             </div>
@@ -137,7 +143,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
             <input
               type="text"
               value={formData.articleNumber || ''}
-              onChange={e => handleChange('articleNumber', e.target.value)}
+              onChange={(e) => handleChange('articleNumber', e.target.value)}
               className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                 errors.articleNumber ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -159,7 +165,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
             <input
               type="text"
               value={formData.productName || ''}
-              onChange={e => handleChange('productName', e.target.value)}
+              onChange={(e) => handleChange('productName', e.target.value)}
               className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                 errors.productName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -180,7 +186,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
             </label>
             <textarea
               value={formData.description || ''}
-              onChange={e => handleChange('description', e.target.value)}
+              onChange={(e) => handleChange('description', e.target.value)}
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Produktbeschreibung..."
@@ -203,7 +209,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
                   type="number"
                   step="0.01"
                   value={formData.price || ''}
-                  onChange={e => {
+                  onChange={(e) => {
                     const value = e.target.value ? parseFloat(e.target.value) : null;
                     handleChange('price', value);
                     // If a regular price is entered, clear tiered prices
@@ -219,7 +225,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
                 />
                 <select
                   value={formData.currency || 'EUR'}
-                  onChange={e => handleChange('currency', e.target.value)}
+                  onChange={(e) => handleChange('currency', e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="EUR">EUR</option>
@@ -237,7 +243,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
               <input
                 type="text"
                 value={formData.ean || ''}
-                onChange={e => handleChange('ean', e.target.value)}
+                onChange={(e) => handleChange('ean', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="4260123456789"
               />
@@ -248,16 +254,14 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
           <div>
             <label className="text-sm font-semibold text-gray-700 mb-2 block">
               Staffelpreise
-              <span className="text-gray-400 font-normal text-xs ml-2">
-                (Format: Menge: Preis)
-              </span>
+              <span className="text-gray-400 font-normal text-xs ml-2">(Format: Menge: Preis)</span>
               {formData.price && formData.price > 0 && (
                 <span className="text-xs text-gray-500 ml-2">(deaktiviert bei Basispreis)</span>
               )}
             </label>
             <textarea
               value={formData.tieredPricesText || ''}
-              onChange={e => handleTieredPriceChange(e.target.value)}
+              onChange={(e) => handleTieredPriceChange(e.target.value)}
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
               placeholder="ab 7 Stück: 190,92 EUR&#10;ab 24 Stück: 180,60 EUR&#10;ab 50 Stück: 175,00 EUR"
@@ -268,13 +272,11 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
           <div className="grid grid-cols-2 gap-4">
             {/* Category */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Kategorie
-              </label>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">Kategorie</label>
               <input
                 type="text"
                 value={formData.category || ''}
-                onChange={e => handleChange('category', e.target.value)}
+                onChange={(e) => handleChange('category', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Großbehälter"
               />
@@ -282,13 +284,11 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
 
             {/* Manufacturer */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Hersteller
-              </label>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">Hersteller</label>
               <input
                 type="text"
                 value={formData.manufacturer || ''}
-                onChange={e => handleChange('manufacturer', e.target.value)}
+                onChange={(e) => handleChange('manufacturer', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Firmenich"
               />
@@ -304,7 +304,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
             <input
               type="url"
               value={formData.sourceUrl || ''}
-              onChange={e => handleChange('sourceUrl', e.target.value)}
+              onChange={(e) => handleChange('sourceUrl', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="https://shop.firmenich.de/..."
             />
@@ -316,7 +316,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
               <input
                 type="checkbox"
                 checked={formData.verified || false}
-                onChange={e => handleChange('verified', e.target.checked)}
+                onChange={(e) => handleChange('verified', e.target.checked)}
                 className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-700">Verifiziert</span>
@@ -326,7 +326,7 @@ export default function ArticleEditModal({ article, isOpen, onClose, onSave }: A
               <input
                 type="checkbox"
                 checked={formData.published || false}
-                onChange={e => handleChange('published', e.target.checked)}
+                onChange={(e) => handleChange('published', e.target.checked)}
                 className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-700">Veröffentlicht</span>

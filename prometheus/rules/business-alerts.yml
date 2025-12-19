@@ -1,0 +1,219 @@
+# Business Alert Rules
+# Enterprise-grade alerting for Screenshot_Algo business metrics
+
+groups:
+  - name: business-alerts
+    interval: 30s
+    rules:
+      # ========================================================================
+      # Screenshot Processing Alerts
+      # ========================================================================
+      - alert: ScreenshotQueueBacklog
+        expr: |
+          screenshot_queue_depth > 100
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: screenshot
+        annotations:
+          summary: "Screenshot queue backlog"
+          description: "Queue has {{ $value }} pending jobs"
+          runbook_url: "https://docs.screenshot-algo.com/runbooks/queue-backlog"
+
+      - alert: ScreenshotQueueCritical
+        expr: |
+          screenshot_queue_depth > 500
+        for: 2m
+        labels:
+          severity: critical
+          team: backend
+          component: screenshot
+        annotations:
+          summary: "Critical screenshot queue backlog"
+          description: "Queue has {{ $value }} pending jobs. Immediate action required."
+
+      - alert: ScreenshotQueueStalled
+        expr: |
+          increase(screenshot_queue_processed_total[5m]) == 0
+          and
+          screenshot_queue_depth > 0
+        for: 5m
+        labels:
+          severity: critical
+          team: backend
+          component: screenshot
+        annotations:
+          summary: "Screenshot queue processing stalled"
+          description: "No screenshots processed in 5 minutes with {{ $value }} jobs pending"
+
+      - alert: ScreenshotProcessingTime
+        expr: |
+          histogram_quantile(0.95, rate(screenshot_duration_seconds_bucket[5m])) > 10
+        for: 10m
+        labels:
+          severity: warning
+          team: backend
+          component: screenshot
+        annotations:
+          summary: "Slow screenshot processing"
+          description: "P95 screenshot processing time is above 10 seconds"
+
+      - alert: ScreenshotErrorRate
+        expr: |
+          rate(screenshot_errors_total[5m])
+          /
+          rate(screenshot_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: screenshot
+        annotations:
+          summary: "High screenshot error rate"
+          description: "Screenshot error rate is above 5%"
+
+      - alert: ScreenshotTimeoutRate
+        expr: |
+          rate(screenshot_errors_total{error="timeout"}[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: screenshot
+        annotations:
+          summary: "Screenshot timeouts increasing"
+          description: "Screenshot timeout rate: {{ $value }}/s"
+
+      # ========================================================================
+      # Browser Pool Alerts
+      # ========================================================================
+      - alert: BrowserPoolExhausted
+        expr: |
+          browser_pool_available == 0
+        for: 2m
+        labels:
+          severity: warning
+          team: backend
+          component: browser
+        annotations:
+          summary: "Browser pool exhausted"
+          description: "No available browser instances"
+
+      - alert: BrowserPoolLow
+        expr: |
+          browser_pool_available / browser_pool_total < 0.2
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: browser
+        annotations:
+          summary: "Browser pool running low"
+          description: "Less than 20% browser instances available"
+
+      - alert: BrowserCrashes
+        expr: |
+          rate(browser_crashes_total[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: browser
+        annotations:
+          summary: "Elevated browser crashes"
+          description: "Browser crash rate: {{ $value }}/s"
+
+      - alert: BrowserMemoryLeak
+        expr: |
+          browser_memory_bytes > 2147483648  # 2GB
+        for: 10m
+        labels:
+          severity: warning
+          team: backend
+          component: browser
+        annotations:
+          summary: "Possible browser memory leak"
+          description: "Browser instance using > 2GB memory"
+
+      # ========================================================================
+      # API Usage Alerts
+      # ========================================================================
+      - alert: APIUsageSpike
+        expr: |
+          rate(http_requests_total{job="screenshot-algo"}[1m])
+          >
+          avg_over_time(rate(http_requests_total{job="screenshot-algo"}[1m])[1h:1m]) * 3
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: api
+        annotations:
+          summary: "Unusual API usage spike"
+          description: "API traffic is 3x higher than hourly average"
+
+      - alert: APIUsageDrop
+        expr: |
+          rate(http_requests_total{job="screenshot-algo"}[5m])
+          <
+          avg_over_time(rate(http_requests_total{job="screenshot-algo"}[5m])[1d:5m]) * 0.1
+        for: 15m
+        labels:
+          severity: warning
+          team: backend
+          component: api
+        annotations:
+          summary: "Significant API usage drop"
+          description: "API traffic is 90% below daily average"
+
+      # ========================================================================
+      # SLA/SLO Alerts
+      # ========================================================================
+      - alert: SLOAvailabilityBreach
+        expr: |
+          (
+            1 - (
+              sum(rate(http_requests_total{job="screenshot-algo",status=~"5.."}[1h]))
+              /
+              sum(rate(http_requests_total{job="screenshot-algo"}[1h]))
+            )
+          ) < 0.999
+        for: 5m
+        labels:
+          severity: critical
+          team: backend
+          component: slo
+        annotations:
+          summary: "SLO availability breach"
+          description: "Availability SLO (99.9%) is being breached"
+
+      - alert: SLOLatencyBreach
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket{job="screenshot-algo"}[1h])) by (le)
+          ) > 3
+        for: 5m
+        labels:
+          severity: critical
+          team: backend
+          component: slo
+        annotations:
+          summary: "SLO latency breach"
+          description: "P99 latency SLO (3s) is being breached"
+
+      - alert: ErrorBudgetBurning
+        expr: |
+          (
+            sum(rate(http_requests_total{job="screenshot-algo",status=~"5.."}[6h]))
+            /
+            sum(rate(http_requests_total{job="screenshot-algo"}[6h]))
+          ) > 0.001 * 10  # 10x normal burn rate
+        for: 15m
+        labels:
+          severity: warning
+          team: backend
+          component: slo
+        annotations:
+          summary: "Error budget burning fast"
+          description: "Error budget is being consumed at 10x the sustainable rate"

@@ -1,0 +1,84 @@
+# FluxCD Image Update Automation
+# Automated image updates for Screenshot_Algo
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageUpdateAutomation
+metadata:
+  name: screenshot-algo
+  namespace: flux-system
+spec:
+  # Reconciliation interval
+  interval: 5m0s
+
+  # Source to update
+  sourceRef:
+    kind: GitRepository
+    name: screenshot-algo
+
+  # Git configuration
+  git:
+    # Checkout configuration
+    checkout:
+      ref:
+        branch: main
+
+    # Commit configuration
+    commit:
+      author:
+        email: flux@screenshot-algo.com
+        name: Flux Bot
+      messageTemplate: |
+        chore(flux): update images
+
+        Automated image update
+
+        {{range .Changed.Changes}}
+        - {{.OldValue}} -> {{.NewValue}}
+        {{end}}
+
+    # Push configuration
+    push:
+      branch: main
+      # Create PR instead of direct push (optional)
+      # refspec: refs/heads/main:refs/heads/flux-image-updates
+
+  # Update configuration
+  update:
+    # Update strategy
+    strategy: Setters
+
+    # Path to update
+    path: ./k8s
+---
+# Image Update Automation for staging
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageUpdateAutomation
+metadata:
+  name: screenshot-algo-staging
+  namespace: flux-system
+spec:
+  interval: 2m0s
+
+  sourceRef:
+    kind: GitRepository
+    name: screenshot-algo-develop
+
+  git:
+    checkout:
+      ref:
+        branch: develop
+    commit:
+      author:
+        email: flux@screenshot-algo.com
+        name: Flux Bot
+      messageTemplate: |
+        chore(flux): update staging images
+
+        {{range .Changed.Changes}}
+        - {{.OldValue}} -> {{.NewValue}}
+        {{end}}
+    push:
+      branch: develop
+
+  update:
+    strategy: Setters
+    path: ./k8s/overlays/staging

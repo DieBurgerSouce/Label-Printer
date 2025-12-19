@@ -87,10 +87,7 @@ function LabelCard({
         {label.tags && label.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {label.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"
-              >
+              <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
                 {tag}
               </span>
             ))}
@@ -104,7 +101,11 @@ function LabelCard({
       </div>
 
       {/* Actions */}
-      <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2" role="group" aria-label="Label actions">
+      <div
+        className="mt-4 pt-4 border-t border-gray-200 flex gap-2"
+        role="group"
+        aria-label="Label actions"
+      >
         <button
           onClick={(e) => {
             e.stopPropagation();

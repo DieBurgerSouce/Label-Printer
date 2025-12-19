@@ -12,7 +12,15 @@ import { usePrintStore } from '../store/printStore';
 import { useLabelStore } from '../store/labelStore';
 import { batchExportService } from '../services/batchExportService';
 import { bulkPrintService } from '../services/bulkPrintService';
-import { Download, Eye, Grid3x3, Ruler as RulerIcon, Keyboard, Settings, Printer } from 'lucide-react';
+import {
+  Download,
+  Eye,
+  Grid3x3,
+  Ruler as RulerIcon,
+  Keyboard,
+  Settings,
+  Printer,
+} from 'lucide-react';
 import type { ExportConfig, ExportJob } from '../components/ExportSettings';
 
 export const LivePreview = () => {
@@ -26,7 +34,7 @@ export const LivePreview = () => {
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
 
-  const selectedLabels = labels.filter(label => selectedLabelIds.includes(label.id));
+  const selectedLabels = labels.filter((label) => selectedLabelIds.includes(label.id));
 
   const showShortcutsHelp = () => {
     showModal({
@@ -55,7 +63,7 @@ export const LivePreview = () => {
           setExportJobs(jobs);
         },
         onComplete: (results) => {
-          const successCount = results.filter(r => r.success).length;
+          const successCount = results.filter((r) => r.success).length;
           showToast({
             type: 'success',
             message: `Successfully exported ${successCount} of ${results.length} labels`,
@@ -80,7 +88,7 @@ export const LivePreview = () => {
     if (selectedLabels.length === 0) {
       showToast({
         type: 'warning',
-        message: 'Keine Labels ausgewählt'
+        message: 'Keine Labels ausgewählt',
       });
       return;
     }
@@ -89,27 +97,27 @@ export const LivePreview = () => {
 
     try {
       const result = await bulkPrintService.exportAsPDF({
-        labelIds: selectedLabels.map(l => l.id),
+        labelIds: selectedLabels.map((l) => l.id),
         layout,
-        action
+        action,
       });
 
       if (result.success) {
         showToast({
           type: 'success',
-          message: `✅ ${result.labelCount} Labels ${action === 'download' ? 'heruntergeladen' : 'zum Drucken vorbereitet'}!`
+          message: `✅ ${result.labelCount} Labels ${action === 'download' ? 'heruntergeladen' : 'zum Drucken vorbereitet'}!`,
         });
       } else {
         showToast({
           type: 'error',
-          message: `❌ Fehler: ${result.error}`
+          message: `❌ Fehler: ${result.error}`,
         });
       }
     } catch (error) {
       console.error(`Bulk print ${action} error:`, error);
       showToast({
         type: 'error',
-        message: `❌ Fehler beim ${action === 'download' ? 'Download' : 'Drucken'}`
+        message: `❌ Fehler beim ${action === 'download' ? 'Download' : 'Drucken'}`,
       });
     } finally {
       setIsPrinting(false);
@@ -124,9 +132,7 @@ export const LivePreview = () => {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Live Preview</h1>
-        <p className="text-gray-600 mt-2">
-          Interactive canvas with drag & drop positioning
-        </p>
+        <p className="text-gray-600 mt-2">Interactive canvas with drag & drop positioning</p>
       </div>
 
       {/* Info Cards */}
@@ -149,12 +155,8 @@ export const LivePreview = () => {
             <Download className="w-5 h-5" />
             <span className="font-medium">Selected Labels</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">
-            {selectedLabels?.length || 0}
-          </p>
-          <p className="text-sm text-gray-500">
-            Ready for export
-          </p>
+          <p className="text-2xl font-bold text-gray-900">{selectedLabels?.length || 0}</p>
+          <p className="text-sm text-gray-500">Ready for export</p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-4">
@@ -162,12 +164,8 @@ export const LivePreview = () => {
             <Settings className="w-5 h-5" />
             <span className="font-medium">DPI</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">
-            {layout?.settings.dpi || 300}
-          </p>
-          <p className="text-sm text-gray-500">
-            Print quality
-          </p>
+          <p className="text-2xl font-bold text-gray-900">{layout?.settings.dpi || 300}</p>
+          <p className="text-sm text-gray-500">Print quality</p>
         </div>
       </div>
 
@@ -236,7 +234,9 @@ export const LivePreview = () => {
               )}
 
               {/* Canvas */}
-              <div className={`${showRulers ? 'ml-6 mt-6' : ''} overflow-auto max-h-[calc(100vh-400px)]`}>
+              <div
+                className={`${showRulers ? 'ml-6 mt-6' : ''} overflow-auto max-h-[calc(100vh-400px)]`}
+              >
                 <Canvas
                   width={canvasWidth}
                   height={canvasHeight}
@@ -249,7 +249,8 @@ export const LivePreview = () => {
             {/* Canvas Help */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                <strong>Tip:</strong> Drag labels to reposition, click to select, use mouse wheel to zoom, use keyboard shortcuts for quick actions
+                <strong>Tip:</strong> Drag labels to reposition, click to select, use mouse wheel to
+                zoom, use keyboard shortcuts for quick actions
               </p>
             </div>
           </div>
@@ -267,10 +268,7 @@ export const LivePreview = () => {
               }}
             />
           ) : showExportOptions ? (
-            <ExportOptions
-              onExport={handleExport}
-              isExporting={isExporting}
-            />
+            <ExportOptions onExport={handleExport} isExporting={isExporting} />
           ) : (
             <div className="bg-white rounded-lg shadow p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Export Options</h3>
@@ -332,9 +330,7 @@ export const LivePreview = () => {
               <div className="space-y-3 text-sm">
                 <div>
                   <span className="text-gray-600">Format:</span>
-                  <span className="ml-2 font-medium text-gray-900">
-                    {layout.paperFormat.type}
-                  </span>
+                  <span className="ml-2 font-medium text-gray-900">{layout.paperFormat.type}</span>
                 </div>
 
                 <div>

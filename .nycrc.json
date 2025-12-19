@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json.schemastore.org/nycrc",
+  "all": true,
+  "check-coverage": true,
+  "reporter": [
+    "text",
+    "text-summary",
+    "html",
+    "lcov",
+    "json",
+    "cobertura"
+  ],
+  "branches": 70,
+  "lines": 70,
+  "functions": 70,
+  "statements": 70,
+  "per-file": false,
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "__tests__/**",
+    "__mocks__/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    "**/*.config.js",
+    "**/*.config.ts",
+    "src/types/**",
+    "src/**/*.types.ts"
+  ],
+  "extension": [
+    ".ts",
+    ".js"
+  ],
+  "cache": true,
+  "temp-dir": ".nyc_output",
+  "report-dir": "coverage",
+  "skip-full": false,
+  "clean": true,
+  "source-map": true,
+  "produce-source-map": true,
+  "instrument": true,
+  "eager": false,
+  "watermarks": {
+    "lines": [60, 80],
+    "functions": [60, 80],
+    "branches": [60, 80],
+    "statements": [60, 80]
+  }
+}

@@ -128,8 +128,7 @@ export default function PrintTemplates() {
 
   const handleExportTemplates = () => {
     const dataStr = JSON.stringify(templates, null, 2);
-    const dataUri =
-      'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `print-templates-${Date.now()}.json`;
 
     const linkElement = document.createElement('a');
@@ -190,10 +189,7 @@ export default function PrintTemplates() {
         </div>
 
         <div className="flex gap-3">
-          <button
-            onClick={handleImportTemplates}
-            className="btn-secondary flex items-center gap-2"
-          >
+          <button onClick={handleImportTemplates} className="btn-secondary flex items-center gap-2">
             <Upload className="w-5 h-5" />
             Import
           </button>

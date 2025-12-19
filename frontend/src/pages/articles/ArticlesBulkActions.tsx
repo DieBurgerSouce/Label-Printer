@@ -19,9 +19,7 @@ export default function ArticlesBulkActions({
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 flex items-center gap-4 z-50">
-      <span className="text-sm font-medium text-gray-700">
-        {selectedCount} Artikel ausgewahlt
-      </span>
+      <span className="text-sm font-medium text-gray-700">{selectedCount} Artikel ausgewahlt</span>
       <div className="flex gap-2">
         <button
           onClick={onClearSelection}

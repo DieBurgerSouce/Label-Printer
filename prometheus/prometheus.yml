@@ -1,0 +1,233 @@
+# Prometheus Configuration
+# Enterprise-grade metrics collection for Screenshot_Algo
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+
+# Global configuration
+global:
+  # How frequently to scrape targets
+  scrape_interval: 15s
+  # How frequently to evaluate rules
+  evaluation_interval: 15s
+  # Timeout for scrape requests
+  scrape_timeout: 10s
+  # External labels for federation and alerting
+  external_labels:
+    environment: '{{ .Environment | default "production" }}'
+    cluster: '{{ .Cluster | default "primary" }}'
+    region: '{{ .Region | default "eu-central-1" }}'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+      # Timeout for alertmanager requests
+      timeout: 10s
+      # API version
+      api_version: v2
+
+# Rule files to load
+rule_files:
+  - '/etc/prometheus/rules/*.yml'
+  - '/etc/prometheus/rules/*.yaml'
+
+# Scrape configurations
+scrape_configs:
+  # ==========================================================================
+  # Prometheus self-monitoring
+  # ==========================================================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    metrics_path: '/metrics'
+    scheme: http
+
+  # ==========================================================================
+  # Screenshot_Algo Application
+  # ==========================================================================
+  - job_name: 'screenshot-algo'
+    static_configs:
+      - targets: ['app:4000']
+        labels:
+          service: 'screenshot-algo'
+          component: 'api'
+    metrics_path: '/metrics'
+    scheme: http
+    # Relabel configuration
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '([^:]+):\d+'
+        replacement: '${1}'
+    # Metric relabeling
+    metric_relabel_configs:
+      # Drop high-cardinality metrics
+      - source_labels: [__name__]
+        regex: 'go_gc_.*'
+        action: drop
+      # Rename metrics
+      - source_labels: [__name__]
+        regex: 'http_requests_total'
+        target_label: __name__
+        replacement: 'screenshot_http_requests_total'
+
+  # ==========================================================================
+  # Node Exporter (Host Metrics)
+  # ==========================================================================
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          component: 'infrastructure'
+    # Filter metrics
+    metric_relabel_configs:
+      # Keep only essential metrics
+      - source_labels: [__name__]
+        regex: 'node_(cpu|memory|disk|network|filesystem)_.*'
+        action: keep
+
+  # ==========================================================================
+  # PostgreSQL (Database)
+  # ==========================================================================
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgresql'
+          component: 'database'
+    # Database-specific relabeling
+    relabel_configs:
+      - source_labels: [datname]
+        target_label: database
+
+  # ==========================================================================
+  # Redis (Cache)
+  # ==========================================================================
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+          component: 'cache'
+
+  # ==========================================================================
+  # Nginx (Reverse Proxy)
+  # ==========================================================================
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          service: 'nginx'
+          component: 'proxy'
+
+  # ==========================================================================
+  # Docker/Container Metrics
+  # ==========================================================================
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          component: 'containers'
+    # Container metrics filtering
+    metric_relabel_configs:
+      # Keep only container metrics
+      - source_labels: [__name__]
+        regex: 'container_(cpu|memory|network|fs)_.*'
+        action: keep
+      # Drop metrics for system containers
+      - source_labels: [container_label_com_docker_compose_project]
+        regex: ''
+        action: drop
+
+  # ==========================================================================
+  # Kubernetes Service Discovery (if deployed to K8s)
+  # ==========================================================================
+  - job_name: 'kubernetes-pods'
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - screenshot-algo
+            - monitoring
+    relabel_configs:
+      # Only scrape pods with prometheus.io/scrape annotation
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      # Use custom path if specified
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      # Use custom port if specified
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      # Add pod labels
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      # Add namespace label
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      # Add pod name label
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+
+  # ==========================================================================
+  # Blackbox Exporter (Endpoint Probing)
+  # ==========================================================================
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - 'https://api.screenshot-algo.com/health'
+          - 'https://api.screenshot-algo.com/ready'
+        labels:
+          probe_type: 'http'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 'blackbox-exporter:9115'
+
+  # ==========================================================================
+  # OpenTelemetry Collector
+  # ==========================================================================
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['otel-collector:8888']
+        labels:
+          service: 'otel-collector'
+          component: 'observability'
+
+# Remote write configuration (for long-term storage)
+remote_write:
+  - url: 'http://mimir:9009/api/v1/push'
+    queue_config:
+      max_samples_per_send: 10000
+      batch_send_deadline: 5s
+      capacity: 100000
+    write_relabel_configs:
+      # Drop debug metrics from remote storage
+      - source_labels: [__name__]
+        regex: 'go_.*|process_.*'
+        action: drop
+
+# Storage configuration
+storage:
+  tsdb:
+    # Retention period
+    retention.time: 15d
+    # Retention size (optional)
+    retention.size: 50GB
+    # Out of order time window
+    out_of_order_time_window: 30m

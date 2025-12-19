@@ -131,11 +131,7 @@ export const QRCodeElement = ({
       onTransformEnd={handleTransformEnd}
     >
       {/* QR Code Image */}
-      <KonvaImage
-        image={image}
-        width={sizeInPixels}
-        height={sizeInPixels}
-      />
+      <KonvaImage image={image} width={sizeInPixels} height={sizeInPixels} />
 
       {/* Selection Border */}
       {isSelected && (

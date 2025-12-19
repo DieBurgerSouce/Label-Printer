@@ -29,9 +29,10 @@ export default function TemplateRuleBuilder({ rule, onChange }: TemplateRuleBuil
       ...currentRule,
       enabled,
       // Add default condition if enabling and no conditions exist
-      conditions: enabled && currentRule.conditions.length === 0
-        ? [{ field: 'priceType', operator: 'is', value: 'normal' }]
-        : currentRule.conditions,
+      conditions:
+        enabled && currentRule.conditions.length === 0
+          ? [{ field: 'priceType', operator: 'is', value: 'normal' }]
+          : currentRule.conditions,
     });
   };
 
@@ -40,7 +41,7 @@ export default function TemplateRuleBuilder({ rule, onChange }: TemplateRuleBuil
       ...currentRule,
       conditions: [
         ...currentRule.conditions,
-        { field: 'priceType', operator: 'is', value: 'normal' }
+        { field: 'priceType', operator: 'is', value: 'normal' },
       ],
     });
   };
@@ -100,7 +101,8 @@ export default function TemplateRuleBuilder({ rule, onChange }: TemplateRuleBuil
               💡 Tipp: Erstelle Templates mit gegenseitig ausschließenden Regeln:
             </p>
             <p className="text-sm text-yellow-700 mt-1">
-              Template A: "Preis-Typ ist Normaler Preis"<br />
+              Template A: "Preis-Typ ist Normaler Preis"
+              <br />
               Template B: "Preis-Typ ist Staffelpreis"
             </p>
           </div>
@@ -111,9 +113,7 @@ export default function TemplateRuleBuilder({ rule, onChange }: TemplateRuleBuil
       {currentRule.enabled && (
         <div className="space-y-4">
           <div className="bg-white rounded-lg p-4 border border-gray-200">
-            <p className="text-sm text-gray-700 mb-4 font-medium">
-              Verwende dieses Template wenn:
-            </p>
+            <p className="text-sm text-gray-700 mb-4 font-medium">Verwende dieses Template wenn:</p>
 
             {/* Conditions */}
             <div className="space-y-2">
@@ -186,16 +186,15 @@ export default function TemplateRuleBuilder({ rule, onChange }: TemplateRuleBuil
           {/* Rule Preview */}
           {currentRule.conditions.length > 0 && (
             <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm font-medium text-green-800 mb-2">
-                📋 Regel-Zusammenfassung:
-              </p>
+              <p className="text-sm font-medium text-green-800 mb-2">📋 Regel-Zusammenfassung:</p>
               <p className="text-sm text-green-700">
                 Dieses Template wird verwendet wenn{' '}
                 {currentRule.conditions.map((condition, index) => (
                   <span key={index}>
                     {index > 0 && (
                       <strong className="text-green-900">
-                        {' '}{currentRule.logic === 'AND' ? 'UND' : 'ODER'}{' '}
+                        {' '}
+                        {currentRule.logic === 'AND' ? 'UND' : 'ODER'}{' '}
                       </strong>
                     )}
                     <strong>
@@ -203,17 +202,19 @@ export default function TemplateRuleBuilder({ rule, onChange }: TemplateRuleBuil
                       {condition.field === 'category' && 'Kategorie'}
                       {condition.field === 'priceRange' && 'Preis'}
                       {condition.field === 'manufacturer' && 'Hersteller'}
-                    </strong>
-                    {' '}
+                    </strong>{' '}
                     {condition.operator === 'is' && 'ist'}
                     {condition.operator === 'isNot' && 'ist nicht'}
                     {condition.operator === 'greaterThan' && 'größer als'}
                     {condition.operator === 'lessThan' && 'kleiner als'}
-                    {condition.operator === 'contains' && 'enthält'}
-                    {' '}
+                    {condition.operator === 'contains' && 'enthält'}{' '}
                     <strong>
-                      {condition.field === 'priceType' && condition.value === 'normal' && 'Normaler Preis'}
-                      {condition.field === 'priceType' && condition.value === 'tiered' && 'Staffelpreis'}
+                      {condition.field === 'priceType' &&
+                        condition.value === 'normal' &&
+                        'Normaler Preis'}
+                      {condition.field === 'priceType' &&
+                        condition.value === 'tiered' &&
+                        'Staffelpreis'}
                       {condition.field !== 'priceType' && `"${condition.value}"`}
                     </strong>
                   </span>

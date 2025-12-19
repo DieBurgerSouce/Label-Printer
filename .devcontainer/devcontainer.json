@@ -1,0 +1,97 @@
+{
+  "name": "Screenshot_Algo Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-typescript-next",
+        "christian-kohler.path-intellisense",
+        "formulahendry.auto-rename-tag",
+        "ms-azuretools.vscode-docker",
+        "Prisma.prisma",
+        "ms-playwright.playwright",
+        "orta.vscode-jest",
+        "usernamehw.errorlens",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-german",
+        "GitHub.copilot",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+        "files.exclude": {
+          "**/.git": true,
+          "**/node_modules": true,
+          "**/dist": true,
+          "**/coverage": true
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  "forwardPorts": [3000, 4000, 5432, 6379],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend",
+      "onAutoForward": "notify"
+    },
+    "4000": {
+      "label": "Backend API",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "remoteUser": "node",
+
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "DATABASE_URL": "postgresql://postgres:postgres@postgres:5432/screenshot_algo_dev",
+    "REDIS_URL": "redis://redis:6379/0"
+  },
+
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "source=screenshot-algo-node-modules,target=/workspace/node_modules,type=volume"
+  ]
+}

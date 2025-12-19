@@ -1,0 +1,37 @@
+# Kubernetes Pod Disruption Budget
+# Enterprise availability configuration for Screenshot_Algo
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: screenshot-algo
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: pdb
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  # Minimum available pods during voluntary disruptions
+  minAvailable: 2
+  # Alternative: maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: screenshot-algo
+      app.kubernetes.io/component: api
+  # Unhealthy pod eviction policy (Kubernetes 1.26+)
+  unhealthyPodEvictionPolicy: IfHealthyBudget
+---
+# PDB for worker pods (if separate)
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: screenshot-algo-worker
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: pdb-worker
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: screenshot-algo
+      app.kubernetes.io/component: worker

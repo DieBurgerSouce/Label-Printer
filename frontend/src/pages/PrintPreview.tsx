@@ -29,7 +29,7 @@ export default function PrintPreview() {
   const [loading, setLoading] = useState(true);
   const [isPrinting, setIsPrinting] = useState(false);
 
-  const selectedLabels = labels.filter(label => selectedLabelIds.includes(label.id));
+  const selectedLabels = labels.filter((label) => selectedLabelIds.includes(label.id));
 
   // Load templates and articles
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function PrintPreview() {
               type: printLayout.paperFormat as any,
               width: printLayout.paperWidthMm,
               height: printLayout.paperHeightMm,
-              orientation: 'portrait'
+              orientation: 'portrait',
             });
 
             setGridConfig({
@@ -68,8 +68,8 @@ export default function PrintPreview() {
                 top: printLayout.marginTopMm,
                 right: printLayout.marginRightMm,
                 bottom: printLayout.marginBottomMm,
-                left: printLayout.marginLeftMm
-              }
+                left: printLayout.marginLeftMm,
+              },
             });
 
             // Load articles from API - get as many as grid slots
@@ -106,7 +106,7 @@ export default function PrintPreview() {
       const result = await bulkPrintService.exportAsPDF({
         labelIds,
         layout,
-        action
+        action,
       });
 
       if (!result.success) {
@@ -132,8 +132,10 @@ export default function PrintPreview() {
   const { columns, rows, spacing, margins } = layout.gridLayout;
 
   // Calculate label dimensions
-  const availableWidth = layout.paperFormat.width - margins.left - margins.right - (spacing * (columns - 1));
-  const availableHeight = layout.paperFormat.height - margins.top - margins.bottom - (spacing * (rows - 1));
+  const availableWidth =
+    layout.paperFormat.width - margins.left - margins.right - spacing * (columns - 1);
+  const availableHeight =
+    layout.paperFormat.height - margins.top - margins.bottom - spacing * (rows - 1);
 
   const labelWidthMm = availableWidth / columns;
   const labelHeightMm = availableHeight / rows;
@@ -149,8 +151,8 @@ export default function PrintPreview() {
     for (let col = 0; col < columns; col++) {
       const index = row * columns + col;
       if (index < articlesToDisplay.length) {
-        const x = margins.left + (col * (labelWidthMm + spacing));
-        const y = margins.top + (row * (labelHeightMm + spacing));
+        const x = margins.left + col * (labelWidthMm + spacing);
+        const y = margins.top + row * (labelHeightMm + spacing);
 
         const item = articlesToDisplay[index];
         gridPositions.push({
@@ -168,16 +170,15 @@ export default function PrintPreview() {
       <div className="bg-white border-b px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-            >
+            <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-lg">
               <ArrowLeft className="w-5 h-5 text-gray-700" />
             </button>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Druckvorschau</h1>
               <p className="text-sm text-gray-600">
-                {layout.paperFormat.type} {layout.paperFormat.orientation === 'landscape' ? 'Querformat' : 'Hochformat'} - {columns}x{rows} Raster
+                {layout.paperFormat.type}{' '}
+                {layout.paperFormat.orientation === 'landscape' ? 'Querformat' : 'Hochformat'} -{' '}
+                {columns}x{rows} Raster
               </p>
             </div>
           </div>
@@ -216,7 +217,8 @@ export default function PrintPreview() {
           <div>
             <span className="text-gray-600">Papierformat:</span>
             <span className="ml-2 font-semibold text-gray-900">
-              {layout.paperFormat.type} ({layout.paperFormat.width} × {layout.paperFormat.height} mm)
+              {layout.paperFormat.type} ({layout.paperFormat.width} × {layout.paperFormat.height}{' '}
+              mm)
             </span>
           </div>
           <div>
@@ -234,9 +236,7 @@ export default function PrintPreview() {
           {loadedTemplate && (
             <div>
               <span className="text-gray-600">Template:</span>
-              <span className="ml-2 font-semibold text-gray-900">
-                {loadedTemplate.name}
-              </span>
+              <span className="ml-2 font-semibold text-gray-900">{loadedTemplate.name}</span>
             </div>
           )}
           <div>
@@ -284,7 +284,10 @@ export default function PrintPreview() {
 
             {/* Grid lines (optional) */}
             {Array.from({ length: rows + 1 }).map((_, rowIndex) => {
-              const y = margins.top + (rowIndex * (labelHeightMm + spacing)) - (rowIndex > 0 ? spacing / 2 : 0);
+              const y =
+                margins.top +
+                rowIndex * (labelHeightMm + spacing) -
+                (rowIndex > 0 ? spacing / 2 : 0);
               return (
                 <div
                   key={`h-${rowIndex}`}
@@ -299,7 +302,10 @@ export default function PrintPreview() {
             })}
 
             {Array.from({ length: columns + 1 }).map((_, colIndex) => {
-              const x = margins.left + (colIndex * (labelWidthMm + spacing)) - (colIndex > 0 ? spacing / 2 : 0);
+              const x =
+                margins.left +
+                colIndex * (labelWidthMm + spacing) -
+                (colIndex > 0 ? spacing / 2 : 0);
               return (
                 <div
                   key={`v-${colIndex}`}
@@ -327,17 +333,19 @@ export default function PrintPreview() {
               const tieredPricesText = article.tieredPricesText || '';
 
               // Check if "auf anfrage"
-              const isAufAnfrage = tieredPricesText.toLowerCase().includes('auf anfrage') ||
-                                   tieredPricesText.toLowerCase().includes('preis auf anfrage');
+              const isAufAnfrage =
+                tieredPricesText.toLowerCase().includes('auf anfrage') ||
+                tieredPricesText.toLowerCase().includes('preis auf anfrage');
 
               // ✅ AUTO-MATCH: Find the correct template for this article
               const matchedTemplate = findMatchingTemplate(article, availableTemplates);
 
               // Check if the matched template is for tiered prices
               // by checking if the template's rules contain priceType: 'tiered'
-              const isTieredTemplate = matchedTemplate?.rules?.conditions?.some(
-                (condition) => condition.field === 'priceType' && condition.value === 'tiered'
-              ) || false;
+              const isTieredTemplate =
+                matchedTemplate?.rules?.conditions?.some(
+                  (condition) => condition.field === 'priceType' && condition.value === 'tiered'
+                ) || false;
 
               // Determine which template to use based on the matched template
               const showTieredTemplate = isTieredTemplate;
@@ -373,13 +381,15 @@ export default function PrintPreview() {
 
                       {/* Product Name + Price/Tiered Prices */}
                       <div className="flex-1 min-w-0">
-                        <div className="font-bold text-gray-900 text-xs leading-tight mb-1"
-                             style={{
-                               display: '-webkit-box',
-                               WebkitLineClamp: 2,
-                               WebkitBoxOrient: 'vertical',
-                               overflow: 'hidden'
-                             }}>
+                        <div
+                          className="font-bold text-gray-900 text-xs leading-tight mb-1"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {productName}
                         </div>
 
@@ -393,7 +403,10 @@ export default function PrintPreview() {
                             ) : tieredPrices.length > 0 ? (
                               <div className="text-[10px] text-gray-700 space-y-0.5">
                                 {tieredPrices.slice(0, 3).map((tier: any, i: number) => {
-                                  const tierPrice = typeof tier.price === 'string' ? parseFloat(tier.price) : tier.price;
+                                  const tierPrice =
+                                    typeof tier.price === 'string'
+                                      ? parseFloat(tier.price)
+                                      : tier.price;
                                   return (
                                     <div key={i} className="flex justify-between">
                                       <span className="text-gray-600">
@@ -407,13 +420,15 @@ export default function PrintPreview() {
                                 })}
                               </div>
                             ) : (
-                              <div className="text-[10px] text-gray-600 whitespace-pre-line"
-                                   style={{
-                                     display: '-webkit-box',
-                                     WebkitLineClamp: 3,
-                                     WebkitBoxOrient: 'vertical',
-                                     overflow: 'hidden'
-                                   }}>
+                              <div
+                                className="text-[10px] text-gray-600 whitespace-pre-line"
+                                style={{
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 3,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                }}
+                              >
                                 {tieredPricesText}
                               </div>
                             )}
@@ -448,13 +463,15 @@ export default function PrintPreview() {
 
                     {/* Description */}
                     {description && (
-                      <div className="text-[10px] text-gray-600 mb-2"
-                           style={{
-                             display: '-webkit-box',
-                             WebkitLineClamp: 2,
-                             WebkitBoxOrient: 'vertical',
-                             overflow: 'hidden'
-                           }}>
+                      <div
+                        className="text-[10px] text-gray-600 mb-2"
+                        style={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
                         {description}
                       </div>
                     )}

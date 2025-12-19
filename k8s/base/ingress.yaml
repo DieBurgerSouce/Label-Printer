@@ -1,0 +1,100 @@
+# Kubernetes Ingress
+# Enterprise ingress configuration for Screenshot_Algo
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: screenshot-algo
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/managed-by: kustomize
+  annotations:
+    # Ingress class
+    kubernetes.io/ingress.class: nginx
+    # SSL redirect
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # Rate limiting
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/limit-connections: "50"
+    # Proxy settings
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    # CORS
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-API-Key"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    # Security headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Frame-Options: DENY";
+      more_set_headers "X-Content-Type-Options: nosniff";
+      more_set_headers "X-XSS-Protection: 1; mode=block";
+      more_set_headers "Referrer-Policy: strict-origin-when-cross-origin";
+      more_set_headers "Content-Security-Policy: default-src 'self'";
+    # Cert-manager for TLS
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.screenshot-algo.com
+        - screenshot-algo.com
+      secretName: screenshot-algo-tls
+  rules:
+    - host: api.screenshot-algo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: screenshot-algo
+                port:
+                  name: http
+    - host: screenshot-algo.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: screenshot-algo
+                port:
+                  name: http
+---
+# Internal Ingress (for internal services)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: screenshot-algo-internal
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: ingress-internal
+  annotations:
+    kubernetes.io/ingress.class: nginx-internal
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+spec:
+  ingressClassName: nginx-internal
+  rules:
+    - host: screenshot-algo.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: screenshot-algo
+                port:
+                  name: http
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: screenshot-algo
+                port:
+                  name: metrics

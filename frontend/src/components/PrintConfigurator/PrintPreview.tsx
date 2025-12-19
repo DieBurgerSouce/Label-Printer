@@ -61,10 +61,7 @@ export default function PrintPreview({
 
           {previewUrl && (
             <>
-              <button
-                onClick={onDownload}
-                className="btn-secondary flex items-center gap-2"
-              >
+              <button onClick={onDownload} className="btn-secondary flex items-center gap-2">
                 <Download className="w-4 h-4" />
                 Download PDF
               </button>
@@ -83,9 +80,7 @@ export default function PrintPreview({
           <div className="flex flex-col items-center justify-center py-20 text-gray-500">
             <Eye className="w-16 h-16 mb-4 opacity-50" />
             <p className="text-lg font-medium">No preview available</p>
-            <p className="text-sm mt-1">
-              Click "Generate Preview" to see your print layout
-            </p>
+            <p className="text-sm mt-1">Click "Generate Preview" to see your print layout</p>
           </div>
         ) : (
           <div className="relative">
@@ -118,11 +113,7 @@ export default function PrintPreview({
                   transition: 'transform 0.2s',
                 }}
               >
-                <img
-                  src={previewUrl}
-                  alt="Print Preview"
-                  className="w-full h-auto"
-                />
+                <img src={previewUrl} alt="Print Preview" className="w-full h-auto" />
               </div>
             </div>
           </div>

@@ -1,0 +1,190 @@
+#!/bin/bash
+# Pre-push Hook for Screenshot_Algo
+# Runs before pushing to ensure code quality
+#
+# Install: git config core.hooksPath .githooks
+# Or: make hooks-install
+
+set -e
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}  Pre-Push Checks (Screenshot_Algo)${NC}"
+echo -e "${BLUE}========================================${NC}"
+
+# Get project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_ROOT"
+
+# Track failures
+FAILED=0
+WARNINGS=0
+
+# Get the branch being pushed
+CURRENT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "unknown")
+echo -e "\n${BLUE}Branch: ${NC}$CURRENT_BRANCH"
+
+# Skip checks for specific branches
+SKIP_BRANCHES=("docs" "documentation" "readme")
+for branch in "${SKIP_BRANCHES[@]}"; do
+    if [ "$CURRENT_BRANCH" = "$branch" ]; then
+        echo -e "${YELLOW}Skipping tests for branch: $branch${NC}"
+        exit 0
+    fi
+done
+
+# Read push info
+while read local_ref local_sha remote_ref remote_sha; do
+    # Skip if deleting branch
+    if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+        continue
+    fi
+
+    # ============================================
+    # Determine check level based on target branch
+    # ============================================
+    if [[ "$remote_ref" == *"main"* ]] || [[ "$remote_ref" == *"master"* ]]; then
+        echo -e "\n${YELLOW}⚠️  Pushing to protected branch - running FULL checks${NC}"
+        CHECK_LEVEL="full"
+    elif [[ "$remote_ref" == *"develop"* ]] || [[ "$remote_ref" == *"staging"* ]]; then
+        echo -e "\n${BLUE}Pushing to develop/staging - running standard checks${NC}"
+        CHECK_LEVEL="standard"
+    else
+        echo -e "\n${BLUE}Feature branch push - running minimal checks${NC}"
+        CHECK_LEVEL="minimal"
+    fi
+
+    # ============================================
+    # 1. ESLint
+    # ============================================
+    echo -e "\n${BLUE}1. Running ESLint...${NC}"
+    if npm run lint --if-present --silent 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} ESLint passed"
+    else
+        echo -e "${RED}✗${NC} ESLint failed"
+        FAILED=1
+    fi
+
+    # ============================================
+    # 2. TypeScript
+    # ============================================
+    echo -e "\n${BLUE}2. Running TypeScript check...${NC}"
+    if npx tsc --noEmit 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} TypeScript passed"
+    else
+        echo -e "${RED}✗${NC} TypeScript errors"
+        FAILED=1
+    fi
+
+    # ============================================
+    # 3. Tests (standard and full only)
+    # ============================================
+    if [ "$CHECK_LEVEL" != "minimal" ]; then
+        echo -e "\n${BLUE}3. Running tests...${NC}"
+        if npm test --if-present --silent 2>/dev/null; then
+            echo -e "${GREEN}✓${NC} Tests passed"
+        else
+            echo -e "${RED}✗${NC} Tests failed"
+            FAILED=1
+        fi
+    else
+        echo -e "\n${BLUE}3. Tests: ${YELLOW}Skipped for feature branch${NC}"
+    fi
+
+    # ============================================
+    # 4. Security Audit (standard and full only)
+    # ============================================
+    if [ "$CHECK_LEVEL" != "minimal" ]; then
+        echo -e "\n${BLUE}4. Running security audit...${NC}"
+        if npm audit --production --audit-level=high 2>/dev/null; then
+            echo -e "${GREEN}✓${NC} No high/critical vulnerabilities"
+        else
+            echo -e "${YELLOW}!${NC} Security vulnerabilities found"
+            WARNINGS=$((WARNINGS + 1))
+        fi
+    fi
+
+    # ============================================
+    # 5. Build Check (full only)
+    # ============================================
+    if [ "$CHECK_LEVEL" = "full" ]; then
+        echo -e "\n${BLUE}5. Verifying build...${NC}"
+        if npm run build --if-present --silent 2>/dev/null; then
+            echo -e "${GREEN}✓${NC} Build successful"
+        else
+            echo -e "${RED}✗${NC} Build failed"
+            FAILED=1
+        fi
+
+        # 6. Coverage Check (full only)
+        echo -e "\n${BLUE}6. Checking test coverage...${NC}"
+        if npm test -- --coverage --silent 2>/dev/null; then
+            if [ -f "coverage/coverage-summary.json" ]; then
+                COVERAGE=$(cat coverage/coverage-summary.json 2>/dev/null | grep -o '"lines":{[^}]*"pct":[0-9.]*' | head -1 | grep -o '[0-9.]*$' || echo "0")
+                echo -e "Coverage: ${COVERAGE}%"
+                if [ ! -z "$COVERAGE" ] && (( $(echo "$COVERAGE < 70" | bc -l 2>/dev/null || echo 0) )); then
+                    echo -e "${YELLOW}!${NC} Coverage below 70% threshold"
+                    WARNINGS=$((WARNINGS + 1))
+                else
+                    echo -e "${GREEN}✓${NC} Coverage meets threshold"
+                fi
+            else
+                echo -e "${YELLOW}!${NC} Could not determine coverage"
+            fi
+        fi
+    fi
+
+    # ============================================
+    # 7. Check for unresolved merge conflicts
+    # ============================================
+    echo -e "\n${BLUE}Checking for merge conflicts...${NC}"
+    if git grep -l "^<<<<<<< " -- "*.ts" "*.tsx" "*.js" "*.jsx" "*.json" 2>/dev/null; then
+        echo -e "${RED}✗${NC} Unresolved merge conflicts found!"
+        FAILED=1
+    else
+        echo -e "${GREEN}✓${NC} No merge conflicts"
+    fi
+
+    # ============================================
+    # 8. Protect main branch (require confirmation)
+    # ============================================
+    if [ "$CHECK_LEVEL" = "full" ] && [ -t 0 ]; then
+        echo ""
+        echo -e "${YELLOW}⚠️  You are pushing to $remote_ref${NC}"
+        echo -e "${YELLOW}This should usually be done via Pull Request.${NC}"
+        read -p "Continue? (yes/no): " -r REPLY
+        echo
+        if [[ ! $REPLY =~ ^[Yy]es$ ]]; then
+            echo -e "${YELLOW}Push cancelled${NC}"
+            exit 1
+        fi
+    fi
+
+done
+
+# ============================================
+# Summary
+# ============================================
+echo -e "\n${BLUE}========================================${NC}"
+if [ $FAILED -eq 0 ]; then
+    if [ $WARNINGS -gt 0 ]; then
+        echo -e "${GREEN}Pre-push checks passed${NC} (with ${YELLOW}$WARNINGS warning(s)${NC})"
+    else
+        echo -e "${GREEN}All pre-push checks passed!${NC}"
+    fi
+    echo -e "${GREEN}🚀 Ready to push${NC}"
+    exit 0
+else
+    echo -e "${RED}Pre-push checks failed - push blocked${NC}"
+    echo -e "${YELLOW}Fix issues before pushing${NC}"
+    echo -e "${YELLOW}Use 'git push --no-verify' to bypass (not recommended)${NC}"
+    exit 1
+fi

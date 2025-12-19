@@ -132,14 +132,10 @@ class ErrorBoundary extends Component<Props, State> {
                     : 'Ein Fehler ist aufgetreten'}
                 </p>
                 {this.state.error && (
-                  <p className="text-sm text-red-600 mt-1 truncate">
-                    {this.state.error.message}
-                  </p>
+                  <p className="text-sm text-red-600 mt-1 truncate">{this.state.error.message}</p>
                 )}
                 {this.state.errorId && (
-                  <p className="text-xs text-red-400 mt-1 font-mono">
-                    ID: {this.state.errorId}
-                  </p>
+                  <p className="text-xs text-red-400 mt-1 font-mono">ID: {this.state.errorId}</p>
                 )}
               </div>
               <button

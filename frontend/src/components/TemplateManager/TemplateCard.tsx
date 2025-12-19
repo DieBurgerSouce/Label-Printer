@@ -72,11 +72,7 @@ function TemplateCard({
       {/* Preview */}
       <div className="relative h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
         {template.preview ? (
-          <img
-            src={template.preview}
-            alt={template.name}
-            className="w-full h-full object-cover"
-          />
+          <img src={template.preview} alt={template.name} className="w-full h-full object-cover" />
         ) : (
           <div className="text-gray-400 text-sm">No Preview</div>
         )}
@@ -104,9 +100,7 @@ function TemplateCard({
         <div>
           <h3 className="font-semibold text-gray-900 truncate">{template.name}</h3>
           {template.description && (
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-              {template.description}
-            </p>
+            <p className="text-sm text-gray-600 line-clamp-2 mt-1">{template.description}</p>
           )}
         </div>
 

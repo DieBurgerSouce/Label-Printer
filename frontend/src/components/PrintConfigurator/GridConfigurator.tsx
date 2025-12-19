@@ -34,30 +34,22 @@ export default function GridConfigurator({
         {/* Grid Size */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Columns
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Columns</label>
             <input
               type="number"
               value={config.columns}
-              onChange={(e) =>
-                onConfigChange({ columns: Math.max(1, Number(e.target.value)) })
-              }
+              onChange={(e) => onConfigChange({ columns: Math.max(1, Number(e.target.value)) })}
               className="input w-full"
               min="1"
               max="10"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Rows
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Rows</label>
             <input
               type="number"
               value={config.rows}
-              onChange={(e) =>
-                onConfigChange({ rows: Math.max(1, Number(e.target.value)) })
-              }
+              onChange={(e) => onConfigChange({ rows: Math.max(1, Number(e.target.value)) })}
               className="input w-full"
               min="1"
               max="20"
@@ -70,9 +62,7 @@ export default function GridConfigurator({
           <p className="text-sm text-blue-900">
             <strong>{labelsPerPage}</strong> labels per page
             {labelsPerPage > maxLabelsPerPage && (
-              <span className="text-red-600 ml-2">
-                (exceeds maximum of {maxLabelsPerPage})
-              </span>
+              <span className="text-red-600 ml-2">(exceeds maximum of {maxLabelsPerPage})</span>
             )}
           </p>
         </div>
@@ -86,15 +76,11 @@ export default function GridConfigurator({
         </h4>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Top
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Top</label>
             <input
               type="number"
               value={config.marginTop}
-              onChange={(e) =>
-                onConfigChange({ marginTop: Math.max(0, Number(e.target.value)) })
-              }
+              onChange={(e) => onConfigChange({ marginTop: Math.max(0, Number(e.target.value)) })}
               className="input w-full"
               min="0"
               max="50"
@@ -102,9 +88,7 @@ export default function GridConfigurator({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Bottom
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Bottom</label>
             <input
               type="number"
               value={config.marginBottom}
@@ -118,15 +102,11 @@ export default function GridConfigurator({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Left
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Left</label>
             <input
               type="number"
               value={config.marginLeft}
-              onChange={(e) =>
-                onConfigChange({ marginLeft: Math.max(0, Number(e.target.value)) })
-              }
+              onChange={(e) => onConfigChange({ marginLeft: Math.max(0, Number(e.target.value)) })}
               className="input w-full"
               min="0"
               max="50"
@@ -134,15 +114,11 @@ export default function GridConfigurator({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Right
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Right</label>
             <input
               type="number"
               value={config.marginRight}
-              onChange={(e) =>
-                onConfigChange({ marginRight: Math.max(0, Number(e.target.value)) })
-              }
+              onChange={(e) => onConfigChange({ marginRight: Math.max(0, Number(e.target.value)) })}
               className="input w-full"
               min="0"
               max="50"
@@ -165,17 +141,13 @@ export default function GridConfigurator({
           <input
             type="number"
             value={config.spacing}
-            onChange={(e) =>
-              onConfigChange({ spacing: Math.max(0, Number(e.target.value)) })
-            }
+            onChange={(e) => onConfigChange({ spacing: Math.max(0, Number(e.target.value)) })}
             className="input w-full"
             min="0"
             max="20"
             step="0.5"
           />
-          <p className="text-xs text-gray-500 mt-1">
-            Space between individual labels in the grid
-          </p>
+          <p className="text-xs text-gray-500 mt-1">Space between individual labels in the grid</p>
         </div>
       </div>
 

@@ -1,0 +1,170 @@
+# Skaffold Configuration
+# Local Kubernetes development for Screenshot_Algo
+# https://skaffold.dev/docs/
+
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: screenshot-algo
+
+# =============================================================================
+# Build Configuration
+# =============================================================================
+build:
+  # Build artifacts
+  artifacts:
+    - image: screenshot-algo
+      context: .
+      docker:
+        dockerfile: Dockerfile
+        buildArgs:
+          NODE_ENV: development
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: /app
+          - src: 'src/**/*.js'
+            dest: /app
+
+  # Local build settings
+  local:
+    push: false
+    useBuildkit: true
+    concurrency: 0
+
+  # Tag policy
+  tagPolicy:
+    sha256: {}
+
+# =============================================================================
+# Deploy Configuration
+# =============================================================================
+deploy:
+  # Kustomize deployment
+  kustomize:
+    paths:
+      - k8s/overlays/dev
+
+  # Status check configuration
+  statusCheck: true
+  statusCheckDeadlineSeconds: 300
+
+  # Logs configuration
+  logs:
+    prefix: container
+
+# =============================================================================
+# Development Configuration
+# =============================================================================
+dev:
+  # Port forwarding
+  portForward:
+    - resourceType: deployment
+      resourceName: dev-screenshot-algo
+      port: 4000
+      localPort: 4000
+    - resourceType: deployment
+      resourceName: dev-screenshot-algo
+      port: 9090
+      localPort: 9090
+
+  # File watching
+  trigger: polling
+  pollIntervalMs: 1000
+
+# =============================================================================
+# Profiles
+# =============================================================================
+profiles:
+  # Development profile (default)
+  - name: dev
+    activation:
+      - kubeContext: kind-.*
+      - kubeContext: docker-desktop
+      - kubeContext: minikube
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/dev
+
+  # Staging profile
+  - name: staging
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/staging
+    build:
+      artifacts:
+        - image: screenshot-algo
+          docker:
+            buildArgs:
+              NODE_ENV: staging
+
+  # Production profile (for testing)
+  - name: production
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/production
+    build:
+      artifacts:
+        - image: screenshot-algo
+          docker:
+            buildArgs:
+              NODE_ENV: production
+
+  # Debug profile
+  - name: debug
+    activation:
+      - command: debug
+    patches:
+      - op: add
+        path: /build/artifacts/0/docker/buildArgs/DEBUG
+        value: "true"
+
+  # CI profile
+  - name: ci
+    build:
+      local:
+        push: true
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/staging
+
+# =============================================================================
+# Test Configuration
+# =============================================================================
+test:
+  - image: screenshot-algo
+    structureTests:
+      - ./container-structure-test.yaml
+
+# =============================================================================
+# Verification Configuration
+# =============================================================================
+verify:
+  - name: health-check
+    container:
+      name: health-check
+      image: curlimages/curl:latest
+      command: ["curl"]
+      args: ["-f", "http://dev-screenshot-algo:4000/health"]
+
+# =============================================================================
+# Custom Actions
+# =============================================================================
+customActions:
+  - name: db-migrate
+    containers:
+      - name: migrate
+        image: screenshot-algo
+        command: ["npm"]
+        args: ["run", "db:migrate"]
+
+  - name: db-seed
+    containers:
+      - name: seed
+        image: screenshot-algo
+        command: ["npm"]
+        args: ["run", "db:seed"]

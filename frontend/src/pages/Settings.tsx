@@ -1,11 +1,4 @@
-import {
-    Database,
-    Info,
-    Printer,
-    RotateCcw,
-    Save,
-    Settings as SettingsIcon,
-} from 'lucide-react';
+import { Database, Info, Printer, RotateCcw, Save, Settings as SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import { useUiStore } from '../store/uiStore';
@@ -107,7 +100,8 @@ export default function Settings() {
     setConfirmDialog({
       isOpen: true,
       title: 'Reset Settings?',
-      description: 'Are you sure you want to reset all settings to defaults? This cannot be undone.',
+      description:
+        'Are you sure you want to reset all settings to defaults? This cannot be undone.',
       onConfirm: () => {
         // Reset to defaults
         setAppName('Label Printer WebApp');
@@ -196,7 +190,9 @@ export default function Settings() {
             {activeTab === 'general' && (
               <div className="space-y-6">
                 <div className="card">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Allgemeine Einstellungen</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Allgemeine Einstellungen
+                  </h2>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -266,7 +262,9 @@ export default function Settings() {
             {activeTab === 'storage' && (
               <div className="space-y-6">
                 <div className="card">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Speicher-Einstellungen</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Speicher-Einstellungen
+                  </h2>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -312,9 +310,7 @@ export default function Settings() {
                         min="1"
                         max="500"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Maximum für hochgeladene Dateien
-                      </p>
+                      <p className="text-xs text-gray-500 mt-1">Maximum für hochgeladene Dateien</p>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -396,9 +392,7 @@ export default function Settings() {
                         <option value="300">300 DPI (Standard)</option>
                         <option value="600">600 DPI (Hohe Qualität)</option>
                       </select>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Standard Auflösung für den Druck
-                      </p>
+                      <p className="text-xs text-gray-500 mt-1">Standard Auflösung für den Druck</p>
                     </div>
 
                     <div>
@@ -559,7 +553,7 @@ export default function Settings() {
       </div>
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
-        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={confirmDialog.onConfirm}
         title={confirmDialog.title}
         description={confirmDialog.description}

@@ -1,0 +1,121 @@
+# PR Auto-Labeler Workflow
+# Automatically labels PRs based on changed files
+
+name: PR Labeler
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Label PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+
+  size-label:
+    name: Size Label
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Label PR by size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            let additions = 0;
+            let deletions = 0;
+
+            files.forEach(file => {
+              additions += file.additions;
+              deletions += file.deletions;
+            });
+
+            const totalChanges = additions + deletions;
+
+            // Remove existing size labels
+            const existingLabels = (await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            })).data.map(l => l.name);
+
+            const sizeLabels = ['size/XS', 'size/S', 'size/M', 'size/L', 'size/XL'];
+            for (const label of sizeLabels) {
+              if (existingLabels.includes(label)) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: label
+                });
+              }
+            }
+
+            // Add appropriate size label
+            let sizeLabel;
+            if (totalChanges < 10) {
+              sizeLabel = 'size/XS';
+            } else if (totalChanges < 50) {
+              sizeLabel = 'size/S';
+            } else if (totalChanges < 200) {
+              sizeLabel = 'size/M';
+            } else if (totalChanges < 500) {
+              sizeLabel = 'size/L';
+            } else {
+              sizeLabel = 'size/XL';
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [sizeLabel]
+            });
+
+            // Add summary comment if XL
+            if (sizeLabel === 'size/XL') {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `⚠️ **Large PR Alert**
+
+            This PR has ${totalChanges} lines changed (${additions} additions, ${deletions} deletions).
+
+            Consider breaking this into smaller PRs for easier review.`
+              });
+            }
+
+  auto-assign:
+    name: Auto Assign
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+
+    steps:
+      - name: Assign PR author
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: [context.payload.pull_request.user.login]
+            });

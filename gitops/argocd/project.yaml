@@ -1,0 +1,121 @@
+# ArgoCD AppProject
+# Enterprise project configuration for Screenshot_Algo
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: screenshot-algo
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Screenshot_Algo Platform
+
+  # Source repositories
+  sourceRepos:
+    - https://github.com/screenshot-algo/screenshot-algo.git
+    - https://github.com/screenshot-algo/*
+    - https://charts.bitnami.com/bitnami
+    - https://prometheus-community.github.io/helm-charts
+
+  # Destination clusters and namespaces
+  destinations:
+    # Production
+    - namespace: screenshot-algo
+      server: https://kubernetes.default.svc
+    # Staging
+    - namespace: screenshot-algo-staging
+      server: https://kubernetes.default.svc
+    # Development
+    - namespace: screenshot-algo-dev
+      server: https://kubernetes.default.svc
+    # Monitoring
+    - namespace: monitoring
+      server: https://kubernetes.default.svc
+
+  # Allowed cluster resources
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: networking.k8s.io
+      kind: IngressClass
+
+  # Allowed namespaced resources (all by default)
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  # Denied namespaced resources
+  namespaceResourceBlacklist:
+    - group: ''
+      kind: ResourceQuota
+    - group: ''
+      kind: LimitRange
+
+  # Roles
+  roles:
+    # Admin role
+    - name: admin
+      description: Full access to screenshot-algo project
+      policies:
+        - p, proj:screenshot-algo:admin, applications, *, screenshot-algo/*, allow
+        - p, proj:screenshot-algo:admin, repositories, *, screenshot-algo/*, allow
+        - p, proj:screenshot-algo:admin, clusters, *, screenshot-algo/*, allow
+      groups:
+        - screenshot-algo-admins
+
+    # Developer role
+    - name: developer
+      description: Read and sync access
+      policies:
+        - p, proj:screenshot-algo:developer, applications, get, screenshot-algo/*, allow
+        - p, proj:screenshot-algo:developer, applications, sync, screenshot-algo/*, allow
+        - p, proj:screenshot-algo:developer, applications, action/*, screenshot-algo/*, allow
+        - p, proj:screenshot-algo:developer, logs, get, screenshot-algo/*, allow
+      groups:
+        - screenshot-algo-developers
+
+    # Read-only role
+    - name: readonly
+      description: Read-only access
+      policies:
+        - p, proj:screenshot-algo:readonly, applications, get, screenshot-algo/*, allow
+        - p, proj:screenshot-algo:readonly, logs, get, screenshot-algo/*, allow
+      groups:
+        - screenshot-algo-readonly
+
+  # Sync windows (maintenance windows)
+  syncWindows:
+    # Allow syncs during business hours
+    - kind: allow
+      schedule: '0 9-17 * * 1-5'
+      duration: 8h
+      applications:
+        - '*-staging'
+      manualSync: true
+
+    # Deny production deploys on weekends
+    - kind: deny
+      schedule: '0 0 * * 0,6'
+      duration: 24h
+      applications:
+        - 'screenshot-algo'
+      manualSync: true
+
+  # Signature keys for signed commits
+  signatureKeys: []
+
+  # Orphaned resources monitoring
+  orphanedResources:
+    warn: true
+    ignore:
+      - group: ""
+        kind: ConfigMap
+        name: kube-root-ca.crt

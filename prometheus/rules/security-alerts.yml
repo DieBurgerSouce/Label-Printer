@@ -1,0 +1,249 @@
+# Security Alert Rules
+# Enterprise-grade alerting for Screenshot_Algo security events
+
+groups:
+  - name: security-alerts
+    interval: 30s
+    rules:
+      # ========================================================================
+      # Authentication Alerts
+      # ========================================================================
+      - alert: HighAuthenticationFailures
+        expr: |
+          rate(auth_failures_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: security
+          component: authentication
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failures: {{ $value | printf \"%.1f\" }}/s"
+          runbook_url: "https://docs.screenshot-algo.com/runbooks/auth-failures"
+
+      - alert: BruteForceAttack
+        expr: |
+          sum by (ip) (rate(auth_failures_total[1m])) > 10
+        for: 2m
+        labels:
+          severity: critical
+          team: security
+          component: authentication
+        annotations:
+          summary: "Possible brute force attack"
+          description: "IP {{ $labels.ip }} has {{ $value }}/s failed auth attempts"
+
+      - alert: SuspiciousLoginActivity
+        expr: |
+          increase(auth_success_total{location!~"expected_locations"}[1h]) > 5
+        for: 0m
+        labels:
+          severity: warning
+          team: security
+          component: authentication
+        annotations:
+          summary: "Suspicious login activity"
+          description: "Logins from unexpected location detected"
+
+      # ========================================================================
+      # Rate Limiting Alerts
+      # ========================================================================
+      - alert: RateLimitExceeded
+        expr: |
+          rate(rate_limit_exceeded_total[5m]) > 50
+        for: 5m
+        labels:
+          severity: warning
+          team: security
+          component: ratelimit
+        annotations:
+          summary: "High rate limit violations"
+          description: "Rate limit exceeded {{ $value }}/s"
+
+      - alert: PossibleDDoSAttack
+        expr: |
+          sum(rate(http_requests_total[1m])) > 10000
+          and
+          rate(rate_limit_exceeded_total[1m]) > 1000
+        for: 2m
+        labels:
+          severity: critical
+          team: security
+          component: ddos
+        annotations:
+          summary: "Possible DDoS attack"
+          description: "Extremely high request rate with many rate limit violations"
+
+      # ========================================================================
+      # API Key Alerts
+      # ========================================================================
+      - alert: InvalidAPIKeyAttempts
+        expr: |
+          rate(api_key_invalid_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: security
+          component: apikey
+        annotations:
+          summary: "Invalid API key attempts"
+          description: "Invalid API key rate: {{ $value }}/s"
+
+      - alert: APIKeyAbuse
+        expr: |
+          sum by (api_key) (rate(http_requests_total[5m])) > 100
+        for: 10m
+        labels:
+          severity: warning
+          team: security
+          component: apikey
+        annotations:
+          summary: "Potential API key abuse"
+          description: "API key {{ $labels.api_key }} has unusually high usage"
+
+      # ========================================================================
+      # Vulnerability Alerts
+      # ========================================================================
+      - alert: SQLInjectionAttempt
+        expr: |
+          rate(waf_blocked_requests_total{type="sqli"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+          component: waf
+        annotations:
+          summary: "SQL injection attempt blocked"
+          description: "WAF blocked SQL injection attempt from {{ $labels.ip }}"
+
+      - alert: XSSAttempt
+        expr: |
+          rate(waf_blocked_requests_total{type="xss"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+          component: waf
+        annotations:
+          summary: "XSS attempt blocked"
+          description: "WAF blocked XSS attempt from {{ $labels.ip }}"
+
+      - alert: PathTraversalAttempt
+        expr: |
+          rate(waf_blocked_requests_total{type="path_traversal"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+          component: waf
+        annotations:
+          summary: "Path traversal attempt blocked"
+          description: "WAF blocked path traversal attempt"
+
+      # ========================================================================
+      # Certificate Alerts
+      # ========================================================================
+      - alert: CertificateExpiringSoon
+        expr: |
+          (probe_ssl_earliest_cert_expiry - time()) / 86400 < 30
+        for: 1h
+        labels:
+          severity: warning
+          team: security
+          component: ssl
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "Certificate for {{ $labels.instance }} expires in {{ $value | printf \"%.0f\" }} days"
+
+      - alert: CertificateExpiryCritical
+        expr: |
+          (probe_ssl_earliest_cert_expiry - time()) / 86400 < 7
+        for: 1h
+        labels:
+          severity: critical
+          team: security
+          component: ssl
+        annotations:
+          summary: "SSL certificate expiring very soon"
+          description: "Certificate for {{ $labels.instance }} expires in {{ $value | printf \"%.0f\" }} days"
+
+      # ========================================================================
+      # Secrets Management Alerts
+      # ========================================================================
+      - alert: SecretsAccessAnomaly
+        expr: |
+          rate(vault_secret_access_total[5m]) > avg_over_time(rate(vault_secret_access_total[5m])[1d:5m]) * 3
+        for: 10m
+        labels:
+          severity: warning
+          team: security
+          component: secrets
+        annotations:
+          summary: "Unusual secrets access pattern"
+          description: "Secrets being accessed 3x more than normal"
+
+      - alert: VaultUnsealedNodes
+        expr: |
+          vault_core_unsealed < vault_core_total_nodes
+        for: 5m
+        labels:
+          severity: critical
+          team: security
+          component: vault
+        annotations:
+          summary: "Vault nodes sealed"
+          description: "Some Vault nodes are sealed"
+
+      # ========================================================================
+      # Network Security Alerts
+      # ========================================================================
+      - alert: UnexpectedOutboundConnection
+        expr: |
+          increase(network_outbound_connections{destination!~"allowed_destinations"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+          component: network
+        annotations:
+          summary: "Unexpected outbound connection"
+          description: "Connection to unexpected destination {{ $labels.destination }}"
+
+      - alert: PrivilegedPortAccess
+        expr: |
+          increase(network_port_access{port=~"22|23|3306|5432|27017"}[5m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+          team: security
+          component: network
+        annotations:
+          summary: "High privileged port access"
+          description: "Unusual access to privileged port {{ $labels.port }}"
+
+      # ========================================================================
+      # File Integrity Alerts
+      # ========================================================================
+      - alert: FileIntegrityViolation
+        expr: |
+          fim_file_changes_total > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+          component: fim
+        annotations:
+          summary: "File integrity violation"
+          description: "Unauthorized file change detected: {{ $labels.file }}"
+
+      - alert: SensitiveFileAccess
+        expr: |
+          increase(file_access_total{file=~".*env.*|.*secret.*|.*key.*"}[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: security
+          component: fim
+        annotations:
+          summary: "Frequent sensitive file access"
+          description: "Sensitive file {{ $labels.file }} accessed frequently"

@@ -1,0 +1,21 @@
+# Issue Template Configuration
+# https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository
+
+blank_issues_enabled: false
+
+contact_links:
+  - name: Question / Discussion
+    url: https://github.com/benfi/Screenshot_Algo/discussions
+    about: Ask questions and discuss ideas in GitHub Discussions
+
+  - name: Documentation
+    url: https://github.com/benfi/Screenshot_Algo/wiki
+    about: Check the documentation before opening an issue
+
+  - name: Security Vulnerabilities (Critical)
+    url: https://github.com/benfi/Screenshot_Algo/security/advisories/new
+    about: Report critical security vulnerabilities privately
+
+  - name: Stack Overflow
+    url: https://stackoverflow.com/questions/tagged/screenshot-algo
+    about: Ask technical questions on Stack Overflow

@@ -20,13 +20,13 @@ export interface PrintLayout {
 }
 
 // Conversion constants
-export const MM_TO_PX = 3.7795275591;  // 96 DPI (screen display)
+export const MM_TO_PX = 3.7795275591; // 96 DPI (screen display)
 export const PX_TO_MM = 1 / MM_TO_PX;
 
 // Standard paper sizes in mm
 export const PAPER_SIZES = {
   A4: { width: 210, height: 297 },
-  A3: { width: 297, height: 420 }
+  A3: { width: 297, height: 420 },
 };
 
 /**
@@ -56,7 +56,7 @@ export function mmToPx(mm: number): number {
  * Convert px to mm
  */
 export function pxToMm(px: number): number {
-  return Math.round((px * PX_TO_MM) * 10) / 10;  // Round to 1 decimal
+  return Math.round(px * PX_TO_MM * 10) / 10; // Round to 1 decimal
 }
 
 /**
@@ -79,7 +79,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 15,
     marginLeftMm: 7,
     gutterHorizontalMm: 2.5,
-    gutterVerticalMm: 0
+    gutterVerticalMm: 0,
   },
   {
     id: 'a4-21up',
@@ -96,7 +96,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 15,
     marginLeftMm: 7,
     gutterHorizontalMm: 2.5,
-    gutterVerticalMm: 0
+    gutterVerticalMm: 0,
   },
   {
     id: 'a4-8up',
@@ -113,7 +113,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 10,
     marginLeftMm: 0,
     gutterHorizontalMm: 0,
-    gutterVerticalMm: 0
+    gutterVerticalMm: 0,
   },
   {
     id: 'a4-4up',
@@ -130,7 +130,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 0,
     marginLeftMm: 0,
     gutterHorizontalMm: 0,
-    gutterVerticalMm: 0
+    gutterVerticalMm: 0,
   },
 
   // ===== A4 GRID LAYOUTS =====
@@ -149,7 +149,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 10,
     marginLeftMm: 10,
     gutterHorizontalMm: 5,
-    gutterVerticalMm: 5
+    gutterVerticalMm: 5,
   },
   {
     id: 'a4-grid-2x3',
@@ -166,7 +166,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 10,
     marginLeftMm: 10,
     gutterHorizontalMm: 5,
-    gutterVerticalMm: 5
+    gutterVerticalMm: 5,
   },
   {
     id: 'a4-grid-3x3',
@@ -183,7 +183,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 10,
     marginLeftMm: 10,
     gutterHorizontalMm: 5,
-    gutterVerticalMm: 5
+    gutterVerticalMm: 5,
   },
   {
     id: 'a4-grid-2x4',
@@ -200,7 +200,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 10,
     marginLeftMm: 10,
     gutterHorizontalMm: 5,
-    gutterVerticalMm: 5
+    gutterVerticalMm: 5,
   },
 
   // ===== A3 GRID LAYOUTS =====
@@ -219,7 +219,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 15,
     marginLeftMm: 15,
     gutterHorizontalMm: 7,
-    gutterVerticalMm: 7
+    gutterVerticalMm: 7,
   },
   {
     id: 'a3-grid-2x6',
@@ -236,7 +236,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 15,
     marginLeftMm: 15,
     gutterHorizontalMm: 7,
-    gutterVerticalMm: 7
+    gutterVerticalMm: 7,
   },
   {
     id: 'a3-grid-3x4',
@@ -253,7 +253,7 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 15,
     marginLeftMm: 15,
     gutterHorizontalMm: 7,
-    gutterVerticalMm: 7
+    gutterVerticalMm: 7,
   },
   {
     id: 'a3-grid-3x6',
@@ -270,20 +270,20 @@ export const PRINT_LAYOUTS: PrintLayout[] = [
     marginBottomMm: 15,
     marginLeftMm: 15,
     gutterHorizontalMm: 7,
-    gutterVerticalMm: 7
-  }
+    gutterVerticalMm: 7,
+  },
 ];
 
 /**
  * Get layout by ID
  */
 export function getLayoutById(id: string): PrintLayout | undefined {
-  return PRINT_LAYOUTS.find(layout => layout.id === id);
+  return PRINT_LAYOUTS.find((layout) => layout.id === id);
 }
 
 /**
  * Get layouts by category
  */
 export function getLayoutsByCategory(category: string): PrintLayout[] {
-  return PRINT_LAYOUTS.filter(layout => layout.category === category);
+  return PRINT_LAYOUTS.filter((layout) => layout.category === category);
 }

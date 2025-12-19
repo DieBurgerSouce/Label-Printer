@@ -89,9 +89,7 @@ export default function LabelFilter({
           {/* Categories */}
           {categories.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => onCategoryChange(undefined)}
@@ -123,9 +121,7 @@ export default function LabelFilter({
           {/* Tags */}
           {tags.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tags
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <button

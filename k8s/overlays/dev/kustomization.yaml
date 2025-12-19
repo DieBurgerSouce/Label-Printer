@@ -1,0 +1,84 @@
+# Kustomization - Development Overlay
+# Development-specific Kubernetes configuration
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: screenshot-algo-dev
+
+# Reference base configuration
+resources:
+  - ../../base
+
+# Namespace override for development
+namespace: screenshot-algo-dev
+
+# Name prefix for development resources
+namePrefix: dev-
+
+# Common labels for development
+commonLabels:
+  environment: development
+  app.kubernetes.io/instance: dev
+
+# Development-specific patches
+patches:
+  # Reduce replicas for development
+  - target:
+      kind: Deployment
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 512Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: 500m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 256Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 100m
+
+  # Disable HPA in development
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 1
+      - op: replace
+        path: /spec/maxReplicas
+        value: 2
+
+  # Relax PDB for development
+  - target:
+      kind: PodDisruptionBudget
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/minAvailable
+        value: 0
+
+# Development image
+images:
+  - name: screenshot-algo
+    newName: ghcr.io/screenshot-algo/screenshot-algo
+    newTag: dev
+
+# Development config map
+configMapGenerator:
+  - name: screenshot-algo-config
+    behavior: merge
+    literals:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - LOG_FORMAT=simple
+      - METRICS_ENABLED=true
+      - TRACING_ENABLED=true
+      - TRACING_SAMPLE_RATE=1.0

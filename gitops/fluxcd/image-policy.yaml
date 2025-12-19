@@ -1,0 +1,82 @@
+# FluxCD Image Policies
+# Automated image updates for Screenshot_Algo
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: screenshot-algo
+  namespace: flux-system
+spec:
+  # Container image to track
+  image: ghcr.io/screenshot-algo/screenshot-algo
+
+  # Scan interval
+  interval: 1m0s
+
+  # Authentication (if private registry)
+  secretRef:
+    name: ghcr-credentials
+
+  # Access mode
+  accessFrom:
+    namespaceSelectors:
+      - matchLabels:
+          kubernetes.io/metadata.name: flux-system
+---
+# Image Policy for production (semver)
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: screenshot-algo-production
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: screenshot-algo
+
+  # Semver policy for production
+  policy:
+    semver:
+      range: ">=1.0.0"
+
+  # Filter tags
+  filterTags:
+    pattern: '^(?P<version>[0-9]+\.[0-9]+\.[0-9]+)$'
+    extract: '$version'
+---
+# Image Policy for staging (latest on develop)
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: screenshot-algo-staging
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: screenshot-algo
+
+  # Numerical policy for staging (latest build)
+  policy:
+    numerical:
+      order: asc
+
+  # Filter tags for staging builds
+  filterTags:
+    pattern: '^staging-(?P<ts>[0-9]+)$'
+    extract: '$ts'
+---
+# Image Policy for development (latest commit)
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: screenshot-algo-dev
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: screenshot-algo
+
+  # Alphabetical policy for git SHA tags
+  policy:
+    alphabetical:
+      order: desc
+
+  # Filter tags for dev builds
+  filterTags:
+    pattern: '^dev-[a-f0-9]{7}$'

@@ -1,0 +1,163 @@
+# Lighthouse CI Workflow
+# Performance testing and budget enforcement
+
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse Performance Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          configPath: './lighthouserc.js'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Format Lighthouse Score
+        id: format_lighthouse_score
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Read the manifest file created by lighthouse-ci
+            const manifestPath = '.lighthouseci/manifest.json';
+            if (!fs.existsSync(manifestPath)) {
+              console.log('No manifest file found');
+              return;
+            }
+
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+
+            let comment = '## Lighthouse Report\n\n';
+
+            for (const entry of manifest) {
+              const { url, summary } = entry;
+
+              comment += `### ${url}\n\n`;
+              comment += '| Category | Score |\n';
+              comment += '|----------|-------|\n';
+
+              const categories = [
+                ['Performance', summary.performance],
+                ['Accessibility', summary.accessibility],
+                ['Best Practices', summary['best-practices']],
+                ['SEO', summary.seo],
+              ];
+
+              for (const [name, score] of categories) {
+                const percentage = Math.round(score * 100);
+                const emoji = percentage >= 90 ? '🟢' : percentage >= 50 ? '🟡' : '🔴';
+                comment += `| ${emoji} ${name} | ${percentage}% |\n`;
+              }
+
+              comment += '\n';
+            }
+
+            // Set output for use in subsequent steps
+            core.setOutput('comment', comment);
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `${{ steps.format_lighthouse_score.outputs.comment }}`;
+
+            if (comment) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: .lighthouseci
+          retention-days: 30
+
+  budget-check:
+    name: Performance Budget Check
+    runs-on: ubuntu-latest
+    needs: lighthouse
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Check bundle sizes
+        run: |
+          echo "## Bundle Size Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check main bundle size
+          if [ -f "dist/main.js" ]; then
+            MAIN_SIZE=$(stat -f%z "dist/main.js" 2>/dev/null || stat -c%s "dist/main.js")
+            MAIN_SIZE_KB=$((MAIN_SIZE / 1024))
+            MAX_SIZE=250
+
+            if [ $MAIN_SIZE_KB -gt $MAX_SIZE ]; then
+              echo "🔴 Main bundle: ${MAIN_SIZE_KB}KB (exceeds ${MAX_SIZE}KB limit)" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            else
+              echo "🟢 Main bundle: ${MAIN_SIZE_KB}KB (within ${MAX_SIZE}KB limit)" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⚠️ Main bundle not found (build may have different output)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Performance Budget Summary
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Performance Targets" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Target |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| First Contentful Paint | < 2s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Largest Contentful Paint | < 3s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Time to Interactive | < 4s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Total Blocking Time | < 300ms |" >> $GITHUB_STEP_SUMMARY
+          echo "| Cumulative Layout Shift | < 0.1 |" >> $GITHUB_STEP_SUMMARY

@@ -98,9 +98,7 @@ export default function PrintTemplateSelector() {
                   >
                     {template.name}
                   </h4>
-                  <p className="text-xs text-gray-600 mb-2">
-                    {template.description}
-                  </p>
+                  <p className="text-xs text-gray-600 mb-2">{template.description}</p>
                   <div className="flex gap-4 text-xs text-gray-500">
                     <span>📄 {template.paperFormat.type}</span>
                     <span>

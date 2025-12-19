@@ -39,7 +39,7 @@ export default function LabelTemplateEditor() {
     deleteElement,
     updateTemplateSetting,
     getEffectiveElement,
-    updateTemplate
+    updateTemplate,
   } = useLabelEditor();
 
   // Local state for interaction
@@ -63,13 +63,13 @@ export default function LabelTemplateEditor() {
 
   // Zoom handlers
   const handleZoomIn = () => {
-    const currentIndex = zoomLevels.findIndex(z => z === zoom);
+    const currentIndex = zoomLevels.findIndex((z) => z === zoom);
     const nextIndex = Math.min(currentIndex + 1, zoomLevels.length - 1);
     setZoom(zoomLevels[nextIndex]);
   };
 
   const handleZoomOut = () => {
-    const currentIndex = zoomLevels.findIndex(z => z === zoom);
+    const currentIndex = zoomLevels.findIndex((z) => z === zoom);
     const prevIndex = Math.max(currentIndex - 1, 0);
     setZoom(zoomLevels[prevIndex]);
   };
@@ -90,9 +90,9 @@ export default function LabelTemplateEditor() {
         e.stopPropagation();
 
         const scaleBy = 1.05;
-        setZoom(prevZoom => {
-            const newZoom = e.deltaY < 0 ? prevZoom * scaleBy : prevZoom / scaleBy;
-            return Math.max(0.25, Math.min(5, newZoom));
+        setZoom((prevZoom) => {
+          const newZoom = e.deltaY < 0 ? prevZoom * scaleBy : prevZoom / scaleBy;
+          return Math.max(0.25, Math.min(5, newZoom));
         });
       }
     };
@@ -144,7 +144,7 @@ export default function LabelTemplateEditor() {
     e.stopPropagation();
 
     // Find the element
-    const element = template.elements.find(el => el.id === id);
+    const element = template.elements.find((el) => el.id === id);
     if (!element) return;
 
     setSelectedElementId(id);
@@ -156,17 +156,17 @@ export default function LabelTemplateEditor() {
     // Note: The move handler needs to account for zoom
     setDragOffset({
       x: e.clientX, // Store initial mouse pos
-      y: e.clientY
+      y: e.clientY,
     });
 
     // Also store initial element pos
     setInitialResizeState({
-        x: e.clientX,
-        y: e.clientY,
-        width: element.width,
-        height: element.height,
-        elementX: element.x,
-        elementY: element.y
+      x: e.clientX,
+      y: e.clientY,
+      width: element.width,
+      height: element.height,
+      elementX: element.x,
+      elementY: element.y,
     });
   };
 
@@ -174,7 +174,7 @@ export default function LabelTemplateEditor() {
     e.stopPropagation();
     if (previewMode) return;
 
-    const element = template.elements.find(el => el.id === id);
+    const element = template.elements.find((el) => el.id === id);
     if (!element) return;
 
     setResizing(handle);
@@ -185,7 +185,7 @@ export default function LabelTemplateEditor() {
       width: element.width,
       height: element.height,
       elementX: element.x,
-      elementY: element.y
+      elementY: element.y,
     });
   };
 
@@ -193,44 +193,44 @@ export default function LabelTemplateEditor() {
     if (previewMode) return;
 
     if (dragging && initialResizeState) {
-        const deltaX = (e.clientX - initialResizeState.x) / zoom;
-        const deltaY = (e.clientY - initialResizeState.y) / zoom;
+      const deltaX = (e.clientX - initialResizeState.x) / zoom;
+      const deltaY = (e.clientY - initialResizeState.y) / zoom;
 
-        updateElement(dragging, {
-            x: Math.round(initialResizeState.elementX + deltaX),
-            y: Math.round(initialResizeState.elementY + deltaY)
-        });
+      updateElement(dragging, {
+        x: Math.round(initialResizeState.elementX + deltaX),
+        y: Math.round(initialResizeState.elementY + deltaY),
+      });
     } else if (resizing && initialResizeState && selectedElementId) {
-        const deltaX = (e.clientX - initialResizeState.x) / zoom;
-        const deltaY = (e.clientY - initialResizeState.y) / zoom;
+      const deltaX = (e.clientX - initialResizeState.x) / zoom;
+      const deltaY = (e.clientY - initialResizeState.y) / zoom;
 
-        const { width, height, elementX, elementY } = initialResizeState;
-        let newX = elementX;
-        let newY = elementY;
-        let newWidth = width;
-        let newHeight = height;
+      const { width, height, elementX, elementY } = initialResizeState;
+      let newX = elementX;
+      let newY = elementY;
+      let newWidth = width;
+      let newHeight = height;
 
-        if (resizing.includes('e')) newWidth = width + deltaX;
-        if (resizing.includes('w')) {
-            newWidth = width - deltaX;
-            newX = elementX + deltaX;
-        }
-        if (resizing.includes('s')) newHeight = height + deltaY;
-        if (resizing.includes('n')) {
-            newHeight = height - deltaY;
-            newY = elementY + deltaY;
-        }
+      if (resizing.includes('e')) newWidth = width + deltaX;
+      if (resizing.includes('w')) {
+        newWidth = width - deltaX;
+        newX = elementX + deltaX;
+      }
+      if (resizing.includes('s')) newHeight = height + deltaY;
+      if (resizing.includes('n')) {
+        newHeight = height - deltaY;
+        newY = elementY + deltaY;
+      }
 
-        // Enforce minimum size
-        if (newWidth < 10) newWidth = 10;
-        if (newHeight < 10) newHeight = 10;
+      // Enforce minimum size
+      if (newWidth < 10) newWidth = 10;
+      if (newHeight < 10) newHeight = 10;
 
-        updateElement(selectedElementId, {
-            x: Math.round(newX),
-            y: Math.round(newY),
-            width: Math.round(newWidth),
-            height: Math.round(newHeight)
-        });
+      updateElement(selectedElementId, {
+        x: Math.round(newX),
+        y: Math.round(newY),
+        width: Math.round(newWidth),
+        height: Math.round(newHeight),
+      });
     }
   };
 
@@ -243,14 +243,15 @@ export default function LabelTemplateEditor() {
   // Actions
   const saveTemplate = async () => {
     try {
-      if (template.id && template.id.length > 30) { // Naive check for UUID (new) vs ID
-         // It's a new template (UUID) or existing?
-         // This logic depends on how "new" vs "edit" is handled.
-         // Assuming create if not saved before, update if has ID.
-         // Actually backend handles ID.
-         await templateApi.save(template);
+      if (template.id && template.id.length > 30) {
+        // Naive check for UUID (new) vs ID
+        // It's a new template (UUID) or existing?
+        // This logic depends on how "new" vs "edit" is handled.
+        // Assuming create if not saved before, update if has ID.
+        // Actually backend handles ID.
+        await templateApi.save(template);
       } else {
-         await templateApi.update(template.id, template);
+        await templateApi.update(template.id, template);
       }
       showToast({ type: 'success', message: 'Template gespeichert!' });
       queryClient.invalidateQueries({ queryKey: ['labelTemplates'] });
@@ -261,8 +262,8 @@ export default function LabelTemplateEditor() {
   };
 
   const handlePrintTemplate = () => {
-      // In a real app this would open a print dialog
-      showToast({ type: 'info', message: 'Druckvorschau wird geöffnet... (Mock)' });
+    // In a real app this would open a print dialog
+    showToast({ type: 'info', message: 'Druckvorschau wird geöffnet... (Mock)' });
   };
 
   const handleConvertToRenderingTemplate = async () => {
@@ -270,7 +271,10 @@ export default function LabelTemplateEditor() {
     try {
       const response = await renderingTemplateApi.convert(template, `Converted - ${template.name}`);
       if (response.data) {
-        showToast({ type: 'success', message: 'Erfolgreich konvertiert! Du kannst es jetzt im Rendering-Editor bearbeiten.' });
+        showToast({
+          type: 'success',
+          message: 'Erfolgreich konvertiert! Du kannst es jetzt im Rendering-Editor bearbeiten.',
+        });
         // navigate('/rendering-templates'); // Optional: redirect
       }
     } catch (error) {
@@ -282,53 +286,57 @@ export default function LabelTemplateEditor() {
   const handleExportPdf = async () => {
     if (!previewArticle) return;
     try {
-        // Need ID to export. If unsaved, warn user?
-        // We can check if template exists in DB or just use current state if API supports it.
-        // The API `renderingTemplateApi.exportPdf` takes an ID.
-        // So we might need to save first or use a "preview" endpoint.
-        // For now assuming template exists or user has to save.
-        if (template.id.length > 30) {
-            showToast({ type: 'warning', message: 'Bitte speichere das Template zuerst.' });
-            return;
-        }
-        const response = await renderingTemplateApi.exportPdf(template.id, previewArticle);
-        if (response.data && response.data.pdf) {
-            const link = document.createElement('a');
-            link.href = `data:application/pdf;base64,${response.data.pdf}`;
-            link.download = response.data.fileName;
-            link.click();
-        }
+      // Need ID to export. If unsaved, warn user?
+      // We can check if template exists in DB or just use current state if API supports it.
+      // The API `renderingTemplateApi.exportPdf` takes an ID.
+      // So we might need to save first or use a "preview" endpoint.
+      // For now assuming template exists or user has to save.
+      if (template.id.length > 30) {
+        showToast({ type: 'warning', message: 'Bitte speichere das Template zuerst.' });
+        return;
+      }
+      const response = await renderingTemplateApi.exportPdf(template.id, previewArticle);
+      if (response.data && response.data.pdf) {
+        const link = document.createElement('a');
+        link.href = `data:application/pdf;base64,${response.data.pdf}`;
+        link.download = response.data.fileName;
+        link.click();
+      }
     } catch (error) {
-        console.error('Export error:', error);
-        showToast({ type: 'error', message: 'Fehler beim Export' });
+      console.error('Export error:', error);
+      showToast({ type: 'error', message: 'Fehler beim Export' });
     }
   };
 
   const hasOverride = (elementId: string): boolean => {
-      return !!(previewArticle?.articleNumber &&
-             template.articleOverrides?.[previewArticle.articleNumber]?.[elementId]);
+    return !!(
+      previewArticle?.articleNumber &&
+      template.articleOverrides?.[previewArticle.articleNumber]?.[elementId]
+    );
   };
 
   const resetOverride = (elementId: string) => {
-      if (!previewArticle?.articleNumber) return;
+    if (!previewArticle?.articleNumber) return;
 
-      const articleNumber = previewArticle.articleNumber;
-      if (!template.articleOverrides?.[articleNumber]?.[elementId]) return;
+    const articleNumber = previewArticle.articleNumber;
+    if (!template.articleOverrides?.[articleNumber]?.[elementId]) return;
 
-      const newOverrides = { ...template.articleOverrides };
-      const articleOverrides = { ...newOverrides[articleNumber] };
-      delete articleOverrides[elementId];
+    const newOverrides = { ...template.articleOverrides };
+    const articleOverrides = { ...newOverrides[articleNumber] };
+    delete articleOverrides[elementId];
 
-      if (Object.keys(articleOverrides).length === 0) {
-          delete newOverrides[articleNumber];
-      } else {
-          newOverrides[articleNumber] = articleOverrides;
-      }
+    if (Object.keys(articleOverrides).length === 0) {
+      delete newOverrides[articleNumber];
+    } else {
+      newOverrides[articleNumber] = articleOverrides;
+    }
 
-      updateTemplate({ articleOverrides: newOverrides });
+    updateTemplate({ articleOverrides: newOverrides });
   };
 
-  const selectedElementData = selectedElementId ? getEffectiveElement(selectedElementId) : undefined;
+  const selectedElementData = selectedElementId
+    ? getEffectiveElement(selectedElementId)
+    : undefined;
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">

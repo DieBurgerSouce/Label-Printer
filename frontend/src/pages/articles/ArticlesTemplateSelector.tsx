@@ -62,14 +62,10 @@ export default function ArticlesTemplateSelector({
                 <div className="flex-1">
                   <div className="font-semibold text-gray-900">{template.name}</div>
                   {template.printLayoutName && (
-                    <div className="text-sm text-gray-600 mt-1">
-                      {template.printLayoutName}
-                    </div>
+                    <div className="text-sm text-gray-600 mt-1">{template.printLayoutName}</div>
                   )}
                   {!template.printLayoutId && (
-                    <div className="text-sm text-orange-600 mt-1">
-                      Kein Drucklayout ausgewahlt
-                    </div>
+                    <div className="text-sm text-orange-600 mt-1">Kein Drucklayout ausgewahlt</div>
                   )}
                 </div>
               </label>

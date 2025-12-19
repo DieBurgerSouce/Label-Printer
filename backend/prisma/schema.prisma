@@ -309,6 +309,41 @@ model AutomationJob {
 }
 
 // ========================================
+// AUTOMATION JOB STATE (BullMQ Persistence)
+// ========================================
+
+model AutomationJobState {
+  id          String   @id @default(uuid())
+  jobId       String   @unique  // BullMQ job ID
+
+  // Job metadata
+  name        String
+  status      String   // 'pending', 'crawling', 'processing-ocr', 'matching', 'rendering', 'completed', 'failed'
+
+  // Configuration (JSON - full AutomationConfig)
+  config      Json
+
+  // Progress tracking (JSON - full AutomationProgress)
+  progress    Json
+
+  // Results (JSON - full AutomationResults)
+  results     Json
+
+  // Error handling
+  error       String?
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+
+  @@map("automation_job_states")
+  @@index([jobId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ========================================
 // EXCEL DATA (Optional - for caching)
 // ========================================
 

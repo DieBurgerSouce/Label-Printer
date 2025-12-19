@@ -1,0 +1,104 @@
+# PR Labeler Configuration
+# Defines labels based on changed file paths
+
+# Source code labels
+'area/api':
+  - changed-files:
+      - any-glob-to-any-file: 'src/api/**/*'
+
+'area/engine':
+  - changed-files:
+      - any-glob-to-any-file: 'src/engine/**/*'
+
+'area/queue':
+  - changed-files:
+      - any-glob-to-any-file: 'src/queue/**/*'
+
+'area/storage':
+  - changed-files:
+      - any-glob-to-any-file: 'src/storage/**/*'
+
+'area/config':
+  - changed-files:
+      - any-glob-to-any-file: 'src/config/**/*'
+
+'area/utils':
+  - changed-files:
+      - any-glob-to-any-file: 'src/utils/**/*'
+
+# Infrastructure labels
+'infra/ci':
+  - changed-files:
+      - any-glob-to-any-file: '.github/workflows/**/*'
+
+'infra/docker':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile*'
+          - 'docker-compose*.yml'
+          - 'docker/**/*'
+          - '.dockerignore'
+
+'infra/devcontainer':
+  - changed-files:
+      - any-glob-to-any-file: '.devcontainer/**/*'
+
+# Configuration labels
+'config':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.config.js'
+          - '*.config.ts'
+          - 'tsconfig*.json'
+          - '.eslintrc*'
+          - '.prettierrc*'
+          - 'jest.config.*'
+          - 'playwright.config.*'
+
+# Documentation labels
+'documentation':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**/*'
+
+# Test labels
+'tests':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '__tests__/**/*'
+          - '**/*.test.ts'
+          - '**/*.test.tsx'
+          - '**/*.spec.ts'
+          - '**/*.spec.tsx'
+
+# Dependencies
+'dependencies':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'package-lock.json'
+          - 'yarn.lock'
+          - 'pnpm-lock.yaml'
+
+# Scripts
+'scripts':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'scripts/**/*'
+          - 'Makefile'
+
+# Security
+'security':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/security*'
+          - '.github/workflows/security*.yml'
+          - 'SECURITY.md'
+
+# Types
+'types':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/types/**/*'
+          - '**/*.d.ts'

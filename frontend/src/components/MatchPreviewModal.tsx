@@ -17,7 +17,7 @@ export default function MatchPreviewModal({
   matchResult,
   isLoading,
   onConfirm,
-  onCancel
+  onCancel,
 }: MatchPreviewModalProps) {
   const hasMatches = matchResult.matched.length > 0;
   const hasSkipped = matchResult.skipped.length > 0;
@@ -47,7 +47,8 @@ export default function MatchPreviewModal({
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
                 <span className="text-gray-700">
-                  <strong className="text-green-600">{matchResult.matched.length}</strong> Artikel matched
+                  <strong className="text-green-600">{matchResult.matched.length}</strong> Artikel
+                  matched
                 </span>
               </div>
             )}
@@ -55,7 +56,8 @@ export default function MatchPreviewModal({
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-orange-600" />
                 <span className="text-gray-700">
-                  <strong className="text-orange-600">{matchResult.skipped.length}</strong> Artikel übersprungen
+                  <strong className="text-orange-600">{matchResult.skipped.length}</strong> Artikel
+                  übersprungen
                 </span>
               </div>
             )}

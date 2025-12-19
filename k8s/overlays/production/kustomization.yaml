@@ -1,0 +1,106 @@
+# Kustomization - Production Overlay
+# Production-specific Kubernetes configuration
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: screenshot-algo-production
+
+# Reference base configuration
+resources:
+  - ../../base
+
+# Namespace override for production
+namespace: screenshot-algo
+
+# Common labels for production
+commonLabels:
+  environment: production
+  app.kubernetes.io/instance: production
+
+# Common annotations for production
+commonAnnotations:
+  app.kubernetes.io/version: "1.0.0"
+
+# Production-specific patches
+patches:
+  # Production replicas and resources
+  - target:
+      kind: Deployment
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 2Gi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "2"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 512Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 250m
+      - op: add
+        path: /spec/template/spec/priorityClassName
+        value: high-priority
+
+  # Production HPA settings
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 3
+      - op: replace
+        path: /spec/maxReplicas
+        value: 20
+
+  # Production PDB
+  - target:
+      kind: PodDisruptionBudget
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/minAvailable
+        value: 2
+
+  # Production ingress
+  - target:
+      kind: Ingress
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: api.screenshot-algo.com
+      - op: replace
+        path: /spec/rules/0/host
+        value: api.screenshot-algo.com
+
+# Production image
+images:
+  - name: screenshot-algo
+    newName: ghcr.io/screenshot-algo/screenshot-algo
+    # Tag will be replaced by CI/CD with actual version
+    newTag: "1.0.0"
+
+# Production config map
+configMapGenerator:
+  - name: screenshot-algo-config
+    behavior: merge
+    literals:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+      - METRICS_ENABLED=true
+      - TRACING_ENABLED=true
+      - TRACING_SAMPLE_RATE=0.1
+
+# Production replicas
+replicas:
+  - name: screenshot-algo
+    count: 3

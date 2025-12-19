@@ -1,0 +1,127 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "description": "Target: 99.9%",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 100,
+          "min": 95,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 99 }, { "color": "green", "value": 99.9 }] },
+          "unit": "percent"
+        }
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showThresholdLabels": false, "showThresholdMarkers": true },
+      "targets": [{ "expr": "(1 - sum(rate(http_requests_total{job=\"screenshot-algo\",status=~\"5..\"}[30d])) / sum(rate(http_requests_total{job=\"screenshot-algo\"}[30d]))) * 100", "legendFormat": "Availability", "refId": "A" }],
+      "title": "Availability (30d) - SLO: 99.9%",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Target: < 500ms",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 2000,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 500 }, { "color": "red", "value": 1000 }] },
+          "unit": "ms"
+        }
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "id": 2,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showThresholdLabels": false, "showThresholdMarkers": true },
+      "targets": [{ "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"screenshot-algo\"}[30d])) by (le)) * 1000", "legendFormat": "P95 Latency", "refId": "A" }],
+      "title": "P95 Latency (30d) - SLO: < 500ms",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Target: < 0.1%",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 5,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 0.1 }, { "color": "red", "value": 1 }] },
+          "unit": "percent"
+        }
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "id": 3,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showThresholdLabels": false, "showThresholdMarkers": true },
+      "targets": [{ "expr": "sum(rate(http_requests_total{job=\"screenshot-algo\",status=~\"5..\"}[30d])) / sum(rate(http_requests_total{job=\"screenshot-algo\"}[30d])) * 100", "legendFormat": "Error Rate", "refId": "A" }],
+      "title": "Error Rate (30d) - SLO: < 0.1%",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "How much of your monthly error budget remains",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 25 }, { "color": "green", "value": 50 }] },
+          "unit": "percent"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 4,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showThresholdLabels": false, "showThresholdMarkers": true },
+      "targets": [{ "expr": "((0.001 - (sum(rate(http_requests_total{job=\"screenshot-algo\",status=~\"5..\"}[30d])) / sum(rate(http_requests_total{job=\"screenshot-algo\"}[30d])))) / 0.001) * 100", "legendFormat": "Error Budget Remaining", "refId": "A" }],
+      "title": "Error Budget Remaining",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 5,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "43.8 * 60 * ((0.001 - (sum(rate(http_requests_total{job=\"screenshot-algo\",status=~\"5..\"}[30d])) / sum(rate(http_requests_total{job=\"screenshot-algo\"}[30d])))) / 0.001)", "legendFormat": "Remaining", "refId": "A" }],
+      "title": "Downtime Budget Remaining (seconds/month)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "stacking": { "mode": "none" } }, "unit": "percent" } },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 16 },
+      "id": 6,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "(1 - sum(rate(http_requests_total{job=\"screenshot-algo\",status=~\"5..\"}[1h])) / sum(rate(http_requests_total{job=\"screenshot-algo\"}[1h]))) * 100", "legendFormat": "Availability (1h rolling)", "refId": "A" },
+        { "expr": "99.9", "legendFormat": "SLO Target (99.9%)", "refId": "B" }
+      ],
+      "title": "Availability vs SLO",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["screenshot-algo", "slo"],
+  "templating": { "list": [] },
+  "time": { "from": "now-7d", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Screenshot_Algo - SLO Dashboard",
+  "uid": "screenshot-algo-slo",
+  "version": 1
+}

@@ -1,0 +1,145 @@
+# FluxCD HelmRelease
+# Helm deployments for Screenshot_Algo
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: screenshot-algo
+  namespace: screenshot-algo
+spec:
+  # Release name
+  releaseName: screenshot-algo
+
+  # Reconciliation interval
+  interval: 5m0s
+
+  # Chart source
+  chart:
+    spec:
+      chart: ./helm/screenshot-algo
+      sourceRef:
+        kind: GitRepository
+        name: screenshot-algo-helm
+        namespace: flux-system
+      interval: 1m0s
+
+  # Values
+  values:
+    replicaCount: 3
+    image:
+      repository: ghcr.io/screenshot-algo/screenshot-algo
+      tag: latest
+    resources:
+      limits:
+        cpu: "2"
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 512Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 20
+
+  # Values from ConfigMaps/Secrets
+  valuesFrom:
+    - kind: ConfigMap
+      name: screenshot-algo-helm-values
+      valuesKey: values.yaml
+      optional: true
+    - kind: Secret
+      name: screenshot-algo-helm-secrets
+      valuesKey: secrets.yaml
+      optional: true
+
+  # Upgrade configuration
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+    cleanupOnFail: true
+    crds: CreateReplace
+
+  # Rollback configuration
+  rollback:
+    timeout: 5m0s
+    recreate: false
+    force: false
+    cleanupOnFail: true
+
+  # Test configuration
+  test:
+    enable: true
+    timeout: 5m0s
+
+  # Dependencies
+  dependsOn:
+    - name: postgresql
+      namespace: screenshot-algo
+    - name: redis
+      namespace: screenshot-algo
+---
+# PostgreSQL HelmRelease
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: postgresql
+  namespace: screenshot-algo
+spec:
+  releaseName: postgresql
+  interval: 10m0s
+
+  chart:
+    spec:
+      chart: postgresql
+      version: "13.x.x"
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+
+  values:
+    auth:
+      database: screenshot_algo
+      username: screenshot
+      existingSecret: postgresql-credentials
+    primary:
+      persistence:
+        size: 50Gi
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+---
+# Redis HelmRelease
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: redis
+  namespace: screenshot-algo
+spec:
+  releaseName: redis
+  interval: 10m0s
+
+  chart:
+    spec:
+      chart: redis
+      version: "18.x.x"
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+
+  values:
+    auth:
+      enabled: true
+      existingSecret: redis-credentials
+    master:
+      persistence:
+        size: 5Gi
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi

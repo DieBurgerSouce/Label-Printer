@@ -1,0 +1,13 @@
+{{- /*
+ConfigMap template for Screenshot_Algo
+*/ -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "screenshot-algo.fullname" . }}-config
+  labels:
+    {{- include "screenshot-algo.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.env }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}

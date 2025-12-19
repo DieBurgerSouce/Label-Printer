@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/bundlewatch.json",
+  "files": [
+    {
+      "path": "dist/**/*.js",
+      "maxSize": "500KB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/**/*.css",
+      "maxSize": "100KB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/main*.js",
+      "maxSize": "300KB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/vendor*.js",
+      "maxSize": "400KB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/chunk-*.js",
+      "maxSize": "150KB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/**/*.wasm",
+      "maxSize": "1MB",
+      "compression": "none"
+    }
+  ],
+  "normalizeFilenames": "^.+?(\\.\\w+)\\.\\w+$",
+  "bundlewatchServiceHost": "https://service.bundlewatch.io",
+  "ci": {
+    "trackBranches": [
+      "main",
+      "develop"
+    ],
+    "repoBranchBase": "main",
+    "commitSha": null,
+    "repoCurrentBranch": null
+  },
+  "defaultCompression": "gzip"
+}

@@ -43,7 +43,7 @@ export const ExportOptions = ({ onExport, isExporting = false }: ExportOptionsPr
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const updateConfig = (updates: Partial<ExportConfig>) => {
-    setConfig(prev => ({ ...prev, ...updates }));
+    setConfig((prev) => ({ ...prev, ...updates }));
   };
 
   const handleExport = () => {
@@ -70,9 +70,7 @@ export const ExportOptions = ({ onExport, isExporting = false }: ExportOptionsPr
 
       {/* Format Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Export Format
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Export Format</label>
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => updateConfig({ format: 'pdf' })}
@@ -112,11 +110,9 @@ export const ExportOptions = ({ onExport, isExporting = false }: ExportOptionsPr
 
       {/* DPI Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Resolution (DPI)
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Resolution (DPI)</label>
         <div className="space-y-2">
-          {dpiOptions.map(option => (
+          {dpiOptions.map((option) => (
             <label
               key={option.value}
               className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${
@@ -178,16 +174,12 @@ export const ExportOptions = ({ onExport, isExporting = false }: ExportOptionsPr
           {/* Color Profile */}
           {config.format === 'pdf' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Color Profile
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Color Profile</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => updateConfig({ colorProfile: 'RGB' })}
                   className={`p-2 rounded border-2 text-sm ${
-                    config.colorProfile === 'RGB'
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200'
+                    config.colorProfile === 'RGB' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
                   }`}
                 >
                   RGB (Digital)

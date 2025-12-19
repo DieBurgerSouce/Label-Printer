@@ -1,13 +1,13 @@
 import {
-    Eye,
-    FileSpreadsheet,
-    LayoutDashboard,
-    Layout as LayoutIcon,
-    Package,
-    Printer,
-    Settings,
-    Tags,
-    X,
+  Eye,
+  FileSpreadsheet,
+  LayoutDashboard,
+  Layout as LayoutIcon,
+  Package,
+  Printer,
+  Settings,
+  Tags,
+  X,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useUiStore } from '../../store/uiStore';
@@ -59,9 +59,7 @@ export default function Sidebar() {
                 to={item.to}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-gray-700 hover:bg-gray-100'
+                    isActive ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
                   }`
                 }
               >
@@ -73,9 +71,7 @@ export default function Sidebar() {
 
           {/* Footer */}
           <div className="p-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center">
-              Version 1.0.0
-            </p>
+            <p className="text-xs text-gray-500 text-center">Version 1.0.0</p>
           </div>
         </div>
       </aside>

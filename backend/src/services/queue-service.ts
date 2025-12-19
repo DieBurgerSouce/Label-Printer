@@ -316,7 +316,9 @@ class QueueService {
   /**
    * Get stats for all queues
    */
-  async getAllQueueStats(): Promise<Record<string, Awaited<ReturnType<typeof this.getQueueStats>>>> {
+  async getAllQueueStats(): Promise<
+    Record<string, Awaited<ReturnType<typeof this.getQueueStats>>>
+  > {
     const stats: Record<string, Awaited<ReturnType<typeof this.getQueueStats>>> = {};
 
     for (const queueName of Object.values(QUEUE_NAMES)) {

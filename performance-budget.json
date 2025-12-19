@@ -1,0 +1,139 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/lighthouse-budget/main/budget.schema.json",
+  "description": "Screenshot_Algo Performance Budget",
+  "version": "1.0.0",
+
+  "budgets": [
+    {
+      "path": "/*",
+      "name": "General Budget",
+      "resourceSizes": [
+        {
+          "resourceType": "document",
+          "budget": 50
+        },
+        {
+          "resourceType": "script",
+          "budget": 300
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 100
+        },
+        {
+          "resourceType": "image",
+          "budget": 500
+        },
+        {
+          "resourceType": "font",
+          "budget": 150
+        },
+        {
+          "resourceType": "total",
+          "budget": 1000
+        }
+      ],
+      "resourceCounts": [
+        {
+          "resourceType": "script",
+          "budget": 15
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 5
+        },
+        {
+          "resourceType": "image",
+          "budget": 20
+        },
+        {
+          "resourceType": "font",
+          "budget": 4
+        },
+        {
+          "resourceType": "third-party",
+          "budget": 10
+        },
+        {
+          "resourceType": "total",
+          "budget": 50
+        }
+      ],
+      "timings": [
+        {
+          "metric": "first-contentful-paint",
+          "budget": 2000
+        },
+        {
+          "metric": "largest-contentful-paint",
+          "budget": 3000
+        },
+        {
+          "metric": "interactive",
+          "budget": 4000
+        },
+        {
+          "metric": "total-blocking-time",
+          "budget": 300
+        },
+        {
+          "metric": "cumulative-layout-shift",
+          "budget": 0.1
+        }
+      ]
+    },
+    {
+      "path": "/api/*",
+      "name": "API Endpoints",
+      "resourceSizes": [
+        {
+          "resourceType": "document",
+          "budget": 10
+        },
+        {
+          "resourceType": "total",
+          "budget": 50
+        }
+      ],
+      "timings": [
+        {
+          "metric": "first-contentful-paint",
+          "budget": 500
+        },
+        {
+          "metric": "interactive",
+          "budget": 1000
+        }
+      ]
+    }
+  ],
+
+  "bundles": [
+    {
+      "name": "main",
+      "path": "/dist/main.*.js",
+      "maxSize": "250kb",
+      "maxSizeGzip": "80kb"
+    },
+    {
+      "name": "vendor",
+      "path": "/dist/vendor.*.js",
+      "maxSize": "500kb",
+      "maxSizeGzip": "150kb"
+    },
+    {
+      "name": "styles",
+      "path": "/dist/styles.*.css",
+      "maxSize": "100kb",
+      "maxSizeGzip": "30kb"
+    }
+  ],
+
+  "targets": {
+    "performance": 90,
+    "accessibility": 90,
+    "best-practices": 90,
+    "seo": 90,
+    "pwa": 50
+  }
+}

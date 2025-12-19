@@ -36,11 +36,7 @@ export const customDimensionsSchema = z.object({
 // Label generation request schema
 export const labelGenerationSchema = z
   .object({
-    templateId: z
-      .string()
-      .uuid('Template-ID muss eine gültige UUID sein')
-      .optional()
-      .nullable(),
+    templateId: z.string().uuid('Template-ID muss eine gültige UUID sein').optional().nullable(),
 
     templateName: z
       .string()
@@ -64,11 +60,7 @@ export const labelGenerationSchema = z
       .optional()
       .nullable(),
 
-    priceText: z
-      .string()
-      .max(100, 'Preistext darf max. 100 Zeichen haben')
-      .optional()
-      .nullable(),
+    priceText: z.string().max(100, 'Preistext darf max. 100 Zeichen haben').optional().nullable(),
 
     currency: z.string().length(3, 'Währung muss 3 Zeichen haben (ISO 4217)').default('EUR'),
 

@@ -4,7 +4,12 @@
  */
 
 import type { Product } from '../services/api';
-import type { LabelTemplate, TemplateRule, RuleCondition, MatchResult } from '../types/template.types';
+import type {
+  LabelTemplate,
+  TemplateRule,
+  RuleCondition,
+  MatchResult,
+} from '../types/template.types';
 
 /**
  * Evaluates a single condition against an article
@@ -14,8 +19,8 @@ export function evaluateCondition(article: Product, condition: RuleCondition): b
     case 'priceType': {
       const hasTieredPrices = article.tieredPrices && article.tieredPrices.length > 0;
       const hasNormalPrice = typeof article.price === 'number' && article.price > 0;
-      const isAufAnfrage = article.tieredPricesText &&
-                           article.tieredPricesText.toLowerCase().includes('auf anfrage');
+      const isAufAnfrage =
+        article.tieredPricesText && article.tieredPricesText.toLowerCase().includes('auf anfrage');
 
       let articlePriceType: 'normal' | 'tiered' | 'auf-anfrage' | 'none';
 
@@ -95,14 +100,14 @@ export function evaluateRule(article: Product, rule: TemplateRule): boolean {
     return false;
   }
 
-  const results = rule.conditions.map(condition => evaluateCondition(article, condition));
+  const results = rule.conditions.map((condition) => evaluateCondition(article, condition));
 
   if (rule.logic === 'AND') {
     // All conditions must be true
-    return results.every(r => r === true);
+    return results.every((r) => r === true);
   } else {
     // At least one condition must be true
-    return results.some(r => r === true);
+    return results.some((r) => r === true);
   }
 }
 
@@ -115,7 +120,7 @@ export function findMatchingTemplate(
   templates: LabelTemplate[]
 ): LabelTemplate | null {
   // Only consider templates with auto-matching enabled
-  const autoMatchTemplates = templates.filter(t => t.autoMatchEnabled && t.rules?.enabled);
+  const autoMatchTemplates = templates.filter((t) => t.autoMatchEnabled && t.rules?.enabled);
 
   // Return first matching template
   for (const template of autoMatchTemplates) {

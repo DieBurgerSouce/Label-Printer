@@ -8,7 +8,7 @@ export const ZoomControls = () => {
   const { zoom, setZoom } = useUiStore();
 
   const zoomLevels = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5];
-  const currentIndex = zoomLevels.findIndex(z => z === zoom);
+  const currentIndex = zoomLevels.findIndex((z) => z === zoom);
 
   const handleZoomIn = () => {
     const nextIndex = Math.min(currentIndex + 1, zoomLevels.length - 1);
@@ -38,9 +38,7 @@ export const ZoomControls = () => {
 
       {/* Zoom Level Display */}
       <div className="px-3 py-1 bg-gray-50 rounded border border-gray-200 min-w-[80px] text-center">
-        <span className="text-sm font-medium text-gray-900">
-          {Math.round(zoom * 100)}%
-        </span>
+        <span className="text-sm font-medium text-gray-900">{Math.round(zoom * 100)}%</span>
       </div>
 
       {/* Zoom In */}

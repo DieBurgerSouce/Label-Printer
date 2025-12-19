@@ -37,10 +37,10 @@ export function useLabelEditor() {
         shadowEnabled: false,
         shadowColor: '#000000',
         shadowBlur: 5,
-        padding: 0
+        padding: 0,
       },
       autoMatchEnabled: false,
-      rules: undefined
+      rules: undefined,
     };
   });
 
@@ -51,8 +51,10 @@ export function useLabelEditor() {
   const [selectedPrintLayoutId, setSelectedPrintLayoutId] = useState<string>('');
 
   // Helper to update template safely
-  const updateTemplate = (updates: Partial<LabelTemplate> | ((prev: LabelTemplate) => Partial<LabelTemplate>)) => {
-    setTemplate(prev => {
+  const updateTemplate = (
+    updates: Partial<LabelTemplate> | ((prev: LabelTemplate) => Partial<LabelTemplate>)
+  ) => {
+    setTemplate((prev) => {
       const newValues = typeof updates === 'function' ? updates(prev) : updates;
       return { ...prev, ...newValues };
     });
@@ -67,7 +69,7 @@ export function useLabelEditor() {
       id: crypto.randomUUID(),
       type,
       x: 50,
-      y: 50 + (template.elements.length * 30),
+      y: 50 + template.elements.length * 30,
       width: defaultWidth,
       height: defaultHeight,
       originalWidth: defaultWidth,
@@ -77,48 +79,60 @@ export function useLabelEditor() {
       fontWeight: 'normal',
       color: '#000000',
       align: 'left',
-      tableConfig: type === 'priceTable' ? {
-        headerBg: '#e5e7eb',
-        headerColor: '#000000',
-        headerFontSize: 14,
-        headerFontWeight: 'bold',
-        headerAlign: 'left',
-        rowBg: '#ffffff',
-        rowAlternateBg: '#f9fafb',
-        rowColor: '#000000',
-        rowFontSize: 12,
-        rowAlign: 'left',
-        borderColor: '#d1d5db',
-        borderWidth: 1,
-        cellPadding: 8
-      } : undefined
+      tableConfig:
+        type === 'priceTable'
+          ? {
+              headerBg: '#e5e7eb',
+              headerColor: '#000000',
+              headerFontSize: 14,
+              headerFontWeight: 'bold',
+              headerAlign: 'left',
+              rowBg: '#ffffff',
+              rowAlternateBg: '#f9fafb',
+              rowColor: '#000000',
+              rowFontSize: 12,
+              rowAlign: 'left',
+              borderColor: '#d1d5db',
+              borderWidth: 1,
+              cellPadding: 8,
+            }
+          : undefined,
     };
 
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
-      elements: [...prev.elements, newElement]
+      elements: [...prev.elements, newElement],
     }));
     setSelectedElementId(newElement.id);
   };
 
   const getDefaultContent = (type: LabelElement['type']): string => {
     switch (type) {
-      case 'text': return '{{Produktname}}';
-      case 'freeText': return 'Text eingeben...';
-      case 'price': return '{{Preis}}';
-      case 'priceTable': return '{{Staffelpreise}}';
-      case 'articleNumber': return '{{Artikelnummer}}';
-      case 'description': return '{{Beschreibung}}';
-      case 'qrCode': return '{{QR-Code}}';
-      case 'image': return '{{Produktbild}}';
-      default: return '';
+      case 'text':
+        return '{{Produktname}}';
+      case 'freeText':
+        return 'Text eingeben...';
+      case 'price':
+        return '{{Preis}}';
+      case 'priceTable':
+        return '{{Staffelpreise}}';
+      case 'articleNumber':
+        return '{{Artikelnummer}}';
+      case 'description':
+        return '{{Beschreibung}}';
+      case 'qrCode':
+        return '{{QR-Code}}';
+      case 'image':
+        return '{{Produktbild}}';
+      default:
+        return '';
     }
   };
 
   const updateElement = (id: string, updates: Partial<LabelElement>) => {
     // If an article is selected, save changes to articleOverrides
     if (previewArticle?.articleNumber) {
-      setTemplate(prev => {
+      setTemplate((prev) => {
         const articleOverrides = prev.articleOverrides || {};
         const articleNumber = previewArticle.articleNumber!; // Non-null assertion safer here
         const elementOverrides = articleOverrides[articleNumber] || {};
@@ -131,27 +145,25 @@ export function useLabelEditor() {
               ...elementOverrides,
               [id]: {
                 ...(elementOverrides[id] || {}),
-                ...updates
-              }
-            }
-          }
+                ...updates,
+              },
+            },
+          },
         };
       });
     } else {
       // Direct template update
-      setTemplate(prev => ({
+      setTemplate((prev) => ({
         ...prev,
-        elements: prev.elements.map(el =>
-          el.id === id ? { ...el, ...updates } : el
-        )
+        elements: prev.elements.map((el) => (el.id === id ? { ...el, ...updates } : el)),
       }));
     }
   };
 
   const deleteElement = (id: string) => {
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
-      elements: prev.elements.filter(el => el.id !== id)
+      elements: prev.elements.filter((el) => el.id !== id),
     }));
     if (selectedElementId === id) {
       setSelectedElementId(null);
@@ -162,26 +174,26 @@ export function useLabelEditor() {
     key: K,
     value: TemplateSettings[K]
   ) => {
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
       settings: {
         ...prev.settings,
-        [key]: value
-      }
+        [key]: value,
+      },
     }));
   };
 
   const applyPrintLayout = (layoutId: string) => {
     if (!layoutId) {
       setSelectedPrintLayoutId('');
-      setTemplate(prev => ({
+      setTemplate((prev) => ({
         ...prev,
         printLayoutId: undefined,
         printLayoutName: undefined,
         printLayoutColumns: undefined,
         printLayoutRows: undefined,
         widthMm: undefined,
-        heightMm: undefined
+        heightMm: undefined,
       }));
       return;
     }
@@ -194,7 +206,7 @@ export function useLabelEditor() {
     const heightPx = mmToPx(heightMm);
 
     setSelectedPrintLayoutId(layoutId);
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
       width: widthPx,
       height: heightPx,
@@ -203,13 +215,13 @@ export function useLabelEditor() {
       printLayoutId: layoutId,
       printLayoutName: layout.name,
       printLayoutColumns: layout.columns,
-      printLayoutRows: layout.rows
+      printLayoutRows: layout.rows,
     }));
   };
 
   // Get effective element (handling overrides)
   const getEffectiveElement = (elementId: string): LabelElement | undefined => {
-    const templateElement = template.elements.find(el => el.id === elementId);
+    const templateElement = template.elements.find((el) => el.id === elementId);
     if (!templateElement) return undefined;
 
     if (!previewArticle?.articleNumber || !template.articleOverrides) {

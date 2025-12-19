@@ -1,0 +1,150 @@
+# GitLeaks Configuration
+# Enterprise-grade secret scanning for Screenshot_Algo
+# https://github.com/gitleaks/gitleaks
+
+title = "Screenshot_Algo Secret Scanning Policy"
+
+[extend]
+# Extend the default gitleaks configuration
+useDefault = true
+
+# Custom rules for project-specific secrets
+[[rules]]
+id = "supabase-anon-key"
+description = "Supabase Anonymous Key"
+regex = '''(?i)(SUPABASE_ANON_KEY|supabase_anon_key)\s*[=:]\s*["']?[a-zA-Z0-9._-]{30,}["']?'''
+secretGroup = 0
+entropy = 3.5
+keywords = ["supabase", "anon"]
+
+[[rules]]
+id = "supabase-service-key"
+description = "Supabase Service Role Key (Critical)"
+regex = '''(?i)(SUPABASE_SERVICE_KEY|SUPABASE_SERVICE_ROLE_KEY|service_role)\s*[=:]\s*["']?eyJ[a-zA-Z0-9._-]+["']?'''
+secretGroup = 0
+entropy = 4.0
+keywords = ["supabase", "service", "role"]
+
+[[rules]]
+id = "screenshot-api-key"
+description = "Screenshot API Key"
+regex = '''(?i)(SCREENSHOT_API_KEY|screenshot_api_key)\s*[=:]\s*["']?[a-zA-Z0-9]{32,}["']?'''
+secretGroup = 0
+entropy = 3.5
+keywords = ["screenshot", "api"]
+
+[[rules]]
+id = "jwt-secret"
+description = "JWT Secret Key"
+regex = '''(?i)(JWT_SECRET|jwt_secret|JWT_SIGNING_KEY)\s*[=:]\s*["']?[a-zA-Z0-9+/=]{20,}["']?'''
+secretGroup = 0
+entropy = 3.5
+keywords = ["jwt", "secret", "signing"]
+
+[[rules]]
+id = "database-url"
+description = "Database Connection String"
+regex = '''(?i)(DATABASE_URL|DB_URL|POSTGRES_URL)\s*[=:]\s*["']?postgres(ql)?://[^\s"']+["']?'''
+secretGroup = 0
+keywords = ["database", "postgres", "db_url"]
+
+[[rules]]
+id = "redis-url"
+description = "Redis Connection String"
+regex = '''(?i)(REDIS_URL|REDIS_CONNECTION)\s*[=:]\s*["']?redis://[^\s"']+["']?'''
+secretGroup = 0
+keywords = ["redis"]
+
+[[rules]]
+id = "sentry-dsn"
+description = "Sentry DSN"
+regex = '''(?i)(SENTRY_DSN|sentry_dsn)\s*[=:]\s*["']?https://[a-f0-9]+@[a-z0-9]+\.ingest\.sentry\.io/[0-9]+["']?'''
+secretGroup = 0
+keywords = ["sentry", "dsn"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''(?i)(AWS_ACCESS_KEY_ID|aws_access_key)\s*[=:]\s*["']?(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}["']?'''
+secretGroup = 0
+entropy = 3.5
+keywords = ["aws", "access", "key"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)(AWS_SECRET_ACCESS_KEY|aws_secret_key)\s*[=:]\s*["']?[A-Za-z0-9/+=]{40}["']?'''
+secretGroup = 0
+entropy = 4.0
+keywords = ["aws", "secret"]
+
+[[rules]]
+id = "cloudflare-api-key"
+description = "Cloudflare API Key"
+regex = '''(?i)(CLOUDFLARE_API_KEY|CF_API_KEY)\s*[=:]\s*["']?[a-f0-9]{37}["']?'''
+secretGroup = 0
+keywords = ["cloudflare", "cf_api"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key (PEM)"
+regex = '''-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'''
+keywords = ["private", "key", "begin"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key Pattern"
+regex = '''(?i)(api[_-]?key|apikey|api[_-]?secret)\s*[=:]\s*["']?[a-zA-Z0-9]{20,}["']?'''
+secretGroup = 0
+entropy = 3.5
+keywords = ["api", "key", "secret"]
+
+# Allowlist for false positives
+[allowlist]
+description = "Global allowlist"
+
+# Allow specific paths
+paths = [
+    '''\.env\.example$''',
+    '''\.env\.sample$''',
+    '''\.env\.template$''',
+    '''docs/.*\.md$''',
+    '''__tests__/.*''',
+    '''__mocks__/.*''',
+    '''\.snyk$''',
+    '''package-lock\.json$''',
+    '''yarn\.lock$''',
+    '''pnpm-lock\.yaml$''',
+]
+
+# Allow specific regexes (placeholder values)
+regexes = [
+    '''PLACEHOLDER''',
+    '''YOUR_.*_HERE''',
+    '''<your-.*>''',
+    '''example\.com''',
+    '''localhost''',
+    '''127\.0\.0\.1''',
+    '''xxx+''',
+    '''CHANGE_ME''',
+    '''REPLACE_WITH''',
+]
+
+# Allow specific commits (e.g., reverted commits)
+commits = [
+    # "abc123def456789..."  # Example reverted commit
+]
+
+# Specific file allowlists
+[[allowlist.stopwords]]
+# Common false positive patterns
+stopwords = [
+    "example",
+    "sample",
+    "test",
+    "mock",
+    "dummy",
+    "fake",
+    "placeholder",
+    "template",
+]

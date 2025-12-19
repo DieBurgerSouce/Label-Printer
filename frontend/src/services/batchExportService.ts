@@ -41,7 +41,7 @@ export class BatchExportService {
     this.cancelled = false;
 
     // Create jobs
-    this.jobs = labels.map(label => ({
+    this.jobs = labels.map((label) => ({
       id: label.id,
       name: `${label.productName} (${label.articleNumber})`,
       status: 'pending' as const,
@@ -179,14 +179,14 @@ export class BatchExportService {
    * Utility delay function
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
    * Download all successful exports as a ZIP (future enhancement)
    */
   async downloadAsZip(results: ExportResult[]): Promise<void> {
-    const successfulExports = results.filter(r => r.success && r.url);
+    const successfulExports = results.filter((r) => r.success && r.url);
 
     if (successfulExports.length === 0) {
       throw new Error('No successful exports to download');

@@ -1,7 +1,8 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import type { PrintLayout } from '../store/printStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ||
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
   (import.meta.env.PROD ? window.location.origin : 'http://localhost:3001');
 
 /**
@@ -125,29 +126,28 @@ export const labelApi = {
   getThumbnail: (id: string) =>
     apiClient.get<Blob>(`/api/labels/${id}/thumbnail`, { responseType: 'blob' }),
 
-  create: (data: any) =>
-    apiClient.post<ApiResponse<any>>('/api/labels', data),
+  create: (data: any) => apiClient.post<ApiResponse<any>>('/api/labels', data),
 
   extract: (url: string, articleNumber: string) =>
     apiClient.post<ApiResponse<any>>('/api/labels/extract', { url, articleNumber }),
 
-  update: (id: string, data: any) =>
-    apiClient.put<ApiResponse<any>>(`/api/labels/${id}`, data),
+  update: (id: string, data: any) => apiClient.put<ApiResponse<any>>(`/api/labels/${id}`, data),
 
-  delete: (id: string) =>
-    apiClient.delete<ApiResponse<void>>(`/api/labels/${id}`),
+  delete: (id: string) => apiClient.delete<ApiResponse<void>>(`/api/labels/${id}`),
 
   search: (query: string, limit = 20) =>
     apiClient.get<ApiResponse<any[]>>('/api/labels/search', { params: { q: query, limit } }),
 
   generateFromArticle: (articleId: string, templateId: string) =>
-    apiClient.post<ApiResponse<any>>('/api/labels/generate-from-article', { articleId, templateId }),
+    apiClient.post<ApiResponse<any>>('/api/labels/generate-from-article', {
+      articleId,
+      templateId,
+    }),
 
   batch: (labelIds: string[], action: 'delete' | 'export') =>
     apiClient.post<ApiResponse<any>>('/api/labels/batch', { operation: action, labelIds }),
 
-  getStats: () =>
-    apiClient.get<ApiResponse<any>>('/api/labels/stats'),
+  getStats: () => apiClient.get<ApiResponse<any>>('/api/labels/stats'),
 };
 
 // Excel API
@@ -155,8 +155,7 @@ export const excelApi = {
   upload: (file: File, onProgress?: (progress: number) => void) =>
     apiClient.upload<ApiResponse<any>>('/api/excel/upload', file, onProgress),
 
-  validate: (file: File) =>
-    apiClient.upload<ApiResponse<any>>('/api/excel/validate', file),
+  validate: (file: File) => apiClient.upload<ApiResponse<any>>('/api/excel/validate', file),
 
   getProducts: (params?: { category?: string; search?: string }) =>
     apiClient.get<ApiResponse<any[]>>('/api/excel/products', { params }),
@@ -167,43 +166,33 @@ export const excelApi = {
   updateProduct: (articleNumber: string, data: any) =>
     apiClient.put<ApiResponse<any>>(`/api/excel/product/${articleNumber}`, data),
 
-  addProduct: (data: any) =>
-    apiClient.post<ApiResponse<any>>('/api/excel/product', data),
+  addProduct: (data: any) => apiClient.post<ApiResponse<any>>('/api/excel/product', data),
 
   deleteProduct: (articleNumber: string) =>
     apiClient.delete<ApiResponse<void>>(`/api/excel/product/${articleNumber}`),
 
-  clearCache: () =>
-    apiClient.delete<ApiResponse<void>>('/api/excel/cache'),
+  clearCache: () => apiClient.delete<ApiResponse<void>>('/api/excel/cache'),
 
-  getStats: () =>
-    apiClient.get<ApiResponse<any>>('/api/excel/stats'),
+  getStats: () => apiClient.get<ApiResponse<any>>('/api/excel/stats'),
 
-  downloadTemplate: () =>
-    apiClient.get<Blob>('/api/excel/template', { responseType: 'blob' }),
+  downloadTemplate: () => apiClient.get<Blob>('/api/excel/template', { responseType: 'blob' }),
 
-  exportExcel: () =>
-    apiClient.get<Blob>('/api/excel/export', { responseType: 'blob' }),
+  exportExcel: () => apiClient.get<Blob>('/api/excel/export', { responseType: 'blob' }),
 };
 
 // Print API
 export const printApi = {
-  preview: (data: any) =>
-    apiClient.post<ApiResponse<any>>('/api/print/preview', data),
+  preview: (data: any) => apiClient.post<ApiResponse<any>>('/api/print/preview', data),
 
   export: async (data: any): Promise<Blob> => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/print/export`,
-        data,
-        {
-          responseType: 'blob',
-          headers: {
-            'Accept': 'application/pdf',
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/print/export`, data, {
+        responseType: 'blob',
+        headers: {
+          Accept: 'application/pdf',
+          'Content-Type': 'application/json',
+        },
+      });
 
       // Check if response is actually a Blob
       if (!(response.data instanceof Blob)) {
@@ -242,33 +231,29 @@ export const printApi = {
       {
         layout,
         labelIds,
-        format: 'pdf'
+        format: 'pdf',
       },
       {
         responseType: 'blob',
         headers: {
-          'Accept': 'application/pdf',
-          'Content-Type': 'application/json'
-        }
+          Accept: 'application/pdf',
+          'Content-Type': 'application/json',
+        },
       }
     );
     return response.data;
   },
 
-  getFormats: () =>
-    apiClient.get<ApiResponse<any[]>>('/api/print/formats'),
+  getFormats: () => apiClient.get<ApiResponse<any[]>>('/api/print/formats'),
 
-  calculateGrid: (data: any) =>
-    apiClient.post<ApiResponse<any>>('/api/print/calculate-grid', data),
+  calculateGrid: (data: any) => apiClient.post<ApiResponse<any>>('/api/print/calculate-grid', data),
 
-  getTemplates: () =>
-    apiClient.get<ApiResponse<any[]>>('/api/print/templates'),
+  getTemplates: () => apiClient.get<ApiResponse<any[]>>('/api/print/templates'),
 
   addTemplate: (template: any) =>
     apiClient.post<ApiResponse<any>>('/api/print/templates', template),
 
-  deleteTemplate: (id: string) =>
-    apiClient.delete<ApiResponse<any>>(`/api/print/templates/${id}`),
+  deleteTemplate: (id: string) => apiClient.delete<ApiResponse<any>>(`/api/print/templates/${id}`),
 
   validateLayout: (data: any) =>
     apiClient.post<ApiResponse<any>>('/api/print/validate-layout', data),
@@ -313,32 +298,34 @@ export const articlesApi = {
   getAll: (params?: ArticlesQueryParams) =>
     apiClient.get<PaginatedResponse<Product>>('/api/articles', { params }),
 
-  getById: (id: string) =>
-    apiClient.get<ApiResponse<Product>>(`/api/articles/${id}`),
+  getById: (id: string) => apiClient.get<ApiResponse<Product>>(`/api/articles/${id}`),
 
   getStats: () =>
-    apiClient.get<ApiResponse<{
-      total: number;
-      withImages: number;
-      verified: number;
-      published: number;
-      categories: Array<{ name: string; count: number }>;
-    }>>('/api/articles/stats'),
+    apiClient.get<
+      ApiResponse<{
+        total: number;
+        withImages: number;
+        verified: number;
+        published: number;
+        categories: Array<{ name: string; count: number }>;
+      }>
+    >('/api/articles/stats'),
 
-  create: (data: Partial<Product>) =>
-    apiClient.post<ApiResponse<Product>>('/api/articles', data),
+  create: (data: Partial<Product>) => apiClient.post<ApiResponse<Product>>('/api/articles', data),
 
   update: (id: string, data: Partial<Product>) =>
     apiClient.put<ApiResponse<Product>>(`/api/articles/${id}`, data),
 
-  delete: (id: string) =>
-    apiClient.delete<ApiResponse<void>>(`/api/articles/${id}`),
+  delete: (id: string) => apiClient.delete<ApiResponse<void>>(`/api/articles/${id}`),
 
   bulkDelete: (ids: string[]) =>
     apiClient.post<ApiResponse<{ deletedCount: number }>>('/api/articles/bulk-delete', { ids }),
 
   bulkUpdate: (ids: string[], data: Partial<Product>) =>
-    apiClient.post<ApiResponse<{ updatedCount: number }>>('/api/articles/bulk-update', { ids, data }),
+    apiClient.post<ApiResponse<{ updatedCount: number }>>('/api/articles/bulk-update', {
+      ids,
+      data,
+    }),
 
   export: (ids?: string[], format: 'csv' | 'json' = 'csv') =>
     format === 'json'
@@ -354,46 +341,43 @@ export const articlesApi = {
     formData.append('file', file);
     formData.append('config', JSON.stringify(config));
 
-    return axios.post<ApiResponse<ExcelImportResult>>('/api/articles/excel-import', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      baseURL: API_BASE_URL,
-    }).then(res => res.data);
+    return axios
+      .post<ApiResponse<ExcelImportResult>>('/api/articles/excel-import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        baseURL: API_BASE_URL,
+      })
+      .then((res) => res.data);
   },
 
   getValidExcelFields: () =>
-    apiClient.get<ApiResponse<Array<{ field: string; description: string; type: string }>>>('/api/articles/excel-valid-fields'),
+    apiClient.get<ApiResponse<Array<{ field: string; description: string; type: string }>>>(
+      '/api/articles/excel-valid-fields'
+    ),
 };
 
 // Label Template API (Visual Editor - /api/label-templates)
 export const templateApi = {
-  save: (template: any) =>
-    apiClient.post<ApiResponse<any>>('/api/label-templates', template),
+  save: (template: any) => apiClient.post<ApiResponse<any>>('/api/label-templates', template),
 
-  list: () =>
-    apiClient.get<ApiResponse<{ templates: any[] }>>('/api/label-templates'),
+  list: () => apiClient.get<ApiResponse<{ templates: any[] }>>('/api/label-templates'),
 
-  getById: (id: string) =>
-    apiClient.get<ApiResponse<any>>(`/api/label-templates/${id}`),
+  getById: (id: string) => apiClient.get<ApiResponse<any>>(`/api/label-templates/${id}`),
 
   update: (id: string, template: any) =>
     apiClient.put<ApiResponse<any>>(`/api/label-templates/${id}`, template),
 
-  delete: (id: string) =>
-    apiClient.delete<ApiResponse<void>>(`/api/label-templates/${id}`),
+  delete: (id: string) => apiClient.delete<ApiResponse<void>>(`/api/label-templates/${id}`),
 };
 
 // Rendering Template API (Server-Side Rendering - /api/templates)
 export const renderingTemplateApi = {
-  create: (template: any) =>
-    apiClient.post<ApiResponse<any>>('/api/templates', template),
+  create: (template: any) => apiClient.post<ApiResponse<any>>('/api/templates', template),
 
-  list: () =>
-    apiClient.get<ApiResponse<{ templates: any[]; count: number }>>('/api/templates'),
+  list: () => apiClient.get<ApiResponse<{ templates: any[]; count: number }>>('/api/templates'),
 
-  getById: (id: string) =>
-    apiClient.get<ApiResponse<{ template: any }>>(`/api/templates/${id}`),
+  getById: (id: string) => apiClient.get<ApiResponse<{ template: any }>>(`/api/templates/${id}`),
 
   update: (id: string, template: any) =>
     apiClient.put<ApiResponse<any>>(`/api/templates/${id}`, template),
@@ -403,7 +387,11 @@ export const renderingTemplateApi = {
 
   // Rendering endpoints
   renderImage: (id: string, data: any, options?: any) =>
-    apiClient.post<Blob>(`/api/templates/${id}/render/image`, { data, options }, { responseType: 'blob' }),
+    apiClient.post<Blob>(
+      `/api/templates/${id}/render/image`,
+      { data, options },
+      { responseType: 'blob' }
+    ),
 
   renderPdf: (id: string, data: any, options?: any) =>
     apiClient.post<any>(`/api/templates/${id}/render/pdf`, { data, options }),
@@ -415,7 +403,7 @@ export const renderingTemplateApi = {
   convert: (labelTemplate: any, saveAs?: string) =>
     apiClient.post<ApiResponse<{ template: any; message: string }>>('/api/templates/convert', {
       labelTemplate,
-      saveAs
+      saveAs,
     }),
 
   exportPdf: (id: string, articleData: any, options?: any) =>

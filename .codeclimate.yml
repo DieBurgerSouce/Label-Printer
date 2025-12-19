@@ -1,0 +1,118 @@
+# Code Climate Configuration
+# https://docs.codeclimate.com/docs/advanced-configuration
+
+version: "2"
+
+checks:
+  # Complexity checks
+  argument-count:
+    enabled: true
+    config:
+      threshold: 5
+  complex-logic:
+    enabled: true
+    config:
+      threshold: 5
+  file-lines:
+    enabled: true
+    config:
+      threshold: 400
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 10
+  method-count:
+    enabled: true
+    config:
+      threshold: 20
+  method-lines:
+    enabled: true
+    config:
+      threshold: 50
+  nested-control-flow:
+    enabled: true
+    config:
+      threshold: 4
+  return-statements:
+    enabled: true
+    config:
+      threshold: 5
+  similar-code:
+    enabled: true
+    config:
+      threshold: 50
+  identical-code:
+    enabled: true
+    config:
+      threshold: 30
+
+plugins:
+  # ESLint plugin
+  eslint:
+    enabled: true
+    channel: "eslint-8"
+    config:
+      config: .eslintrc.js
+
+  # TypeScript plugin
+  # Note: Uses ESLint with TypeScript parser
+
+  # Duplication detection
+  duplication:
+    enabled: true
+    config:
+      languages:
+        typescript:
+          mass_threshold: 50
+        javascript:
+          mass_threshold: 50
+
+  # Fixme detection (TODO, FIXME, HACK comments)
+  fixme:
+    enabled: true
+    config:
+      strings:
+        - TODO
+        - FIXME
+        - HACK
+        - BUG
+        - XXX
+
+  # Markdown linting
+  markdownlint:
+    enabled: true
+
+exclude_patterns:
+  # Dependencies
+  - "node_modules/"
+  - "**/node_modules/"
+
+  # Build output
+  - "dist/"
+  - "build/"
+  - ".next/"
+
+  # Test files (optional - enable for separate analysis)
+  # - "**/*.test.ts"
+  # - "**/*.spec.ts"
+  # - "__tests__/"
+
+  # Generated files
+  - "coverage/"
+  - "*.min.js"
+  - "*.bundle.js"
+
+  # Configuration files
+  - "**/*.config.js"
+  - "**/*.config.ts"
+
+  # Vendor/Third-party
+  - "vendor/"
+  - "public/lib/"
+
+  # Documentation
+  - "docs/"
+  - "*.md"
+
+  # Archives
+  - "_archive/"

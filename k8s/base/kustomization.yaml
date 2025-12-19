@@ -1,0 +1,100 @@
+# Kustomization - Base Configuration
+# Enterprise Kubernetes configuration for Screenshot_Algo
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: screenshot-algo-base
+
+# Namespace for all resources
+namespace: screenshot-algo
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: screenshot-algo
+  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/part-of: screenshot-algo-platform
+
+# Common annotations
+commonAnnotations:
+  app.kubernetes.io/team: backend
+  app.kubernetes.io/contact: team@screenshot-algo.com
+
+# Resources to include
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - cluster-secret-store.yaml  # External Secrets Operator configuration
+  - ingress.yaml
+  - hpa.yaml
+  - pdb.yaml
+  - networkpolicy.yaml
+
+# Images configuration
+images:
+  - name: screenshot-algo
+    newName: ghcr.io/screenshot-algo/screenshot-algo
+    newTag: latest
+
+# Config map generator
+configMapGenerator:
+  - name: screenshot-algo-env
+    behavior: merge
+    literals:
+      - LOG_LEVEL=info
+      - METRICS_ENABLED=true
+
+# Secret generator (for development only)
+# secretGenerator:
+#   - name: screenshot-algo-dev-secrets
+#     type: Opaque
+#     literals:
+#       - DEV_MODE=true
+
+# Patches for base resources
+patches:
+  # Add resource limits patch
+  - target:
+      kind: Deployment
+      name: screenshot-algo
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 2Gi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "2"
+
+# Replicas configuration
+replicas:
+  - name: screenshot-algo
+    count: 3
+
+# Vars for cross-resource references
+vars:
+  - name: SERVICE_NAME
+    objref:
+      kind: Service
+      name: screenshot-algo
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
+
+# Generators configuration
+generatorOptions:
+  disableNameSuffixHash: false
+  labels:
+    generated-by: kustomize
+  annotations:
+    generated-at: "2025-01-01"
+
+# Transformers
+transformers: []
+
+# Components (optional modular configurations)
+# components:
+#   - ../components/monitoring
+#   - ../components/security

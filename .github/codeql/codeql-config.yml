@@ -1,0 +1,51 @@
+# CodeQL Configuration
+# Enterprise-grade static analysis for Screenshot_Algo
+name: "CodeQL Configuration"
+
+# Disable default queries and use custom query suites
+disable-default-queries: false
+
+# Query packs to use
+queries:
+  # Use the default security queries
+  - uses: security-extended
+  # Use the default quality queries
+  - uses: security-and-quality
+
+# Paths to scan
+paths:
+  - src
+  - lib
+  - scripts
+
+# Paths to ignore
+paths-ignore:
+  - node_modules
+  - dist
+  - build
+  - coverage
+  - __tests__
+  - __mocks__
+  - _archive
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/*.d.ts"
+  - "*.config.js"
+  - "*.config.ts"
+
+# Query filters - exclude certain queries
+query-filters:
+  # Exclude low-impact informational queries
+  - exclude:
+      problem.severity: recommendation
+  # Exclude specific query IDs if needed
+  # - exclude:
+  #     id: js/unused-local-variable
+
+# Trap caching configuration
+trap-caching: true
+
+# Registries for custom CodeQL packs
+registries:
+  - url: https://ghcr.io/v2/
+    packages: codeql/*

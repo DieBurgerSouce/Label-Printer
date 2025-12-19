@@ -102,9 +102,14 @@ export default function Articles() {
   }, [autoRefresh, queryClient]);
 
   // Fetch articles
-  const { data: productsResponse, isLoading, error } = useQuery({
+  const {
+    data: productsResponse,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['articles', { page, limit: itemsPerPage, search: searchTerm }],
-    queryFn: () => articlesApi.getAll({ page, limit: itemsPerPage, search: searchTerm, published: true }),
+    queryFn: () =>
+      articlesApi.getAll({ page, limit: itemsPerPage, search: searchTerm, published: true }),
     refetchInterval: autoRefresh ? 5000 : false,
   });
 
@@ -146,26 +151,36 @@ export default function Articles() {
   });
 
   const generateLabelsMutation = useMutation({
-    mutationFn: async ({ articleIds, templateId }: { articleIds: string[]; templateId: string }) => {
+    mutationFn: async ({
+      articleIds,
+      templateId,
+    }: {
+      articleIds: string[];
+      templateId: string;
+    }) => {
       const BATCH_SIZE = 50;
       const results: PromiseSettledResult<unknown>[] = [];
 
       if (articleIds.length > 100) {
-        showToast({ type: 'info', message: `Generiere ${articleIds.length} Labels in Batches...`, duration: 3000 });
+        showToast({
+          type: 'info',
+          message: `Generiere ${articleIds.length} Labels in Batches...`,
+          duration: 3000,
+        });
       }
 
       for (let i = 0; i < articleIds.length; i += BATCH_SIZE) {
         const batch = articleIds.slice(i, i + BATCH_SIZE);
         const batchResults = await Promise.allSettled(
-          batch.map(articleId => labelApi.generateFromArticle(articleId, templateId))
+          batch.map((articleId) => labelApi.generateFromArticle(articleId, templateId))
         );
         results.push(...batchResults);
       }
 
       return {
-        successful: results.filter(r => r.status === 'fulfilled').length,
-        failed: results.filter(r => r.status === 'rejected').length,
-        total: articleIds.length
+        successful: results.filter((r) => r.status === 'fulfilled').length,
+        failed: results.filter((r) => r.status === 'rejected').length,
+        total: articleIds.length,
       };
     },
     onSuccess: (data) => {
@@ -186,13 +201,15 @@ export default function Articles() {
   const generateMatchedLabelsMutation = useMutation({
     mutationFn: async (result: MatchResult) => {
       const results = await Promise.allSettled(
-        result.matched.map(match => labelApi.generateFromArticle(match.articleId, match.templateId))
+        result.matched.map((match) =>
+          labelApi.generateFromArticle(match.articleId, match.templateId)
+        )
       );
       return {
-        successful: results.filter(r => r.status === 'fulfilled').length,
-        failed: results.filter(r => r.status === 'rejected').length,
+        successful: results.filter((r) => r.status === 'fulfilled').length,
+        failed: results.filter((r) => r.status === 'rejected').length,
         skipped: result.skipped.length,
-        total: result.matched.length + result.skipped.length
+        total: result.matched.length + result.skipped.length,
       };
     },
     onSuccess: (data) => {
@@ -200,7 +217,11 @@ export default function Articles() {
       if (data.successful > 0) messages.push(`${data.successful} Labels generiert!`);
       if (data.skipped > 0) messages.push(`${data.skipped} ubersprungen`);
       if (data.failed > 0) messages.push(`${data.failed} fehlgeschlagen`);
-      showToast({ type: data.successful > 0 ? 'success' : 'warning', message: messages.join(' '), duration: 7000 });
+      showToast({
+        type: data.successful > 0 ? 'success' : 'warning',
+        message: messages.join(' '),
+        duration: 7000,
+      });
       setSelectedArticles(new Set());
       setShowMatchPreview(false);
       queryClient.invalidateQueries({ queryKey: ['labels'] });
@@ -212,9 +233,10 @@ export default function Articles() {
 
   // Handlers
   const toggleSelectAll = () => {
-    setSelectedArticles(selectedArticles.size === articles.length
-      ? new Set()
-      : new Set(articles.map((a: Product) => a.id))
+    setSelectedArticles(
+      selectedArticles.size === articles.length
+        ? new Set()
+        : new Set(articles.map((a: Product) => a.id))
     );
   };
 
@@ -224,7 +246,11 @@ export default function Articles() {
       const response = await articlesApi.getAll({ page: 1, limit: 2000, published: true });
       const allIds = (response.data || []).map((a: Product) => a.id);
       setSelectedArticles(new Set(allIds));
-      showToast({ type: 'success', message: `${allIds.length} Artikel ausgewahlt!`, duration: 3000 });
+      showToast({
+        type: 'success',
+        message: `${allIds.length} Artikel ausgewahlt!`,
+        duration: 3000,
+      });
     } catch {
       showToast({ type: 'error', message: 'Fehler beim Laden', duration: 3000 });
     }
@@ -233,7 +259,7 @@ export default function Articles() {
   const exportToExcel = async () => {
     try {
       const ids = selectedArticles.size > 0 ? Array.from(selectedArticles) : undefined;
-      const blob = await articlesApi.export(ids, 'csv') as Blob;
+      const blob = (await articlesApi.export(ids, 'csv')) as Blob;
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -258,13 +284,15 @@ export default function Articles() {
       return;
     }
 
-    const autoMatchTemplates = availableTemplates.filter(t => t.autoMatchEnabled && t.rules?.enabled);
+    const autoMatchTemplates = availableTemplates.filter(
+      (t) => t.autoMatchEnabled && t.rules?.enabled
+    );
     if (autoMatchTemplates.length === 0) {
       setShowTemplateSelector(true);
       return;
     }
 
-    const selectedArticleObjects = articles.filter(a => selectedArticles.has(a.id));
+    const selectedArticleObjects = articles.filter((a) => selectedArticles.has(a.id));
     const result = matchArticlesWithTemplates(selectedArticleObjects, availableTemplates);
     setMatchResult(result);
     setShowMatchPreview(true);
@@ -407,7 +435,7 @@ export default function Articles() {
 
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
-        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={confirmDialog.onConfirm}
         title={confirmDialog.title}
         description={confirmDialog.description}

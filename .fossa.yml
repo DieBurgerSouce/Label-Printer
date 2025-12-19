@@ -1,0 +1,177 @@
+# FOSSA Configuration
+# License compliance and dependency analysis
+# Documentation: https://docs.fossa.com/docs/fossa-cli
+
+version: 3
+
+# Project configuration
+project:
+  id: screenshot-algo
+  name: Screenshot_Algo
+  team: Engineering
+  policy: default-policy
+  url: https://github.com/your-org/screenshot-algo
+
+# Analysis targets
+targets:
+  # Main application
+  - path: .
+    type: npm
+
+  # Frontend
+  - path: ./frontend
+    type: npm
+
+  # Backend (if separate)
+  - path: ./backend
+    type: npm
+
+# Paths to exclude from analysis
+excludePaths:
+  - node_modules/
+  - __tests__/
+  - __mocks__/
+  - coverage/
+  - dist/
+  - .git/
+  - docs/
+  - scripts/
+  - "*.test.ts"
+  - "*.test.js"
+  - "*.spec.ts"
+  - "*.spec.js"
+
+# Vendored dependencies configuration
+vendoredDependencies:
+  # Force scan for embedded/vendored code
+  forceRescans: false
+  # Path to scan for vendored deps
+  scanPathPatterns:
+    - "**/vendor/**"
+    - "**/third-party/**"
+
+# Analysis modules configuration
+modules:
+  npm:
+    enabled: true
+    strategy: yarn.lock  # or package-lock.json
+
+  # Analyze Dockerfiles for base images
+  docker:
+    enabled: true
+    files:
+      - Dockerfile
+      - docker/Dockerfile.*
+
+# Telemetry (opt out if needed)
+telemetry:
+  scope: full  # full, error-only, off
+
+# License policy
+policies:
+  # Allowed licenses
+  allowed:
+    - MIT
+    - ISC
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - Apache-2.0
+    - CC0-1.0
+    - CC-BY-3.0
+    - CC-BY-4.0
+    - Unlicense
+    - 0BSD
+    - WTFPL
+    - Zlib
+    - Python-2.0
+    - PostgreSQL
+    - BlueOak-1.0.0
+
+  # Denied licenses (will fail builds)
+  denied:
+    - GPL-2.0
+    - GPL-2.0-only
+    - GPL-3.0
+    - GPL-3.0-only
+    - AGPL-1.0
+    - AGPL-3.0
+    - AGPL-3.0-only
+    - SSPL-1.0
+    - BUSL-1.1
+    - CC-BY-NC-4.0
+    - CC-BY-NC-ND-4.0
+
+  # Licenses requiring review
+  flagged:
+    - LGPL-2.0
+    - LGPL-2.1
+    - LGPL-3.0
+    - MPL-2.0
+    - EPL-1.0
+    - EPL-2.0
+    - CDDL-1.0
+    - CPL-1.0
+
+# Issue settings
+issues:
+  # Severity threshold for failing
+  severityThreshold: high  # low, medium, high, critical
+
+  # Ignore specific issues by ID
+  ignored:
+    # Example: ignore specific vulnerability if accepted risk
+    # - id: SNYK-JS-LODASH-1234
+    #   reason: "Accepted risk - not exploitable in our usage"
+    #   expires: "2025-01-01"
+
+# Custom license detection
+customLicenses:
+  # Add patterns for custom or proprietary licenses
+  patterns:
+    - name: "Internal-Use-Only"
+      patterns:
+        - "for internal use only"
+        - "proprietary license"
+
+# Notification settings
+notifications:
+  slack:
+    enabled: true
+    channel: "#security-alerts"
+    events:
+      - policy-violation
+      - new-vulnerability
+
+  email:
+    enabled: true
+    recipients:
+      - security@example.com
+      - legal@example.com
+    events:
+      - policy-violation
+
+# Report settings
+reports:
+  # Generate SBOM (Software Bill of Materials)
+  sbom:
+    enabled: true
+    formats:
+      - spdx-json
+      - cyclonedx-json
+
+  # Generate attribution report
+  attribution:
+    enabled: true
+    format: html
+
+# CI/CD integration
+ci:
+  # Fail build on policy violations
+  failOnPolicyViolation: true
+
+  # Fail on vulnerabilities
+  failOnVulnerability: true
+  vulnerabilitySeverity: high  # low, medium, high, critical
+
+  # Create issues automatically
+  createIssues: true

@@ -1,0 +1,228 @@
+# Performance Alert Rules
+# Enterprise-grade alerting for Screenshot_Algo system performance
+
+groups:
+  - name: performance-alerts
+    interval: 30s
+    rules:
+      # ========================================================================
+      # CPU Alerts
+      # ========================================================================
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% (current: {{ $value | printf \"%.1f\" }}%)"
+
+      - alert: CriticalCPUUsage
+        expr: |
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 5m
+        labels:
+          severity: critical
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "Critical CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 95% (current: {{ $value | printf \"%.1f\" }}%)"
+
+      - alert: NodeCPUThrottling
+        expr: |
+          rate(container_cpu_cfs_throttled_periods_total[5m])
+          /
+          rate(container_cpu_cfs_periods_total[5m]) > 0.25
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: containers
+        annotations:
+          summary: "Container CPU throttling"
+          description: "Container {{ $labels.container }} is being throttled ({{ $value | humanizePercentage }})"
+
+      # ========================================================================
+      # Memory Alerts
+      # ========================================================================
+      - alert: HighMemoryUsage
+        expr: |
+          (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes)
+          /
+          node_memory_MemTotal_bytes > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 85% (current: {{ $value | humanizePercentage }})"
+
+      - alert: CriticalMemoryUsage
+        expr: |
+          (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes)
+          /
+          node_memory_MemTotal_bytes > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "Critical memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 95% (current: {{ $value | humanizePercentage }})"
+
+      - alert: NodeOOMKillDetected
+        expr: |
+          increase(node_vmstat_oom_kill[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "OOM kill detected"
+          description: "Out of memory kill detected on {{ $labels.instance }}"
+
+      - alert: NodeJSHeapMemoryHigh
+        expr: |
+          nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: nodejs
+        annotations:
+          summary: "Node.js heap memory high"
+          description: "Node.js heap usage is above 90%"
+
+      # ========================================================================
+      # Disk Alerts
+      # ========================================================================
+      - alert: DiskSpaceRunningLow
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
+          /
+          node_filesystem_size_bytes) < 0.15
+        for: 15m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: storage
+        annotations:
+          summary: "Disk space running low on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} has less than 15% free space"
+
+      - alert: DiskSpaceCritical
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
+          /
+          node_filesystem_size_bytes) < 0.05
+        for: 5m
+        labels:
+          severity: critical
+          team: infrastructure
+          component: storage
+        annotations:
+          summary: "Critical disk space on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} has less than 5% free space"
+
+      - alert: HighDiskIOLatency
+        expr: |
+          rate(node_disk_io_time_weighted_seconds_total[5m]) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: storage
+        annotations:
+          summary: "High disk I/O latency"
+          description: "Disk I/O latency is elevated on {{ $labels.device }}"
+
+      # ========================================================================
+      # Network Alerts
+      # ========================================================================
+      - alert: HighNetworkBandwidth
+        expr: |
+          rate(node_network_receive_bytes_total[5m]) > 100000000
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: network
+        annotations:
+          summary: "High network bandwidth"
+          description: "Network receive rate is above 100MB/s"
+
+      - alert: NetworkInterfaceErrors
+        expr: |
+          rate(node_network_receive_errs_total[5m]) > 10
+          or
+          rate(node_network_transmit_errs_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: network
+        annotations:
+          summary: "Network interface errors"
+          description: "Network errors detected on {{ $labels.device }}"
+
+      # ========================================================================
+      # Process Alerts
+      # ========================================================================
+      - alert: TooManyProcesses
+        expr: |
+          count(node_processes_threads) > 3000
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "Too many processes running"
+          description: "System has {{ $value }} processes running"
+
+      - alert: HighOpenFileDescriptors
+        expr: |
+          node_filefd_allocated / node_filefd_maximum > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+          component: system
+        annotations:
+          summary: "High file descriptor usage"
+          description: "File descriptor usage is above 80%"
+
+      # ========================================================================
+      # Container Alerts
+      # ========================================================================
+      - alert: ContainerHighMemory
+        expr: |
+          container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: containers
+        annotations:
+          summary: "Container memory usage high"
+          description: "Container {{ $labels.container }} using > 90% of memory limit"
+
+      - alert: ContainerRestarting
+        expr: |
+          increase(container_last_seen[5m]) > 2
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+          component: containers
+        annotations:
+          summary: "Container restarting frequently"
+          description: "Container {{ $labels.container }} has restarted {{ $value }} times"

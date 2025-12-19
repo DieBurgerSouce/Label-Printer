@@ -1,0 +1,322 @@
+# OpenTelemetry Collector Configuration
+# Enterprise-grade observability pipeline for Screenshot_Algo
+# https://opentelemetry.io/docs/collector/configuration/
+
+# =============================================================================
+# Receivers - Data ingestion
+# =============================================================================
+receivers:
+  # OTLP receiver for traces, metrics, and logs
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        max_recv_msg_size_mib: 4
+        max_concurrent_streams: 100
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "http://localhost:*"
+            - "https://*.screenshot-algo.com"
+          allowed_headers:
+            - "*"
+
+  # Prometheus receiver for scraping metrics
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'screenshot-algo'
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['localhost:4000']
+          metric_relabel_configs:
+            - source_labels: [__name__]
+              regex: 'go_.*'
+              action: drop
+
+  # Host metrics receiver
+  hostmetrics:
+    collection_interval: 30s
+    scrapers:
+      cpu:
+        metrics:
+          system.cpu.utilization:
+            enabled: true
+      memory:
+        metrics:
+          system.memory.utilization:
+            enabled: true
+      disk:
+      filesystem:
+      network:
+      processes:
+      process:
+        include:
+          match_type: regexp
+          names:
+            - "node"
+            - "screenshot.*"
+
+  # Filelog receiver for application logs
+  filelog:
+    include:
+      - /var/log/screenshot-algo/*.log
+    start_at: end
+    include_file_path: true
+    operators:
+      - type: json_parser
+        timestamp:
+          parse_from: attributes.timestamp
+          layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+
+  # Jaeger receiver for backward compatibility
+  jaeger:
+    protocols:
+      thrift_http:
+        endpoint: 0.0.0.0:14268
+      grpc:
+        endpoint: 0.0.0.0:14250
+
+# =============================================================================
+# Processors - Data transformation
+# =============================================================================
+processors:
+  # Batch processor for efficient export
+  batch:
+    timeout: 5s
+    send_batch_size: 1000
+    send_batch_max_size: 1500
+
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+  # Resource detection
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - docker
+    timeout: 5s
+    override: false
+
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: service.name
+        value: "screenshot-algo"
+        action: upsert
+      - key: service.version
+        value: "${SERVICE_VERSION}"
+        action: upsert
+      - key: deployment.environment
+        value: "${DEPLOYMENT_ENV}"
+        action: upsert
+
+  # Attributes processor for enrichment
+  attributes:
+    actions:
+      - key: environment
+        value: "${DEPLOYMENT_ENV}"
+        action: upsert
+
+  # Filter processor to drop unwanted data
+  filter:
+    metrics:
+      exclude:
+        match_type: regexp
+        metric_names:
+          - ".*_temp"
+          - "test_.*"
+    logs:
+      exclude:
+        match_type: regexp
+        bodies:
+          - ".*healthcheck.*"
+          - ".*readiness.*"
+
+  # Tail sampling for traces
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 100
+    expected_new_traces_per_sec: 10
+    policies:
+      # Always sample errors
+      - name: errors-policy
+        type: status_code
+        status_code: {status_codes: [ERROR]}
+      # Sample slow traces
+      - name: latency-policy
+        type: latency
+        latency: {threshold_ms: 2000}
+      # Probabilistic sampling for everything else
+      - name: probabilistic-policy
+        type: probabilistic
+        probabilistic: {sampling_percentage: 10}
+
+  # Span processor
+  span:
+    name:
+      from_attributes: ["http.method", "http.route"]
+      separator: " "
+
+# =============================================================================
+# Exporters - Data output
+# =============================================================================
+exporters:
+  # Debug exporter (for development)
+  debug:
+    verbosity: basic
+    sampling_initial: 5
+    sampling_thereafter: 200
+
+  # OTLP exporter for traces
+  otlp:
+    endpoint: "tempo:4317"
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+  # Prometheus remote write for metrics
+  prometheusremotewrite:
+    endpoint: "http://prometheus:9090/api/v1/write"
+    tls:
+      insecure: true
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # Loki exporter for logs
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
+    labels:
+      attributes:
+        service: "service.name"
+        level: "severity"
+      resource:
+        environment: "deployment.environment"
+
+  # Jaeger exporter
+  jaeger:
+    endpoint: "jaeger:14250"
+    tls:
+      insecure: true
+
+  # File exporter for backup
+  file:
+    path: /var/log/otel/traces.json
+    rotation:
+      max_megabytes: 100
+      max_days: 7
+      max_backups: 5
+      localtime: true
+
+# =============================================================================
+# Extensions - Auxiliary features
+# =============================================================================
+extensions:
+  # Health check extension
+  health_check:
+    endpoint: 0.0.0.0:13133
+    path: "/health"
+
+  # Performance profiler
+  pprof:
+    endpoint: 0.0.0.0:1777
+
+  # zPages for debugging
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+  # Memory ballast
+  memory_ballast:
+    size_mib: 64
+
+# =============================================================================
+# Connectors - Pipeline connections
+# =============================================================================
+connectors:
+  # Span metrics connector
+  spanmetrics:
+    histogram:
+      explicit:
+        buckets: [100ms, 250ms, 500ms, 1s, 2s, 5s, 10s]
+    dimensions:
+      - name: http.method
+      - name: http.status_code
+      - name: service.name
+    exemplars:
+      enabled: true
+
+# =============================================================================
+# Service - Pipeline configuration
+# =============================================================================
+service:
+  extensions:
+    - health_check
+    - pprof
+    - zpages
+    - memory_ballast
+
+  pipelines:
+    # Traces pipeline
+    traces:
+      receivers:
+        - otlp
+        - jaeger
+      processors:
+        - memory_limiter
+        - resourcedetection
+        - resource
+        - attributes
+        - tail_sampling
+        - batch
+      exporters:
+        - otlp
+        - jaeger
+        - spanmetrics
+
+    # Metrics pipeline
+    metrics:
+      receivers:
+        - otlp
+        - prometheus
+        - hostmetrics
+        - spanmetrics
+      processors:
+        - memory_limiter
+        - resourcedetection
+        - resource
+        - filter
+        - batch
+      exporters:
+        - prometheusremotewrite
+
+    # Logs pipeline
+    logs:
+      receivers:
+        - otlp
+        - filelog
+      processors:
+        - memory_limiter
+        - resourcedetection
+        - resource
+        - filter
+        - batch
+      exporters:
+        - loki
+
+  telemetry:
+    logs:
+      level: info
+      development: false
+      encoding: json
+    metrics:
+      level: detailed
+      address: 0.0.0.0:8888

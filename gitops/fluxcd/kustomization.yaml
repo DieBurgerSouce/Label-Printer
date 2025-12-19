@@ -1,0 +1,131 @@
+# FluxCD Kustomization
+# Enterprise GitOps for Screenshot_Algo
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: screenshot-algo
+  namespace: flux-system
+spec:
+  # Reconciliation interval
+  interval: 5m0s
+
+  # Retry on failure
+  retryInterval: 1m0s
+
+  # Timeout for apply
+  timeout: 5m0s
+
+  # Source reference
+  sourceRef:
+    kind: GitRepository
+    name: screenshot-algo
+
+  # Path in repository
+  path: ./k8s/overlays/production
+
+  # Prune resources
+  prune: true
+
+  # Wait for resources to become ready
+  wait: true
+
+  # Force reconciliation
+  force: false
+
+  # Target namespace (default from manifests)
+  targetNamespace: screenshot-algo
+
+  # Decryption (SOPS)
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg
+
+  # Health checks
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: screenshot-algo
+      namespace: screenshot-algo
+    - apiVersion: v1
+      kind: Service
+      name: screenshot-algo
+      namespace: screenshot-algo
+
+  # Patches
+  patches:
+    - patch: |
+        - op: add
+          path: /metadata/labels/flux-managed
+          value: "true"
+      target:
+        kind: Deployment
+
+  # Post build actions
+  postBuild:
+    substitute:
+      ENVIRONMENT: production
+      CLUSTER_NAME: production-eu-central-1
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-vars
+      - kind: Secret
+        name: cluster-secrets
+
+  # Dependencies
+  dependsOn:
+    - name: infrastructure
+---
+# Staging Kustomization
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: screenshot-algo-staging
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  retryInterval: 30s
+  timeout: 3m0s
+
+  sourceRef:
+    kind: GitRepository
+    name: screenshot-algo
+
+  path: ./k8s/overlays/staging
+  prune: true
+  wait: true
+  targetNamespace: screenshot-algo-staging
+
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: staging-screenshot-algo
+      namespace: screenshot-algo-staging
+
+  postBuild:
+    substitute:
+      ENVIRONMENT: staging
+---
+# Development Kustomization
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: screenshot-algo-dev
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  retryInterval: 30s
+  timeout: 2m0s
+
+  sourceRef:
+    kind: GitRepository
+    name: screenshot-algo
+
+  path: ./k8s/overlays/dev
+  prune: true
+  wait: true
+  targetNamespace: screenshot-algo-dev
+
+  postBuild:
+    substitute:
+      ENVIRONMENT: development

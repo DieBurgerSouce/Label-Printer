@@ -275,7 +275,13 @@ function jsonToYaml(obj: unknown, indent = 0): string {
 
   if (obj === null) return 'null';
   if (obj === undefined) return '';
-  if (typeof obj === 'string') return obj.includes('\n') ? `|\n${obj.split('\n').map(l => spaces + '  ' + l).join('\n')}` : JSON.stringify(obj);
+  if (typeof obj === 'string')
+    return obj.includes('\n')
+      ? `|\n${obj
+          .split('\n')
+          .map((l) => spaces + '  ' + l)
+          .join('\n')}`
+      : JSON.stringify(obj);
   if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
 
   if (Array.isArray(obj)) {

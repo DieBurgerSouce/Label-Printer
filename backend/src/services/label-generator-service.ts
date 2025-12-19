@@ -105,7 +105,10 @@ export class LabelGeneratorService {
         articleNumber: (updatedData.articleNumber as string) || '',
         productName: (updatedData.productName as string) || '',
         description: updatedData.description as string | undefined,
-        priceInfo: (updatedData.priceInfo as PriceLabel['priceInfo']) || { price: 0, currency: '€' },
+        priceInfo: (updatedData.priceInfo as PriceLabel['priceInfo']) || {
+          price: 0,
+          currency: '€',
+        },
         templateType: 'standard',
         createdAt: updatedLabel.createdAt,
         updatedAt: updatedLabel.updatedAt,

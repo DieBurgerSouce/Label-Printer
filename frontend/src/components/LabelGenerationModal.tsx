@@ -19,7 +19,7 @@ export default function LabelGenerationModal({
   articles,
   isOpen,
   onClose,
-  onSuccess
+  onSuccess,
 }: LabelGenerationModalProps) {
   const [selectedTemplate, setSelectedTemplate] = useState('standard-label');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -96,12 +96,10 @@ export default function LabelGenerationModal({
 
           {/* Template Selection */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Label-Template
-            </label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Label-Template</label>
             <select
               value={selectedTemplate}
-              onChange={e => setSelectedTemplate(e.target.value)}
+              onChange={(e) => setSelectedTemplate(e.target.value)}
               disabled={isGenerating}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -125,7 +123,7 @@ export default function LabelGenerationModal({
                 <div
                   className="bg-blue-600 h-full transition-all duration-300 rounded-full"
                   style={{
-                    width: `${progress.total > 0 ? (progress.current / progress.total) * 100 : 0}%`
+                    width: `${progress.total > 0 ? (progress.current / progress.total) * 100 : 0}%`,
                   }}
                 />
               </div>

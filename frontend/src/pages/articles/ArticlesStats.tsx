@@ -4,11 +4,7 @@
  */
 import type { ArticlesStatsProps } from './types';
 
-export default function ArticlesStats({
-  stats,
-  selectedCount,
-  onSelectAll,
-}: ArticlesStatsProps) {
+export default function ArticlesStats({ stats, selectedCount, onSelectAll }: ArticlesStatsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div className="card">
@@ -28,9 +24,7 @@ export default function ArticlesStats({
       </div>
       <div className="card">
         <p className="text-sm text-gray-600">Mit Bildern</p>
-        <p className="text-2xl font-bold text-green-600">
-          {stats?.withImages || 0}
-        </p>
+        <p className="text-2xl font-bold text-green-600">{stats?.withImages || 0}</p>
       </div>
       <div className="card">
         <p className="text-sm text-gray-600">Verifiziert</p>

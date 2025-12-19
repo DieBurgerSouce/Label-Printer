@@ -1,0 +1,110 @@
+# Helm Chart Metadata
+# Enterprise Helm chart for Screenshot_Algo
+apiVersion: v2
+name: screenshot-algo
+description: Enterprise-grade screenshot service for capturing web pages
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+# Chart maintainers
+maintainers:
+  - name: Screenshot_Algo Team
+    email: team@screenshot-algo.com
+    url: https://github.com/screenshot-algo
+
+# Chart keywords for search
+keywords:
+  - screenshot
+  - web-capture
+  - api
+  - nodejs
+  - puppeteer
+  - playwright
+
+# Chart home and sources
+home: https://screenshot-algo.com
+sources:
+  - https://github.com/screenshot-algo/screenshot-algo
+
+# Icon for Helm hub
+icon: https://screenshot-algo.com/icon.png
+
+# Kubernetes version requirement
+kubeVersion: ">=1.25.0-0"
+
+# Dependencies
+# IMPORTANT: Use specific versions for reproducible deployments
+# Run `helm dependency update` after modifying versions
+dependencies:
+  # PostgreSQL database
+  - name: postgresql
+    version: "~13.4.0"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+    tags:
+      - database
+
+  # Redis cache
+  - name: redis
+    version: "~18.6.0"
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+    tags:
+      - cache
+
+  # Prometheus for metrics (optional)
+  - name: prometheus
+    version: "~25.11.0"
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: prometheus.enabled
+    tags:
+      - monitoring
+
+# Annotations for artifact hub
+annotations:
+  # License
+  artifacthub.io/license: MIT
+
+  # Links
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.screenshot-algo.com
+    - name: GitHub
+      url: https://github.com/screenshot-algo/screenshot-algo
+    - name: Support
+      url: https://github.com/screenshot-algo/screenshot-algo/issues
+
+  # Changelog
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial release with full enterprise features
+    - kind: added
+      description: HPA and PDB support
+    - kind: added
+      description: Network policies
+    - kind: security
+      description: Pod security standards compliance
+
+  # Images
+  artifacthub.io/images: |
+    - name: screenshot-algo
+      image: ghcr.io/screenshot-algo/screenshot-algo:1.0.0
+
+  # CRDs (if any)
+  artifacthub.io/crds: ""
+
+  # Operator (if applicable)
+  artifacthub.io/operator: "false"
+
+  # Pre-release
+  artifacthub.io/prerelease: "false"
+
+  # Contains security updates
+  artifacthub.io/containsSecurityUpdates: "false"
+
+  # Signed
+  artifacthub.io/signKey: ""
+
+  # Category
+  artifacthub.io/category: integration-delivery

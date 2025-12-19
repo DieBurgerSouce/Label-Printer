@@ -12,19 +12,11 @@ import { useLabelStore, type PriceLabel } from '../store/labelStore';
 import { usePrintStore } from '../store/printStore';
 import { useUiStore } from '../store/uiStore';
 
-
-
 export default function LabelLibrary() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    viewMode,
-    setViewMode,
-    selectedLabels,
-    selectLabel,
-    clearSelection,
-  } = useLabelStore();
+  const { viewMode, setViewMode, selectedLabels, selectLabel, clearSelection } = useLabelStore();
 
   const { addLabelToLayout } = usePrintStore();
   const { showToast } = useUiStore();
@@ -61,7 +53,11 @@ export default function LabelLibrary() {
   }, [location.state]);
 
   // Fetch labels
-  const { data: labelsData, isLoading, refetch } = useQuery({
+  const {
+    data: labelsData,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['labels', page, searchQuery, selectedCategory, selectedTags],
     queryFn: () =>
       labelApi.getAll({
@@ -107,10 +103,7 @@ export default function LabelLibrary() {
     () => Array.from(new Set(labels.map((l) => l.category).filter(Boolean))),
     [labels]
   );
-  const tags = useMemo(
-    () => Array.from(new Set(labels.flatMap((l) => l.tags || []))),
-    [labels]
-  );
+  const tags = useMemo(() => Array.from(new Set(labels.flatMap((l) => l.tags || []))), [labels]);
 
   const handleSelectLabel = useCallback(
     (id: string) => {
@@ -227,16 +220,11 @@ export default function LabelLibrary() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Label Bibliothek</h1>
-          <p className="text-gray-600 mt-1">
-            {pagination?.total || 0} Labels gesamt
-          </p>
+          <p className="text-gray-600 mt-1">{pagination?.total || 0} Labels gesamt</p>
         </div>
 
         <div className="flex gap-3">
-          <button
-            onClick={handleCreateLabel}
-            className="btn-primary flex items-center gap-2"
-          >
+          <button onClick={handleCreateLabel} className="btn-primary flex items-center gap-2">
             <Plus className="w-5 h-5" />
             Neues Label
           </button>
@@ -360,9 +348,9 @@ export default function LabelLibrary() {
       {pagination && pagination.totalPages > 1 && (
         <div className="flex items-center justify-between card">
           <div className="text-sm text-gray-600">
-            Zeige {((pagination.page - 1) * pagination.limit) + 1} bis{' '}
-            {Math.min(pagination.page * pagination.limit, pagination.total)} von{' '}
-            {pagination.total} Labels
+            Zeige {(pagination.page - 1) * pagination.limit + 1} bis{' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} von {pagination.total}{' '}
+            Labels
           </div>
           <div className="flex gap-2">
             <button
@@ -375,10 +363,7 @@ export default function LabelLibrary() {
             <div className="flex items-center gap-1">
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
                 .filter(
-                  (p) =>
-                    p === 1 ||
-                    p === pagination.totalPages ||
-                    (p >= page - 1 && p <= page + 1)
+                  (p) => p === 1 || p === pagination.totalPages || (p >= page - 1 && p <= page + 1)
                 )
                 .map((p, i, arr) => (
                   <div key={p} className="flex items-center gap-1">
@@ -424,7 +409,7 @@ export default function LabelLibrary() {
       />
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
-        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={confirmDialog.onConfirm}
         title={confirmDialog.title}
         description={confirmDialog.description}

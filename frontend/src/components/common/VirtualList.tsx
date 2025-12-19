@@ -68,9 +68,7 @@ function VirtualList<T>({
     estimateSize: useCallback(() => estimatedItemHeight + gap, [estimatedItemHeight, gap]),
     overscan,
     horizontal,
-    getItemKey: getItemKey
-      ? (index) => getItemKey(items[index], index)
-      : undefined,
+    getItemKey: getItemKey ? (index) => getItemKey(items[index], index) : undefined,
   });
 
   // Get virtual items
@@ -174,15 +172,11 @@ export function useVirtualSelection<T>(items: T[], initialIndex?: number) {
   }, []);
 
   const selectNext = useCallback(() => {
-    setSelectedIndex((prev) =>
-      prev === undefined ? 0 : Math.min(prev + 1, items.length - 1)
-    );
+    setSelectedIndex((prev) => (prev === undefined ? 0 : Math.min(prev + 1, items.length - 1)));
   }, [items.length]);
 
   const selectPrevious = useCallback(() => {
-    setSelectedIndex((prev) =>
-      prev === undefined ? items.length - 1 : Math.max(prev - 1, 0)
-    );
+    setSelectedIndex((prev) => (prev === undefined ? items.length - 1 : Math.max(prev - 1, 0)));
   }, [items.length]);
 
   return {

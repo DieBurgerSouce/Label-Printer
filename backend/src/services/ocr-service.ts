@@ -465,7 +465,10 @@ class OCRService {
     }
 
     if (extractedData.price) {
-      scores.price = this.calculateFieldConfidence(String(extractedData.price), FIELD_PATTERNS.price);
+      scores.price = this.calculateFieldConfidence(
+        String(extractedData.price),
+        FIELD_PATTERNS.price
+      );
     }
 
     // Product name confidence (based on length and capitalization)

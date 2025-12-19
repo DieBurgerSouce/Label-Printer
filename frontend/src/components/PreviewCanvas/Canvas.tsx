@@ -32,11 +32,7 @@ interface LabelPosition {
 // Pixel to mm conversion factor
 const PX_TO_MM = 3.78;
 
-export const Canvas = ({
-  width = 800,
-  height = 600,
-  showGrid = true
-}: CanvasProps) => {
+export const Canvas = ({ width = 800, height = 600, showGrid = true }: CanvasProps) => {
   const stageRef = useRef<any>(null);
   const { layout } = usePrintStore();
   const { labels, selectedLabels: selectedLabelIds, updateLabel } = useLabelStore();
@@ -44,7 +40,7 @@ export const Canvas = ({
 
   // Get actual label objects from IDs - memoized
   const selectedLabels = useMemo(
-    () => labels.filter(label => selectedLabelIds.includes(label.id)),
+    () => labels.filter((label) => selectedLabelIds.includes(label.id)),
     [labels, selectedLabelIds]
   );
 
@@ -60,8 +56,8 @@ export const Canvas = ({
     const { width: pageWidth, height: pageHeight } = layout.paperFormat;
 
     // Calculate label dimensions
-    const availableWidth = pageWidth - margins.left - margins.right - (spacing * (columns - 1));
-    const availableHeight = pageHeight - margins.top - margins.bottom - (spacing * (rows - 1));
+    const availableWidth = pageWidth - margins.left - margins.right - spacing * (columns - 1);
+    const availableHeight = pageHeight - margins.top - margins.bottom - spacing * (rows - 1);
 
     const labelWidth = availableWidth / columns;
     const labelHeight = availableHeight / rows;
@@ -72,8 +68,8 @@ export const Canvas = ({
 
       return {
         id: label.id,
-        x: margins.left + (col * (labelWidth + spacing)),
-        y: margins.top + (row * (labelHeight + spacing)),
+        x: margins.left + col * (labelWidth + spacing),
+        y: margins.top + row * (labelHeight + spacing),
         width: labelWidth,
         height: labelHeight,
         rotation: 0,
@@ -85,73 +81,78 @@ export const Canvas = ({
 
   // Handle label drag - memoized with useCallback
   const handleDragEnd = useCallback((id: string, e: KonvaEventObject<DragEvent>) => {
-    setLabelPositions(prev => prev.map(pos =>
-      pos.id === id
-        ? { ...pos, x: e.target.x(), y: e.target.y() }
-        : pos
-    ));
+    setLabelPositions((prev) =>
+      prev.map((pos) => (pos.id === id ? { ...pos, x: e.target.x(), y: e.target.y() } : pos))
+    );
   }, []);
 
   // Handle label selection - memoized
   const handleSelect = useCallback((id: string) => {
-    setSelectedId(prev => id === prev ? null : id);
+    setSelectedId((prev) => (id === prev ? null : id));
   }, []);
 
   // Handle rotation - memoized
   const handleRotate = useCallback((id: string, rotation: number) => {
-    setLabelPositions(prev => prev.map(pos =>
-      pos.id === id ? { ...pos, rotation } : pos
-    ));
+    setLabelPositions((prev) => prev.map((pos) => (pos.id === id ? { ...pos, rotation } : pos)));
   }, []);
 
   // Handle QR code drag - memoized
-  const handleQRDragEnd = useCallback((labelId: string, newPosition: { x: number; y: number }) => {
-    const label = selectedLabels.find(l => l.id === labelId);
-    if (!label || !label.qrCode) return;
+  const handleQRDragEnd = useCallback(
+    (labelId: string, newPosition: { x: number; y: number }) => {
+      const label = selectedLabels.find((l) => l.id === labelId);
+      if (!label || !label.qrCode) return;
 
-    updateLabel(labelId, {
-      qrCode: {
-        ...label.qrCode,
-        position: newPosition,
-      },
-    });
-  }, [selectedLabels, updateLabel]);
+      updateLabel(labelId, {
+        qrCode: {
+          ...label.qrCode,
+          position: newPosition,
+        },
+      });
+    },
+    [selectedLabels, updateLabel]
+  );
 
   // Handle QR code resize - memoized
-  const handleQRResize = useCallback((labelId: string, newSize: number) => {
-    const label = selectedLabels.find(l => l.id === labelId);
-    if (!label || !label.qrCode) return;
+  const handleQRResize = useCallback(
+    (labelId: string, newSize: number) => {
+      const label = selectedLabels.find((l) => l.id === labelId);
+      if (!label || !label.qrCode) return;
 
-    updateLabel(labelId, {
-      qrCode: {
-        ...label.qrCode,
-        size: newSize,
-      },
-    });
-  }, [selectedLabels, updateLabel]);
+      updateLabel(labelId, {
+        qrCode: {
+          ...label.qrCode,
+          size: newSize,
+        },
+      });
+    },
+    [selectedLabels, updateLabel]
+  );
 
   // Handle QR selection - memoized
   const handleQRSelect = useCallback((labelId: string) => {
-    setSelectedQrId(prev => labelId === prev ? null : labelId);
+    setSelectedQrId((prev) => (labelId === prev ? null : labelId));
   }, []);
 
   // Handle mouse wheel zoom - memoized
-  const handleWheel = useCallback((e: KonvaEventObject<WheelEvent>) => {
-    e.evt.preventDefault();
+  const handleWheel = useCallback(
+    (e: KonvaEventObject<WheelEvent>) => {
+      e.evt.preventDefault();
 
-    const scaleBy = 1.1;
-    const oldScale = zoom;
-    const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+      const scaleBy = 1.1;
+      const oldScale = zoom;
+      const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
-    // Clamp zoom between 0.25 and 5
-    const clampedScale = Math.max(0.25, Math.min(5, newScale));
-    setZoom(clampedScale);
-  }, [zoom, setZoom]);
+      // Clamp zoom between 0.25 and 5
+      const clampedScale = Math.max(0.25, Math.min(5, newScale));
+      setZoom(clampedScale);
+    },
+    [zoom, setZoom]
+  );
 
   // Handle rotate button click - memoized
   const handleRotateClick = useCallback(() => {
     if (!selectedId) return;
-    const currentPos = labelPositions.find(p => p.id === selectedId);
+    const currentPos = labelPositions.find((p) => p.id === selectedId);
     if (currentPos) {
       handleRotate(selectedId, (currentPos.rotation || 0) + 90);
     }
@@ -205,7 +206,7 @@ export const Canvas = ({
   // Render labels - memoized
   const labelElements = useMemo(() => {
     return labelPositions.map((pos) => {
-      const label = selectedLabels.find(l => l.id === pos.id);
+      const label = selectedLabels.find((l) => l.id === pos.id);
       if (!label) return null;
 
       return (
@@ -224,9 +225,9 @@ export const Canvas = ({
   // Render QR codes - memoized
   const qrElements = useMemo(() => {
     return selectedLabels
-      .filter(label => label.qrCode?.enabled && label.shopUrl)
+      .filter((label) => label.qrCode?.enabled && label.shopUrl)
       .map((label) => {
-        const labelPos = labelPositions.find(p => p.id === label.id);
+        const labelPos = labelPositions.find((p) => p.id === label.id);
         if (!labelPos || !label.qrCode) return null;
 
         // Calculate absolute position (label position + QR offset)
@@ -258,7 +259,15 @@ export const Canvas = ({
           />
         );
       });
-  }, [selectedLabels, labelPositions, selectedQrId, zoom, handleQRSelect, handleQRDragEnd, handleQRResize]);
+  }, [
+    selectedLabels,
+    labelPositions,
+    selectedQrId,
+    zoom,
+    handleQRSelect,
+    handleQRDragEnd,
+    handleQRResize,
+  ]);
 
   return (
     <div className="relative border border-gray-300 rounded-lg overflow-hidden bg-white">
@@ -292,26 +301,16 @@ export const Canvas = ({
         onWheel={handleWheel}
       >
         {/* Grid layer */}
-        <Layer>
-          {gridElements}
-        </Layer>
+        <Layer>{gridElements}</Layer>
 
         {/* Labels layer */}
-        <Layer>
-          {labelElements}
-        </Layer>
+        <Layer>{labelElements}</Layer>
 
         {/* QR Codes layer */}
-        <Layer>
-          {qrElements}
-        </Layer>
+        <Layer>{qrElements}</Layer>
 
         {/* Cut marks layer */}
-        {layout?.settings.showCutMarks && (
-          <Layer>
-            {/* Add cut marks implementation here */}
-          </Layer>
-        )}
+        {layout?.settings.showCutMarks && <Layer>{/* Add cut marks implementation here */}</Layer>}
       </Stage>
     </div>
   );

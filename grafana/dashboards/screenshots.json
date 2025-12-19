@@ -1,0 +1,186 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "sum(increase(screenshots_total{job=\"screenshot-algo\"}[24h]))", "legendFormat": "Total", "refId": "A" }],
+      "title": "Screenshots Today",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "sum(rate(screenshots_total{job=\"screenshot-algo\",status=\"failed\"}[1h])) / sum(rate(screenshots_total{job=\"screenshot-algo\"}[1h])) * 100", "legendFormat": "Failure Rate", "refId": "A" }],
+      "title": "Failure Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 10 }
+            ]
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "histogram_quantile(0.95, sum(rate(screenshot_duration_seconds_bucket{job=\"screenshot-algo\"}[5m])) by (le))", "legendFormat": "P95 Duration", "refId": "A" }],
+      "title": "Avg Capture Time",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "green", "value": 5 }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "browser_pool_available{job=\"screenshot-algo\"}", "legendFormat": "Available", "refId": "A" }],
+      "title": "Browser Pool Available",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "pointSize": 5, "showPoints": "never", "stacking": { "mode": "none" } },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 6 },
+      "id": 5,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "sum(rate(screenshots_total{job=\"screenshot-algo\",status=\"success\"}[5m])) * 60", "legendFormat": "Success/min", "refId": "A" },
+        { "expr": "sum(rate(screenshots_total{job=\"screenshot-algo\",status=\"failed\"}[5m])) * 60", "legendFormat": "Failed/min", "refId": "B" }
+      ],
+      "title": "Screenshot Throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "pointSize": 5, "showPoints": "never", "stacking": { "mode": "none" } },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 6 },
+      "id": 6,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum(rate(screenshot_duration_seconds_bucket{job=\"screenshot-algo\"}[5m])) by (le))", "legendFormat": "P50", "refId": "A" },
+        { "expr": "histogram_quantile(0.95, sum(rate(screenshot_duration_seconds_bucket{job=\"screenshot-algo\"}[5m])) by (le))", "legendFormat": "P95", "refId": "B" },
+        { "expr": "histogram_quantile(0.99, sum(rate(screenshot_duration_seconds_bucket{job=\"screenshot-algo\"}[5m])) by (le))", "legendFormat": "P99", "refId": "C" }
+      ],
+      "title": "Capture Duration Percentiles",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "pointSize": 5, "showPoints": "never", "stacking": { "mode": "none" } },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 16 },
+      "id": 7,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "screenshot_queue_depth{job=\"screenshot-algo\"}", "legendFormat": "Queue Depth", "refId": "A" },
+        { "expr": "screenshot_queue_processing{job=\"screenshot-algo\"}", "legendFormat": "Processing", "refId": "B" }
+      ],
+      "title": "Queue Status",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "pointSize": 5, "showPoints": "never", "stacking": { "mode": "none" } },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 16 },
+      "id": 8,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "browser_pool_total{job=\"screenshot-algo\"}", "legendFormat": "Total", "refId": "A" },
+        { "expr": "browser_pool_available{job=\"screenshot-algo\"}", "legendFormat": "Available", "refId": "B" },
+        { "expr": "browser_pool_busy{job=\"screenshot-algo\"}", "legendFormat": "Busy", "refId": "C" }
+      ],
+      "title": "Browser Pool",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["screenshot-algo", "screenshots"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Screenshot_Algo - Screenshots",
+  "uid": "screenshot-algo-screenshots",
+  "version": 1
+}

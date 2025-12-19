@@ -1,0 +1,147 @@
+# Kubernetes ConfigMap
+# Enterprise configuration for Screenshot_Algo
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: screenshot-algo-config
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: config
+    app.kubernetes.io/managed-by: kustomize
+data:
+  # Application settings
+  NODE_ENV: "production"
+  PORT: "4000"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+
+  # API settings
+  API_PREFIX: "/api"
+  API_VERSION: "v1"
+  API_RATE_LIMIT: "100"
+  API_RATE_LIMIT_WINDOW: "60000"
+
+  # Screenshot settings
+  SCREENSHOT_TIMEOUT: "30000"
+  SCREENSHOT_MAX_WIDTH: "1920"
+  SCREENSHOT_MAX_HEIGHT: "1080"
+  SCREENSHOT_DEFAULT_FORMAT: "png"
+  SCREENSHOT_QUALITY: "80"
+
+  # Browser pool settings
+  BROWSER_POOL_MIN: "2"
+  BROWSER_POOL_MAX: "10"
+  BROWSER_POOL_IDLE_TIMEOUT: "300000"
+
+  # Queue settings
+  QUEUE_CONCURRENCY: "5"
+  QUEUE_MAX_RETRIES: "3"
+  QUEUE_RETRY_DELAY: "5000"
+
+  # Cache settings
+  CACHE_ENABLED: "true"
+  CACHE_TTL: "3600"
+  CACHE_MAX_SIZE: "1000"
+
+  # Health check settings
+  HEALTH_CHECK_INTERVAL: "30000"
+  HEALTH_CHECK_TIMEOUT: "5000"
+
+  # Observability
+  METRICS_ENABLED: "true"
+  METRICS_PATH: "/metrics"
+  TRACING_ENABLED: "true"
+  TRACING_SAMPLE_RATE: "0.1"
+
+  # OTEL Configuration
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+  OTEL_SERVICE_NAME: "screenshot-algo"
+  OTEL_RESOURCE_ATTRIBUTES: "service.namespace=screenshot-algo,deployment.environment=production"
+---
+# Nginx Configuration (if using nginx sidecar)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: screenshot-algo-nginx
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: nginx
+data:
+  nginx.conf: |
+    worker_processes auto;
+    error_log /dev/stderr warn;
+    pid /tmp/nginx.pid;
+
+    events {
+        worker_connections 1024;
+        use epoll;
+        multi_accept on;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        log_format json escape=json '{'
+            '"time":"$time_iso8601",'
+            '"remote_addr":"$remote_addr",'
+            '"request":"$request",'
+            '"status":$status,'
+            '"body_bytes_sent":$body_bytes_sent,'
+            '"request_time":$request_time,'
+            '"upstream_response_time":"$upstream_response_time"'
+        '}';
+
+        access_log /dev/stdout json;
+
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 65;
+        types_hash_max_size 2048;
+
+        # Gzip
+        gzip on;
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 6;
+        gzip_types text/plain text/css application/json application/javascript;
+
+        # Rate limiting
+        limit_req_zone $binary_remote_addr zone=api:10m rate=100r/s;
+
+        upstream app {
+            server 127.0.0.1:4000;
+            keepalive 32;
+        }
+
+        server {
+            listen 8080;
+            server_name _;
+
+            location /health {
+                access_log off;
+                proxy_pass http://app;
+            }
+
+            location /metrics {
+                access_log off;
+                proxy_pass http://app;
+            }
+
+            location / {
+                limit_req zone=api burst=50 nodelay;
+                proxy_pass http://app;
+                proxy_http_version 1.1;
+                proxy_set_header Connection "";
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+        }
+    }

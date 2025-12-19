@@ -1,0 +1,311 @@
+# Kubernetes Deployment Workflow
+# Enterprise CI/CD for Screenshot_Algo
+name: 🚀 Kubernetes Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'k8s/**'
+      - 'src/**'
+      - 'Dockerfile'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'k8s/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      image_tag:
+        description: 'Docker image tag to deploy'
+        required: false
+        default: 'latest'
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  KUBECTL_VERSION: 'v1.28.0'
+  KUSTOMIZE_VERSION: 'v5.0.0'
+
+jobs:
+  # =============================================================================
+  # Build and Push Container Image
+  # =============================================================================
+  build:
+    name: 🔨 Build Image
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+      image_digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix=
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true
+
+      - name: Sign container image
+        run: |
+          echo "Image signing would happen here with cosign"
+          # cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+
+  # =============================================================================
+  # Validate Kubernetes Manifests
+  # =============================================================================
+  validate:
+    name: 🔍 Validate Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          kustomize-version: ${{ env.KUSTOMIZE_VERSION }}
+
+      - name: Validate base
+        run: |
+          kustomize build k8s/base > /dev/null
+          echo "✅ Base manifests valid"
+
+      - name: Validate overlays
+        run: |
+          for env in dev staging production; do
+            echo "Validating $env overlay..."
+            kustomize build k8s/overlays/$env > /dev/null
+            echo "✅ $env overlay valid"
+          done
+
+      - name: Lint with kubeval
+        run: |
+          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          sudo mv kubeval /usr/local/bin/
+
+          kustomize build k8s/overlays/production | kubeval --strict --ignore-missing-schemas
+          echo "✅ Manifests pass kubeval"
+
+      - name: Security scan with kubesec
+        run: |
+          wget https://github.com/controlplaneio/kubesec/releases/download/v2.14.0/kubesec_linux_amd64.tar.gz
+          tar xf kubesec_linux_amd64.tar.gz
+          sudo mv kubesec /usr/local/bin/
+
+          kustomize build k8s/base | kubesec scan - || true
+          echo "⚠️ Review kubesec recommendations above"
+
+  # =============================================================================
+  # Deploy to Development
+  # =============================================================================
+  deploy-dev:
+    name: 🚀 Deploy to Dev
+    needs: [build, validate]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
+    environment: development
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{ env.KUBECTL_VERSION }}
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DEV }}" | base64 -d > ~/.kube/config
+
+      - name: Update image tag
+        run: |
+          cd k8s/overlays/dev
+          kustomize edit set image screenshot-algo=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+
+      - name: Deploy to dev
+        run: |
+          kubectl apply -k k8s/overlays/dev
+          kubectl -n screenshot-algo-dev rollout status deployment/dev-screenshot-algo --timeout=300s
+
+      - name: Verify deployment
+        run: |
+          kubectl -n screenshot-algo-dev get pods
+          kubectl -n screenshot-algo-dev get svc
+
+  # =============================================================================
+  # Deploy to Staging
+  # =============================================================================
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    needs: [build, validate, deploy-dev]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: staging
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{ env.KUBECTL_VERSION }}
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > ~/.kube/config
+
+      - name: Update image tag
+        run: |
+          cd k8s/overlays/staging
+          kustomize edit set image screenshot-algo=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+
+      - name: Deploy to staging
+        run: |
+          kubectl apply -k k8s/overlays/staging
+          kubectl -n screenshot-algo-staging rollout status deployment/staging-screenshot-algo --timeout=300s
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests against staging..."
+
+          # Get staging service URL
+          STAGING_URL="http://$(kubectl -n screenshot-algo-staging get svc staging-screenshot-algo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):4000"
+
+          # Wait for service to be ready
+          echo "Waiting for service to be reachable..."
+          for i in {1..30}; do
+            if curl -sf "${STAGING_URL}/api/health/ready" > /dev/null 2>&1; then
+              echo "Service is ready!"
+              break
+            fi
+            echo "Attempt $i/30: Service not ready yet..."
+            sleep 10
+          done
+
+          # Health check tests
+          echo "Testing health endpoints..."
+          curl -sf "${STAGING_URL}/api/health/live" | jq . || exit 1
+          curl -sf "${STAGING_URL}/api/health/ready" | jq . || exit 1
+
+          # API endpoint tests
+          echo "Testing API endpoints..."
+
+          # Test labels endpoint
+          LABELS_RESPONSE=$(curl -sf "${STAGING_URL}/api/labels?limit=1")
+          echo "Labels endpoint: $LABELS_RESPONSE"
+          echo "$LABELS_RESPONSE" | jq -e '.success == true' || exit 1
+
+          # Test articles endpoint
+          ARTICLES_RESPONSE=$(curl -sf "${STAGING_URL}/api/articles?limit=1")
+          echo "Articles endpoint: $ARTICLES_RESPONSE"
+          echo "$ARTICLES_RESPONSE" | jq -e '.success == true' || exit 1
+
+          # Test templates endpoint
+          TEMPLATES_RESPONSE=$(curl -sf "${STAGING_URL}/api/templates")
+          echo "Templates endpoint: $TEMPLATES_RESPONSE"
+          echo "$TEMPLATES_RESPONSE" | jq -e '.success == true' || exit 1
+
+          echo "All smoke tests passed!"
+
+  # =============================================================================
+  # Deploy to Production
+  # =============================================================================
+  deploy-production:
+    name: 🚀 Deploy to Production
+    needs: [build, validate, deploy-staging]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{ env.KUBECTL_VERSION }}
+
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 -d > ~/.kube/config
+
+      - name: Update image tag
+        run: |
+          cd k8s/overlays/production
+          kustomize edit set image screenshot-algo=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+
+      - name: Deploy to production
+        run: |
+          kubectl apply -k k8s/overlays/production
+          kubectl -n screenshot-algo rollout status deployment/screenshot-algo --timeout=600s
+
+      - name: Verify production deployment
+        run: |
+          kubectl -n screenshot-algo get pods
+          kubectl -n screenshot-algo get hpa
+          kubectl -n screenshot-algo get ingress
+
+      - name: Create deployment summary
+        run: |
+          echo "## 🚀 Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Digest**: ${{ needs.build.outputs.image_digest }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY

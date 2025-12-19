@@ -9,12 +9,7 @@ interface RulerProps {
   zoom?: number;
 }
 
-export const Ruler = ({
-  orientation,
-  length,
-  unit = 'mm',
-  zoom = 1
-}: RulerProps) => {
+export const Ruler = ({ orientation, length, unit = 'mm', zoom = 1 }: RulerProps) => {
   const generateTicks = () => {
     const ticks = [];
     const majorTickInterval = unit === 'mm' ? 10 : unit === 'cm' ? 1 : 0.5;
@@ -53,22 +48,14 @@ export const Ruler = ({
                 strokeWidth={tick.isMajor ? 1.5 : 1}
               />
               {tick.label && (
-                <text
-                  x={tick.position}
-                  y={10}
-                  fontSize="9"
-                  textAnchor="middle"
-                  fill="#666"
-                >
+                <text x={tick.position} y={10} fontSize="9" textAnchor="middle" fill="#666">
                   {tick.label}
                 </text>
               )}
             </g>
           ))}
         </svg>
-        <div className="absolute top-1 right-2 text-xs text-gray-600 font-medium">
-          {unit}
-        </div>
+        <div className="absolute top-1 right-2 text-xs text-gray-600 font-medium">{unit}</div>
       </div>
     );
   }

@@ -56,7 +56,9 @@ export default function JobMonitor() {
 
             {/* Connection Status */}
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></div>
+              <div
+                className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}
+              ></div>
               <span className="text-sm text-gray-600">
                 {isConnected ? 'Connected' : 'Disconnected'}
               </span>
@@ -76,7 +78,9 @@ export default function JobMonitor() {
             </div>
 
             {/* Status Badge */}
-            <span className={`px-4 py-2 rounded-full text-sm font-medium ${statusColors[status] || statusColors.pending}`}>
+            <span
+              className={`px-4 py-2 rounded-full text-sm font-medium ${statusColors[status] || statusColors.pending}`}
+            >
               {status.toUpperCase()}
             </span>
           </div>
@@ -117,7 +121,8 @@ export default function JobMonitor() {
               <div>
                 <p className="font-medium text-green-900">Job Completed Successfully!</p>
                 <p className="text-sm text-green-700">
-                  {results?.summary?.totalProducts || 0} products processed, {results?.summary?.labelsGenerated || 0} labels generated
+                  {results?.summary?.totalProducts || 0} products processed,{' '}
+                  {results?.summary?.labelsGenerated || 0} labels generated
                 </p>
               </div>
             </div>

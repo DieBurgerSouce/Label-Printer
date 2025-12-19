@@ -29,7 +29,7 @@ export class BulkPrintService {
       return {
         success: false,
         error: 'No labels selected',
-        labelCount: 0
+        labelCount: 0,
       };
     }
 
@@ -50,14 +50,14 @@ export class BulkPrintService {
       return {
         success: true,
         url,
-        labelCount: labelIds.length
+        labelCount: labelIds.length,
       };
     } catch (error) {
       console.error('Bulk print failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        labelCount: labelIds.length
+        labelCount: labelIds.length,
       };
     }
   }

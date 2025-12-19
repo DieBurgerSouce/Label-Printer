@@ -6,8 +6,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
-    exclude: ['node_modules', 'dist'],
+    include: ['src/**/*.{test,spec}.ts', 'tests/**/*.{test,spec}.ts'],
+    exclude: ['node_modules', 'dist', '**/*.js', '**/*.d.ts'],
     // ESM Mocking configuration
     deps: {
       // Inline modules for proper ESM mocking with .js extensions

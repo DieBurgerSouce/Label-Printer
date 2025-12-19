@@ -85,12 +85,12 @@ describe('customDimensionsSchema', () => {
   });
 
   it('accepts different units', () => {
-    expect(
-      customDimensionsSchema.safeParse({ width: 10, height: 5, unit: 'cm' }).success
-    ).toBe(true);
-    expect(
-      customDimensionsSchema.safeParse({ width: 4, height: 2, unit: 'in' }).success
-    ).toBe(true);
+    expect(customDimensionsSchema.safeParse({ width: 10, height: 5, unit: 'cm' }).success).toBe(
+      true
+    );
+    expect(customDimensionsSchema.safeParse({ width: 4, height: 2, unit: 'in' }).success).toBe(
+      true
+    );
   });
 
   it('defaults to mm unit', () => {

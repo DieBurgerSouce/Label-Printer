@@ -13,7 +13,12 @@ interface RuleConditionRowProps {
   showDelete: boolean;
 }
 
-export default function RuleConditionRow({ condition, onChange, onDelete, showDelete }: RuleConditionRowProps) {
+export default function RuleConditionRow({
+  condition,
+  onChange,
+  onDelete,
+  showDelete,
+}: RuleConditionRowProps) {
   const handleFieldChange = (field: RuleField) => {
     // Reset operator and value when field changes
     let newOperator: RuleOperator = 'is';

@@ -1,0 +1,154 @@
+# K3d (K3s in Docker) Configuration
+# Documentation: https://k3d.io/v5.4.6/usage/configfile/
+
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+
+metadata:
+  name: screenshot-algo-dev
+
+# Cluster configuration
+servers: 1  # Number of server (control-plane) nodes
+agents: 2   # Number of agent (worker) nodes
+
+# Kubernetes API
+kubeAPI:
+  host: "localhost"
+  hostIP: "127.0.0.1"
+  hostPort: "6443"
+
+# Image to use for k3s
+image: rancher/k3s:v1.28.4-k3s1
+
+# Network configuration
+network: screenshot-algo-net
+
+# Subnet for the cluster network
+# subnet: "172.28.0.0/16"
+
+# Token for cluster join (optional, auto-generated if not set)
+# token: supersecret
+
+# Volumes to mount into the nodes
+volumes:
+  # Mount local data directory
+  - volume: ./data:/data
+    nodeFilters:
+      - all
+  # Mount local config
+  - volume: ./config:/config:ro
+    nodeFilters:
+      - server:*
+
+# Port mappings
+ports:
+  # Map port 80 from the load balancer to localhost:8080
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
+  # Map port 443 from the load balancer to localhost:8443
+  - port: 8443:443
+    nodeFilters:
+      - loadbalancer
+  # NodePort range
+  - port: 30000-30010:30000-30010
+    nodeFilters:
+      - server:*
+
+# Environment variables passed to k3s
+env:
+  - envVar: K3S_DEBUG=false
+    nodeFilters:
+      - all
+
+# Labels for nodes
+labels:
+  - label: environment=development
+    nodeFilters:
+      - all
+
+# K3s arguments
+options:
+  k3d:
+    wait: true
+    timeout: "120s"
+    disableLoadbalancer: false
+    disableImageVolume: false
+    disableRollback: false
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters:
+          - server:*
+      - arg: --disable=servicelb
+        nodeFilters:
+          - server:*
+      - arg: --tls-san=localhost
+        nodeFilters:
+          - server:*
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
+
+# Registry configuration
+registries:
+  # Create a local registry
+  create:
+    name: k3d-screenshot-algo-registry
+    host: "0.0.0.0"
+    hostPort: "5000"
+    proxy:
+      remoteURL: https://registry-1.docker.io
+    volumes:
+      - ./registry:/var/lib/registry
+  # Use the local registry
+  use:
+    - k3d-screenshot-algo-registry:5000
+  config: |
+    mirrors:
+      "docker.io":
+        endpoint:
+          - "http://k3d-screenshot-algo-registry:5000"
+
+# Host aliases (add entries to /etc/hosts in containers)
+hostAliases:
+  - ip: host.k3d.internal
+    hostnames:
+      - host.docker.internal
+      - host.localhost
+
+---
+# Usage Instructions:
+#
+# 1. Create cluster:
+#    k3d cluster create --config k3d.yaml
+#
+# 2. Verify cluster:
+#    kubectl cluster-info
+#    kubectl get nodes
+#
+# 3. Install nginx ingress:
+#    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+#
+# 4. Deploy application:
+#    kubectl apply -k k8s/overlays/dev
+#
+# 5. Push images to local registry:
+#    docker tag screenshot-algo:latest localhost:5000/screenshot-algo:latest
+#    docker push localhost:5000/screenshot-algo:latest
+#
+# 6. Access application:
+#    curl http://localhost:8080/health
+#
+# 7. Access Kubernetes dashboard (if installed):
+#    kubectl proxy
+#    http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+#
+# 8. Delete cluster when done:
+#    k3d cluster delete screenshot-algo-dev
+#
+# Tips:
+# - Use `k3d image import <image>` for faster image loading than docker push
+# - Use `k3d cluster list` to see all clusters
+# - Use `k3d node list` to see all nodes
+# - K3d is generally faster to start than Kind

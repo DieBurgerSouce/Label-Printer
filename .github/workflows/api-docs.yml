@@ -1,0 +1,115 @@
+# API Documentation Workflow
+# Generates and deploys API documentation from OpenAPI spec
+
+name: API Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'openapi.yaml'
+      - 'docs/api/**'
+      - '.github/workflows/api-docs.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'openapi.yaml'
+      - 'docs/api/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate OpenAPI Spec
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate OpenAPI
+        uses: char0n/swagger-editor-validate@v1
+        with:
+          definition-file: openapi.yaml
+
+      - name: Lint OpenAPI
+        uses: stoplightio/spectral-action@v0.8.11
+        with:
+          file_glob: openapi.yaml
+
+  generate:
+    name: Generate Documentation
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: |
+          npm install -g @redocly/cli
+          npm install -g swagger-cli
+
+      - name: Bundle OpenAPI
+        run: |
+          swagger-cli bundle openapi.yaml -o docs/api/openapi-bundled.yaml
+          swagger-cli bundle openapi.yaml -o docs/api/openapi-bundled.json --type json
+
+      - name: Generate HTML Documentation
+        run: |
+          redocly build-docs openapi.yaml -o docs/api/index.html
+
+      - name: Generate Markdown Documentation
+        run: |
+          npx widdershins openapi.yaml -o docs/api/API.md --omitHeader
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/api
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: generate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  notify:
+    name: Notify on Changes
+    needs: [validate, generate]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Summary
+        run: |
+          echo "## API Documentation Update" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Validation:** ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Generation:** ${{ needs.generate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ needs.validate.result }}" == "success" ]]; then
+            echo "Documentation will be available at: https://\${{ github.repository_owner }}.github.io/\${{ github.event.repository.name }}/api/" >> $GITHUB_STEP_SUMMARY
+          fi

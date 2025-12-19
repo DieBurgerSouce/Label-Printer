@@ -209,8 +209,8 @@ router.get('/deep', async (_req: Request, res: Response) => {
     healthStatus.set({ component: 'queue' }, queueCheck.status === 'healthy' ? 1 : 0);
     healthStatus.set({ component: 'memory' }, memoryCheck.status === 'healthy' ? 1 : 0);
 
-    const statusCode = healthResponse.status === 'healthy' ? 200 :
-                       healthResponse.status === 'degraded' ? 200 : 503;
+    const statusCode =
+      healthResponse.status === 'healthy' ? 200 : healthResponse.status === 'degraded' ? 200 : 503;
 
     res.status(statusCode).json(healthResponse);
   } catch (error) {

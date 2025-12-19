@@ -8,7 +8,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const WS_URL = import.meta.env.VITE_WS_URL ||
+const WS_URL =
+  import.meta.env.VITE_WS_URL ||
   (import.meta.env.PROD ? window.location.origin : 'http://localhost:3001');
 
 // Polling interval when WebSocket is disconnected
@@ -93,14 +94,18 @@ export interface WebSocketState {
  * Step 3/4 (matching): 50-75%
  * Step 4/4 (rendering): 75-100%
  */
-function calculateOverallProgress(currentStep: string, currentStepProgress: number, totalSteps: number = 4): number {
+function calculateOverallProgress(
+  currentStep: string,
+  currentStepProgress: number,
+  totalSteps: number = 4
+): number {
   const stepMap: Record<string, number> = {
-    'pending': 0,
-    'crawling': 1,
+    pending: 0,
+    crawling: 1,
     'processing-ocr': 2,
-    'matching': 3,
-    'rendering': 4,
-    'completed': 4,
+    matching: 3,
+    rendering: 4,
+    completed: 4,
   };
 
   const stepIndex = stepMap[currentStep] || 0;
@@ -112,7 +117,7 @@ function calculateOverallProgress(currentStep: string, currentStepProgress: numb
 
   // Calculate: (completed steps / total) * 100 + (current step progress / total)
   const completedStepsProgress = ((stepIndex - 1) / totalSteps) * 100;
-  const currentProgress = (currentStepProgress / totalSteps);
+  const currentProgress = currentStepProgress / totalSteps;
 
   return Math.round(Math.max(0, completedStepsProgress + currentProgress));
 }
@@ -150,9 +155,13 @@ export function useWebSocket(jobId?: string) {
         const currentStep = data.job.progress?.currentStep || 'pending';
         const currentStepProgress = data.job.progress?.currentStepProgress || 0;
         const totalSteps = data.job.progress?.totalSteps || 4;
-        const overallProgress = calculateOverallProgress(currentStep, currentStepProgress, totalSteps);
+        const overallProgress = calculateOverallProgress(
+          currentStep,
+          currentStepProgress,
+          totalSteps
+        );
 
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           status: data.job.status,
           currentStage: currentStep,
@@ -165,7 +174,7 @@ export function useWebSocket(jobId?: string) {
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setState(prev => ({ ...prev, error: errorMessage }));
+      setState((prev) => ({ ...prev, error: errorMessage }));
     }
   }, [jobId]);
 
@@ -212,7 +221,7 @@ export function useWebSocket(jobId?: string) {
     // Connection events
     socket.on('connect', () => {
       isConnectedRef.current = true;
-      setState(prev => ({ ...prev, isConnected: true }));
+      setState((prev) => ({ ...prev, isConnected: true }));
 
       // Stop polling when WebSocket connects
       stopPolling();
@@ -225,7 +234,7 @@ export function useWebSocket(jobId?: string) {
 
     socket.on('disconnect', () => {
       isConnectedRef.current = false;
-      setState(prev => ({ ...prev, isConnected: false }));
+      setState((prev) => ({ ...prev, isConnected: false }));
 
       // Start polling as fallback when WebSocket disconnects
       startPolling();
@@ -233,7 +242,7 @@ export function useWebSocket(jobId?: string) {
 
     socket.on('connect_error', (error) => {
       isConnectedRef.current = false;
-      setState(prev => ({ ...prev, error: error.message, isConnected: false }));
+      setState((prev) => ({ ...prev, error: error.message, isConnected: false }));
 
       // Start polling as fallback on connection error
       startPolling();
@@ -245,7 +254,7 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:updated', (data: JobUpdatedEvent) => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         status: data.status,
         progress: data.progress || prev.progress,
@@ -254,7 +263,7 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:completed', (data: JobCompletedEvent) => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         status: 'completed',
         progress: 100,
@@ -263,7 +272,7 @@ export function useWebSocket(jobId?: string) {
     });
 
     socket.on('job:failed', (data: JobFailedEvent) => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         status: 'failed',
         error: data.error,
@@ -272,7 +281,7 @@ export function useWebSocket(jobId?: string) {
 
     // Screenshot events
     socket.on('screenshot:captured', (data: ScreenshotCapturedEvent) => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         screenshots: [...prev.screenshots, data],
       }));
@@ -280,7 +289,7 @@ export function useWebSocket(jobId?: string) {
 
     // OCR events
     socket.on('ocr:completed', (data: OCRCompletedEvent) => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         ocrResults: [...prev.ocrResults, data],
       }));
@@ -288,7 +297,7 @@ export function useWebSocket(jobId?: string) {
 
     // Label events
     socket.on('label:generated', (data: LabelGeneratedEvent) => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         labels: [...prev.labels, data],
       }));
@@ -305,16 +314,19 @@ export function useWebSocket(jobId?: string) {
   }, [jobId, fetchJobData, startPolling, stopPolling]);
 
   // Helper function to subscribe to a different job
-  const subscribeToJob = useCallback((newJobId: string) => {
-    if (socketRef.current && socketRef.current.connected) {
-      // Unsubscribe from old job if exists
-      if (jobId) {
-        socketRef.current.emit('job:unsubscribe', jobId);
+  const subscribeToJob = useCallback(
+    (newJobId: string) => {
+      if (socketRef.current && socketRef.current.connected) {
+        // Unsubscribe from old job if exists
+        if (jobId) {
+          socketRef.current.emit('job:unsubscribe', jobId);
+        }
+        // Subscribe to new job
+        socketRef.current.emit('job:subscribe', newJobId);
       }
-      // Subscribe to new job
-      socketRef.current.emit('job:subscribe', newJobId);
-    }
-  }, [jobId]);
+    },
+    [jobId]
+  );
 
   return {
     ...state,
@@ -328,11 +340,13 @@ export function useWebSocket(jobId?: string) {
 export function useWebSocketGlobal() {
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [latestEvents, setLatestEvents] = useState<Array<{
-    type: string;
-    data: JobCreatedEvent | JobUpdatedEvent | JobCompletedEvent;
-    timestamp: number;
-  }>>([]);
+  const [latestEvents, setLatestEvents] = useState<
+    Array<{
+      type: string;
+      data: JobCreatedEvent | JobUpdatedEvent | JobCompletedEvent;
+      timestamp: number;
+    }>
+  >([]);
 
   useEffect(() => {
     const socket = io(WS_URL);
@@ -348,15 +362,21 @@ export function useWebSocketGlobal() {
 
     // Listen to all job events globally
     socket.on('job:created', (data: JobCreatedEvent) => {
-      setLatestEvents(prev => [{ type: 'job:created', data, timestamp: Date.now() }, ...prev].slice(0, 50));
+      setLatestEvents((prev) =>
+        [{ type: 'job:created', data, timestamp: Date.now() }, ...prev].slice(0, 50)
+      );
     });
 
     socket.on('job:updated', (data: JobUpdatedEvent) => {
-      setLatestEvents(prev => [{ type: 'job:updated', data, timestamp: Date.now() }, ...prev].slice(0, 50));
+      setLatestEvents((prev) =>
+        [{ type: 'job:updated', data, timestamp: Date.now() }, ...prev].slice(0, 50)
+      );
     });
 
     socket.on('job:completed', (data: JobCompletedEvent) => {
-      setLatestEvents(prev => [{ type: 'job:completed', data, timestamp: Date.now() }, ...prev].slice(0, 50));
+      setLatestEvents((prev) =>
+        [{ type: 'job:completed', data, timestamp: Date.now() }, ...prev].slice(0, 50)
+      );
     });
 
     return () => {

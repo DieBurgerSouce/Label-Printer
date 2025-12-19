@@ -83,9 +83,7 @@ export default function UploadZone({
             <CheckCircle className="w-8 h-8 text-green-600" />
             <div>
               <p className="font-medium text-green-900">{selectedFile.name}</p>
-              <p className="text-sm text-green-700">
-                {(selectedFile.size / 1024).toFixed(2)} KB
-              </p>
+              <p className="text-sm text-green-700">{(selectedFile.size / 1024).toFixed(2)} KB</p>
             </div>
           </div>
           <button

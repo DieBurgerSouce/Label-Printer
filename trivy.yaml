@@ -1,0 +1,217 @@
+# Trivy Configuration
+# Enterprise-grade container and filesystem vulnerability scanning
+# https://aquasecurity.github.io/trivy/
+
+# Scan configuration
+scan:
+  # Security checks to run
+  security-checks:
+    - vuln        # Vulnerability scanning
+    - config      # IaC misconfigurations
+    - secret      # Secret detection
+    - license     # License compliance
+
+  # Scanners to use
+  scanners:
+    - vuln
+    - misconfig
+    - secret
+    - license
+
+# Vulnerability scanning settings
+vulnerability:
+  # Vulnerability types to scan
+  type:
+    - os          # OS package vulnerabilities
+    - library     # Application library vulnerabilities
+
+  # Ignore unfixed vulnerabilities
+  ignore-unfixed: false
+
+  # Severity levels to report (in order of severity)
+  severity:
+    - CRITICAL
+    - HIGH
+    - MEDIUM
+    - LOW
+    - UNKNOWN
+
+# Misconfiguration scanning (IaC)
+misconfiguration:
+  # Enable Terraform scanning
+  terraform:
+    vars:
+      - terraform.tfvars
+      - *.auto.tfvars
+
+  # Enable Kubernetes manifest scanning
+  kubernetes: true
+
+  # Enable Dockerfile scanning
+  dockerfile: true
+
+  # Enable CloudFormation scanning
+  cloudformation: true
+
+  # Enable Helm scanning
+  helm:
+    values:
+      - values.yaml
+      - values-production.yaml
+
+# Secret scanning settings
+secret:
+  # Enable secret scanning
+  enabled: true
+
+  # Config file location
+  config: .gitleaks.toml
+
+# License scanning settings
+license:
+  # Severity of license violations
+  severity: HIGH
+
+  # Allowed licenses (will not fail the scan)
+  allowed:
+    - MIT
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - ISC
+    - MPL-2.0
+    - CC0-1.0
+    - Unlicense
+    - WTFPL
+    - 0BSD
+
+  # Forbidden licenses (will fail the scan)
+  forbidden:
+    - GPL-2.0
+    - GPL-3.0
+    - AGPL-3.0
+    - LGPL-2.1
+    - LGPL-3.0
+    - SSPL-1.0
+
+# Image scanning configuration
+image:
+  # Remove images after scanning
+  remove-after-scan: false
+
+  # Input sources
+  input:
+    - docker
+    - tar
+    - oci
+
+# Filesystem scanning configuration
+filesystem:
+  # Paths to scan
+  paths:
+    - .
+
+  # Paths to skip
+  skip-dirs:
+    - node_modules
+    - .git
+    - dist
+    - build
+    - coverage
+    - __tests__
+    - __mocks__
+    - _archive
+    - .next
+    - .nuxt
+    - vendor
+
+  # Files to skip
+  skip-files:
+    - package-lock.json
+    - yarn.lock
+    - pnpm-lock.yaml
+    - "*.min.js"
+    - "*.bundle.js"
+
+# Output configuration
+output:
+  # Output format: table, json, sarif, cyclonedx, spdx
+  format: table
+
+  # Output file (optional)
+  # output: trivy-report.json
+
+  # Template for custom output
+  # template: "@contrib/sarif.tpl"
+
+# Cache configuration
+cache:
+  # Cache directory
+  dir: .trivy-cache
+
+  # Cache backend: fs, redis
+  backend: fs
+
+  # Cache TTL (time to live)
+  ttl: 24h
+
+# Database configuration
+db:
+  # Skip database update
+  skip-update: false
+
+  # Download database only
+  download-only: false
+
+  # Light mode (skip downloading dev database)
+  light: false
+
+# Exit code configuration
+exit:
+  # Exit code when vulnerabilities are found
+  on-found: 1
+
+  # Exit code when vulnerabilities with specified severity are found
+  on-severity: 1
+
+# Ignore configuration
+ignore:
+  # Ignore file location
+  file: .trivyignore
+
+  # Ignore vulnerabilities by ID
+  ids: []
+    # - CVE-2021-1234  # Example
+
+  # Ignore vulnerabilities by status
+  status:
+    - not_affected
+    - will_not_fix
+
+# SBOM (Software Bill of Materials) generation
+sbom:
+  # Enable SBOM generation
+  enabled: true
+
+  # SBOM format: cyclonedx, spdx
+  format: cyclonedx
+
+  # Output file
+  output: sbom.json
+
+# Server mode configuration (for CI/CD)
+server:
+  # Listen address
+  listen: localhost:4954
+
+  # Token for authentication
+  # token: "your-token-here"
+
+# Timeout configuration
+timeout: 10m0s
+
+# Offline mode (no network access)
+offline: false
+
+# Debug mode
+debug: false

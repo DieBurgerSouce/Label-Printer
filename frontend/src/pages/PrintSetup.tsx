@@ -1,9 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { RotateCcw } from 'lucide-react';
 import { useState } from 'react';
-import FormatSelector, {
-    type PaperFormat,
-} from '../components/PrintConfigurator/FormatSelector';
+import FormatSelector, { type PaperFormat } from '../components/PrintConfigurator/FormatSelector';
 import GridConfigurator from '../components/PrintConfigurator/GridConfigurator';
 import PrintPreview from '../components/PrintConfigurator/PrintPreview';
 import PrintTemplateSelector from '../components/PrintConfigurator/PrintTemplateSelector';
@@ -190,11 +188,11 @@ export default function PrintSetup() {
         title: 'Großes PDF generieren?',
         description: `Sie sind dabei ein PDF mit ${layout.labelIds.length} Labels zu generieren. Dies kann einige Minuten dauern. Geschätzte Zeit: ${Math.ceil(layout.labelIds.length / 20)} Minuten. Fortfahren?`,
         onConfirm: () => {
-             showToast({
-                type: 'info',
-                message: `Generiere großes PDF (${layout.labelIds.length} Labels). Bitte warten...`,
-              });
-             downloadPdfMutation.mutate();
+          showToast({
+            type: 'info',
+            message: `Generiere großes PDF (${layout.labelIds.length} Labels). Bitte warten...`,
+          });
+          downloadPdfMutation.mutate();
         },
       });
       return;
@@ -228,11 +226,11 @@ export default function PrintSetup() {
   };
 
   const executePrint = async () => {
-
     try {
-      const estimatedTime = layout.labelIds.length > 100
-        ? ` This may take ${Math.ceil(layout.labelIds.length / 20)} minutes.`
-        : ' This may take a moment.';
+      const estimatedTime =
+        layout.labelIds.length > 100
+          ? ` This may take ${Math.ceil(layout.labelIds.length / 20)} minutes.`
+          : ' This may take a moment.';
 
       showToast({
         type: 'info',
@@ -313,7 +311,6 @@ export default function PrintSetup() {
           }, 60000);
         }
       }, 10000); // 10 second timeout
-
     } catch (error: any) {
       showToast({
         type: 'error',
@@ -360,16 +357,11 @@ export default function PrintSetup() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Druck-Einstellungen</h1>
-          <p className="text-gray-600 mt-1">
-            Druck-Layout konfigurieren und PDF generieren
-          </p>
+          <p className="text-gray-600 mt-1">Druck-Layout konfigurieren und PDF generieren</p>
         </div>
 
         <div className="flex gap-3">
-          <button
-            onClick={handleResetConfig}
-            className="btn-secondary flex items-center gap-2"
-          >
+          <button onClick={handleResetConfig} className="btn-secondary flex items-center gap-2">
             <RotateCcw className="w-5 h-5" />
             Zurücksetzen
           </button>
@@ -386,19 +378,20 @@ export default function PrintSetup() {
                 <>Keine Labels ausgewählt. Gehen Sie zur Label-Bibliothek.</>
               ) : (
                 <>
-                  {layout.labelIds.length} Label{layout.labelIds.length !== 1 ? 's' : ''}{' '}
-                  bereit zum Drucken
+                  {layout.labelIds.length} Label{layout.labelIds.length !== 1 ? 's' : ''} bereit zum
+                  Drucken
                 </>
               )}
             </p>
           </div>
           {layout.labelIds.length > 0 && (
             <div className="text-right">
-              <p className="text-2xl font-bold text-primary-900">
-                {layout.labelIds.length}
-              </p>
+              <p className="text-2xl font-bold text-primary-900">{layout.labelIds.length}</p>
               <p className="text-xs text-primary-700">
-                ~{Math.ceil(layout.labelIds.length / (layout.gridLayout.columns * layout.gridLayout.rows))}{' '}
+                ~
+                {Math.ceil(
+                  layout.labelIds.length / (layout.gridLayout.columns * layout.gridLayout.rows)
+                )}{' '}
                 pages
               </p>
             </div>
@@ -426,10 +419,7 @@ export default function PrintSetup() {
 
           {/* Grid Configurator */}
           <div className="card">
-            <GridConfigurator
-              config={flatGridConfig}
-              onConfigChange={handleGridConfigChange}
-            />
+            <GridConfigurator config={flatGridConfig} onConfigChange={handleGridConfigChange} />
           </div>
         </div>
 
@@ -484,7 +474,7 @@ export default function PrintSetup() {
       </div>
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
-        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={confirmDialog.onConfirm}
         title={confirmDialog.title}
         description={confirmDialog.description}

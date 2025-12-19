@@ -1,0 +1,177 @@
+# Kubernetes Network Policies
+# Enterprise network security for Screenshot_Algo
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: screenshot-algo-default-deny
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: network-policy
+spec:
+  # Default deny all ingress traffic
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# Allow ingress to API pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: screenshot-algo-allow-ingress
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: screenshot-algo
+      app.kubernetes.io/component: api
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 4000
+    # Allow from monitoring (Prometheus)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 4000
+        - protocol: TCP
+          port: 9090
+    # Allow internal pod-to-pod communication
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: screenshot-algo
+      ports:
+        - protocol: TCP
+          port: 4000
+---
+# Allow egress from API pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: screenshot-algo-allow-egress
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: screenshot-algo
+  policyTypes:
+    - Egress
+  egress:
+    # Allow DNS
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow to database
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: database
+        - podSelector:
+            matchLabels:
+              app: postgresql
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Allow to Redis
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cache
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Allow to external APIs (HTTPS only)
+    # SECURITY NOTE: This allows egress to any external IP on port 443.
+    # For production hardening, consider:
+    # 1. Using a Service Mesh (Istio/Linkerd) for FQDN-based egress policies
+    # 2. Using Calico NetworkPolicy with DNS-based rules
+    # 3. Restricting to specific CIDR blocks of your cloud providers
+    #
+    # Required external services:
+    # - ImageKit CDN (ik.imagekit.io)
+    # - Google Cloud Vision API (vision.googleapis.com)
+    # - External product pages for web scraping
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              # Block all private IP ranges
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              # Block link-local addresses
+              - 169.254.0.0/16
+              # Block loopback
+              - 127.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 443
+        # NOTE: Port 80 explicitly NOT allowed - enforce HTTPS only
+    # Allow to OpenTelemetry collector
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+        - podSelector:
+            matchLabels:
+              app: otel-collector
+      ports:
+        - protocol: TCP
+          port: 4317
+        - protocol: TCP
+          port: 4318
+---
+# Allow Prometheus to scrape metrics
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: screenshot-algo-allow-prometheus
+  namespace: screenshot-algo
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: screenshot-algo
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9090

@@ -1,4 +1,4 @@
-import type { TemplateRule } from "@/types/template.types";
+import type { TemplateRule } from '@/types/template.types';
 
 export interface TableConfig {
   headerBg: string;
@@ -18,7 +18,15 @@ export interface TableConfig {
 
 export interface LabelElement {
   id: string;
-  type: 'text' | 'freeText' | 'image' | 'price' | 'priceTable' | 'articleNumber' | 'qrCode' | 'description';
+  type:
+    | 'text'
+    | 'freeText'
+    | 'image'
+    | 'price'
+    | 'priceTable'
+    | 'articleNumber'
+    | 'qrCode'
+    | 'description';
   x: number;
   y: number;
   width: number;
@@ -29,7 +37,7 @@ export interface LabelElement {
   color?: string;
   align?: 'left' | 'center' | 'right';
   tableConfig?: TableConfig;
-  originalWidth?: number;  // For scaling elements proportionally
+  originalWidth?: number; // For scaling elements proportionally
   originalHeight?: number;
   // Separate styling for label/prefix (e.g., "Artikelnummer:")
   labelFontSize?: number;
@@ -57,14 +65,14 @@ export interface TemplateSettings {
 export interface LabelTemplate {
   id: string;
   name: string;
-  width: number;  // in pixels (for canvas display)
+  width: number; // in pixels (for canvas display)
   height: number; // in pixels (for canvas display)
-  widthMm?: number;  // in millimeters (for print)
+  widthMm?: number; // in millimeters (for print)
   heightMm?: number; // in millimeters (for print)
-  printLayoutId?: string;  // selected print layout ID
-  printLayoutName?: string;  // display name of print layout (e.g. "A3 Grid - 2×4")
-  printLayoutColumns?: number;  // number of columns in print layout
-  printLayoutRows?: number;  // number of rows in print layout
+  printLayoutId?: string; // selected print layout ID
+  printLayoutName?: string; // display name of print layout (e.g. "A3 Grid - 2×4")
+  printLayoutColumns?: number; // number of columns in print layout
+  printLayoutRows?: number; // number of rows in print layout
   elements: LabelElement[];
   settings: TemplateSettings;
 

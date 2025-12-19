@@ -19,8 +19,8 @@ interface ProgressTrackerProps {
 
 export const ProgressTracker = ({ jobs, onCancel }: ProgressTrackerProps) => {
   const totalJobs = jobs.length;
-  const completedJobs = jobs.filter(j => j.status === 'completed').length;
-  const failedJobs = jobs.filter(j => j.status === 'failed').length;
+  const completedJobs = jobs.filter((j) => j.status === 'completed').length;
+  const failedJobs = jobs.filter((j) => j.status === 'failed').length;
   const overallProgress = totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0;
 
   return (
@@ -60,28 +60,24 @@ export const ProgressTracker = ({ jobs, onCancel }: ProgressTrackerProps) => {
 
       {/* Job List */}
       <div className="space-y-2 max-h-64 overflow-y-auto">
-        {jobs.map(job => (
+        {jobs.map((job) => (
           <div
             key={job.id}
             className={`p-3 rounded-lg border ${
               job.status === 'completed'
                 ? 'bg-green-50 border-green-200'
                 : job.status === 'failed'
-                ? 'bg-red-50 border-red-200'
-                : job.status === 'processing'
-                ? 'bg-blue-50 border-blue-200'
-                : 'bg-gray-50 border-gray-200'
+                  ? 'bg-red-50 border-red-200'
+                  : job.status === 'processing'
+                    ? 'bg-blue-50 border-blue-200'
+                    : 'bg-gray-50 border-gray-200'
             }`}
           >
             <div className="flex items-start gap-3">
               {/* Status Icon */}
               <div className="mt-0.5">
-                {job.status === 'completed' && (
-                  <CheckCircle2 className="w-5 h-5 text-green-600" />
-                )}
-                {job.status === 'failed' && (
-                  <XCircle className="w-5 h-5 text-red-600" />
-                )}
+                {job.status === 'completed' && <CheckCircle2 className="w-5 h-5 text-green-600" />}
+                {job.status === 'failed' && <XCircle className="w-5 h-5 text-red-600" />}
                 {job.status === 'processing' && (
                   <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
                 )}
@@ -93,9 +89,7 @@ export const ProgressTracker = ({ jobs, onCancel }: ProgressTrackerProps) => {
               {/* Job Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-900 truncate">
-                    {job.name}
-                  </span>
+                  <span className="text-sm font-medium text-gray-900 truncate">{job.name}</span>
                   <span className="text-xs text-gray-500 ml-2">
                     {job.status === 'processing' && `${job.progress}%`}
                     {job.status === 'completed' && 'Done'}

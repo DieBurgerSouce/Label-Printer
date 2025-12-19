@@ -1,0 +1,212 @@
+# Performance Testing Workflow
+# k6 load and stress testing
+
+name: Performance Tests
+
+on:
+  schedule:
+    # Run weekly on Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of performance test'
+        required: true
+        default: 'load'
+        type: choice
+        options:
+          - smoke
+          - load
+          - stress
+      vus:
+        description: 'Number of virtual users'
+        required: false
+        default: '10'
+        type: string
+      duration:
+        description: 'Test duration (e.g., 30s, 5m)'
+        required: false
+        default: '1m'
+        type: string
+
+jobs:
+  performance:
+    name: ${{ github.event.inputs.test_type || 'load' }} Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: screenshot_algo_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start API server
+        run: |
+          npm run start &
+          sleep 15
+        env:
+          NODE_ENV: production
+          PORT: 4000
+          DATABASE_URL: postgresql://test:test@localhost:5432/screenshot_algo_test
+          REDIS_URL: redis://localhost:6379/0
+
+      - name: Wait for server
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:4000/health > /dev/null; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 2
+          done
+
+      - name: Create k6 test script
+        run: |
+          cat > k6-test.js << 'EOF'
+          import http from 'k6/http';
+          import { check, sleep } from 'k6';
+          import { Rate, Trend } from 'k6/metrics';
+
+          const errorRate = new Rate('errors');
+          const responseTime = new Trend('response_time');
+
+          const TEST_TYPE = __ENV.TEST_TYPE || 'load';
+          const BASE_URL = __ENV.TARGET_URL || 'http://localhost:4000';
+
+          const configs = {
+            smoke: {
+              vus: 1,
+              duration: '30s',
+              thresholds: {
+                http_req_duration: ['p(95)<500'],
+                errors: ['rate<0.01'],
+              },
+            },
+            load: {
+              stages: [
+                { duration: '30s', target: parseInt(__ENV.VUS) || 10 },
+                { duration: __ENV.DURATION || '1m', target: parseInt(__ENV.VUS) || 10 },
+                { duration: '30s', target: 0 },
+              ],
+              thresholds: {
+                http_req_duration: ['p(95)<1000'],
+                errors: ['rate<0.05'],
+              },
+            },
+            stress: {
+              stages: [
+                { duration: '30s', target: 10 },
+                { duration: '1m', target: 50 },
+                { duration: '1m', target: 100 },
+                { duration: '30s', target: 0 },
+              ],
+              thresholds: {
+                http_req_duration: ['p(95)<2000'],
+                errors: ['rate<0.10'],
+              },
+            },
+          };
+
+          export const options = configs[TEST_TYPE];
+
+          export default function () {
+            // Health check
+            const healthRes = http.get(`${BASE_URL}/health`);
+            check(healthRes, {
+              'health status 200': (r) => r.status === 200,
+            });
+            errorRate.add(healthRes.status !== 200);
+            responseTime.add(healthRes.timings.duration);
+
+            sleep(0.5);
+
+            // Screenshot endpoint (POST)
+            const screenshotRes = http.post(
+              `${BASE_URL}/api/screenshot`,
+              JSON.stringify({ url: 'https://example.com', format: 'png' }),
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+            check(screenshotRes, {
+              'screenshot endpoint ok': (r) => [200, 201, 202, 401, 429].includes(r.status),
+            });
+
+            sleep(1);
+          }
+          EOF
+
+      - name: Run ${{ github.event.inputs.test_type || 'load' }} test
+        run: |
+          k6 run \
+            -e TEST_TYPE=${{ github.event.inputs.test_type || 'load' }} \
+            -e VUS=${{ github.event.inputs.vus || '10' }} \
+            -e DURATION=${{ github.event.inputs.duration || '1m' }} \
+            -e TARGET_URL=http://localhost:4000 \
+            --out json=results.json \
+            --summary-export=summary.json \
+            k6-test.js
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results-${{ github.event.inputs.test_type || 'load' }}
+          path: |
+            results.json
+            summary.json
+          retention-days: 30
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Test Type:** ${{ github.event.inputs.test_type || 'load' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Virtual Users:** ${{ github.event.inputs.vus || '10' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Duration:** ${{ github.event.inputs.duration || '1m' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f summary.json ]; then
+            echo "### Results" >> $GITHUB_STEP_SUMMARY
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat summary.json | head -100 >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

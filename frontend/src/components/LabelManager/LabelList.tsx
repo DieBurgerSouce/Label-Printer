@@ -24,9 +24,7 @@ export default function LabelList({
     return (
       <div className="card text-center py-12">
         <p className="text-gray-500 text-lg">No labels found</p>
-        <p className="text-gray-400 text-sm mt-2">
-          Create your first label to get started
-        </p>
+        <p className="text-gray-400 text-sm mt-2">Create your first label to get started</p>
       </div>
     );
   }
@@ -79,9 +77,7 @@ export default function LabelList({
                         : 'border-gray-300 hover:border-primary-500'
                     }`}
                   >
-                    {selectedIds.includes(label.id) && (
-                      <Check className="w-3 h-3 text-white" />
-                    )}
+                    {selectedIds.includes(label.id) && <Check className="w-3 h-3 text-white" />}
                   </button>
                 </td>
 
@@ -102,9 +98,7 @@ export default function LabelList({
 
                 {/* Article Number */}
                 <td className="px-4 py-4">
-                  <span className="text-sm font-mono text-gray-900">
-                    {label.articleNumber}
-                  </span>
+                  <span className="text-sm font-mono text-gray-900">{label.articleNumber}</span>
                 </td>
 
                 {/* Product Name */}
@@ -114,9 +108,7 @@ export default function LabelList({
                       {label.productName}
                     </p>
                     {label.description && (
-                      <p className="text-sm text-gray-500 truncate">
-                        {label.description}
-                      </p>
+                      <p className="text-sm text-gray-500 truncate">{label.description}</p>
                     )}
                   </div>
                 </td>
@@ -127,9 +119,7 @@ export default function LabelList({
                     <span className="text-lg font-bold text-primary-600">
                       {label.priceInfo.price.toFixed(2)}
                     </span>
-                    <span className="text-xs text-gray-500">
-                      {label.priceInfo.currency}
-                    </span>
+                    <span className="text-xs text-gray-500">{label.priceInfo.currency}</span>
                   </div>
                   {label.priceInfo.staffelpreise && label.priceInfo.staffelpreise.length > 0 && (
                     <p className="text-xs text-gray-400 mt-1">

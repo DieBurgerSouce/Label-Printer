@@ -118,9 +118,7 @@ export default function ExcelImport() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Excel Import</h1>
-          <p className="text-gray-600 mt-1">
-            Import product descriptions from Excel files
-          </p>
+          <p className="text-gray-600 mt-1">Import product descriptions from Excel files</p>
         </div>
 
         <div className="flex gap-3">
@@ -133,10 +131,7 @@ export default function ExcelImport() {
           </button>
           {stats?.data && (stats?.data as any).totalProducts > 0 && (
             <>
-              <button
-                onClick={handleExport}
-                className="btn-secondary flex items-center gap-2"
-              >
+              <button onClick={handleExport} className="btn-secondary flex items-center gap-2">
                 <Download className="w-5 h-5" />
                 Export All
               </button>
@@ -164,9 +159,7 @@ export default function ExcelImport() {
           </div>
           <div className="card border-l-4 border-green-500">
             <p className="text-sm text-gray-600">Cached</p>
-            <p className="text-3xl font-bold text-gray-900">
-              {(stats.data as any).cached || 0}
-            </p>
+            <p className="text-3xl font-bold text-gray-900">{(stats.data as any).cached || 0}</p>
           </div>
           <div className="card border-l-4 border-blue-500">
             <p className="text-sm text-gray-600">Categories</p>
@@ -208,16 +201,20 @@ export default function ExcelImport() {
         <h3 className="font-semibold text-blue-900 mb-3">📋 Import Instructions</h3>
         <div className="space-y-2 text-sm text-blue-800">
           <p>
-            <strong>1. Download Template:</strong> Click "Download Template" to get the Excel template with the correct column structure.
+            <strong>1. Download Template:</strong> Click "Download Template" to get the Excel
+            template with the correct column structure.
           </p>
           <p>
-            <strong>2. Fill in Data:</strong> Add your product information. Required columns: Article Number, Description.
+            <strong>2. Fill in Data:</strong> Add your product information. Required columns:
+            Article Number, Description.
           </p>
           <p>
-            <strong>3. Upload File:</strong> Drag and drop or click to upload your completed Excel file.
+            <strong>3. Upload File:</strong> Drag and drop or click to upload your completed Excel
+            file.
           </p>
           <p>
-            <strong>4. Review Results:</strong> Check the import summary and fix any errors if needed.
+            <strong>4. Review Results:</strong> Check the import summary and fix any errors if
+            needed.
           </p>
         </div>
       </div>

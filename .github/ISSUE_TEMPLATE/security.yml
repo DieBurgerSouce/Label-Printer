@@ -1,0 +1,110 @@
+name: Security Vulnerability
+description: Report a security vulnerability (for non-critical issues only)
+title: "[Security]: "
+labels: ["security", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Important Security Notice
+
+        **For critical security vulnerabilities, please DO NOT use this form.**
+
+        Instead, please report critical vulnerabilities privately via:
+        - Email: security@example.com
+        - Or use GitHub's private vulnerability reporting feature
+
+        This form is for non-critical security concerns or security-related questions.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Assessment
+      description: How severe is this security issue?
+      options:
+        - Low - Minor security improvement
+        - Medium - Potential security risk
+        - High - Significant security concern (Consider private disclosure)
+        - Critical - STOP! Use private disclosure instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Vulnerability Description
+      description: Describe the security issue or concern.
+      placeholder: |
+        What is the security issue?
+        How might it be exploited?
+        What is the potential impact?
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected Components
+      description: Which parts of the system are affected?
+      placeholder: |
+        - Component/file affected
+        - Endpoints involved
+        - Dependencies with issues
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce (if applicable)
+      description: How can this vulnerability be demonstrated?
+      placeholder: |
+        1. ...
+        2. ...
+        3. See security issue
+    validations:
+      required: false
+
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested Mitigation
+      description: Do you have suggestions for fixing this issue?
+      placeholder: |
+        Possible fixes...
+        Best practices to apply...
+        Libraries to update...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Vulnerability Type
+      description: What type of vulnerability is this?
+      options:
+        - Authentication/Authorization
+        - Input Validation
+        - Injection (SQL, XSS, etc.)
+        - Sensitive Data Exposure
+        - Dependency Vulnerability
+        - Configuration Issue
+        - Access Control
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: Responsible Disclosure
+      description: Please confirm
+      options:
+        - label: I understand this is for non-critical issues only
+          required: true
+        - label: I have not publicly disclosed this vulnerability
+          required: true
+        - label: I agree to follow responsible disclosure practices
+          required: true

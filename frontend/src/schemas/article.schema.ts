@@ -122,9 +122,7 @@ export const articleFormSchema = z
       // If priceType is 'tiered', tieredPrices must have at least one entry
       if (data.priceType === 'tiered') {
         return (
-          data.tieredPrices &&
-          Array.isArray(data.tieredPrices) &&
-          data.tieredPrices.length > 0
+          data.tieredPrices && Array.isArray(data.tieredPrices) && data.tieredPrices.length > 0
         );
       }
       return true;
@@ -144,7 +142,9 @@ export const articleSearchSchema = z.object({
   published: z.boolean().optional(),
   page: z.number().int().positive().default(1),
   limit: z.number().int().positive().max(100).default(20),
-  sortBy: z.enum(['articleNumber', 'productName', 'price', 'createdAt', 'updatedAt']).default('createdAt'),
+  sortBy: z
+    .enum(['articleNumber', 'productName', 'price', 'createdAt', 'updatedAt'])
+    .default('createdAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
@@ -161,7 +161,9 @@ export function parseTieredPricesText(text: string): TieredPrice[] {
 
   for (const line of lines) {
     // Match patterns like "ab 10 Stück: 45,99 EUR" or "10+: 45.99"
-    const match = line.match(/(?:ab\s*)?(\d+)(?:\s*(?:Stück|St\.|pcs|units|-))?[:\s]+(\d+[.,]\d{2})/i);
+    const match = line.match(
+      /(?:ab\s*)?(\d+)(?:\s*(?:Stück|St\.|pcs|units|-))?[:\s]+(\d+[.,]\d{2})/i
+    );
     if (match) {
       prices.push({
         quantity: parseInt(match[1], 10),

@@ -35,9 +35,8 @@ export function EditorCanvas({
   onMouseUp,
   onResizeMouseDown,
   // setZoom, // unused
-  canvasContainerRef
+  canvasContainerRef,
 }: EditorCanvasProps) {
-
   // Mouse wheel zoom logic is in parent `LabelTemplateEditor`
 
   return (
@@ -48,7 +47,7 @@ export function EditorCanvas({
         alignItems: 'center',
         justifyContent: 'center',
         padding: '40px',
-        position: 'relative'
+        position: 'relative',
       }}
     >
       {/* Zoom Container - captures wheel events */}
@@ -58,7 +57,7 @@ export function EditorCanvas({
           transform: `scale(${zoom})`,
           transformOrigin: 'center center',
           transition: 'transform 0.1s ease-out',
-          cursor: 'default'
+          cursor: 'default',
         }}
       >
         {/* Label Canvas */}
@@ -99,7 +98,7 @@ export function EditorCanvas({
             />
           )}
 
-          {template.elements.map(templateElement => {
+          {template.elements.map((templateElement) => {
             // Get effective element (template + article-specific overrides)
             const element = getEffectiveElement(templateElement.id) || templateElement;
 
@@ -107,19 +106,15 @@ export function EditorCanvas({
               <div
                 key={element.id}
                 onMouseDown={(e) => onSelectElement(element.id, e)}
-                className={`absolute ${
-                  previewMode ? 'cursor-default' : 'cursor-move'
-                } ${
+                className={`absolute ${previewMode ? 'cursor-default' : 'cursor-move'} ${
                   selectedElementId === element.id && !previewMode
                     ? hasOverride(element.id)
-                      ? 'ring-2 ring-orange-500'  // Selected + Override = Orange
-                      : 'ring-2 ring-blue-500'    // Selected only = Blue
+                      ? 'ring-2 ring-orange-500' // Selected + Override = Orange
+                      : 'ring-2 ring-blue-500' // Selected only = Blue
                     : hasOverride(element.id)
-                      ? 'ring-1 ring-orange-400'  // Override only = Thin Orange
+                      ? 'ring-1 ring-orange-400' // Override only = Thin Orange
                       : ''
-                } ${
-                  dragging === element.id ? 'opacity-80' : ''
-                }`}
+                } ${dragging === element.id ? 'opacity-80' : ''}`}
                 style={{
                   left: element.x,
                   top: element.y,
@@ -130,7 +125,7 @@ export function EditorCanvas({
                   color: element.color,
                   textAlign: element.align,
                   padding: '4px',
-                  userSelect: previewMode ? 'text' : 'none'
+                  userSelect: previewMode ? 'text' : 'none',
                 }}
               >
                 {/* Content Wrapper */}
@@ -138,7 +133,7 @@ export function EditorCanvas({
                   className="w-full h-full"
                   style={{
                     pointerEvents: previewMode ? 'auto' : 'none',
-                    position: 'relative'
+                    position: 'relative',
                   }}
                 >
                   {element.type === 'image' ? (
@@ -171,21 +166,23 @@ export function EditorCanvas({
                       </div>
                     )
                   ) : element.type === 'priceTable' ? (
-                    previewArticle && (previewArticle.tieredPricesText || (previewArticle.tieredPrices && previewArticle.tieredPrices.length > 0)) ? (
+                    previewArticle &&
+                    (previewArticle.tieredPricesText ||
+                      (previewArticle.tieredPrices && previewArticle.tieredPrices.length > 0)) ? (
                       <div
                         className="w-full h-full"
                         style={{
                           transformOrigin: 'top left',
-                          transform: `scale(${element.width / (element.originalWidth || element.width)}, ${element.height / (element.originalHeight || element.height)})`
+                          transform: `scale(${element.width / (element.originalWidth || element.width)}, ${element.height / (element.originalHeight || element.height)})`,
                         }}
                       >
-                         <table
+                        <table
                           style={{
                             width: element.originalWidth || element.width,
                             height: element.originalHeight || element.height,
                             borderCollapse: 'collapse',
                             borderColor: element.tableConfig?.borderColor,
-                            borderWidth: element.tableConfig?.borderWidth
+                            borderWidth: element.tableConfig?.borderWidth,
                           }}
                         >
                           <thead>
@@ -198,7 +195,7 @@ export function EditorCanvas({
                                   fontWeight: element.tableConfig?.headerFontWeight,
                                   padding: element.tableConfig?.cellPadding,
                                   border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
-                                  textAlign: element.tableConfig?.headerAlign
+                                  textAlign: element.tableConfig?.headerAlign,
                                 }}
                               >
                                 Menge
@@ -211,7 +208,7 @@ export function EditorCanvas({
                                   fontWeight: element.tableConfig?.headerFontWeight,
                                   padding: element.tableConfig?.cellPadding,
                                   border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
-                                  textAlign: element.tableConfig?.headerAlign
+                                  textAlign: element.tableConfig?.headerAlign,
                                 }}
                               >
                                 Einheit
@@ -224,7 +221,7 @@ export function EditorCanvas({
                                   fontWeight: element.tableConfig?.headerFontWeight,
                                   padding: element.tableConfig?.cellPadding,
                                   border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
-                                  textAlign: element.tableConfig?.headerAlign
+                                  textAlign: element.tableConfig?.headerAlign,
                                 }}
                               >
                                 Preis
@@ -236,36 +233,45 @@ export function EditorCanvas({
                               <tr key={idx}>
                                 <td
                                   style={{
-                                    backgroundColor: idx % 2 === 0 ? element.tableConfig?.rowBg : element.tableConfig?.rowAlternateBg,
+                                    backgroundColor:
+                                      idx % 2 === 0
+                                        ? element.tableConfig?.rowBg
+                                        : element.tableConfig?.rowAlternateBg,
                                     color: element.tableConfig?.rowColor,
                                     fontSize: element.tableConfig?.rowFontSize,
                                     padding: element.tableConfig?.cellPadding,
                                     border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
-                                    textAlign: element.tableConfig?.rowAlign
+                                    textAlign: element.tableConfig?.rowAlign,
                                   }}
                                 >
                                   {row.quantity}
                                 </td>
                                 <td
                                   style={{
-                                    backgroundColor: idx % 2 === 0 ? element.tableConfig?.rowBg : element.tableConfig?.rowAlternateBg,
+                                    backgroundColor:
+                                      idx % 2 === 0
+                                        ? element.tableConfig?.rowBg
+                                        : element.tableConfig?.rowAlternateBg,
                                     color: element.tableConfig?.rowColor,
                                     fontSize: element.tableConfig?.rowFontSize,
                                     padding: element.tableConfig?.cellPadding,
                                     border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
-                                    textAlign: element.tableConfig?.rowAlign
+                                    textAlign: element.tableConfig?.rowAlign,
                                   }}
                                 >
                                   Stück
                                 </td>
                                 <td
                                   style={{
-                                    backgroundColor: idx % 2 === 0 ? element.tableConfig?.rowBg : element.tableConfig?.rowAlternateBg,
+                                    backgroundColor:
+                                      idx % 2 === 0
+                                        ? element.tableConfig?.rowBg
+                                        : element.tableConfig?.rowAlternateBg,
                                     color: element.tableConfig?.rowColor,
                                     fontSize: element.tableConfig?.rowFontSize,
                                     padding: element.tableConfig?.cellPadding,
                                     border: `${element.tableConfig?.borderWidth}px solid ${element.tableConfig?.borderColor}`,
-                                    textAlign: element.tableConfig?.rowAlign
+                                    textAlign: element.tableConfig?.rowAlign,
                                   }}
                                 >
                                   {row.price}
@@ -284,31 +290,36 @@ export function EditorCanvas({
                       </div>
                     )
                   ) : (
-                     <div
+                    <div
                       className="w-full h-full overflow-hidden"
                       style={{
                         transformOrigin: 'top left',
-                        transform: element.originalWidth && element.originalHeight
-                          ? `scale(${element.width / element.originalWidth}, ${element.height / element.originalHeight})`
-                          : 'none',
+                        transform:
+                          element.originalWidth && element.originalHeight
+                            ? `scale(${element.width / element.originalWidth}, ${element.height / element.originalHeight})`
+                            : 'none',
                         width: element.originalWidth || element.width,
-                        height: element.originalHeight || element.height
+                        height: element.originalHeight || element.height,
                       }}
                     >
                       {element.type === 'articleNumber' && previewArticle?.articleNumber ? (
                         <>
-                          <span style={{
-                            fontSize: element.labelFontSize || element.fontSize,
-                            fontWeight: element.labelFontWeight || 'normal',
-                            color: element.labelColor || element.color
-                          }}>
+                          <span
+                            style={{
+                              fontSize: element.labelFontSize || element.fontSize,
+                              fontWeight: element.labelFontWeight || 'normal',
+                              color: element.labelColor || element.color,
+                            }}
+                          >
                             Artikelnummer:{' '}
                           </span>
-                          <span style={{
-                            fontSize: element.fontSize,
-                            fontWeight: element.fontWeight,
-                            color: element.color
-                          }}>
+                          <span
+                            style={{
+                              fontSize: element.fontSize,
+                              fontWeight: element.fontWeight,
+                              color: element.color,
+                            }}
+                          >
                             {previewArticle.articleNumber}
                           </span>
                         </>
@@ -325,42 +336,86 @@ export function EditorCanvas({
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
                       style={{ top: -8, left: -8, cursor: 'nwse-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'nw'); }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'nw');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
-                      style={{ top: -8, left: '50%', transform: 'translateX(-50%)', cursor: 'ns-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'n'); }}
+                      style={{
+                        top: -8,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        cursor: 'ns-resize',
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'n');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
                       style={{ top: -8, right: -8, cursor: 'nesw-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'ne'); }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'ne');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
-                      style={{ top: '50%', right: -8, transform: 'translateY(-50%)', cursor: 'ew-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'e'); }}
+                      style={{
+                        top: '50%',
+                        right: -8,
+                        transform: 'translateY(-50%)',
+                        cursor: 'ew-resize',
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'e');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
                       style={{ bottom: -8, right: -8, cursor: 'nwse-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'se'); }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'se');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
-                      style={{ bottom: -8, left: '50%', transform: 'translateX(-50%)', cursor: 'ns-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 's'); }}
+                      style={{
+                        bottom: -8,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        cursor: 'ns-resize',
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 's');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
                       style={{ bottom: -8, left: -8, cursor: 'nesw-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'sw'); }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'sw');
+                      }}
                     />
                     <div
                       className="absolute w-4 h-4 bg-blue-500 border-2 border-white rounded-full hover:scale-125 transition-transform z-50"
-                      style={{ top: '50%', left: -8, transform: 'translateY(-50%)', cursor: 'ew-resize' }}
-                      onMouseDown={(e) => { e.stopPropagation(); onResizeMouseDown(e, element.id, 'w'); }}
+                      style={{
+                        top: '50%',
+                        left: -8,
+                        transform: 'translateY(-50%)',
+                        cursor: 'ew-resize',
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onResizeMouseDown(e, element.id, 'w');
+                      }}
                     />
                   </>
                 )}

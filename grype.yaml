@@ -1,0 +1,218 @@
+# Grype Configuration
+# Enterprise-grade artifact vulnerability scanning
+# https://github.com/anchore/grype
+
+# Scanning configuration
+scan:
+  # File patterns to include
+  include:
+    - "**/*.js"
+    - "**/*.ts"
+    - "**/*.json"
+    - "**/package.json"
+    - "**/package-lock.json"
+    - "**/yarn.lock"
+    - "**/pnpm-lock.yaml"
+    - "**/Dockerfile"
+    - "**/docker-compose*.yml"
+    - "**/requirements.txt"
+    - "**/Pipfile.lock"
+    - "**/go.mod"
+    - "**/go.sum"
+
+  # File patterns to exclude
+  exclude:
+    - "**/node_modules/**"
+    - "**/.git/**"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/coverage/**"
+    - "**/__tests__/**"
+    - "**/__mocks__/**"
+    - "**/_archive/**"
+    - "**/vendor/**"
+    - "**/*.min.js"
+    - "**/*.bundle.js"
+
+# Output configuration
+output:
+  # Output format: table, json, cyclonedx, spdx-json, sarif
+  format: table
+
+  # Output file (optional)
+  # file: grype-report.json
+
+  # Show suppressed vulnerabilities
+  show-suppressed: false
+
+# Severity configuration
+severity:
+  # Minimum severity to report
+  minimum: low
+
+  # Fail on severity (for CI/CD)
+  fail-on: high
+
+  # Severity levels and their thresholds
+  levels:
+    critical:
+      cvss: 9.0
+      fail: true
+    high:
+      cvss: 7.0
+      fail: true
+    medium:
+      cvss: 4.0
+      fail: false
+    low:
+      cvss: 0.1
+      fail: false
+    negligible:
+      cvss: 0.0
+      fail: false
+
+# Ignore rules
+ignore:
+  # Ignore specific vulnerabilities by ID
+  vulnerabilities: []
+    # - id: CVE-2021-1234
+    #   reason: "False positive - not applicable to our use case"
+    #   expires: 2025-06-01
+
+  # Ignore by package
+  packages: []
+    # - name: "example-package"
+    #   version: "<1.2.3"
+    #   reason: "Dev dependency only"
+
+  # Ignore by path
+  paths:
+    - "__tests__/**"
+    - "__mocks__/**"
+    - "docs/**"
+    - "_archive/**"
+
+# Match configuration
+match:
+  # Package type configuration
+  packages:
+    javascript:
+      # Use precise version matching
+      using-cpes: false
+      # Include dev dependencies
+      include-dev-dependencies: false
+
+    go:
+      using-cpes: false
+      include-main-module: true
+
+    python:
+      using-cpes: false
+
+    java:
+      using-cpes: true
+
+# Database configuration
+db:
+  # Auto-update database
+  auto-update: true
+
+  # Update frequency: always, daily, weekly
+  update-frequency: daily
+
+  # Cache directory
+  cache-dir: .grype-cache
+
+  # Maximum age of database before requiring update
+  max-age: 5d
+
+# SBOM configuration
+sbom:
+  # Generate SBOM
+  enabled: true
+
+  # SBOM format: cyclonedx-json, spdx-json
+  format: cyclonedx-json
+
+  # Output file
+  file: grype-sbom.json
+
+# External sources
+external-sources:
+  # Enable external sources
+  enabled: true
+
+  # External vulnerability sources
+  sources:
+    - nvd
+    - github-advisories
+    - osv
+
+# Performance configuration
+performance:
+  # Number of workers for parallel processing
+  workers: 4
+
+  # Enable parallel scanning
+  parallel: true
+
+# Check configuration for specific ecosystems
+check:
+  # Node.js/npm
+  npm:
+    enabled: true
+    audit: true
+
+  # Go modules
+  go:
+    enabled: true
+    checksum: true
+
+  # Python/pip
+  python:
+    enabled: true
+    safety-db: true
+
+  # Container images
+  container:
+    enabled: true
+    layers: true
+
+# Reporting configuration
+report:
+  # Include remediation suggestions
+  remediation: true
+
+  # Include CVSS scores
+  cvss: true
+
+  # Include fix versions
+  fix-versions: true
+
+  # Include vulnerability descriptions
+  descriptions: true
+
+  # Include related CVEs
+  related: true
+
+# Compliance configuration
+compliance:
+  # Standards to check against
+  standards:
+    - pci-dss
+    - hipaa
+    - soc2
+
+  # Generate compliance report
+  report: true
+
+# Notification configuration (for CI/CD)
+notify:
+  # Webhook URL for notifications
+  # webhook: "https://hooks.slack.com/services/..."
+
+  # Notification on severity
+  on-severity: high
+
+  # Include summary in notification
+  summary: true

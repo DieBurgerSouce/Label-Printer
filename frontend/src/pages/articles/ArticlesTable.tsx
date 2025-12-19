@@ -70,10 +70,7 @@ export default function ArticlesTable({
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-300 sticky top-0 z-10">
             <tr>
               <th className="px-4 py-3 text-left">
-                <button
-                  onClick={onToggleSelectAll}
-                  className="hover:bg-gray-100 p-1 rounded"
-                >
+                <button onClick={onToggleSelectAll} className="hover:bg-gray-100 p-1 rounded">
                   {selectedArticles.size === articles.length && articles.length > 0 ? (
                     <CheckSquare className="w-5 h-5 text-blue-600" />
                   ) : (
@@ -84,32 +81,22 @@ export default function ArticlesTable({
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                 Artikelnummer
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                Bild
-              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Bild</th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                 Produktname
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                 Beschreibung
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                Preis
-              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Preis</th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                 Staffelpreise
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                Shop URL
-              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Shop URL</th>
               {showQrCodes && (
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                  QR-Code
-                </th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">QR-Code</th>
               )}
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                Aktionen
-              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Aktionen</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -155,11 +142,7 @@ function ArticleRow({
   isGenerating,
 }: ArticleRowProps) {
   return (
-    <tr
-      className={`hover:bg-gray-50 transition-colors ${
-        isSelected ? 'bg-blue-50' : ''
-      }`}
-    >
+    <tr className={`hover:bg-gray-50 transition-colors ${isSelected ? 'bg-blue-50' : ''}`}>
       <td className="px-4 py-3">
         <button
           onClick={() => onToggleSelect(article.id)}
@@ -191,9 +174,7 @@ function ArticleRow({
         <p className="font-medium text-gray-900 max-w-xs truncate">{article.productName}</p>
       </td>
       <td className="px-4 py-3">
-        <p className="text-sm text-gray-600 max-w-xs truncate">
-          {article.description || '-'}
-        </p>
+        <p className="text-sm text-gray-600 max-w-xs truncate">{article.description || '-'}</p>
       </td>
       <td className="px-4 py-3">
         <PriceCell article={article} />
@@ -276,11 +257,7 @@ function PriceCell({ article }: { article: Product }) {
 
   const text = (article.tieredPricesText || '').toLowerCase();
   if (text.includes('auf anfrage') || text.includes('preis auf anfrage')) {
-    return (
-      <span className="text-sm text-orange-600 font-medium">
-        Auf Anfrage
-      </span>
-    );
+    return <span className="text-sm text-orange-600 font-medium">Auf Anfrage</span>;
   }
 
   if (
@@ -295,17 +272,24 @@ function PriceCell({ article }: { article: Product }) {
 
 function TieredPricesCell({ article }: { article: Product }) {
   // Prioritize structured tieredPrices over OCR text
-  if (article.tieredPrices && Array.isArray(article.tieredPrices) && article.tieredPrices.length > 0) {
+  if (
+    article.tieredPrices &&
+    Array.isArray(article.tieredPrices) &&
+    article.tieredPrices.length > 0
+  ) {
     return (
       <div className="text-sm text-gray-600">
-        {article.tieredPrices.map((tier: { quantity: number; price: number | string }, i: number) => {
-          const price = typeof tier.price === 'string' ? parseFloat(tier.price) : tier.price;
-          return (
-            <div key={i}>
-              {i === 0 ? `Bis ${tier.quantity}` : `Ab ${tier.quantity}`}: {price ? price.toFixed(2) : '-'} {article.currency}
-            </div>
-          );
-        })}
+        {article.tieredPrices.map(
+          (tier: { quantity: number; price: number | string }, i: number) => {
+            const price = typeof tier.price === 'string' ? parseFloat(tier.price) : tier.price;
+            return (
+              <div key={i}>
+                {i === 0 ? `Bis ${tier.quantity}` : `Ab ${tier.quantity}`}:{' '}
+                {price ? price.toFixed(2) : '-'} {article.currency}
+              </div>
+            );
+          }
+        )}
       </div>
     );
   }
@@ -315,34 +299,27 @@ function TieredPricesCell({ article }: { article: Product }) {
 
     // Handle "Preis auf Anfrage" / "Auf Anfrage" specially
     if (text.includes('auf anfrage') || text.includes('preis auf anfrage')) {
-      return (
-        <span className="text-sm text-gray-500">
-          Siehe Basispreis
-        </span>
-      );
+      return <span className="text-sm text-gray-500">Siehe Basispreis</span>;
     }
 
     // Clean up OCR text - remove obvious garbage
     const cleanText = article.tieredPricesText
       .split('\n')
-      .filter(line =>
-        // Keep lines that contain price patterns
-        (line.includes('\u20AC') || line.includes('EUR') || /\d+[,\.]\d+/.test(line)) &&
-        // Remove obvious garbage
-        !line.includes('\u00A9') &&
-        !line.includes('Service') &&
-        !line.includes('Hilfe') &&
-        !line.includes('Goooe') &&
-        !line.includes('eingeben')
+      .filter(
+        (line) =>
+          // Keep lines that contain price patterns
+          (line.includes('\u20AC') || line.includes('EUR') || /\d+[,\.]\d+/.test(line)) &&
+          // Remove obvious garbage
+          !line.includes('\u00A9') &&
+          !line.includes('Service') &&
+          !line.includes('Hilfe') &&
+          !line.includes('Goooe') &&
+          !line.includes('eingeben')
       )
       .join('\n');
 
     if (cleanText) {
-      return (
-        <div className="text-sm text-gray-600 whitespace-pre-line font-mono">
-          {cleanText}
-        </div>
-      );
+      return <div className="text-sm text-gray-600 whitespace-pre-line font-mono">{cleanText}</div>;
     }
 
     return <span className="text-gray-500 text-sm">OCR-Fehler</span>;

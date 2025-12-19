@@ -5,8 +5,23 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, FileSpreadsheet, ArrowRight, ArrowLeft, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { articlesApi, type ExcelPreviewData, type MatchColumnConfig, type FieldMapping, type ExcelImportConfig, type ExcelImportResult } from '../services/api';
+import {
+  Upload,
+  FileSpreadsheet,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+} from 'lucide-react';
+import {
+  articlesApi,
+  type ExcelPreviewData,
+  type MatchColumnConfig,
+  type FieldMapping,
+  type ExcelImportConfig,
+  type ExcelImportResult,
+} from '../services/api';
 import { useUiStore } from '../store/uiStore';
 
 type Step = 1 | 2 | 3 | 4;
@@ -27,7 +42,7 @@ export default function ExcelImportNew() {
   const [previewData, setPreviewData] = useState<ExcelPreviewData | null>(null);
   const [matchColumn, setMatchColumn] = useState<MatchColumnConfig>({
     type: 'auto',
-    value: ''
+    value: '',
   });
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>([]);
   const [validFields, setValidFields] = useState<ValidField[]>([]);
@@ -37,13 +52,16 @@ export default function ExcelImportNew() {
 
   // Load valid fields on mount
   useEffect(() => {
-    articlesApi.getValidExcelFields().then(response => {
-      if (response.data) {
-        setValidFields(response.data);
-      }
-    }).catch(error => {
-      console.error('Failed to load valid fields:', error);
-    });
+    articlesApi
+      .getValidExcelFields()
+      .then((response) => {
+        if (response.data) {
+          setValidFields(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load valid fields:', error);
+      });
   }, []);
 
   // ========================================
@@ -54,7 +72,7 @@ export default function ExcelImportNew() {
     if (!selectedFile.name.match(/\.(xlsx|xls)$/i)) {
       showToast({
         type: 'error',
-        message: 'Bitte wähle eine Excel-Datei (.xlsx oder .xls)'
+        message: 'Bitte wähle eine Excel-Datei (.xlsx oder .xls)',
       });
       return;
     }
@@ -70,26 +88,26 @@ export default function ExcelImportNew() {
 
         // Try auto-detection for match column
         const articleNumberPatterns = ['artikelnummer', 'article number', 'art-nr', 'sku'];
-        const autoDetected = response.data.headers.findIndex(h =>
-          articleNumberPatterns.some(pattern => h.toLowerCase().includes(pattern))
+        const autoDetected = response.data.headers.findIndex((h) =>
+          articleNumberPatterns.some((pattern) => h.toLowerCase().includes(pattern))
         );
 
         if (autoDetected !== -1) {
           setMatchColumn({
             type: 'auto',
-            value: response.data.headers[autoDetected]
+            value: response.data.headers[autoDetected],
           });
         }
 
         showToast({
           type: 'success',
-          message: 'Excel-Datei erfolgreich geladen!'
+          message: 'Excel-Datei erfolgreich geladen!',
         });
       }
     } catch (error: any) {
       showToast({
         type: 'error',
-        message: error.response?.data?.error || 'Fehler beim Laden der Datei'
+        message: error.response?.data?.error || 'Fehler beim Laden der Datei',
       });
     } finally {
       setIsUploading(false);
@@ -116,7 +134,7 @@ export default function ExcelImportNew() {
     if (!matchColumn.value && matchColumn.type !== 'auto') {
       showToast({
         type: 'error',
-        message: 'Bitte wähle eine Spalte für die Artikelnummer'
+        message: 'Bitte wähle eine Spalte für die Artikelnummer',
       });
       return;
     }
@@ -135,15 +153,27 @@ export default function ExcelImportNew() {
 
         // Map common fields
         if (lowerHeader.includes('beschreibung') || lowerHeader.includes('description')) {
-          defaultMappings.push({ excelColumn: columnLetter, dbField: 'description', type: 'index' });
+          defaultMappings.push({
+            excelColumn: columnLetter,
+            dbField: 'description',
+            type: 'index',
+          });
         } else if (lowerHeader.includes('preis') || lowerHeader.includes('price')) {
           defaultMappings.push({ excelColumn: columnLetter, dbField: 'price', type: 'index' });
         } else if (lowerHeader.includes('kategorie') || lowerHeader.includes('category')) {
           defaultMappings.push({ excelColumn: columnLetter, dbField: 'category', type: 'index' });
         } else if (lowerHeader.includes('hersteller') || lowerHeader.includes('manufacturer')) {
-          defaultMappings.push({ excelColumn: columnLetter, dbField: 'manufacturer', type: 'index' });
+          defaultMappings.push({
+            excelColumn: columnLetter,
+            dbField: 'manufacturer',
+            type: 'index',
+          });
         } else if (lowerHeader.includes('produktname') || lowerHeader.includes('product name')) {
-          defaultMappings.push({ excelColumn: columnLetter, dbField: 'productName', type: 'index' });
+          defaultMappings.push({
+            excelColumn: columnLetter,
+            dbField: 'productName',
+            type: 'index',
+          });
         }
       });
     }
@@ -174,17 +204,17 @@ export default function ExcelImportNew() {
     if (fieldMappings.length === 0) {
       showToast({
         type: 'error',
-        message: 'Bitte wähle mindestens ein Feld zum Überschreiben aus'
+        message: 'Bitte wähle mindestens ein Feld zum Überschreiben aus',
       });
       return;
     }
 
     // Validate all mappings have both columns and fields selected
-    const invalid = fieldMappings.some(m => !m.excelColumn || !m.dbField);
+    const invalid = fieldMappings.some((m) => !m.excelColumn || !m.dbField);
     if (invalid) {
       showToast({
         type: 'error',
-        message: 'Bitte fülle alle Feld-Mappings aus oder entferne unvollständige'
+        message: 'Bitte fülle alle Feld-Mappings aus oder entferne unvollständige',
       });
       return;
     }
@@ -205,7 +235,7 @@ export default function ExcelImportNew() {
       const config: ExcelImportConfig = {
         matchColumn,
         fieldMappings,
-        startRow: 2 // Skip header row
+        startRow: 2, // Skip header row
       };
 
       const response = await articlesApi.excelImport(file, config);
@@ -214,13 +244,13 @@ export default function ExcelImportNew() {
         setImportResult(response.data);
         showToast({
           type: 'success',
-          message: `Import erfolgreich! ${response.data.updatedArticles} Artikel aktualisiert.`
+          message: `Import erfolgreich! ${response.data.updatedArticles} Artikel aktualisiert.`,
         });
       }
     } catch (error: any) {
       showToast({
         type: 'error',
-        message: error.response?.data?.error || 'Fehler beim Import'
+        message: error.response?.data?.error || 'Fehler beim Import',
       });
     } finally {
       setIsImporting(false);
@@ -265,17 +295,17 @@ export default function ExcelImportNew() {
             <div key={step} className="flex items-center flex-1">
               <div
                 className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold ${
-                  currentStep >= step
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-600'
+                  currentStep >= step ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 {currentStep > step ? <CheckCircle2 className="w-6 h-6" /> : step}
               </div>
               <div className="ml-3 flex-1">
-                <p className={`text-sm font-medium ${
-                  currentStep >= step ? 'text-blue-600' : 'text-gray-500'
-                }`}>
+                <p
+                  className={`text-sm font-medium ${
+                    currentStep >= step ? 'text-blue-600' : 'text-gray-500'
+                  }`}
+                >
                   {step === 1 && 'Excel hochladen'}
                   {step === 2 && 'Artikelnummer-Spalte'}
                   {step === 3 && 'Felder zuordnen'}
@@ -283,9 +313,11 @@ export default function ExcelImportNew() {
                 </p>
               </div>
               {step < 4 && (
-                <ArrowRight className={`w-5 h-5 mx-2 ${
-                  currentStep > step ? 'text-blue-600' : 'text-gray-400'
-                }`} />
+                <ArrowRight
+                  className={`w-5 h-5 mx-2 ${
+                    currentStep > step ? 'text-blue-600' : 'text-gray-400'
+                  }`}
+                />
               )}
             </div>
           ))}
@@ -365,9 +397,7 @@ export default function ExcelImportNew() {
                 ))}
               </tbody>
             </table>
-            <p className="text-xs text-gray-500 mt-2">
-              Gesamt: {previewData.totalRows} Zeilen
-            </p>
+            <p className="text-xs text-gray-500 mt-2">Gesamt: {previewData.totalRows} Zeilen</p>
           </div>
 
           {/* Match Column Selection */}
@@ -553,11 +583,15 @@ export default function ExcelImportNew() {
               <p className="font-semibold text-blue-900">Zusammenfassung:</p>
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>• Excel-Zeilen: {previewData?.totalRows}</li>
-                <li>• Match-Spalte: {matchColumn.type === 'auto' ? `${matchColumn.value} (Auto)` : matchColumn.value}</li>
+                <li>
+                  • Match-Spalte:{' '}
+                  {matchColumn.type === 'auto' ? `${matchColumn.value} (Auto)` : matchColumn.value}
+                </li>
                 <li>• Zu aktualisierende Felder: {fieldMappings.length}</li>
                 {fieldMappings.map((m, i) => (
                   <li key={i} className="ml-4">
-                    - {m.excelColumn} → {validFields.find(f => f.field === m.dbField)?.description}
+                    - {m.excelColumn} →{' '}
+                    {validFields.find((f) => f.field === m.dbField)?.description}
                   </li>
                 ))}
               </ul>
@@ -576,7 +610,9 @@ export default function ExcelImportNew() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="card bg-green-50 border-green-200">
                   <p className="text-sm text-green-600">Aktualisiert</p>
-                  <p className="text-3xl font-bold text-green-900">{importResult.updatedArticles}</p>
+                  <p className="text-3xl font-bold text-green-900">
+                    {importResult.updatedArticles}
+                  </p>
                 </div>
                 <div className="card bg-blue-50 border-blue-200">
                   <p className="text-sm text-blue-600">Gematcht</p>

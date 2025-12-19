@@ -1,0 +1,83 @@
+# Kubernetes Service
+# Enterprise service configuration for Screenshot_Algo
+apiVersion: v1
+kind: Service
+metadata:
+  name: screenshot-algo
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: api
+    app.kubernetes.io/managed-by: kustomize
+  annotations:
+    # Service topology
+    service.kubernetes.io/topology-aware-hints: "auto"
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: api
+---
+# Headless Service for StatefulSet (if needed)
+apiVersion: v1
+kind: Service
+metadata:
+  name: screenshot-algo-headless
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: api
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: api
+---
+# External Service for production load balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: screenshot-algo-lb
+  namespace: screenshot-algo
+  labels:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: api
+  annotations:
+    # AWS NLB annotations (if using AWS)
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+    # Health check
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "HTTP"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: http
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: screenshot-algo
+    app.kubernetes.io/component: api

@@ -15,7 +15,14 @@ const formats: FormatOption[] = [
   { id: 'A4', name: 'A4', dimensions: '210 × 297 mm', width: 210, height: 297, popular: true },
   { id: 'A3', name: 'A3', dimensions: '297 × 420 mm', width: 297, height: 420 },
   { id: 'A5', name: 'A5', dimensions: '148 × 210 mm', width: 148, height: 210 },
-  { id: 'Letter', name: 'Letter', dimensions: '8.5 × 11 in', width: 215.9, height: 279.4, popular: true },
+  {
+    id: 'Letter',
+    name: 'Letter',
+    dimensions: '8.5 × 11 in',
+    width: 215.9,
+    height: 279.4,
+    popular: true,
+  },
   { id: 'Custom', name: 'Custom', dimensions: 'Custom size', width: 0, height: 0 },
 ];
 
@@ -76,15 +83,11 @@ export default function FormatSelector({
           <h4 className="font-medium text-gray-900 mb-3">Custom Dimensions</h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Width (mm)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Width (mm)</label>
               <input
                 type="number"
                 value={customWidth || ''}
-                onChange={(e) =>
-                  onCustomSizeChange?.(Number(e.target.value), customHeight || 0)
-                }
+                onChange={(e) => onCustomSizeChange?.(Number(e.target.value), customHeight || 0)}
                 className="input w-full"
                 placeholder="210"
                 min="50"
@@ -92,15 +95,11 @@ export default function FormatSelector({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Height (mm)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Height (mm)</label>
               <input
                 type="number"
                 value={customHeight || ''}
-                onChange={(e) =>
-                  onCustomSizeChange?.(customWidth || 0, Number(e.target.value))
-                }
+                onChange={(e) => onCustomSizeChange?.(customWidth || 0, Number(e.target.value))}
                 className="input w-full"
                 placeholder="297"
                 min="50"

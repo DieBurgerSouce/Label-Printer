@@ -1,16 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { Product } from '@/services/api';
-import {
-    Download,
-    Eye,
-    FileText,
-    Maximize2,
-    Printer,
-    Save,
-    ZoomIn,
-    ZoomOut
-} from 'lucide-react';
+import { Download, Eye, FileText, Maximize2, Printer, Save, ZoomIn, ZoomOut } from 'lucide-react';
 import type { LabelTemplate } from '../types';
 
 interface EditorToolbarProps {
@@ -44,7 +35,7 @@ export function EditorToolbar({
   onConvertToRenderingTemplate,
   onExportPdf,
   onSave,
-  previewArticle
+  previewArticle,
 }: EditorToolbarProps) {
   return (
     <div className="bg-white border-b px-6 py-4 flex items-center justify-between shadow-sm">
@@ -52,7 +43,7 @@ export function EditorToolbar({
         <Input
           type="text"
           value={template.name}
-          onChange={e => onNameChange(e.target.value)}
+          onChange={(e) => onNameChange(e.target.value)}
           className="text-xl font-bold border-none focus-visible:ring-1 focus-visible:ring-primary w-[300px] px-0 h-auto"
           placeholder="Template Name"
         />
@@ -73,9 +64,7 @@ export function EditorToolbar({
           </Button>
 
           <div className="px-2 py-1 bg-white rounded border border-gray-200 min-w-[60px] text-center">
-            <span className="text-sm font-medium text-gray-900">
-              {Math.round(zoom * 100)}%
-            </span>
+            <span className="text-sm font-medium text-gray-900">{Math.round(zoom * 100)}%</span>
           </div>
 
           <Button
@@ -103,7 +92,7 @@ export function EditorToolbar({
         </div>
 
         <Button
-          variant={previewMode ? "default" : "secondary"}
+          variant={previewMode ? 'default' : 'secondary'}
           onClick={onTogglePreviewMode}
           className="gap-2"
         >
@@ -142,10 +131,7 @@ export function EditorToolbar({
           </Button>
         )}
 
-        <Button
-          onClick={onSave}
-          className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
-        >
+        <Button onClick={onSave} className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
           <Save className="w-4 h-4" />
           Speichern
         </Button>

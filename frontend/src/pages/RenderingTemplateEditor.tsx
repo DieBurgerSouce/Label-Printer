@@ -7,15 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  Save,
-  Eye,
-  Plus,
-  Trash2,
-  ArrowLeft,
-  FileText,
-  Image as ImageIcon
-} from 'lucide-react';
+import { Save, Eye, Plus, Trash2, ArrowLeft, FileText, Image as ImageIcon } from 'lucide-react';
 import { renderingTemplateApi, articlesApi, type Product } from '../services/api';
 import { useUiStore } from '../store/uiStore';
 
@@ -73,14 +65,14 @@ export default function RenderingTemplateEditor() {
       width: 400,
       height: 300,
       unit: 'px',
-      dpi: 300
+      dpi: 300,
     },
     layers: [],
     fieldStyles: [],
     formattingOptions: {},
     globalStyles: {},
     variables: [],
-    settings: {}
+    settings: {},
   });
 
   const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
@@ -131,46 +123,49 @@ export default function RenderingTemplateEditor() {
       name: `${type}-${template.layers.length + 1}`,
       content: getDefaultContent(type),
       x: 50,
-      y: 50 + (template.layers.length * 40),
+      y: 50 + template.layers.length * 40,
       width: type === 'image' ? 100 : 200,
       height: type === 'image' ? 100 : 40,
       fontSize: 16,
       fontWeight: 'normal',
       color: '#000000',
       backgroundColor: type === 'shape' ? '#e5e7eb' : 'transparent',
-      visible: true
+      visible: true,
     };
 
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
-      layers: [...prev.layers, newLayer]
+      layers: [...prev.layers, newLayer],
     }));
     setSelectedLayer(newLayer.id);
   };
 
   const getDefaultContent = (type: TemplateLayer['type']): string => {
     switch (type) {
-      case 'text': return '{{productName}}';
-      case 'image': return '{{imageUrl}}';
-      case 'shape': return '';
-      case 'barcode': return '{{articleNumber}}';
-      default: return '';
+      case 'text':
+        return '{{productName}}';
+      case 'image':
+        return '{{imageUrl}}';
+      case 'shape':
+        return '';
+      case 'barcode':
+        return '{{articleNumber}}';
+      default:
+        return '';
     }
   };
 
   const updateLayer = (id: string, updates: Partial<TemplateLayer>) => {
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
-      layers: prev.layers.map(layer =>
-        layer.id === id ? { ...layer, ...updates } : layer
-      )
+      layers: prev.layers.map((layer) => (layer.id === id ? { ...layer, ...updates } : layer)),
     }));
   };
 
   const deleteLayer = (id: string) => {
-    setTemplate(prev => ({
+    setTemplate((prev) => ({
       ...prev,
-      layers: prev.layers.filter(layer => layer.id !== id)
+      layers: prev.layers.filter((layer) => layer.id !== id),
     }));
     if (selectedLayer === id) {
       setSelectedLayer(null);
@@ -219,13 +214,10 @@ export default function RenderingTemplateEditor() {
       const data = testArticle || {
         productName: 'Test Product',
         articleNumber: '12345',
-        price: 99.99
+        price: 99.99,
       };
 
-      const blob = await renderingTemplateApi.renderImage(
-        editId || template.id!,
-        data
-      );
+      const blob = await renderingTemplateApi.renderImage(editId || template.id!, data);
 
       const url = URL.createObjectURL(blob);
       setPreviewImage(url);
@@ -235,7 +227,7 @@ export default function RenderingTemplateEditor() {
     }
   };
 
-  const selectedLayerData = template.layers.find(l => l.id === selectedLayer);
+  const selectedLayerData = template.layers.find((l) => l.id === selectedLayer);
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
@@ -251,7 +243,7 @@ export default function RenderingTemplateEditor() {
           <input
             type="text"
             value={template.name}
-            onChange={e => setTemplate(prev => ({ ...prev, name: e.target.value }))}
+            onChange={(e) => setTemplate((prev) => ({ ...prev, name: e.target.value }))}
             className="text-xl font-bold border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2"
           />
         </div>
@@ -260,9 +252,7 @@ export default function RenderingTemplateEditor() {
           <button
             onClick={() => setPreviewMode(!previewMode)}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-              previewMode
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              previewMode ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Eye className="w-4 h-4" />
@@ -332,7 +322,9 @@ export default function RenderingTemplateEditor() {
                     key={layer.id}
                     onClick={() => setSelectedLayer(layer.id)}
                     className={`p-2 rounded cursor-pointer flex items-center justify-between ${
-                      selectedLayer === layer.id ? 'bg-blue-100 border border-blue-500' : 'bg-gray-50 hover:bg-gray-100'
+                      selectedLayer === layer.id
+                        ? 'bg-blue-100 border border-blue-500'
+                        : 'bg-gray-50 hover:bg-gray-100'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -363,10 +355,12 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={template.dimensions.width}
-                    onChange={e => setTemplate(prev => ({
-                      ...prev,
-                      dimensions: { ...prev.dimensions, width: parseInt(e.target.value) }
-                    }))}
+                    onChange={(e) =>
+                      setTemplate((prev) => ({
+                        ...prev,
+                        dimensions: { ...prev.dimensions, width: parseInt(e.target.value) },
+                      }))
+                    }
                     className="w-full px-3 py-2 border rounded text-sm"
                   />
                 </div>
@@ -376,10 +370,12 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={template.dimensions.height}
-                    onChange={e => setTemplate(prev => ({
-                      ...prev,
-                      dimensions: { ...prev.dimensions, height: parseInt(e.target.value) }
-                    }))}
+                    onChange={(e) =>
+                      setTemplate((prev) => ({
+                        ...prev,
+                        dimensions: { ...prev.dimensions, height: parseInt(e.target.value) },
+                      }))
+                    }
                     className="w-full px-3 py-2 border rounded text-sm"
                   />
                 </div>
@@ -389,10 +385,12 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={template.dimensions.dpi}
-                    onChange={e => setTemplate(prev => ({
-                      ...prev,
-                      dimensions: { ...prev.dimensions, dpi: parseInt(e.target.value) }
-                    }))}
+                    onChange={(e) =>
+                      setTemplate((prev) => ({
+                        ...prev,
+                        dimensions: { ...prev.dimensions, dpi: parseInt(e.target.value) },
+                      }))
+                    }
                     className="w-full px-3 py-2 border rounded text-sm"
                   />
                 </div>
@@ -401,7 +399,9 @@ export default function RenderingTemplateEditor() {
                   <label className="text-sm text-gray-600">Beschreibung</label>
                   <textarea
                     value={template.description || ''}
-                    onChange={e => setTemplate(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) =>
+                      setTemplate((prev) => ({ ...prev, description: e.target.value }))
+                    }
                     className="w-full px-3 py-2 border rounded text-sm"
                     rows={3}
                     placeholder="Template-Beschreibung..."
@@ -433,20 +433,18 @@ export default function RenderingTemplateEditor() {
               style={{
                 width: template.dimensions.width,
                 height: template.dimensions.height,
-                border: '1px solid #e5e7eb'
+                border: '1px solid #e5e7eb',
               }}
             >
               {/* Render layers */}
               {template.layers
-                .filter(layer => layer.visible)
-                .map(layer => (
+                .filter((layer) => layer.visible)
+                .map((layer) => (
                   <div
                     key={layer.id}
                     onClick={() => !previewMode && setSelectedLayer(layer.id)}
                     className={`absolute ${
-                      !previewMode && selectedLayer === layer.id
-                        ? 'ring-2 ring-blue-500'
-                        : ''
+                      !previewMode && selectedLayer === layer.id ? 'ring-2 ring-blue-500' : ''
                     } ${!previewMode ? 'cursor-pointer' : ''}`}
                     style={{
                       left: layer.x,
@@ -458,20 +456,16 @@ export default function RenderingTemplateEditor() {
                       color: layer.color,
                       backgroundColor: layer.backgroundColor,
                       padding: '4px',
-                      overflow: 'hidden'
+                      overflow: 'hidden',
                     }}
                   >
-                    {layer.type === 'text' && (
-                      <div>{layer.content || 'Text Layer'}</div>
-                    )}
+                    {layer.type === 'text' && <div>{layer.content || 'Text Layer'}</div>}
                     {layer.type === 'image' && (
                       <div className="w-full h-full bg-gray-100 border border-gray-300 flex items-center justify-center">
                         <ImageIcon className="w-8 h-8 text-gray-400" />
                       </div>
                     )}
-                    {layer.type === 'shape' && (
-                      <div className="w-full h-full" />
-                    )}
+                    {layer.type === 'shape' && <div className="w-full h-full" />}
                   </div>
                 ))}
 
@@ -507,7 +501,7 @@ export default function RenderingTemplateEditor() {
                 <input
                   type="text"
                   value={selectedLayerData.name}
-                  onChange={e => updateLayer(selectedLayerData.id, { name: e.target.value })}
+                  onChange={(e) => updateLayer(selectedLayerData.id, { name: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg"
                 />
               </div>
@@ -517,7 +511,7 @@ export default function RenderingTemplateEditor() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
                 <textarea
                   value={selectedLayerData.content}
-                  onChange={e => updateLayer(selectedLayerData.id, { content: e.target.value })}
+                  onChange={(e) => updateLayer(selectedLayerData.id, { content: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg"
                   rows={3}
                   placeholder="z.B. {{productName}}, {{price}}, etc."
@@ -534,7 +528,9 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={selectedLayerData.x}
-                    onChange={e => updateLayer(selectedLayerData.id, { x: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      updateLayer(selectedLayerData.id, { x: parseInt(e.target.value) })
+                    }
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
@@ -543,7 +539,9 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={selectedLayerData.y}
-                    onChange={e => updateLayer(selectedLayerData.id, { y: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      updateLayer(selectedLayerData.id, { y: parseInt(e.target.value) })
+                    }
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
@@ -556,7 +554,9 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={selectedLayerData.width}
-                    onChange={e => updateLayer(selectedLayerData.id, { width: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      updateLayer(selectedLayerData.id, { width: parseInt(e.target.value) })
+                    }
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
@@ -565,7 +565,9 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="number"
                     value={selectedLayerData.height}
-                    onChange={e => updateLayer(selectedLayerData.id, { height: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      updateLayer(selectedLayerData.id, { height: parseInt(e.target.value) })
+                    }
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
@@ -575,20 +577,28 @@ export default function RenderingTemplateEditor() {
               {selectedLayerData.type === 'text' && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Schriftgröße</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Schriftgröße
+                    </label>
                     <input
                       type="number"
                       value={selectedLayerData.fontSize}
-                      onChange={e => updateLayer(selectedLayerData.id, { fontSize: parseInt(e.target.value) })}
+                      onChange={(e) =>
+                        updateLayer(selectedLayerData.id, { fontSize: parseInt(e.target.value) })
+                      }
                       className="w-full px-3 py-2 border rounded-lg"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Schriftstärke</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Schriftstärke
+                    </label>
                     <select
                       value={selectedLayerData.fontWeight}
-                      onChange={e => updateLayer(selectedLayerData.id, { fontWeight: e.target.value })}
+                      onChange={(e) =>
+                        updateLayer(selectedLayerData.id, { fontWeight: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-lg"
                     >
                       <option value="normal">Normal</option>
@@ -597,11 +607,13 @@ export default function RenderingTemplateEditor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Textfarbe</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Textfarbe
+                    </label>
                     <input
                       type="color"
                       value={selectedLayerData.color}
-                      onChange={e => updateLayer(selectedLayerData.id, { color: e.target.value })}
+                      onChange={(e) => updateLayer(selectedLayerData.id, { color: e.target.value })}
                       className="w-full h-10 border rounded-lg"
                     />
                   </div>
@@ -610,11 +622,15 @@ export default function RenderingTemplateEditor() {
 
               {/* Background Color */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hintergrundfarbe</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Hintergrundfarbe
+                </label>
                 <input
                   type="color"
                   value={selectedLayerData.backgroundColor || '#ffffff'}
-                  onChange={e => updateLayer(selectedLayerData.id, { backgroundColor: e.target.value })}
+                  onChange={(e) =>
+                    updateLayer(selectedLayerData.id, { backgroundColor: e.target.value })
+                  }
                   className="w-full h-10 border rounded-lg"
                 />
               </div>
@@ -625,7 +641,9 @@ export default function RenderingTemplateEditor() {
                   <input
                     type="checkbox"
                     checked={selectedLayerData.visible}
-                    onChange={e => updateLayer(selectedLayerData.id, { visible: e.target.checked })}
+                    onChange={(e) =>
+                      updateLayer(selectedLayerData.id, { visible: e.target.checked })
+                    }
                     className="rounded"
                   />
                   <span className="text-sm font-medium text-gray-700">Sichtbar</span>

@@ -123,9 +123,7 @@ export default function PreviewTable({
       </div>
 
       {products.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          No products to preview
-        </div>
+        <div className="text-center py-8 text-gray-500">No products to preview</div>
       )}
     </div>
   );
