@@ -1,70 +1,112 @@
 # ==================================
-# Stage 1: Build Stage
+# Screenshot Algo Backend Dockerfile
+# Optimized multi-stage build
 # ==================================
-FROM node:20-bullseye AS builder
+
+# Build arguments for versioning
+ARG NODE_VERSION=20
+ARG BUILD_DATE
+ARG VERSION=1.0.0
+ARG VCS_REF
+
+# ==================================
+# Stage 1: Dependencies
+# ==================================
+FROM node:${NODE_VERSION}-bookworm-slim AS deps
 
 WORKDIR /app
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
+# Install build dependencies for native modules
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy package files (explicit to ensure package-lock.json is included)
+# Copy package files
 COPY package.json package-lock.json ./
-COPY prisma ./prisma/
 
-# Install dependencies
+# Install ALL dependencies (including dev for build)
 RUN npm ci && npm cache clean --force
+
+# ==================================
+# Stage 2: Builder
+# ==================================
+FROM node:${NODE_VERSION}-bookworm-slim AS builder
+
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy Prisma schema first (for generation)
+COPY prisma ./prisma/
 
 # Generate Prisma Client
 RUN npx prisma generate
 
 # Copy source code
-COPY . .
+COPY tsconfig.json ./
+COPY src ./src/
 
 # Build TypeScript
 RUN npm run build
 
 # ==================================
-# Stage 2: Production Stage
+# Stage 3: Production Dependencies
 # ==================================
-FROM node:20-bullseye-slim
+FROM node:${NODE_VERSION}-bookworm-slim AS prod-deps
 
 WORKDIR /app
 
-# Install runtime dependencies:
-# - Tesseract OCR for text recognition
-# - Puppeteer/Chrome dependencies for web scraping
-# - curl for healthchecks
-RUN apt-get update && apt-get install -y \
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install production dependencies only
+RUN npm ci --only=production && npm cache clean --force
+
+# ==================================
+# Stage 4: Production Runtime
+# ==================================
+FROM node:${NODE_VERSION}-bookworm-slim AS production
+
+# Labels for container management
+LABEL org.opencontainers.image.title="Screenshot Algo Backend" \
+      org.opencontainers.image.description="Enterprise-grade Label Generation System API" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.vendor="Screenshot Algo" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://github.com/screenshot-algo/backend"
+
+WORKDIR /app
+
+# Install tini for proper init process and runtime dependencies
+# Tesseract OCR, Puppeteer/Chrome dependencies, curl for healthchecks
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tini \
     tesseract-ocr \
     tesseract-ocr-deu \
     tesseract-ocr-eng \
     curl \
     ca-certificates \
     fonts-liberation \
-    libappindicator3-1 \
     libasound2 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
-    libc6 \
     libcairo2 \
     libcups2 \
     libdbus-1-3 \
     libexpat1 \
     libfontconfig1 \
     libgbm1 \
-    libgcc1 \
     libglib2.0-0 \
     libgtk-3-0 \
     libnspr4 \
     libnss3 \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
-    libstdc++6 \
     libx11-6 \
     libx11-xcb1 \
     libxcb1 \
@@ -78,48 +120,50 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     libxss1 \
     libxtst6 \
-    lsb-release \
-    wget \
-    xdg-utils \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
-# Copy package files and install production dependencies
-COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+# Copy production dependencies
+COPY --from=prod-deps /app/node_modules ./node_modules
 
 # Copy Prisma schema and generated client from builder
-COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma /app/node_modules/@prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY prisma ./prisma/
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
 
-# Create non-root user for security
-# Use UID/GID 1000 to match Kubernetes podSecurityContext
+# Copy package.json for version info
+COPY package.json ./
+
+# Create non-root user for security (UID/GID 1000 for Kubernetes compatibility)
 RUN groupadd --gid 1000 nodejs && \
     useradd --uid 1000 --gid nodejs --shell /bin/bash --create-home nodejs
 
-# Create data directory for screenshots and uploads
-RUN mkdir -p /app/data/screenshots /app/data/uploads /app/data/labels /app/data/cache /app/data/exports /app/data/templates && \
+# Create data directories
+RUN mkdir -p /app/data/screenshots /app/data/uploads /app/data/labels \
+             /app/data/cache /app/data/exports /app/data/templates && \
     chown -R nodejs:nodejs /app
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3001
+# Environment variables
+ENV NODE_ENV=production \
+    PORT=3001 \
+    # Disable Puppeteer sandbox in Docker (runs as non-root)
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
 
 # Switch to non-root user
 USER nodejs
-# Let Puppeteer use its bundled Chromium (no system install needed)
-# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-# ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Expose port
 EXPOSE 3001
 
-# Health check
+# Health check (using Kubernetes-compatible endpoint)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:3001/api/health || exit 1
+    CMD curl -f http://localhost:3001/health/ready || exit 1
+
+# Use tini as init process for proper signal handling
+ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Start the application with migration
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]

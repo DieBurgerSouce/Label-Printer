@@ -76,6 +76,10 @@ services:
       - CORS_ORIGINS=http://localhost:3001,http://frontend:3001
       # SECURITY: SESSION_SECRET must be set in .env (no default for production security)
       - SESSION_SECRET=${SESSION_SECRET:?SESSION_SECRET is required}
+      # OpenTelemetry Tracing
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+      - OTEL_SERVICE_NAME=screenshot-algo-backend
+      - OTEL_TRACING_ENABLED=${OTEL_TRACING_ENABLED:-true}
     volumes:
       - ./backend/data:/app/data
       - ./backend/uploads:/app/uploads
@@ -271,6 +275,38 @@ services:
           cpus: '0.1'
           memory: 64M
 
+# ==========================================================================
+  # Distributed Tracing (Jaeger)
+  # ==========================================================================
+
+  # Jaeger All-in-One - Tracing backend
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+    container_name: screenshot-algo-jaeger
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "4318:4318"     # OTLP HTTP receiver
+      - "4317:4317"     # OTLP gRPC receiver
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    volumes:
+      - jaeger-data:/badger
+    networks:
+      - label-printer-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.2'
+          memory: 256M
+
 volumes:
   postgres-data:
     driver: local
@@ -283,6 +319,8 @@ volumes:
   grafana-data:
     driver: local
   loki-data:
+    driver: local
+  jaeger-data:
     driver: local
 
 networks:

@@ -5,6 +5,9 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 import Layout from './components/common/Layout';
 import { STALE_TIMES } from './lib/queryConfig';
 
+// Initialize i18n (must be imported early)
+import './i18n';
+
 // Loading fallback component
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[400px]">
@@ -22,7 +25,9 @@ const PrintPreview = lazy(() => import('./pages/PrintPreview'));
 const Templates = lazy(() => import('./pages/Templates'));
 const PrintTemplates = lazy(() => import('./pages/PrintTemplates'));
 const Settings = lazy(() => import('./pages/Settings'));
-const LivePreview = lazy(() => import('./pages/LivePreview').then(m => ({ default: m.LivePreview })));
+const LivePreview = lazy(() =>
+  import('./pages/LivePreview').then((m) => ({ default: m.LivePreview }))
+);
 const JobMonitor = lazy(() => import('./pages/JobMonitor'));
 const ShopAutomation = lazy(() => import('./pages/ShopAutomation'));
 const Articles = lazy(() => import('./pages/Articles'));

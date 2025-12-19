@@ -2,6 +2,9 @@
  * Automation Service
  * Orchestrates the complete one-click label generation workflow
  * Crawler → OCR → Matcher → Template Rendering
+ *
+ * UPDATED: Now uses BullMQ for persistent job queue
+ * Jobs survive server restarts!
  */
 
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +16,8 @@ import { matcherService } from './matcher-service';
 import { templateEngine } from './template-engine';
 import { ProductService } from './product-service';
 import { AutomationJob, AutomationConfig } from '../types/automation-types';
+import { queueService, QUEUE_NAMES } from './queue-service';
+import { loadJobState, getAllJobStates, startAutomationWorker } from '../workers/automation-worker';
 import logger from '../utils/logger';
 
 /** Internal result type for OCR processing */
@@ -52,11 +57,53 @@ import {
 } from './automation';
 
 class AutomationService {
-  private jobs: Map<string, AutomationJob> = new Map();
+  // In-memory cache for active jobs (for quick access)
+  // Actual persistence is handled by BullMQ + PostgreSQL
+  private jobCache: Map<string, AutomationJob> = new Map();
+  private isInitialized = false;
+
+  /**
+   * Initialize the automation service
+   * Must be called before using any automation functionality
+   */
+  async initialize(): Promise<boolean> {
+    if (this.isInitialized) {
+      logger.warn('Automation service already initialized');
+      return true;
+    }
+
+    // Initialize the queue service
+    const queueReady = await queueService.initialize();
+    if (!queueReady) {
+      logger.warn('Queue service not available - falling back to in-memory jobs');
+      // Continue with in-memory fallback
+    } else {
+      // Start the automation worker
+      startAutomationWorker();
+      logger.info('Automation worker started');
+    }
+
+    // Load existing jobs from database into cache
+    try {
+      const existingJobs = await getAllJobStates();
+      for (const job of existingJobs) {
+        this.jobCache.set(job.id, job);
+      }
+      logger.info(`Loaded ${existingJobs.length} existing jobs from database`);
+    } catch (error) {
+      logger.warn('Failed to load existing jobs from database', { error });
+    }
+
+    this.isInitialized = true;
+    logger.info('Automation service initialized');
+    return true;
+  }
 
   /**
    * Start a complete automation job
    * ONE-CLICK: URL → Labels!
+   *
+   * Jobs are now persisted via BullMQ + PostgreSQL
    */
   async startAutomation(config: AutomationConfig): Promise<AutomationJob> {
     const jobId = uuidv4();
@@ -69,7 +116,7 @@ class AutomationService {
 
     const job: AutomationJob = {
       id: jobId,
-      name: `Automation ${new Date().toISOString()}`,
+      name: config.name || `Automation ${new Date().toISOString()}`,
       status: 'pending',
       config,
       progress: {
@@ -101,12 +148,25 @@ class AutomationService {
       updatedAt: new Date(),
     };
 
-    this.jobs.set(jobId, job);
+    // Add to in-memory cache
+    this.jobCache.set(jobId, job);
 
     // Emit WebSocket event: Job Created
     emitJobCreated(job);
 
-    // Run workflow asynchronously
+    // Try to add to BullMQ queue (persistent)
+    if (queueService.isReady()) {
+      const queuedJob = await queueService.addAutomationJob(config, jobId);
+      if (queuedJob) {
+        logger.info('Automation job queued via BullMQ', { jobId, bullmqJobId: queuedJob.id });
+        // Job will be processed by the worker
+        return job;
+      }
+      logger.warn('Failed to queue job via BullMQ, falling back to direct execution');
+    }
+
+    // Fallback: Run workflow directly (legacy behavior)
+    logger.info('Running automation job directly (no BullMQ)', { jobId });
     this.runWorkflow(job).catch((error) => {
       console.error(`❌ Automation job ${jobId} failed:`, error);
       job.status = 'failed';
@@ -730,23 +790,64 @@ class AutomationService {
 
   /**
    * Get job status
+   * First checks cache, then database
    */
-  getJob(jobId: string): AutomationJob | undefined {
-    return this.jobs.get(jobId);
+  async getJob(jobId: string): Promise<AutomationJob | undefined> {
+    // Check cache first
+    const cached = this.jobCache.get(jobId);
+    if (cached) return cached;
+
+    // Try to load from database
+    const dbJob = await loadJobState(jobId);
+    if (dbJob) {
+      this.jobCache.set(jobId, dbJob);
+      return dbJob;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Get job status (synchronous - cache only)
+   * Use for legacy compatibility
+   */
+  getJobSync(jobId: string): AutomationJob | undefined {
+    return this.jobCache.get(jobId);
   }
 
   /**
    * Get all jobs
+   * Returns cached jobs + database jobs
    */
-  getAllJobs(): AutomationJob[] {
-    return Array.from(this.jobs.values());
+  async getAllJobs(): Promise<AutomationJob[]> {
+    // Try to refresh from database
+    try {
+      const dbJobs = await getAllJobStates();
+      for (const job of dbJobs) {
+        // Only update cache if not already there (prefer cache for active jobs)
+        if (!this.jobCache.has(job.id)) {
+          this.jobCache.set(job.id, job);
+        }
+      }
+    } catch (error) {
+      logger.warn('Failed to refresh jobs from database', { error });
+    }
+
+    return Array.from(this.jobCache.values());
+  }
+
+  /**
+   * Get all jobs (synchronous - cache only)
+   */
+  getAllJobsSync(): AutomationJob[] {
+    return Array.from(this.jobCache.values());
   }
 
   /**
    * Cancel a running job
    */
   async cancelJob(jobId: string): Promise<boolean> {
-    const job = this.jobs.get(jobId);
+    const job = this.jobCache.get(jobId);
     if (!job) return false;
 
     if (job.status === 'completed' || job.status === 'failed') {
@@ -762,7 +863,12 @@ class AutomationService {
       webCrawlerService.stopJob(job.results.crawlJobId);
     }
 
-    console.log(`🛑 Job ${jobId} cancelled`);
+    // Try to remove from BullMQ queue
+    if (queueService.isReady()) {
+      await queueService.removeJob(QUEUE_NAMES.AUTOMATION, jobId);
+    }
+
+    logger.info(`Job ${jobId} cancelled`);
     return true;
   }
 
@@ -770,7 +876,7 @@ class AutomationService {
    * Delete job and cleanup files
    */
   async deleteJob(jobId: string): Promise<boolean> {
-    const job = this.jobs.get(jobId);
+    const job = this.jobCache.get(jobId);
     if (!job) return false;
 
     // Delete labels directory
@@ -778,14 +884,45 @@ class AutomationService {
     try {
       await fs.rm(labelsDir, { recursive: true, force: true });
     } catch (error) {
-      console.error(`Failed to delete labels directory:`, error);
+      logger.error('Failed to delete labels directory', { error });
     }
 
-    // Delete from memory
-    this.jobs.delete(jobId);
+    // Delete from BullMQ queue
+    if (queueService.isReady()) {
+      await queueService.removeJob(QUEUE_NAMES.AUTOMATION, jobId);
+    }
 
-    console.log(`🗑️  Job ${jobId} deleted`);
+    // Delete from cache
+    this.jobCache.delete(jobId);
+
+    logger.info(`Job ${jobId} deleted`);
     return true;
+  }
+
+  /**
+   * Update job in cache
+   * Called by worker to sync state
+   */
+  updateJobCache(job: AutomationJob): void {
+    this.jobCache.set(job.id, job);
+  }
+
+  /**
+   * Get queue statistics
+   */
+  async getQueueStats(): Promise<Record<string, any> | null> {
+    if (!queueService.isReady()) return null;
+    return queueService.getAllQueueStats();
+  }
+
+  /**
+   * Graceful shutdown
+   */
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down automation service...');
+    await queueService.shutdown();
+    this.isInitialized = false;
+    logger.info('Automation service shutdown complete');
   }
 }
 

@@ -1,5 +1,6 @@
 import { Menu, Bell, User } from 'lucide-react';
 import { useUiStore } from '../../store/uiStore';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export default function Header() {
   const toggleSidebar = useUiStore((state) => state.toggleSidebar);
@@ -22,6 +23,9 @@ export default function Header() {
             <Bell className="w-5 h-5" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
           </button>
+
+          {/* Language Switcher */}
+          <LanguageSwitcher compact />
 
           {/* User menu */}
           <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">

@@ -15,8 +15,9 @@ import {
   SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
 } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+// Note: Metrics are handled by Prometheus - OTLP metrics disabled to avoid SDK conflicts
+// import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+// import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { IORedisInstrumentation } from '@opentelemetry/instrumentation-ioredis';
@@ -47,21 +48,13 @@ if (!tracingEnabled) {
     url: `${otelCollectorUrl}/v1/traces`,
   });
 
-  // Configure metrics exporter
-  const metricExporter = new OTLPMetricExporter({
-    url: `${otelCollectorUrl}/v1/metrics`,
-  });
+  // Note: Metrics are handled by Prometheus endpoint (/metrics)
+  // OTLP metrics disabled to avoid SDK compatibility conflicts
 
-  const metricReader = new PeriodicExportingMetricReader({
-    exporter: metricExporter,
-    exportIntervalMillis: 30000, // Export every 30 seconds
-  });
-
-  // Initialize OpenTelemetry SDK
+  // Initialize OpenTelemetry SDK (traces only)
   const sdk = new NodeSDK({
     resource,
     traceExporter,
-    metricReader,
     instrumentations: [
       // HTTP instrumentation (tracks all HTTP requests)
       new HttpInstrumentation({

@@ -8,6 +8,15 @@ import os from 'os';
 import { PrismaClient } from '@prisma/client';
 import { healthStatus } from '../../utils/metrics';
 import { getRedisClient } from '../../lib/redis';
+import {
+  checkDatabaseHealth,
+  checkRedisHealth,
+  checkQueueHealth,
+  checkMemoryHealth,
+  formatHealthResponse,
+  getUptimeSeconds,
+} from '../../utils/health-checks';
+import { automationService } from '../../services/automation-service';
 
 const router = Router();
 
@@ -164,6 +173,54 @@ router.get('/startup', (_req: Request, res: Response) => {
     status: 'started',
     timestamp: new Date().toISOString(),
   });
+});
+
+/**
+ * GET /health/deep
+ * Deep health check with detailed status of all dependencies
+ * Use for comprehensive monitoring and debugging
+ */
+router.get('/deep', async (_req: Request, res: Response) => {
+  try {
+    const prismaClient = getPrismaClient();
+    const redisClient = getRedisClient();
+
+    // Run all health checks in parallel
+    const [databaseCheck, redisCheck, queueCheck] = await Promise.all([
+      checkDatabaseHealth(prismaClient),
+      checkRedisHealth(redisClient),
+      checkQueueHealth(() => automationService.getQueueStats()),
+    ]);
+
+    // Memory check is sync
+    const memoryCheck = checkMemoryHealth();
+
+    // Format response
+    const healthResponse = formatHealthResponse({
+      database: databaseCheck,
+      redis: redisCheck,
+      queue: queueCheck,
+      memory: memoryCheck,
+    });
+
+    // Update Prometheus metrics
+    healthStatus.set({ component: 'database' }, databaseCheck.status === 'healthy' ? 1 : 0);
+    healthStatus.set({ component: 'redis' }, redisCheck.status === 'healthy' ? 1 : 0);
+    healthStatus.set({ component: 'queue' }, queueCheck.status === 'healthy' ? 1 : 0);
+    healthStatus.set({ component: 'memory' }, memoryCheck.status === 'healthy' ? 1 : 0);
+
+    const statusCode = healthResponse.status === 'healthy' ? 200 :
+                       healthResponse.status === 'degraded' ? 200 : 503;
+
+    res.status(statusCode).json(healthResponse);
+  } catch (error) {
+    res.status(503).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      uptime: getUptimeSeconds(),
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
 });
 
 /**

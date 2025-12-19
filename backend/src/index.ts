@@ -12,9 +12,11 @@ import fs from 'fs';
 import * as Sentry from '@sentry/node';
 import v1Router from './api/routes/v1';
 import healthRouter, { markStartupComplete, markStartupFailed } from './api/routes/health';
+import { setupSwagger } from './config/swagger';
 import { StorageService } from './services/storage-service';
 import { ocrService } from './services/ocr-service';
 import { webCrawlerService } from './services/web-crawler-service';
+import { automationService } from './services/automation-service';
 import { initializeWebSocketServer } from './websocket/socket-server';
 import { getMetrics, getContentType, healthStatus } from './utils/metrics';
 import { metricsMiddleware } from './middleware/metricsMiddleware';
@@ -270,6 +272,9 @@ app.get('/metrics', async (_req, res) => {
 // Mount at /health for K8S probes
 app.use('/health', healthRouter);
 
+// OpenAPI/Swagger documentation
+setupSwagger(app);
+
 // API v1 Routes (versioned API)
 app.use('/api/v1', v1Router);
 
@@ -324,6 +329,14 @@ async function start() {
     logger.info('Initializing OCR service...');
     await ocrService.initialize();
 
+    logger.info('Initializing automation service (BullMQ)...');
+    const queueReady = await automationService.initialize();
+    if (queueReady) {
+      logger.info('Automation service initialized with BullMQ queue');
+    } else {
+      logger.warn('Automation service running without BullMQ (in-memory fallback)');
+    }
+
     logger.info('Initializing WebSocket server...');
     const wsServer = initializeWebSocketServer(httpServer);
 
@@ -377,7 +390,11 @@ async function start() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM signal received: closing HTTP server');
-  await Promise.all([ocrService.shutdown(), webCrawlerService.shutdown()]);
+  await Promise.all([
+    ocrService.shutdown(),
+    webCrawlerService.shutdown(),
+    automationService.shutdown(),
+  ]);
   if (process.env.SENTRY_DSN) {
     await Sentry.flush(2000);
   }
@@ -386,7 +403,11 @@ process.on('SIGTERM', async () => {
 
 process.on('SIGINT', async () => {
   logger.info('SIGINT signal received: closing HTTP server');
-  await Promise.all([ocrService.shutdown(), webCrawlerService.shutdown()]);
+  await Promise.all([
+    ocrService.shutdown(),
+    webCrawlerService.shutdown(),
+    automationService.shutdown(),
+  ]);
   if (process.env.SENTRY_DSN) {
     await Sentry.flush(2000);
   }

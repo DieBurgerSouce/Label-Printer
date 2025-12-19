@@ -20,6 +20,7 @@ import imagesRouter from './images';
 import lexwareRouter from './lexware';
 import authRouter from './auth';
 import healthRouter from './health';
+import featureFlagsRouter from './feature-flags';
 
 const v1Router = Router();
 
@@ -48,6 +49,9 @@ v1Router.use('/images', imagesRouter);
 // Health (also available at /health directly for K8S probes)
 v1Router.use('/health', healthRouter);
 
+// Feature Flags
+v1Router.use('/features', featureFlagsRouter);
+
 // API version info endpoint
 v1Router.get('/', (_req, res) => {
   res.json({
@@ -69,6 +73,7 @@ v1Router.get('/', (_req, res) => {
         print: '/api/v1/print',
         images: '/api/v1/images',
         health: '/api/v1/health',
+        features: '/api/v1/features',
       },
       documentation: 'See /api/v1/docs for API documentation',
     },
